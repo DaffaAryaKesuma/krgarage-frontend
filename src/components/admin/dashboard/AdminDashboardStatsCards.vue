@@ -1,0 +1,126 @@
+<script setup lang="ts">
+import { computed } from "vue";
+
+interface Stats {
+  pemesanan_hari_ini: number;
+  sedang_diproses: number;
+  selesai_hari_ini: number;
+}
+
+interface StatCard {
+  label: string;
+  key: keyof Stats | "lowStock";
+  color: "yellow" | "blue" | "green" | "red";
+  icon: string;
+  route: string;
+  suffix?: (value: number) => string;
+}
+
+interface Props {
+  stats: Stats;
+  lowStockCount: number;
+}
+
+const props = defineProps<Props>();
+
+const STAT_CARDS: StatCard[] = [
+  {
+    label: "Pemesanan Hari Ini",
+    key: "pemesanan_hari_ini",
+    color: "yellow",
+    icon: "mdi mdi-calendar-today",
+    route: "/admin/bookings",
+    suffix: () => "pemesanan",
+  },
+  {
+    label: "Dikerjakan",
+    key: "sedang_diproses",
+    color: "blue",
+    icon: "mdi mdi-cog",
+    route: "/admin/bookings",
+    suffix: (value) => (value > 0 ? "vespa" : "vespa ✅"),
+  },
+  {
+    label: "Selesai Hari Ini",
+    key: "selesai_hari_ini",
+    color: "green",
+    icon: "mdi mdi-check-circle",
+    route: "/admin/bookings",
+    suffix: () => "pemesanan",
+  },
+  {
+    label: "Peringatan Stok Rendah",
+    key: "lowStock",
+    color: "red",
+    icon: "mdi mdi-alert-circle",
+    route: "/admin/inventory",
+    suffix: (value) => (value > 0 ? "item perlu restock! ⚠️" : "semua aman ✅"),
+  },
+];
+
+const colorClasses = computed(() => ({
+  yellow: {
+    bg: "bg-yellow-100",
+    text: "text-yellow-600",
+    border: "border-yellow-500",
+  },
+  blue: { bg: "bg-blue-100", text: "text-blue-600", border: "border-blue-500" },
+  green: {
+    bg: "bg-green-100",
+    text: "text-green-600",
+    border: "border-green-500",
+  },
+  red: { bg: "bg-red-100", text: "text-red-600", border: "border-red-500" },
+}));
+
+const getStatValue = (key: StatCard["key"]) => {
+  return key === "lowStock" ? props.lowStockCount : props.stats[key];
+};
+
+const getCardColorClasses = (color: string) => {
+  return colorClasses.value[color as keyof typeof colorClasses.value];
+};
+</script>
+
+<template>
+  <div
+    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8"
+  >
+    <router-link
+      v-for="card in STAT_CARDS"
+      :key="card.key"
+      :to="card.route"
+      class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow border-l-4"
+      :class="getCardColorClasses(card.color).border"
+    >
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 font-medium">{{ card.label }}</p>
+          <h3 class="text-3xl font-bold text-gray-900 mt-2">
+            {{ getStatValue(card.key) }}
+          </h3>
+          <p
+            class="text-xs mt-1"
+            :class="
+              card.color === 'red'
+                ? 'text-red-600 font-medium'
+                : 'text-gray-500'
+            "
+          >
+            {{ card.suffix ? card.suffix(getStatValue(card.key)) : "" }}
+          </p>
+        </div>
+        <div
+          class="p-3 rounded-full"
+          :class="getCardColorClasses(card.color).bg"
+        >
+          <i
+            :class="`${card.icon} text-4xl ${
+              getCardColorClasses(card.color).text
+            }`"
+          ></i>
+        </div>
+      </div>
+    </router-link>
+  </div>
+</template>

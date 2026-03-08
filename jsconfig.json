@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "strict": true
+  },
+  "vueCompilerOptions": {
+    "target": 3
+  },
+  "exclude": ["node_modules"]
+}
