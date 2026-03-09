@@ -10,7 +10,7 @@ const INSIGHT_CARDS = [
   {
     title: "Tim Aktif",
     value: "5 Mekanik",
-    subtitle: "Siap melayani customer",
+    subtitle: "Siap melayani pelanggan",
     icon: "mdi-account-group",
     gradient: "from-blue-500 to-blue-600",
   },

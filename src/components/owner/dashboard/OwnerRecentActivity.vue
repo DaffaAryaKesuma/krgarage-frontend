@@ -7,7 +7,7 @@ interface Booking {
   id: number;
   kode_pemesanan: string;
   tanggal_pemesanan: string;
-  customer_name: string;
+  nama_pelanggan: string;
   nama_layanan: string;
   total_harga: number;
   status: string;
@@ -81,7 +81,7 @@ const TABLE_HEADERS = [
               {{ formatDateShort(booking.tanggal_pemesanan) }}
             </td>
             <td class="py-4 text-gray-900">
-              {{ booking.customer_name }}
+              {{ booking.nama_pelanggan }}
             </td>
             <td class="py-4 text-gray-700">{{ booking.nama_layanan }}</td>
             <td class="py-4 font-semibold text-gray-900">

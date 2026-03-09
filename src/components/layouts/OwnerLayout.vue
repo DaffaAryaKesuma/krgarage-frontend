@@ -19,7 +19,7 @@ const NAV_LINKS = [
     path: "/owner/financial",
   },
   {
-    label: "Analisa Inventory",
+    label: "Analisa Inventaris",
     icon: "mdi-package-variant",
     path: "/owner/inventory-analysis",
   },

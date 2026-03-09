@@ -12,9 +12,7 @@
           <i class="mdi mdi-view-dashboard text-2xl sm:text-4xl"></i>
         </div>
         <div>
-          <h1 class="text-2xl sm:text-3xl font-bold mb-2">
-            Ikhtisar Dashboard
-          </h1>
+          <h1 class="text-2xl sm:text-3xl font-bold mb-2">Dasbor Pemilik</h1>
           <p class="text-sm sm:text-base text-red-100">
             Monitoring real-time performa bengkel Anda
           </p>
