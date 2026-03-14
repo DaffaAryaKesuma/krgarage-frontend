@@ -6,6 +6,8 @@ import AdminLayout from "../components/layouts/AdminLayout.vue";
 import MechanicLayout from "../components/layouts/MechanicLayout.vue";
 import OwnerLayout from "../components/layouts/OwnerLayout.vue";
 
+import { getRedirectPathForRole } from "@/utils/roleRoutes";
+
 // Halaman Publik
 import HomePage from "../pages/public/HomePage.vue";
 
@@ -35,7 +37,7 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     // Rute Publik (tanpa login)
-    { path: "/", name: "home", component: HomePage },
+    { path: "/", name: "home", component: HomePage, meta: { guestOnly: true } },
 
     // Rute Pengguna Biasa (butuh login)
     {
@@ -136,7 +138,18 @@ const router = createRouter({
 router.beforeEach((to, _from, next) => {
   const isLoggedIn = !!localStorage.getItem("token");
   const userString = localStorage.getItem("user");
-  const user = userString ? JSON.parse(userString) : null;
+  let user: any = null;
+  if (userString) {
+    try {
+      user = JSON.parse(userString);
+    } catch {
+      user = null;
+    }
+  }
+
+  if (to.meta.guestOnly && isLoggedIn) {
+    return next(getRedirectPathForRole(user?.role));
+  }
 
   if (to.meta.requiresAuth && !isLoggedIn) {
     // Check if user was previously logged in (session expired)
@@ -146,7 +159,7 @@ router.beforeEach((to, _from, next) => {
       // Show toast via global function if available
       if ((window as any).__krg_showToast) {
         (window as any).__krg_showToast(
-          "Sesi Anda telah berakhir. Silakan login kembali."
+          "Sesi Anda telah berakhir. Silakan login kembali.",
         );
       }
     }

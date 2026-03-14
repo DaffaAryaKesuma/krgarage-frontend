@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from "vue";
 import axios from "axios";
-import { handleApiError, logError } from "@/utils/errorHandler";
-import { API_URL } from "@/utils/api";
+import { useRouter } from "vue-router";
+import { handleApiError, logError } from "../../../utils/errorHandler";
+import { API_URL } from "../../../utils/api";
+import { getRedirectPathForRole } from "../../../utils/roleRoutes";
 
 defineProps<{
   open: boolean;
@@ -10,15 +12,10 @@ defineProps<{
 
 const emit = defineEmits<{
   (e: "close"): void;
+  (e: "openRegister"): void;
 }>();
 
 const FORM_FIELDS = [
-  {
-    key: "name",
-    label: "Nama Lengkap",
-    type: "text",
-    placeholder: "Masukkan nama lengkap",
-  },
   {
     key: "email",
     label: "Email",
@@ -26,79 +23,45 @@ const FORM_FIELDS = [
     placeholder: "email@example.com",
   },
   {
-    key: "no_telepon",
-    label: "Nomor HP",
-    type: "tel",
-    placeholder: "081234567890",
-  },
-  {
     key: "password",
     label: "Password",
     type: "password",
-    placeholder: "Minimal 8 karakter",
-    hint: "Harus 8+ karakter, huruf besar, huruf kecil, dan angka",
+    placeholder: "Masukkan password",
   },
 ];
 
+const VALIDATION_RULES = {
+  email: [
+    { test: (val: string) => val.trim() !== "", msg: "Email wajib diisi" },
+    {
+      test: (val: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val),
+      msg: "Format email salah",
+    },
+  ],
+  password: [
+    { test: (val: string) => val !== "", msg: "Password wajib diisi" },
+    { test: (val: string) => val.length >= 6, msg: "Minimal 6 karakter" },
+  ],
+};
+
 const form = reactive({
-  name: "",
   email: "",
-  no_telepon: "",
   password: "",
 });
 
 const errors = reactive({
-  name: "",
   email: "",
-  no_telepon: "",
   password: "",
 });
 
 const touched = reactive({
-  name: false,
   email: false,
-  no_telepon: false,
   password: false,
 });
 
 const error = ref("");
-const successMessage = ref("");
 const isLoading = ref(false);
-
-const VALIDATION_RULES = {
-  name: [
-    { test: (val: string) => val.trim() !== "", msg: "Nama harus diisi" },
-    { test: (val: string) => val.length >= 3, msg: "Minimal 3 karakter" },
-  ],
-  email: [
-    { test: (val: string) => val.trim() !== "", msg: "Email harus diisi" },
-    {
-      test: (val: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val),
-      msg: "Format email tidak valid",
-    },
-  ],
-  no_telepon: [
-    { test: (val: string) => val.trim() !== "", msg: "Nomor HP harus diisi" },
-    {
-      test: (val: string) =>
-        /^(08|\+628)[0-9]{8,13}$/.test(val.replace(/\s/g, "")),
-      msg: "Format HP tidak valid",
-    },
-  ],
-  password: [
-    { test: (val: string) => val !== "", msg: "Password harus diisi" },
-    { test: (val: string) => val.length >= 8, msg: "Minimal 8 karakter" },
-    {
-      test: (val: string) => /(?=.*[a-z])/.test(val),
-      msg: "Butuh huruf kecil",
-    },
-    {
-      test: (val: string) => /(?=.*[A-Z])/.test(val),
-      msg: "Butuh huruf besar",
-    },
-    { test: (val: string) => /(?=.*\d)/.test(val), msg: "Butuh angka" },
-  ],
-};
+const router = useRouter();
 
 const validate = (fieldKey: keyof typeof form) => {
   const rules = VALIDATION_RULES[fieldKey] || [];
@@ -114,20 +77,14 @@ const validate = (fieldKey: keyof typeof form) => {
 };
 
 const isFormValid = computed(() => {
-  const hasEmptyFields = Object.keys(form).some(
-    (key) => form[key as keyof typeof form] === "",
-  );
-
-  const hasErrors = Object.values(errors).some((msg) => msg !== "");
-
-  return !hasEmptyFields && !hasErrors;
+  const isFilled = form.email !== "" && form.password !== "";
+  const hasNoErrors = errors.email === "" && errors.password === "";
+  return isFilled && hasNoErrors;
 });
 
-const handleInput = (event: Event, key: string) => {
-  const val = (event.target as HTMLInputElement).value;
+const handleInput = (e: Event, key: string) => {
   const fieldKey = key as keyof typeof form;
-
-  form[fieldKey] = val;
+  form[fieldKey] = (e.target as HTMLInputElement).value;
 
   validate(fieldKey);
 };
@@ -145,25 +102,24 @@ const getInputClass = (fieldKey: keyof typeof form) => [
     : "border-gray-300 focus:ring-2 focus:ring-red-200 focus:border-red-500",
 ];
 
-const handleRegister = async () => {
+const handleLogin = async () => {
   if (!isFormValid.value) return;
 
   error.value = "";
-  successMessage.value = "";
   isLoading.value = true;
 
   try {
-    const response = await axios.post(`${API_URL}/register`, form);
-    successMessage.value = response.data.message || "Registrasi berhasil!";
+    const response = await axios.post(`${API_URL}/login`, form);
 
-    Object.keys(form).forEach((key) => (form[key as keyof typeof form] = ""));
-    Object.keys(touched).forEach(
-      (key) => (touched[key as keyof typeof touched] = false),
-    );
+    localStorage.setItem("token", response.data.access_token);
+    localStorage.setItem("user", JSON.stringify(response.data.user));
 
-    setTimeout(() => emit("close"), 3000);
+    emit("close");
+
+    const redirectPath = getRedirectPathForRole(response.data.user?.role);
+    router.push(redirectPath);
   } catch (err: any) {
-    logError(err, "handleRegister");
+    logError(err, "handleLogin");
     error.value = handleApiError(err);
   } finally {
     isLoading.value = false;
@@ -185,8 +141,8 @@ const handleRegister = async () => {
         <span class="text-2xl">&times;</span>
       </button>
 
-      <form @submit.prevent="handleRegister" class="space-y-4">
-        <h2 class="text-2xl font-bold text-center mb-6">Buat Akun Baru</h2>
+      <form @submit.prevent="handleLogin" class="space-y-4">
+        <h2 class="text-2xl font-bold text-center mb-6">Login Akun</h2>
 
         <div v-for="field in FORM_FIELDS" :key="field.key" class="space-y-1">
           <label
@@ -201,14 +157,10 @@ const handleRegister = async () => {
             :type="field.type"
             :placeholder="field.placeholder"
             :value="form[field.key as keyof typeof form]"
-            @input="(e) => handleInput(e, field.key)"
+            @input="handleInput($event, field.key)"
             @blur="handleBlur(field.key)"
             :class="getInputClass(field.key as keyof typeof form)"
           />
-
-          <p v-if="field.hint" class="text-[10px] text-gray-500 mt-1">
-            {{ field.hint }}
-          </p>
 
           <p
             v-if="
@@ -225,14 +177,9 @@ const handleRegister = async () => {
           v-if="error"
           class="p-3 bg-red-50 border border-red-200 rounded-lg"
         >
-          <p class="text-red-700 text-sm font-medium">{{ error }}</p>
-        </div>
-
-        <div
-          v-if="successMessage"
-          class="p-3 bg-green-50 border border-green-200 rounded-lg"
-        >
-          <p class="text-green-700 text-sm font-medium">{{ successMessage }}</p>
+          <p class="text-red-700 text-sm font-medium text-center">
+            {{ error }}
+          </p>
         </div>
 
         <button
@@ -242,15 +189,26 @@ const handleRegister = async () => {
             'w-full mt-6 py-2 px-4 rounded-lg font-semibold transition-all flex items-center justify-center gap-2',
             isLoading || !isFormValid
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-red-600 hover:bg-red-700 text-white shadow-lg hover:shadow-xl',
+              : 'bg-red-600 hover:bg-red-700 text-white shadow-lg',
           ]"
         >
           <span
             v-if="isLoading"
-            class="animate-spin border-2 border-white border-t-transparent rounded-full w-4 h-4 mr-2"
+            class="animate-spin border-2 border-white border-t-transparent rounded-full w-4 h-4"
           ></span>
-          <span>{{ isLoading ? "Memproses..." : "Register" }}</span>
+          <span>{{ isLoading ? "Memproses..." : "Masuk" }}</span>
         </button>
+
+        <p class="text-center text-gray-600 text-sm mt-4">
+          Belum punya akun?
+          <button
+            type="button"
+            @click="emit('openRegister')"
+            class="text-red-600 font-semibold hover:text-red-700 hover:underline transition-colors"
+          >
+            Daftar di sini
+          </button>
+        </p>
       </form>
     </div>
   </div>

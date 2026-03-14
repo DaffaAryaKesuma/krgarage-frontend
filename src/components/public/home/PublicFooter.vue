@@ -14,7 +14,7 @@ const socialLinks = [
 </script>
 
 <template>
-  <footer id="contact-section" class="bg-red-800 pt-16 text-white print:hidden">
+  <footer id="kontak" class="bg-red-800 pt-16 text-white print:hidden">
     <div
       class="mx-auto grid max-w-7xl gap-8 px-8 sm:grid-cols-2 lg:grid-cols-3"
     >

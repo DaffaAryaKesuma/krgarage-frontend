@@ -272,7 +272,8 @@ onMounted(fetchServices);
     <AdminServiceFormModal
       :show="showForm"
       :mode="formMode"
-      v-model:form="form"
+      :form="form"
+      @update:form="Object.assign(form, $event)"
       :preview-image="previewgambar"
       @close="closeForm"
       @submit="handleFormSubmit"
