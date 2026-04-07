@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-import HomeHeader from "@/components/public/home/HomeHeader.vue";
-import HomeHero from "@/components/public/home/HomeHero.vue";
-import HomeStats from "@/components/public/home/HomeStats.vue";
-import HomeWhyChooseUs from "@/components/public/home/HomeWhyChooseUs.vue";
-import HomeServices from "@/components/public/home/HomeServices.vue";
-import HomeFaq from "@/components/public/home/HomeFaq.vue";
-import HomeAbout from "@/components/public/home/HomeAbout.vue";
+import HomeHeader from "@/components/home/HomeHeader.vue";
+import HomeHero from "@/components/home/HomeHero.vue";
+import HomeStats from "@/components/home/HomeStats.vue";
+import HomeWhyChooseUs from "@/components/home/HomeWhyChooseUs.vue";
+import HomeServices from "@/components/home/HomeServices.vue";
+import HomeFaq from "@/components/home/HomeFaq.vue";
+import HomeAbout from "@/components/home/HomeAbout.vue";
 
-import LoginModal from "@/components/public/home/LoginModal.vue";
-import RegisterModal from "@/components/public/home/RegisterModal.vue";
-import PublicFooter from "@/components/public/home/PublicFooter.vue";
+import LoginModal from "@/components/home/LoginModal.vue";
+import RegisterModal from "@/components/home/RegisterModal.vue";
+import PublicFooter from "@/components/home/PublicFooter.vue";
 
 const isLoginModalOpen = ref(false);
 const isRegisterModalOpen = ref(false);

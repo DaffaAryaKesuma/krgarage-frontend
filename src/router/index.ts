@@ -9,7 +9,7 @@ import OwnerLayout from "../components/layouts/OwnerLayout.vue";
 import { getRedirectPathForRole } from "@/utils/roleRoutes";
 
 // Halaman Publik
-import HomePage from "../pages/public/HomePage.vue";
+import HomePage from "../pages/HomePage.vue";
 
 // Halaman Customer
 import CustomerDashboard from "../pages/customer/CustomerDashboard.vue";

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import axios from "axios";
-import { toIDR } from "../../../utils/money";
-import { formatWaktu, getImageUrl } from "../../../utils/format";
-import { API_URL } from "../../../utils/api";
-import { handleApiError, logError } from "../../../utils/errorHandler";
-import { useToast } from "../../../utils/useToast";
+import { toIDR } from "@/utils/money";
+import { formatWaktu, getImageUrl } from "@/utils/format";
+import { API_URL } from "@/utils/api";
+import { handleApiError, logError } from "@/utils/errorHandler";
+import { useToast } from "@/utils/useToast";
 
 type Service = {
   id: number;
