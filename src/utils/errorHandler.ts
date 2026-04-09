@@ -84,7 +84,7 @@ export function handleApiError(error: any): string {
  * Log error ke console untuk debugging (development only)
  */
 export function logError(error: any, context?: string): void {
-  if (process.env.NODE_ENV === "development") {
+  if (import.meta.env.DEV) {
     const prefix = context ? `[${context}]` : "[API Error]";
     console.error(prefix, error);
   }

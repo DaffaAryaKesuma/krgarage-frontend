@@ -8,6 +8,7 @@ import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import AdminBookingInfoCards from "@/components/admin/booking-detail/AdminBookingInfoCards.vue";
 import AdminBookingNotes from "@/components/admin/booking-detail/AdminBookingNotes.vue";
+import AdminBookingControlPanel from "@/components/admin/booking-detail/AdminBookingControlPanel.vue";
 import AdminBookingServicesList from "@/components/admin/booking-detail/AdminBookingServicesList.vue";
 import AdminBookingSparepartsList from "@/components/admin/booking-detail/AdminBookingSparepartsList.vue";
 import AdminBookingTotalSummary from "@/components/admin/booking-detail/AdminBookingTotalSummary.vue";
@@ -33,6 +34,8 @@ interface Booking {
   jam_pemesanan: string;
   status: string;
   catatan_pelanggan: string;
+  id_mekanik: number | null;
+  mekanik?: { id: number; nama: string; email: string };
   total_harga: number | null;
   pengguna: { nama: string; email: string; no_telepon?: string };
   vespa: { model: string; tahun_produksi: number; plat_nomor: string };
@@ -208,13 +211,22 @@ onMounted(async () => {
 
       <!-- Main Content -->
       <div v-else-if="booking" class="space-y-6">
-        <!-- Info Cards -->
+        <!-- Info Cards (Pelanggan, Vespa, Tanggal, & Kontrol Pemesanan) -->
         <AdminBookingInfoCards
           :user="booking.pengguna"
           :vespa="booking.vespa"
           :tanggal-pemesanan="booking.tanggal_pemesanan"
           :jam-pemesanan="booking.jam_pemesanan"
-        />
+        >
+          <!-- Panel Kontrol yang sekarang numpang di layout Grid 4 Kolom di atas -->
+          <AdminBookingControlPanel
+            :booking-id="booking.id"
+            :current-status="booking.status"
+            :current-mechanic-id="booking.id_mekanik"
+            :current-mechanic-name="booking.mekanik?.nama"
+            @refresh="fetchBookingData"
+          />
+        </AdminBookingInfoCards>
 
         <!-- Catatan Pelanggan -->
         <AdminBookingNotes :catatan="booking.catatan_pelanggan" />
@@ -222,17 +234,9 @@ onMounted(async () => {
         <!-- Layanan & Sparepart Section -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100">
           <div
-            class="p-6 border-b border-gray-100 flex items-center justify-between"
+            class="p-6 border-b border-gray-100 flex items-center gap-4 justify-between"
           >
             <h2 class="text-xl font-bold text-gray-900">Rincian Layanan</h2>
-            <!-- Status Badge - moved here -->
-            <div
-              v-if="booking"
-              class="px-4 py-2 rounded-full text-sm font-semibold"
-              :class="getStatusBadge(booking.status)"
-            >
-              {{ getStatusLabel(booking.status) }}
-            </div>
           </div>
 
           <div class="p-6 space-y-6">
@@ -253,36 +257,55 @@ onMounted(async () => {
               "
             />
 
-            <!-- Total Section -->
-            <AdminBookingTotalSummary
-              :total-harga="totalHarga"
-              :total-spareparts="totalSpareparts"
-              :grand-total="booking.total_harga || grandTotal"
-            />
+            <div class="p-6 space-y-6">
+              <!-- Services -->
+              <AdminBookingServicesList :services="booking.layanan" />
+
+              <!-- Sparepart Section -->
+              <AdminBookingSparepartsList
+                v-if="isInProgress || booking.item_pemesanan?.length"
+                :booking-items="booking.item_pemesanan"
+                :is-in-progress="isInProgress"
+                @add-sparepart="openAddSparepartModal"
+                @delete-item="
+                  (itemId) => {
+                    itemToDelete = itemId;
+                    showDeleteConfirm = true;
+                  }
+                "
+              />
+
+              <!-- Total Section -->
+              <AdminBookingTotalSummary
+                :total-harga="totalHarga"
+                :total-spareparts="totalSpareparts"
+                :grand-total="booking.total_harga || grandTotal"
+              />
+            </div>
           </div>
         </div>
+
+        <!-- Add Sparepart Modal -->
+        <AdminAddSparepartModal
+          :show="showAddSparepartModal"
+          :available-spareparts="availableSpareparts"
+          :is-adding="isAddingSparepart"
+          @submit="addSparepartToBooking"
+          @close="closeAddSparepartModal"
+        />
       </div>
 
-      <!-- Add Sparepart Modal -->
-      <AdminAddSparepartModal
-        :show="showAddSparepartModal"
-        :available-spareparts="availableSpareparts"
-        :is-adding="isAddingSparepart"
-        @submit="addSparepartToBooking"
-        @close="closeAddSparepartModal"
+      <!-- Delete Confirmation Modal -->
+      <ConfirmationModal
+        :show="showDeleteConfirm"
+        title="Hapus Suku Cadang"
+        message="Apakah Anda yakin ingin menghapus suku cadang ini dari pemesanan?"
+        confirm-text="Hapus"
+        cancel-text="Batal"
+        variant="danger"
+        @confirm="removeSparepartFromBooking"
+        @cancel="showDeleteConfirm = false"
       />
     </div>
-
-    <!-- Delete Confirmation Modal -->
-    <ConfirmationModal
-      :show="showDeleteConfirm"
-      title="Hapus Suku Cadang"
-      message="Apakah Anda yakin ingin menghapus suku cadang ini dari pemesanan?"
-      confirm-text="Hapus"
-      cancel-text="Batal"
-      variant="danger"
-      @confirm="removeSparepartFromBooking"
-      @cancel="showDeleteConfirm = false"
-    />
   </div>
 </template>

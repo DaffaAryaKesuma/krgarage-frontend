@@ -163,7 +163,7 @@ onMounted(() => {
             </div>
             <div>
               <h1 class="text-2xl sm:text-3xl font-bold mb-1">
-                Dashboard Admin
+                Dasbor Admin
               </h1>
               <p class="text-sm sm:text-base text-blue-100">
                 {{ currentDate }}

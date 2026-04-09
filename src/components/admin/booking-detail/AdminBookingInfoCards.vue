@@ -24,10 +24,10 @@ defineProps<Props>();
 </script>
 
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
     <!-- Pelanggan Card -->
     <div
-      class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition"
+      class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition flex flex-col h-full"
     >
       <div class="flex items-center gap-3 mb-4">
         <div
@@ -54,7 +54,7 @@ defineProps<Props>();
 
     <!-- Vespa Card -->
     <div
-      class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition"
+      class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition flex flex-col h-full"
     >
       <div class="flex items-center gap-3 mb-4">
         <div
@@ -76,7 +76,7 @@ defineProps<Props>();
 
     <!-- Tanggal Card -->
     <div
-      class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition"
+      class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition flex flex-col h-full"
     >
       <div class="flex items-center gap-3 mb-4">
         <div
@@ -96,5 +96,8 @@ defineProps<Props>();
         </div>
       </div>
     </div>
+
+    <!-- Render panel/komponen kontrol yang disejajarkan di kolom keempat -->
+    <slot></slot>
   </div>
 </template>

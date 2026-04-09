@@ -68,7 +68,7 @@ onMounted(() => {
           </router-link>
 
           <!-- Desktop Menu -->
-          <div class="hidden md:flex items-center space-x-1">
+          <div class="hidden lg:flex items-center space-x-1">
             <router-link
               v-for="item in menuItems"
               :key="item.path"
@@ -114,14 +114,14 @@ onMounted(() => {
           <!-- Mobile Menu Button -->
           <button
             @click="isMobileMenuOpen = !isMobileMenuOpen"
-            class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            class="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
           >
             <i class="mdi mdi-menu text-2xl text-gray-700"></i>
           </button>
         </div>
 
         <!-- Mobile Menu -->
-        <div v-if="isMobileMenuOpen" class="md:hidden pb-4 space-y-1">
+        <div v-if="isMobileMenuOpen" class="lg:hidden pb-4 space-y-1">
           <!-- Mobile User Profile -->
           <div
             class="flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-lg mb-2"

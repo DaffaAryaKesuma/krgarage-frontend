@@ -40,7 +40,7 @@ const STAT_CARDS = [
 </script>
 
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 mb-6">
     <div
       v-for="card in STAT_CARDS"
       :key="card.key"

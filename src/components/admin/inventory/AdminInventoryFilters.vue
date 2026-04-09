@@ -24,7 +24,7 @@ const handleKategoriChange = (value: string | number | null) => {
 
 <template>
   <div class="bg-white p-4 rounded-lg shadow mb-6">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-4">
       <input
         :value="searchQuery"
         @input="
@@ -42,7 +42,7 @@ const handleKategoriChange = (value: string | number | null) => {
       />
       <button
         @click="emit('addNew')"
-        class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium flex items-center justify-center gap-2"
+        class="md:col-span-2 xl:col-span-1 w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium flex items-center justify-center gap-2"
       >
         <i class="mdi mdi-plus"></i>
         <span>Tambah Suku Cadang</span>

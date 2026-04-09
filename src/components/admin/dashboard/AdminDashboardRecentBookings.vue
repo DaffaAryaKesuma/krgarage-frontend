@@ -1,7 +1,8 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { computed } from "vue";
 import { formatDateShort } from "@/utils/date";
 import CustomSelect from "@/components/ui/CustomSelect.vue";
+import { getStatusBadge, getStatusLabel } from "@/utils/statusBadge";
 
 interface Booking {
   id: number;
@@ -75,6 +76,27 @@ const handleStatusChange = (
   }
 };
 
+const handleConfirm = (booking: Booking) => {
+  const result = window.confirm(
+    "Apakah Anda yakin ingin mengonfirmasi pemesanan ini?",
+  );
+  if (result) emit("statusChange", booking, "Confirmed");
+};
+
+const handleComplete = (booking: Booking) => {
+  const result = window.confirm(
+    "Apakah Anda yakin ingin menandai servis ini telah selesai?",
+  );
+  if (result) emit("statusChange", booking, "Completed");
+};
+
+const handleCancel = (booking: Booking) => {
+  const result = window.confirm(
+    "Apakah Anda yakin ingin membatalkan pemesanan ini?",
+  );
+  if (result) emit("statusChange", booking, "Cancelled");
+};
+
 const handleMechanicChange = (
   bookingId: number,
   value: string | number | null,
@@ -144,15 +166,12 @@ const handleMechanicChange = (
               {{ booking.pengguna.nama }}
             </td>
             <td class="px-3 sm:px-6 py-4 whitespace-nowrap">
-              <div class="min-w-[120px]">
-                <CustomSelect
-                  :model-value="booking.status"
-                  :options="STATUS_OPTIONS"
-                  @update:model-value="
-                    (value) => handleStatusChange(booking, value)
-                  "
-                />
-              </div>
+              <span
+                class="px-3 py-1 rounded-full text-xs font-semibold"
+                :class="getStatusBadge(booking.status)"
+              >
+                {{ getStatusLabel(booking.status) }}
+              </span>
             </td>
             <td class="px-3 sm:px-6 py-4 whitespace-nowrap">
               <!-- Show mechanic dropdown for Confirmed status -->
@@ -160,7 +179,7 @@ const handleMechanicChange = (
                 v-if="booking.status === 'Confirmed'"
                 class="flex items-center gap-2"
               >
-                <div class="min-w-[120px]">
+                <div class="min-w-[140px]">
                   <CustomSelect
                     :model-value="selectedMechanics[booking.id] ?? null"
                     @update:model-value="
@@ -170,32 +189,68 @@ const handleMechanicChange = (
                     placeholder="Pilih Mekanik"
                   />
                 </div>
+                <!-- Tombol Play dipindah ke kolom mekanik agar kontekstual -->
                 <button
                   @click="emit('assignAndStart', booking)"
                   :disabled="!selectedMechanics[booking.id]"
-                  class="px-3 py-1.5 bg-purple-600 text-white text-xs font-medium rounded hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed whitespace-nowrap"
-                  title="Assign & Mulai"
+                  class="w-9 h-9 flex shrink-0 items-center justify-center bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Mulai Servis"
                 >
-                  <i class="mdi mdi-play-circle"></i>
+                  <i class="mdi mdi-play-circle text-xl"></i>
                 </button>
               </div>
               <!-- Show mechanic name if already assigned -->
               <span
                 v-else-if="booking.mekanik"
-                class="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded"
+                class="text-xs text-gray-700 bg-gray-100 px-2.5 py-1.5 rounded-md inline-flex items-center gap-1 font-medium border border-gray-200"
               >
-                <i class="mdi mdi-account-wrench"></i>
+                <i class="mdi mdi-account-wrench text-sm text-gray-500"></i>
                 {{ booking.mekanik.nama }}
               </span>
               <span v-else class="text-xs text-gray-400">-</span>
             </td>
             <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
-              <router-link
-                :to="`/admin/bookings/${booking.id}`"
-                class="text-blue-600 hover:text-blue-800 font-semibold no-underline"
-              >
-                Detail →
-              </router-link>
+              <div class="flex items-center justify-center gap-2">
+                <!-- PENDING -->
+                <button
+                  v-if="booking.status === 'Pending'"
+                  @click="handleConfirm(booking)"
+                  class="px-3 py-1.5 text-xs font-bold bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg transition"
+                  title="Konfirmasi"
+                >
+                  Konfirmasi
+                </button>
+
+                <!-- IN PROGRESS -->
+                <button
+                  v-if="booking.status === 'In Progress'"
+                  @click="handleComplete(booking)"
+                  class="px-3 py-1.5 text-xs font-bold bg-green-50 text-green-700 hover:bg-green-100 rounded-lg transition"
+                  title="Tandai Selesai"
+                >
+                  Tandai Selesai
+                </button>
+
+                <button
+                  v-if="
+                    booking.status === 'Pending' ||
+                    booking.status === 'Confirmed'
+                  "
+                  @click="handleCancel(booking)"
+                  class="w-8 h-8 flex shrink-0 items-center justify-center bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition"
+                  title="Batalkan"
+                >
+                  <i class="mdi mdi-close text-base font-bold"></i>
+                </button>
+
+                <!-- Detail Link -->
+                <router-link
+                  :to="`/admin/bookings/${booking.id}`"
+                  class="ml-1 text-indigo-600 hover:text-indigo-800 font-semibold no-underline flex shrink-0 items-center bg-white border-2 border-indigo-50 hover:bg-indigo-50 px-3 py-1.5 rounded-lg transition"
+                >
+                  Detail &rarr;
+                </router-link>
+              </div>
             </td>
           </tr>
         </tbody>
