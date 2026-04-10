@@ -1,14 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed } from "vue";
-
-interface Service {
-  id: number;
-  nama_layanan: string;
-  deskripsi: string;
-  harga: number;
-  durasi_pengerjaan?: number | null;
-  gambar: string | null;
-}
+import { watch, computed } from "vue";
 
 interface FormData {
   id: number | null;

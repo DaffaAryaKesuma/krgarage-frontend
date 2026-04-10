@@ -1,5 +1,4 @@
 ﻿<script setup lang="ts">
-import { ref } from "vue";
 import BaseDatePicker from "../../ui/BaseDatePicker.vue";
 
 interface Props {
@@ -14,7 +13,7 @@ interface Emits {
   (e: "apply"): void;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 const updateStartDate = (val: string) => emit("update:startDate", val);

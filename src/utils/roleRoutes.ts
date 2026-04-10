@@ -1,8 +1,8 @@
 export const ROLE_ROUTES = {
-  admin: "/admin/dashboard",
-  mekanik: "/mechanic/dashboard",
-  owner: "/owner/dashboard",
-  customer: "/app/dashboard",
+  admin: "/admin/dasbor",
+  mekanik: "/mechanic/dasbor",
+  owner: "/owner/dasbor",
+  customer: "/app/dasbor",
 } as const;
 
 export type UserRole = keyof typeof ROLE_ROUTES;

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
 import { formatDateShort } from "@/utils/date";
-import { getStatusBadge, getStatusLabel } from "@/utils/statusBadge";
+import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
 
 interface Booking {
   id: number;
@@ -73,12 +73,7 @@ const handleCancel = () => {
           </p>
         </div>
       </div>
-      <span
-        :class="[
-          'px-3 py-1 text-xs font-semibold rounded-full',
-          getStatusBadge(booking.status),
-        ]"
-      >
+      <span :class="getStatusBadgeClass(booking.status)">
         {{ getStatusLabel(booking.status || "Pending") }}
       </span>
     </div>

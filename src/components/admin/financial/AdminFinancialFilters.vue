@@ -27,8 +27,8 @@ const monthOptions = computed(() => getMonthOptionsWithAll());
     :monthOptions="monthOptions"
     :yearOptions="yearOptions"
     wrapperClass="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8"
-    @update:selectedMonth="(v) => emit('update:selectedMonth', v)"
-    @update:selectedYear="(v) => emit('update:selectedYear', v)"
+    @update:selectedMonth="emit('update:selectedMonth', $event)"
+    @update:selectedYear="emit('update:selectedYear', $event)"
     @change="emit('change')"
   />
 </template>

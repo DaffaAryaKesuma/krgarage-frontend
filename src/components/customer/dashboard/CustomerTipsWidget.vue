@@ -15,10 +15,10 @@ const currentTip = computed(
 
 <template>
   <section
-    class="bg-gray-50 border-l-4 border-gray-400 p-6 rounded-xl shadow-md"
+    class="rounded-xl border-l-4 border-gray-400 bg-gray-50 p-4 shadow-md sm:p-6"
   >
-    <div class="flex items-start gap-4">
-      <i class="mdi mdi-lightbulb-on text-4xl text-gray-500"></i>
+    <div class="flex items-start gap-3 sm:gap-4">
+      <i class="mdi mdi-lightbulb-on text-3xl text-gray-500 sm:text-4xl"></i>
       <div>
         <h3 class="text-lg font-bold text-gray-900 mb-2">Tips Perawatan</h3>
         <div class="flex items-start gap-2">

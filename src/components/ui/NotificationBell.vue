@@ -91,11 +91,11 @@ const handleNotificationClick = async (notification: Notification) => {
     const role = user.role || "customer";
 
     if (role === "admin") {
-      router.push(`/admin/bookings/${notification.id_pemesanan}`);
+      router.push(`/admin/pemesanan/${notification.id_pemesanan}`);
     } else if (role === "mechanic" || role === "mekanik") {
-      router.push(`/mechanic/dashboard`);
+      router.push(`/mechanic/dasbor`);
     } else {
-      router.push(`/app/history`);
+      router.push(`/app/riwayat`);
     }
   }
 

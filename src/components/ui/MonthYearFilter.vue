@@ -12,7 +12,7 @@ interface Props {
   wrapperClass?: string;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   wrapperClass: "bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6",
 });
 

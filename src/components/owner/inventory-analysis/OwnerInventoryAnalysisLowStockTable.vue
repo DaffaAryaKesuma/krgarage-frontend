@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { toIDR } from "@/utils/money";
+import TableShell from "@/components/ui/TableShell.vue";
 
 interface LowStockItem {
   id: number;
@@ -30,12 +31,23 @@ const getStockStatus = (stock: number, minStock: number) => {
   return STOCK_STATUS.rendah;
 };
 
+const estimateRestockQuantity = (item: LowStockItem) =>
+  item.minimum_stok - item.jumlah_stok + 10;
+
+const estimateRestockCost = (item: LowStockItem) =>
+  estimateRestockQuantity(item) * item.harga_beli;
+
+const TABLE_HEADERS = [
+  "Nama Barang",
+  "Stok",
+  "Min",
+  "Harga Beli",
+  "Est. Pembelian",
+  "Status",
+];
+
 const totalRestockCost = computed(() =>
-  props.items.reduce(
-    (sum, item) =>
-      sum + (item.minimum_stok - item.jumlah_stok + 10) * item.harga_beli,
-    0,
-  ),
+  props.items.reduce((sum, item) => sum + estimateRestockCost(item), 0),
 );
 </script>
 
@@ -49,9 +61,7 @@ const totalRestockCost = computed(() =>
           <i class="mdi mdi-alert-circle text-2xl text-red-600"></i>
         </div>
         <div>
-          <h2 class="text-xl font-bold text-gray-900">
-            Stok Menipis
-          </h2>
+          <h2 class="text-xl font-bold text-gray-900">Stok Menipis</h2>
           <p class="text-sm text-gray-600">
             Barang yang perlu segera dibelanjakan ulang saat ini
           </p>
@@ -76,69 +86,135 @@ const totalRestockCost = computed(() =>
       ></div>
     </div>
 
-    <div v-else-if="items.length > 0" class="overflow-x-auto">
-      <table class="w-full text-sm">
-        <thead>
-          <tr class="border-b text-left text-gray-600">
-            <th class="pb-3 font-semibold pl-2">Nama Barang</th>
-            <th class="pb-3 font-semibold">Stok</th>
-            <th class="pb-3 font-semibold">Min</th>
-            <th class="pb-3 font-semibold">Harga Beli</th>
-            <th class="pb-3 font-semibold">Est. Pembelian</th>
-            <th class="pb-3 font-semibold">Status</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y">
-          <tr
-            v-for="item in items"
-            :key="item.id"
-            class="hover:bg-red-50 transition-colors"
-          >
-            <td class="py-3 pl-2">
-              <div class="font-bold text-gray-900">
-                {{ item.nama_barang }}
-              </div>
-              <div class="text-xs text-gray-600">{{ item.kategori }}</div>
-            </td>
-            <td class="py-3">
-              <span
+    <TableShell
+      v-else-if="items.length > 0"
+      :headers="TABLE_HEADERS"
+      :responsive-cards="true"
+      desktop-breakpoint="lg"
+      mobile-cards-class="space-y-4 p-4"
+      table-class="w-full text-sm"
+      header-row-class="border-b text-left text-gray-600"
+      header-cell-class="pb-3 font-semibold"
+      body-class="divide-y"
+    >
+      <template #mobile>
+        <div
+          v-for="item in items"
+          :key="`mobile-${item.id}`"
+          class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm"
+        >
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <p class="font-semibold text-gray-900">{{ item.nama_barang }}</p>
+              <p class="text-xs text-gray-500">{{ item.kategori }}</p>
+            </div>
+            <span
+              :class="[
+                'inline-flex rounded-full px-3 py-1 text-xs font-semibold',
+                getStockStatus(item.jumlah_stok, item.minimum_stok).class,
+              ]"
+            >
+              {{ getStockStatus(item.jumlah_stok, item.minimum_stok).label }}
+            </span>
+          </div>
+
+          <div class="mt-3 grid grid-cols-2 gap-3 text-sm">
+            <div>
+              <p
+                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+              >
+                Stok
+              </p>
+              <p
                 :class="[
-                  'text-lg font-bold',
+                  'font-bold',
                   item.jumlah_stok === 0 ? 'text-red-600' : 'text-orange-600',
                 ]"
               >
                 {{ item.jumlah_stok }}
-              </span>
-            </td>
-            <td class="py-3 text-gray-700">{{ item.minimum_stok }}</td>
-            <td class="py-3 font-semibold">
-              {{ toIDR(item.harga_beli) }}
-            </td>
-            <td class="py-3">
-              <div class="font-bold text-red-600">
-                {{
-                  toIDR(
-                    (item.minimum_stok - item.jumlah_stok + 10) *
-                      item.harga_beli,
-                  )
-                }}
-              </div>
-              <div class="text-xs text-gray-600">
-                ~{{ item.minimum_stok - item.jumlah_stok + 10 }} unit
-              </div>
-            </td>
-            <td class="py-3">
-              <span
-                :class="[
-                  'inline-flex rounded-full px-3 py-1 text-xs font-semibold',
-                  getStockStatus(item.jumlah_stok, item.minimum_stok).class,
-                ]"
+              </p>
+            </div>
+            <div>
+              <p
+                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
               >
-                {{ getStockStatus(item.jumlah_stok, item.minimum_stok).label }}
-              </span>
-            </td>
-          </tr>
-        </tbody>
+                Minimum
+              </p>
+              <p class="font-medium text-gray-900">{{ item.minimum_stok }}</p>
+            </div>
+            <div>
+              <p
+                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+              >
+                Harga Beli
+              </p>
+              <p class="font-medium text-gray-900">
+                {{ toIDR(item.harga_beli) }}
+              </p>
+            </div>
+            <div>
+              <p
+                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+              >
+                Estimasi Pembelian
+              </p>
+              <p class="font-bold text-red-600">
+                {{ toIDR(estimateRestockCost(item)) }}
+              </p>
+              <p class="text-xs text-gray-500">
+                ~{{ estimateRestockQuantity(item) }} unit
+              </p>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <tr
+        v-for="item in items"
+        :key="item.id"
+        class="hover:bg-red-50 transition-colors"
+      >
+        <td class="py-3 pl-2">
+          <div class="font-bold text-gray-900">
+            {{ item.nama_barang }}
+          </div>
+          <div class="text-xs text-gray-600">{{ item.kategori }}</div>
+        </td>
+        <td class="py-3">
+          <span
+            :class="[
+              'text-lg font-bold',
+              item.jumlah_stok === 0 ? 'text-red-600' : 'text-orange-600',
+            ]"
+          >
+            {{ item.jumlah_stok }}
+          </span>
+        </td>
+        <td class="py-3 text-gray-700">{{ item.minimum_stok }}</td>
+        <td class="py-3 font-semibold">
+          {{ toIDR(item.harga_beli) }}
+        </td>
+        <td class="py-3">
+          <div class="font-bold text-red-600">
+            {{ toIDR(estimateRestockCost(item)) }}
+          </div>
+          <div class="text-xs text-gray-600">
+            ~{{ estimateRestockQuantity(item) }} unit
+          </div>
+        </td>
+        <td class="py-3">
+          <span
+            :class="[
+              'inline-flex rounded-full px-3 py-1 text-xs font-semibold',
+              getStockStatus(item.jumlah_stok, item.minimum_stok).class,
+            ]"
+          >
+            {{ getStockStatus(item.jumlah_stok, item.minimum_stok).label }}
+          </span>
+        </td>
+      </tr>
+
+      <template #tfoot>
         <tfoot>
           <tr class="border-t-2 border-gray-300 bg-gray-50">
             <td
@@ -153,8 +229,8 @@ const totalRestockCost = computed(() =>
             <td></td>
           </tr>
         </tfoot>
-      </table>
-    </div>
+      </template>
+    </TableShell>
 
     <div
       v-else

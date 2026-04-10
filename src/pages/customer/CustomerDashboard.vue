@@ -96,7 +96,7 @@ const recentBookings = computed(() =>
   <div class="min-h-screen bg-gray-50">
     <!-- Header with gradient (like dashboard) -->
     <div class="bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         <div class="flex items-center gap-4">
           <div
             class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center"
@@ -107,7 +107,7 @@ const recentBookings = computed(() =>
             <h1 class="text-2xl sm:text-3xl font-bold mb-2">
               Selamat Datang, {{ user.nama }}!
             </h1>
-            <p class="text-sm sm:text-base text-red-100">
+            <p class="max-w-2xl text-sm text-red-100 sm:text-base">
               Ini adalah ringkasan aktivitas Anda di KRGarage
             </p>
           </div>
@@ -116,11 +116,11 @@ const recentBookings = computed(() =>
     </div>
 
     <!-- Content Area -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+    <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-8 lg:px-8">
       <!-- Loading State -->
       <LoadingSpinner v-if="isLoading" message="Memuat data..." />
 
-      <div v-else class="space-y-4 sm:space-y-6">
+      <div v-else class="space-y-4 sm:space-y-5 lg:space-y-6">
         <!-- Service Reminder Banner -->
         <CustomerServiceReminderBanner :vespas="vespasDueService" />
 

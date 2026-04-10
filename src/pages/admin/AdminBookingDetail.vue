@@ -3,7 +3,6 @@ import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
 import { useToast } from "@/utils/useToast";
-import { getStatusBadge, getStatusLabel } from "@/utils/statusBadge";
 import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import AdminBookingInfoCards from "@/components/admin/booking-detail/AdminBookingInfoCards.vue";
@@ -15,41 +14,11 @@ import AdminBookingTotalSummary from "@/components/admin/booking-detail/AdminBoo
 import AdminAddSparepartModal from "@/components/admin/booking-detail/AdminAddSparepartModal.vue";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
+import type { Booking } from "@/types/booking";
+import type { SparepartSummary } from "@/types/inventory";
 
 const toast = useToast();
 const route = useRoute();
-
-// Interfaces
-interface BookingItem {
-  id: number;
-  suku_cadang: { id: number; nama_suku_cadang: string; kategori: string };
-  jumlah: number;
-  harga_saat_ini: number;
-}
-
-interface Booking {
-  id: number;
-  kode_pemesanan: string;
-  tanggal_pemesanan: string;
-  jam_pemesanan: string;
-  status: string;
-  catatan_pelanggan: string;
-  id_mekanik: number | null;
-  mekanik?: { id: number; nama: string; email: string };
-  total_harga: number | null;
-  pengguna: { nama: string; email: string; no_telepon?: string };
-  vespa: { model: string; tahun_produksi: number; plat_nomor: string };
-  layanan: { id: number; nama_layanan: string; harga: number }[];
-  item_pemesanan?: BookingItem[];
-}
-
-interface Sparepart {
-  id: number;
-  nama_suku_cadang: string;
-  kategori: string;
-  jumlah_stok: number;
-  harga_jual: number;
-}
 
 // State
 const booking = ref<Booking | null>(null);
@@ -58,7 +27,7 @@ const error = ref("");
 
 // Sparepart Modal State
 const showAddSparepartModal = ref(false);
-const availableSpareparts = ref<Sparepart[]>([]);
+const availableSpareparts = ref<SparepartSummary[]>([]);
 const isAddingSparepart = ref(false);
 
 // Delete Confirmation State
@@ -186,7 +155,7 @@ onMounted(async () => {
             </h2>
           </div>
           <router-link
-            to="/admin/bookings"
+            to="/admin/pemesanan"
             class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition no-underline backdrop-blur-sm self-center"
           >
             <i class="mdi mdi-arrow-left"></i>
@@ -250,38 +219,17 @@ onMounted(async () => {
               :is-in-progress="isInProgress"
               @add-sparepart="openAddSparepartModal"
               @delete-item="
-                (itemId) => {
-                  itemToDelete = itemId;
-                  showDeleteConfirm = true;
-                }
+                itemToDelete = $event;
+                showDeleteConfirm = true;
               "
             />
 
-            <div class="p-6 space-y-6">
-              <!-- Services -->
-              <AdminBookingServicesList :services="booking.layanan" />
-
-              <!-- Sparepart Section -->
-              <AdminBookingSparepartsList
-                v-if="isInProgress || booking.item_pemesanan?.length"
-                :booking-items="booking.item_pemesanan"
-                :is-in-progress="isInProgress"
-                @add-sparepart="openAddSparepartModal"
-                @delete-item="
-                  (itemId) => {
-                    itemToDelete = itemId;
-                    showDeleteConfirm = true;
-                  }
-                "
-              />
-
-              <!-- Total Section -->
-              <AdminBookingTotalSummary
-                :total-harga="totalHarga"
-                :total-spareparts="totalSpareparts"
-                :grand-total="booking.total_harga || grandTotal"
-              />
-            </div>
+            <!-- Total Section -->
+            <AdminBookingTotalSummary
+              :total-harga="totalHarga"
+              :total-spareparts="totalSpareparts"
+              :grand-total="booking.total_harga || grandTotal"
+            />
           </div>
         </div>
 

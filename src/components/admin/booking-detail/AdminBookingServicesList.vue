@@ -1,14 +1,9 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
-
-interface Service {
-  id: number;
-  nama_layanan: string;
-  harga: number;
-}
+import type { Booking } from "@/types/booking";
 
 interface Props {
-  services: Service[];
+  services: Booking["layanan"];
 }
 
 defineProps<Props>();

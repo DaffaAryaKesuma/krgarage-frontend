@@ -12,7 +12,7 @@ interface Props {
   vespas: VespaDueService[];
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 </script>
 
 <template>
@@ -56,7 +56,7 @@ const props = defineProps<Props>();
           </div>
         </div>
         <router-link
-          to="/app/bookings"
+          to="/app/pemesanan"
           class="inline-block mt-3 sm:mt-4 px-3 sm:px-4 py-2 bg-orange-600 text-white text-sm sm:text-base rounded-lg hover:bg-orange-700 transition"
         >
           Pesan Servis Sekarang

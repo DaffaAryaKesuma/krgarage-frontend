@@ -16,7 +16,7 @@ interface Emits {
   (e: "update:modelValue", value: number): void;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 const selectVespa = (id: number) => {
@@ -45,7 +45,7 @@ const selectVespa = (id: number) => {
       <i class="mdi mdi-motorbike text-5xl text-blue-300 mb-3"></i>
       <p class="text-gray-600 font-semibold">Anda belum menambahkan Vespa</p>
       <router-link
-        to="/app/my-vespas"
+        to="/app/vespa-saya"
         class="text-blue-600 hover:text-blue-800 font-semibold inline-block mt-2"
       >
         Tambah Vespa Sekarang →

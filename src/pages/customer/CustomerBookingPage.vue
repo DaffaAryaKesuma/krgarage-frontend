@@ -145,7 +145,7 @@ const handleDateChange = () => {
   validateField("tanggal_pemesanan");
 };
 
-const handleTimeSelect = (slot: string) => {
+const handleTimeSelect = (_slot: string) => {
   touched.value.jam_pemesanan = true;
   validateField("jam_pemesanan");
 };
@@ -184,12 +184,12 @@ const submit = async () => {
       catatan_pelanggan: form.value.catatan_pelanggan || null,
     };
 
-    const response = await axios.post(`${API_URL}/bookings`, bookingData, {
+    await axios.post(`${API_URL}/bookings`, bookingData, {
       headers,
     });
 
     toast.success("Pemesanan berhasil! Silakan datang sesuai jadwal");
-    setTimeout(() => router.push("/app/history"), 1500);
+    setTimeout(() => router.push("/app/riwayat"), 1500);
   } catch (error: any) {
     logError(error, "submit");
     toast.error(handleApiError(error));

@@ -12,6 +12,9 @@ export const STATUS_MAP = {
   Cancelled: { badge: "bg-red-100 text-red-800", label: "Batal" },
 };
 
+export const STATUS_BADGE_BASE_CLASS =
+  "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold";
+
 /**
  * Get badge classes for status
  */
@@ -20,6 +23,13 @@ export function getStatusBadge(status: string | null): string {
     STATUS_MAP[status as keyof typeof STATUS_MAP]?.badge ||
     "bg-gray-100 text-gray-800"
   );
+}
+
+/**
+ * Get full class list for status badge
+ */
+export function getStatusBadgeClass(status: string | null): string {
+  return `${STATUS_BADGE_BASE_CLASS} ${getStatusBadge(status)}`;
 }
 
 /**

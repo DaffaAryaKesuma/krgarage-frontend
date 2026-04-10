@@ -1,16 +1,6 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
-
-interface BookingItem {
-  id: number;
-  suku_cadang: {
-    id: number;
-    nama_suku_cadang: string;
-    kategori: string;
-  };
-  jumlah: number;
-  harga_saat_ini: number;
-}
+import type { BookingItem } from "@/types/booking";
 
 interface Props {
   bookingItems?: BookingItem[];

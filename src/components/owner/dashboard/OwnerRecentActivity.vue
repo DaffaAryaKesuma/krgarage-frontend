@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
 import { formatDateShort } from "@/utils/date";
-import { getStatusBadge, getStatusLabel } from "@/utils/statusBadge";
+import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
+import TableShell from "@/components/ui/TableShell.vue";
 
 interface Booking {
   id: number;
@@ -37,7 +38,7 @@ const TABLE_HEADERS = [
         Aktivitas Terbaru Hari Ini
       </h2>
       <router-link
-        to="/owner/financial"
+        to="/owner/laporan-keuangan"
         class="flex items-center gap-2 text-sm font-semibold text-red-600 hover:text-red-700"
       >
         Lihat Semua
@@ -55,52 +56,109 @@ const TABLE_HEADERS = [
     </div>
 
     <!-- Bookings Table -->
-    <div v-else-if="bookings.length > 0" class="overflow-x-auto">
-      <table class="w-full">
-        <thead>
-          <tr class="border-b text-left text-sm text-gray-600">
-            <th
-              v-for="header in TABLE_HEADERS"
-              :key="header"
-              class="pb-3 font-semibold"
-            >
-              {{ header }}
-            </th>
-          </tr>
-        </thead>
-        <tbody class="divide-y">
-          <tr
-            v-for="booking in bookings"
-            :key="booking.id"
-            class="text-sm hover:bg-gray-50"
-          >
-            <td class="py-4 font-semibold text-gray-900">
-              {{ booking.kode_pemesanan }}
-            </td>
-            <td class="py-4 text-gray-700">
-              {{ formatDateShort(booking.tanggal_pemesanan) }}
-            </td>
-            <td class="py-4 text-gray-900">
-              {{ booking.nama_pelanggan }}
-            </td>
-            <td class="py-4 text-gray-700">{{ booking.nama_layanan }}</td>
-            <td class="py-4 font-semibold text-gray-900">
-              {{ toIDR(booking.total_harga) }}
-            </td>
-            <td class="py-4">
-              <span
-                :class="[
-                  'inline-flex rounded-full px-3 py-1 text-xs font-semibold',
-                  getStatusBadge(booking.status),
-                ]"
+    <TableShell
+      v-else-if="bookings.length > 0"
+      :headers="TABLE_HEADERS"
+      :responsive-cards="true"
+      desktop-breakpoint="lg"
+      mobile-cards-class="space-y-4 p-4"
+      table-class="w-full"
+      header-row-class="border-b text-left text-sm text-gray-600"
+      header-cell-class="pb-3 font-semibold"
+      body-class="divide-y"
+    >
+      <template #mobile>
+        <div
+          v-for="booking in bookings"
+          :key="`mobile-${booking.id}`"
+          class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm"
+        >
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <p
+                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
               >
-                {{ getStatusLabel(booking.status) }}
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+                Kode Pemesanan
+              </p>
+              <p class="text-sm font-semibold text-gray-900">
+                {{ booking.kode_pemesanan }}
+              </p>
+            </div>
+            <span :class="getStatusBadgeClass(booking.status)">
+              {{ getStatusLabel(booking.status) }}
+            </span>
+          </div>
+
+          <div class="mt-3 grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
+            <div>
+              <p
+                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+              >
+                Tanggal
+              </p>
+              <p class="font-medium text-gray-900">
+                {{ formatDateShort(booking.tanggal_pemesanan) }}
+              </p>
+            </div>
+            <div>
+              <p
+                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+              >
+                Pelanggan
+              </p>
+              <p class="font-medium text-gray-900">
+                {{ booking.nama_pelanggan }}
+              </p>
+            </div>
+            <div>
+              <p
+                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+              >
+                Layanan
+              </p>
+              <p class="font-medium text-gray-900">
+                {{ booking.nama_layanan }}
+              </p>
+            </div>
+            <div>
+              <p
+                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+              >
+                Total
+              </p>
+              <p class="font-semibold text-gray-900">
+                {{ toIDR(booking.total_harga) }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <tr
+        v-for="booking in bookings"
+        :key="booking.id"
+        class="text-sm hover:bg-gray-50"
+      >
+        <td class="py-4 font-semibold text-gray-900">
+          {{ booking.kode_pemesanan }}
+        </td>
+        <td class="py-4 text-gray-700">
+          {{ formatDateShort(booking.tanggal_pemesanan) }}
+        </td>
+        <td class="py-4 text-gray-900">
+          {{ booking.nama_pelanggan }}
+        </td>
+        <td class="py-4 text-gray-700">{{ booking.nama_layanan }}</td>
+        <td class="py-4 font-semibold text-gray-900">
+          {{ toIDR(booking.total_harga) }}
+        </td>
+        <td class="py-4">
+          <span :class="getStatusBadgeClass(booking.status)">
+            {{ getStatusLabel(booking.status) }}
+          </span>
+        </td>
+      </tr>
+    </TableShell>
 
     <!-- Empty State -->
     <div v-else class="py-12 text-center">

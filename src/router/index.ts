@@ -44,12 +44,28 @@ const router = createRouter({
       path: "/app",
       component: CustomerLayout,
       meta: { requiresAuth: true },
-      redirect: "/app/dashboard",
+      redirect: "/app/dasbor",
       children: [
-        { path: "dashboard", name: "dashboard", component: CustomerDashboard },
-        { path: "my-vespas", name: "my-vespas", component: CustomerVespasPage },
-        { path: "bookings", name: "bookings", component: CustomerBookingPage },
-        { path: "history", name: "history", component: CustomerHistoryPage },
+        {
+          path: "dasbor",
+          name: "dashboard",
+          component: CustomerDashboard,
+        },
+        {
+          path: "vespa-saya",
+          name: "my-vespas",
+          component: CustomerVespasPage,
+        },
+        {
+          path: "pemesanan",
+          name: "bookings",
+          component: CustomerBookingPage,
+        },
+        {
+          path: "riwayat",
+          name: "history",
+          component: CustomerHistoryPage,
+        },
       ],
     },
 
@@ -58,35 +74,35 @@ const router = createRouter({
       path: "/admin",
       component: AdminLayout,
       meta: { requiresAuth: true, requiresAdmin: true },
-      redirect: "/admin/dashboard",
+      redirect: "/admin/dasbor",
       children: [
         {
-          path: "dashboard",
+          path: "dasbor",
           name: "admin-dashboard",
           component: AdminDashboard,
         },
         {
-          path: "bookings",
+          path: "pemesanan",
           name: "admin-bookings",
           component: AdminBookings,
         },
         {
-          path: "bookings/:id",
+          path: "pemesanan/:id",
           name: "admin-booking-detail",
           component: AdminBookingDetail,
         },
         {
-          path: "services",
+          path: "layanan",
           name: "admin-services",
           component: AdminServices,
         },
         {
-          path: "financial-report",
+          path: "laporan-keuangan",
           name: "admin-financial-report",
           component: AdminFinancialReport,
         },
         {
-          path: "inventory",
+          path: "inventaris",
           name: "admin-inventory",
           component: AdminInventory,
         },
@@ -98,10 +114,10 @@ const router = createRouter({
       path: "/mechanic",
       component: MechanicLayout,
       meta: { requiresAuth: true, requiresMechanic: true },
-      redirect: "/mechanic/dashboard",
+      redirect: "/mechanic/dasbor",
       children: [
         {
-          path: "dashboard",
+          path: "dasbor",
           name: "mechanic-dashboard",
           component: MechanicDashboard,
         },
@@ -113,20 +129,20 @@ const router = createRouter({
       path: "/owner",
       component: OwnerLayout,
       meta: { requiresAuth: true, requiresOwner: true },
-      redirect: "/owner/dashboard",
+      redirect: "/owner/dasbor",
       children: [
         {
-          path: "dashboard",
+          path: "dasbor",
           name: "owner-dashboard",
           component: OwnerDashboard,
         },
         {
-          path: "financial",
+          path: "laporan-keuangan",
           name: "owner-financial",
           component: OwnerFinancial,
         },
         {
-          path: "inventory-analysis",
+          path: "analisa-inventaris",
           name: "owner-inventory-analysis",
           component: OwnerInventoryAnalysis,
         },

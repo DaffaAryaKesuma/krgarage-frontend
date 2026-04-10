@@ -16,7 +16,7 @@ interface Props {
   filteredCount: number;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 
 const emit = defineEmits<{
   "update:searchQuery": [value: string];

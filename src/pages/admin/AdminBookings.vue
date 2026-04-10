@@ -9,34 +9,14 @@ import AdminBookingCard from "@/components/admin/bookings/AdminBookingCard.vue";
 import { useToast } from "@/utils/useToast";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
+import type { Booking } from "@/types/booking";
+import type { MechanicProfile } from "@/types/user";
 
 const toast = useToast();
 
-// Interfaces
-interface Booking {
-  id: number;
-  kode_pemesanan: string;
-  created_at: string;
-  tanggal_pemesanan: string;
-  jam_pemesanan: string;
-  status: string;
-  total_harga: number | null;
-  id_mekanik: number | null;
-  pengguna: { nama: string; email: string };
-  vespa: { model: string; plat_nomor: string };
-  layanan: { nama_layanan: string; harga: number }[];
-  mekanik?: { id: number; nama: string } | null;
-}
-
-interface Mechanic {
-  id: number;
-  nama: string;
-  email: string;
-}
-
 // State
 const bookings = ref<Booking[]>([]);
-const mechanics = ref<Mechanic[]>([]);
+const mechanics = ref<MechanicProfile[]>([]);
 const showTodayOnly = ref(false);
 const pagination = ref({
   current_page: 1,
@@ -306,7 +286,7 @@ onMounted(() => {
             :per-page="pagination.per_page"
             :from="pagination.from"
             :to="pagination.to"
-            @page-change="(page) => fetchAllBookings(page)"
+            @page-change="fetchAllBookings"
           />
         </div>
       </section>

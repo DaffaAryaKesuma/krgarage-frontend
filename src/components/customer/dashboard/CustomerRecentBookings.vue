@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
 import { formatDateShort } from "@/utils/date";
-import { getStatusBadge, getStatusLabel } from "@/utils/statusBadge";
+import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
 
@@ -20,17 +20,19 @@ interface Props {
   isLoading?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   isLoading: false,
 });
 </script>
 
 <template>
-  <section class="bg-white p-6 rounded-xl shadow-md">
-    <div class="flex items-center justify-between mb-6">
-      <h2 class="text-2xl font-bold text-gray-900">Riwayat Terakhir</h2>
+  <section class="rounded-xl bg-white p-4 shadow-md sm:p-6">
+    <div class="mb-5 flex flex-wrap items-center justify-between gap-2 sm:mb-6">
+      <h2 class="text-xl font-bold text-gray-900 sm:text-2xl">
+        Riwayat Terakhir
+      </h2>
       <router-link
-        to="/app/history"
+        to="/app/riwayat"
         class="text-red-600 hover:text-red-700 font-medium text-sm flex items-center gap-1"
       >
         Lihat Semua
@@ -44,16 +46,16 @@ const props = withDefaults(defineProps<Props>(), {
       title="Belum ada riwayat pemesanan"
       message="Buat pemesanan pertama Anda untuk mulai menggunakan layanan kami"
       action-text="Buat Pemesanan Pertama →"
-      action-link="/app/bookings"
+      action-link="/app/pemesanan"
     />
     <div v-else class="space-y-4">
       <div
         v-for="b in bookings"
         :key="b.id"
-        class="border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow"
+        class="rounded-xl border border-gray-200 p-4 transition-shadow hover:shadow-md sm:p-5"
       >
-        <div class="flex items-start justify-between mb-3">
-          <div class="flex items-center gap-3">
+        <div class="mb-3 flex flex-wrap items-start justify-between gap-3">
+          <div class="flex min-w-0 items-center gap-3">
             <i
               :class="[
                 'text-3xl',
@@ -64,7 +66,7 @@ const props = withDefaults(defineProps<Props>(), {
             ></i>
             <div>
               <p class="text-xs text-gray-500">Kode Pemesanan</p>
-              <p class="font-semibold text-gray-900 text-lg">
+              <p class="text-base font-semibold text-gray-900 sm:text-lg">
                 {{ b.kode_pemesanan }}
               </p>
               <p class="text-xs text-gray-600 mt-1">
@@ -72,12 +74,7 @@ const props = withDefaults(defineProps<Props>(), {
               </p>
             </div>
           </div>
-          <span
-            :class="[
-              'px-3 py-1 text-xs font-semibold rounded-full',
-              getStatusBadge(b.status || 'Pending'),
-            ]"
-          >
+          <span :class="getStatusBadgeClass(b.status || 'Pending')">
             {{ getStatusLabel(b.status || "Pending") }}
           </span>
         </div>

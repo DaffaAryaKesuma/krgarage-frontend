@@ -10,7 +10,7 @@ interface Sparepart {
   harga_jual: number;
   batas_minimal_stok: number;
   deskripsi: string;
-  is_low_stock: boolean;
+  stok_menipis: boolean;
 }
 
 interface FormData {

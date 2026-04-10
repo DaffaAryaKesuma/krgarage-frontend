@@ -2,18 +2,11 @@
 import { ref, computed } from "vue";
 import { toIDR } from "@/utils/money";
 import CustomSelect from "@/components/ui/CustomSelect.vue";
-
-interface Sparepart {
-  id: number;
-  nama_suku_cadang: string;
-  kategori: string;
-  jumlah_stok: number;
-  harga_jual: number;
-}
+import type { SparepartSummary } from "@/types/inventory";
 
 interface Props {
   show: boolean;
-  availableSpareparts: Sparepart[];
+  availableSpareparts: SparepartSummary[];
   isAdding: boolean;
 }
 

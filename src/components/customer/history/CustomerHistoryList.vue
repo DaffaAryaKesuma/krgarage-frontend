@@ -12,10 +12,10 @@ interface Booking {
   status: string;
   total_harga: number | null;
   vespa: { model: string; plat_nomor: string };
-  services: { nama_layanan: string; harga: number }[];
-  booking_items?: Array<{
+  layanan: { nama_layanan: string; harga: number }[];
+  item_pemesanan?: Array<{
     id: number;
-    sparepart: { nama_suku_cadang: string; kategori: string };
+    suku_cadang: { nama_suku_cadang: string; kategori: string };
     jumlah: number;
     harga_saat_ini: number;
   }>;
@@ -37,7 +37,7 @@ interface Props {
   cancellingId?: number | null;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   isLoading: false,
   cancellingId: null,
 });
@@ -65,7 +65,7 @@ const handlePageChange = (page: number) => {
     title="Belum Ada Riwayat"
     message="Tidak ada riwayat servis untuk bulan dan tahun yang dipilih. Yuk pesan sekarang untuk servis Vespa Anda!"
     action-text="Pesan Sekarang"
-    action-link="/app/bookings"
+    action-link="/app/pemesanan"
   />
 
   <template v-else>

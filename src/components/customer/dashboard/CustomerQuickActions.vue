@@ -3,10 +3,10 @@
 </script>
 
 <template>
-  <section class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+  <section class="grid grid-cols-1 gap-3 md:grid-cols-2 sm:gap-4">
     <router-link
-      to="/app/bookings"
-      class="group relative overflow-hidden p-4 sm:p-6 rounded-xl bg-gradient-to-br from-red-600 to-red-700 text-white transition-all duration-300 hover:shadow-2xl hover:scale-105"
+      to="/app/pemesanan"
+      class="group relative overflow-hidden rounded-xl bg-gradient-to-br from-red-600 to-red-700 p-4 text-white transition-all duration-300 hover:shadow-2xl md:p-6"
     >
       <div
         class="absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-white opacity-10 rounded-full -mr-12 sm:-mr-16 -mt-12 sm:-mt-16"
@@ -27,8 +27,8 @@
       </div>
     </router-link>
     <router-link
-      to="/app/my-vespas"
-      class="group relative overflow-hidden p-4 sm:p-6 rounded-xl bg-gradient-to-br from-gray-600 to-gray-700 text-white transition-all duration-300 hover:shadow-2xl hover:scale-105"
+      to="/app/vespa-saya"
+      class="group relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-600 to-gray-700 p-4 text-white transition-all duration-300 hover:shadow-2xl md:p-6"
     >
       <div
         class="absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-white opacity-10 rounded-full -mr-12 sm:-mr-16 -mt-12 sm:-mt-16"

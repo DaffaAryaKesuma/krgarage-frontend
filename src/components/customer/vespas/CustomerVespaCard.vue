@@ -17,7 +17,7 @@ interface Props {
   vespa: Vespa;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 const emit = defineEmits<{
   edit: [vespa: Vespa];
   delete: [vespa: Vespa];

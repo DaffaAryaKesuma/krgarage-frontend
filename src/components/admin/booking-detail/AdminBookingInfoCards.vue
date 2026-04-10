@@ -1,21 +1,11 @@
 <script setup lang="ts">
 import { formatDateShort, formatTimeShort } from "@/utils/date";
-
-interface User {
-  nama: string;
-  email: string;
-  no_telepon?: string;
-}
-
-interface Vespa {
-  model: string;
-  tahun_produksi: number;
-  plat_nomor: string;
-}
+import type { BookingVespa } from "@/types/booking";
+import type { UserProfile } from "@/types/user";
 
 interface Props {
-  user: User;
-  vespa: Vespa;
+  user: UserProfile;
+  vespa: BookingVespa;
   tanggalPemesanan: string;
   jamPemesanan: string;
 }

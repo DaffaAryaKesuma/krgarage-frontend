@@ -1,31 +1,12 @@
 <script setup lang="ts">
 import { formatDateShort } from "@/utils/date";
 import {
-  getStatusBadge,
+  getStatusBadgeClass,
   getStatusIcon,
   getStatusLabel,
 } from "@/utils/statusBadge";
 import CustomSelect from "@/components/ui/CustomSelect.vue";
-
-interface Booking {
-  id: number;
-  kode_pemesanan: string;
-  created_at: string;
-  tanggal_pemesanan: string;
-  jam_pemesanan: string;
-  status: string;
-  total_harga: number | null;
-  id_mekanik: number | null;
-  pengguna: { nama: string; email: string };
-  vespa: { model: string; plat_nomor: string };
-  layanan: { nama_layanan: string; harga: number }[];
-  mekanik?: { id: number; nama: string } | null;
-}
-
-interface MechanicOption {
-  value: number;
-  label: string;
-}
+import type { Booking, MechanicOption } from "@/types/booking";
 
 interface Props {
   booking: Booking;
@@ -33,7 +14,7 @@ interface Props {
   selectedMechanicId?: number | null;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 
 const emit = defineEmits<{
   confirm: [booking: Booking];
@@ -129,12 +110,7 @@ const handleMechanicChange = (value: string | number | null) => {
     <div class="mb-4">
       <p class="text-xs text-gray-500 mb-2">Status Pemesanan:</p>
       <div class="flex items-center gap-2">
-        <span
-          :class="[
-            'px-3 py-1.5 rounded-full text-xs font-semibold',
-            getStatusBadge(booking.status),
-          ]"
-        >
+        <span :class="getStatusBadgeClass(booking.status)">
           <i :class="['mdi mr-1', getStatusIcon(booking.status)]"></i>
           {{ getStatusLabel(booking.status) }}
         </span>
@@ -225,7 +201,7 @@ const handleMechanicChange = (value: string | number | null) => {
 
       <!-- Detail Button (Always Show) -->
       <router-link
-        :to="`/admin/bookings/${booking.id}`"
+        :to="`/admin/pemesanan/${booking.id}`"
         class="block w-full py-2.5 text-center bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition"
       >
         <i class="mdi mdi-eye"></i>

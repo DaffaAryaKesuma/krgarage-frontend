@@ -19,7 +19,7 @@ interface Props {
   summary: Summary;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 
 const CARD_COLOR_CLASSES = {
   blue: {

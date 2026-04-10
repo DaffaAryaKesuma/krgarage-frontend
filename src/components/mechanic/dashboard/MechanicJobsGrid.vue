@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { formatDateShort } from "@/utils/date";
-import { getStatusBadge, getStatusLabel } from "@/utils/statusBadge";
+import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
 
@@ -33,7 +33,7 @@ interface Props {
   loadingMessage?: string;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   emptyIcon: "mdi mdi-clipboard-list",
   emptyTitle: "Tidak ada pekerjaan",
   emptyMessage: "Tidak ada pekerjaan saat ini.",
@@ -109,12 +109,7 @@ const getActionButtonClass = (status: string) => {
           <p class="text-xs opacity-90">Kode Pemesanan</p>
           <p class="text-lg font-bold">{{ booking.kode_pemesanan }}</p>
         </div>
-        <span
-          :class="[
-            'px-3 py-1.5 text-xs font-semibold rounded-full',
-            getStatusBadge(booking.status),
-          ]"
-        >
+        <span :class="getStatusBadgeClass(booking.status)">
           {{ getStatusLabel(booking.status) }}
         </span>
       </div>

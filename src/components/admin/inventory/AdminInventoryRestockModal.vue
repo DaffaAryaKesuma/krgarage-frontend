@@ -8,7 +8,7 @@ interface Sparepart {
   harga_jual: number;
   batas_minimal_stok: number;
   deskripsi: string;
-  is_low_stock: boolean;
+  stok_menipis: boolean;
 }
 
 interface Props {
@@ -49,7 +49,7 @@ const emit = defineEmits<{
             <span
               :class="[
                 'font-bold',
-                selectedSparepart?.is_low_stock
+                selectedSparepart?.stok_menipis
                   ? 'text-red-600'
                   : 'text-gray-900',
               ]"

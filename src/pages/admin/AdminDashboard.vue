@@ -8,6 +8,8 @@ import { useToast } from "@/utils/useToast";
 import { handleApiError, logError } from "@/utils/errorHandler";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
+import type { Booking } from "@/types/booking";
+import type { MechanicProfile } from "@/types/user";
 
 const toast = useToast();
 
@@ -16,22 +18,6 @@ interface Stats {
   pemesanan_hari_ini: number;
   sedang_diproses: number;
   selesai_hari_ini: number;
-}
-
-interface Booking {
-  id: number;
-  kode_pemesanan: string;
-  pengguna: { nama: string };
-  tanggal_pemesanan: string;
-  status: string;
-  id_mekanik: number | null;
-  mekanik?: { id: number; nama: string } | null;
-}
-
-interface Mechanic {
-  id: number;
-  nama: string;
-  email: string;
 }
 
 // State
@@ -44,7 +30,7 @@ const stats = ref<Stats>({
 const lowStockCount = ref(0);
 const recentBookings = ref<Booking[]>([]);
 const currentDate = ref("");
-const mechanics = ref<Mechanic[]>([]);
+const mechanics = ref<MechanicProfile[]>([]);
 const selectedMechanicForBooking = ref<{ [bookingId: number]: number }>({});
 
 // Computed
@@ -162,9 +148,7 @@ onMounted(() => {
               <i class="mdi mdi-view-dashboard text-2xl sm:text-4xl"></i>
             </div>
             <div>
-              <h1 class="text-2xl sm:text-3xl font-bold mb-1">
-                Dasbor Admin
-              </h1>
+              <h1 class="text-2xl sm:text-3xl font-bold mb-1">Dasbor Admin</h1>
               <p class="text-sm sm:text-base text-blue-100">
                 {{ currentDate }}
               </p>

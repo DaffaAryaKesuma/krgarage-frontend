@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted, computed } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import axios from "axios";
 import { getImageUrl } from "../../utils/format";
 import { useToast } from "@/utils/useToast";
@@ -53,12 +53,6 @@ const form = reactive<FormData>({
 
 // Constants
 const FILE_INPUT_ID = "file_input";
-const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
-
-// Computed
-const formTitle = computed(() =>
-  formMode.value === "add" ? "Tambah Layanan Baru" : "Edit Layanan",
-);
 
 // Helper Functions
 const resetForm = () => {
@@ -95,18 +89,6 @@ const openEditForm = (service: Service) => {
 const closeForm = () => {
   showForm.value = false;
   resetForm();
-};
-
-const handleFileChange = (event: Event) => {
-  const file = (event.target as HTMLInputElement).files?.[0];
-  if (!file) return;
-
-  if (file.size > MAX_FILE_SIZE) {
-    toast.error("Ukuran file terlalu besar (maksimal 2MB)");
-    return;
-  }
-
-  handleFileSelected(file);
 };
 
 const handleFileSelected = (file: File) => {

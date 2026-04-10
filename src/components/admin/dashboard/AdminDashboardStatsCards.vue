@@ -29,7 +29,7 @@ const STAT_CARDS: StatCard[] = [
     key: "pemesanan_hari_ini",
     color: "yellow",
     icon: "mdi mdi-calendar-today",
-    route: "/admin/bookings",
+    route: "/admin/pemesanan",
     suffix: () => "pemesanan",
   },
   {
@@ -37,15 +37,15 @@ const STAT_CARDS: StatCard[] = [
     key: "sedang_diproses",
     color: "blue",
     icon: "mdi mdi-cog",
-    route: "/admin/bookings",
-    suffix: (value) => (value > 0 ? "vespa" : "vespa ✅"),
+    route: "/admin/pemesanan",
+    suffix: () => "vespa",
   },
   {
     label: "Selesai Hari Ini",
     key: "selesai_hari_ini",
     color: "green",
     icon: "mdi mdi-check-circle",
-    route: "/admin/bookings",
+    route: "/admin/pemesanan",
     suffix: () => "pemesanan",
   },
   {
@@ -53,8 +53,8 @@ const STAT_CARDS: StatCard[] = [
     key: "lowStock",
     color: "red",
     icon: "mdi mdi-alert-circle",
-    route: "/admin/inventory",
-    suffix: (value) => (value > 0 ? "item perlu restock! ⚠️" : "semua aman ✅"),
+    route: "/admin/inventaris",
+    suffix: (value) => (value > 0 ? "item perlu restock" : "semua aman"),
   },
 ];
 

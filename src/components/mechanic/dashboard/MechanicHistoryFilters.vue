@@ -35,8 +35,8 @@ const yearOptions = computed(() => [
     :yearOptions="yearOptions"
     title="Filter Riwayat"
     wrapperClass="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-4 sm:mb-6"
-    @update:selectedMonth="(v) => emit('update:selectedMonth', v)"
-    @update:selectedYear="(v) => emit('update:selectedYear', v)"
+    @update:selectedMonth="emit('update:selectedMonth', $event)"
+    @update:selectedYear="emit('update:selectedYear', $event)"
     @change="emit('filterChange')"
   />
 </template>

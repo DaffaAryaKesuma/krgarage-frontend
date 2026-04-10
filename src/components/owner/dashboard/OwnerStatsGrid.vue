@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import StatCard from "@/components/owner/StatCard.vue";
+import OwnerStatCard from "@/components/owner/dashboard/OwnerStatCard.vue";
 import { toIDR } from "@/utils/money";
 
 interface Stats {
@@ -54,7 +54,7 @@ const STAT_CARDS = [
 
 <template>
   <div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-    <StatCard
+    <OwnerStatCard
       v-for="card in STAT_CARDS"
       :key="card.key"
       :title="card.title"
