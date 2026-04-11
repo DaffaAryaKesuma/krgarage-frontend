@@ -10,37 +10,23 @@ import CustomerStatsCards from "@/components/customer/dashboard/CustomerStatsCar
 import CustomerTipsWidget from "@/components/customer/dashboard/CustomerTipsWidget.vue";
 import CustomerUpcomingBookings from "@/components/customer/dashboard/CustomerUpcomingBookings.vue";
 import CustomerRecentBookings from "@/components/customer/dashboard/CustomerRecentBookings.vue";
+import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import { API_URL } from "@/utils/api";
-
-interface Booking {
-  id: number;
-  kode_pemesanan: string;
-  created_at: string;
-  status: string;
-  tanggal_pemesanan: string;
-  total_harga?: number;
-  vespa: { model: string; plat_nomor: string };
-  layanan: { nama_layanan: string; harga: number }[];
-}
-
-interface Vespa {
-  id: number;
-  model: string;
-  tahun_produksi: number;
-  plat_nomor: string;
-}
+import { getAuthHeaders } from "@/utils/auth";
+import type { CustomerBooking } from "@/types/booking";
+import type { VespaDetail } from "@/types/vespa";
 
 const toast = useToast();
 
-const bookingList = ref<Booking[]>([]);
-const vespaList = ref<Vespa[]>([]);
+const bookingList = ref<CustomerBooking[]>([]);
+const vespaList = ref<VespaDetail[]>([]);
 const vespasDueService = ref<any[]>([]);
 const isLoading = ref(true);
 const user = ref({ nama: "Guest" });
 
 async function fetchDashboardData() {
-  const token = localStorage.getItem("token");
-  if (!token) {
+  const headers = getAuthHeaders();
+  if (!Object.keys(headers).length) {
     isLoading.value = false;
     return;
   }
@@ -48,14 +34,14 @@ async function fetchDashboardData() {
   try {
     const [bookingResponse, vespaResponse, dueServiceResponse] =
       await Promise.all([
-        axios.get(`${API_URL}/bookings`, {
-          headers: { Authorization: `Bearer ${token}` },
+        axios.get(`${API_URL}/pemesanan`, {
+          headers,
         }),
-        axios.get(`${API_URL}/my-vespas`, {
-          headers: { Authorization: `Bearer ${token}` },
+        axios.get(`${API_URL}/vespa-saya`, {
+          headers,
         }),
-        axios.get(`${API_URL}/vespas/due-service`, {
-          headers: { Authorization: `Bearer ${token}` },
+        axios.get(`${API_URL}/vespa-saya/perlu-servis`, {
+          headers,
         }),
       ]);
 
@@ -94,26 +80,12 @@ const recentBookings = computed(() =>
 
 <template>
   <div class="min-h-screen bg-gray-50">
-    <!-- Header with gradient (like dashboard) -->
-    <div class="bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg">
-      <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-        <div class="flex items-center gap-4">
-          <div
-            class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center"
-          >
-            <i class="mdi mdi-account text-3xl"></i>
-          </div>
-          <div>
-            <h1 class="text-2xl sm:text-3xl font-bold mb-2">
-              Selamat Datang, {{ user.nama }}!
-            </h1>
-            <p class="max-w-2xl text-sm text-red-100 sm:text-base">
-              Ini adalah ringkasan aktivitas Anda di KRGarage
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <AppPageHeader
+      :title="`Selamat Datang, ${user.nama}!`"
+      icon="mdi-account"
+      subtitle="Ini adalah ringkasan aktivitas Anda di KRGarage"
+      subtitle-class="max-w-2xl text-sm text-red-100 sm:text-base"
+    />
 
     <!-- Content Area -->
     <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-8 lg:px-8">

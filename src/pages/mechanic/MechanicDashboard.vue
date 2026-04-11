@@ -12,62 +12,36 @@ import MechanicStatusFilters from "@/components/mechanic/dashboard/MechanicStatu
 import MechanicHistoryFilters from "@/components/mechanic/dashboard/MechanicHistoryFilters.vue";
 import MechanicJobsGrid from "@/components/mechanic/dashboard/MechanicJobsGrid.vue";
 import { API_URL } from "@/utils/api";
-
-interface BookingItem {
-  id: number;
-  suku_cadang: {
-    nama_suku_cadang: string;
-    kategori: string;
-  };
-  jumlah: number;
-  harga_saat_ini: number;
-}
-
-interface Booking {
-  id: number;
-  kode_pemesanan: string;
-  pengguna: {
-    nama: string;
-    email: string;
-  };
-  vespa: {
-    model: string;
-    tahun_produksi: number;
-    plat_nomor: string;
-  };
-  layanan?: { id: number; nama_layanan: string }[];
-  tanggal_pemesanan: string;
-  jam_pemesanan: string;
-  status: string;
-  catatan_pelanggan?: string;
-  item_pemesanan?: BookingItem[];
-}
+import { getAuthHeaders } from "@/utils/auth";
+import {
+  getMechanicNextStatus,
+  isCompletedOrCancelledStatus,
+  mapMechanicFilterToBookingStatus,
+  type MechanicStatusFilter,
+} from "@/utils/statusBadge";
+import { useApiPagination } from "@/composables/useApiPagination";
+import type { MechanicBooking } from "@/types/booking";
 
 const router = useRouter();
 const toast = useToast();
 
 // Refs
 const activeTab = ref<"active" | "history">("active");
-const activeBookings = ref<Booking[]>([]);
-const historyBookings = ref<Booking[]>([]);
+const activeBookings = ref<MechanicBooking[]>([]);
+const historyBookings = ref<MechanicBooking[]>([]);
 const loading = ref(false);
 const showAddSparepartModal = ref(false);
 const selectedBookingId = ref<number | null>(null);
-const statusFilter = ref<"all" | "pending" | "confirmed" | "in_progress">(
-  "all",
-);
+const statusFilter = ref<MechanicStatusFilter>("all");
 
 // History filters and pagination
 const selectedYear = ref<number>(0);
 const selectedMonth = ref<number>(0);
-const historyPagination = ref({
-  current_page: 1,
-  last_page: 1,
-  total: 0,
-  per_page: 10,
-  from: 0,
-  to: 0,
-});
+const {
+  pagination: historyPagination,
+  setCurrentPage: setHistoryCurrentPage,
+  updateFromApi: updateHistoryPagination,
+} = useApiPagination(10);
 
 // Confirmation Modal States
 const showConfirmModal = ref(false);
@@ -87,23 +61,23 @@ const confirmModalData = ref<{
 const fetchActiveJobs = async () => {
   loading.value = true;
   try {
-    const token = localStorage.getItem("token");
-    if (!token) {
+    const headers = getAuthHeaders();
+    if (!Object.keys(headers).length) {
       router.push("/");
       return;
     }
 
     // Fetch all active bookings (not Completed/Cancelled)
     const response = await axios.get(
-      `${API_URL}/mechanic/bookings?per_page=1000`,
+      `${API_URL}/mekanik/pemesanan?per_page=1000`,
       {
-        headers: { Authorization: `Bearer ${token}` },
+        headers,
       },
     );
 
     // Filter client-side for active jobs only
     activeBookings.value = response.data.data.filter(
-      (b: Booking) => b.status !== "Completed" && b.status !== "Cancelled",
+      (b: MechanicBooking) => !isCompletedOrCancelledStatus(b.status),
     );
   } catch (error: any) {
     logError(error, "fetchActiveJobs");
@@ -117,8 +91,8 @@ const fetchActiveJobs = async () => {
 const fetchHistory = async (page: number = 1) => {
   loading.value = true;
   try {
-    const token = localStorage.getItem("token");
-    if (!token) {
+    const headers = getAuthHeaders();
+    if (!Object.keys(headers).length) {
       router.push("/");
       return;
     }
@@ -136,23 +110,15 @@ const fetchHistory = async (page: number = 1) => {
     }
 
     const response = await axios.get(
-      `${API_URL}/mechanic/bookings?${params.toString()}`,
-      { headers: { Authorization: `Bearer ${token}` } },
+      `${API_URL}/mekanik/pemesanan?${params.toString()}`,
+      { headers },
     );
 
-    // Filter for completed/cancelled only
-    historyBookings.value = response.data.data.filter(
-      (b: Booking) => b.status === "Completed" || b.status === "Cancelled",
+    // Filter for completed/batalkanled only
+    historyBookings.value = response.data.data.filter((b: MechanicBooking) =>
+      isCompletedOrCancelledStatus(b.status),
     );
-
-    Object.assign(historyPagination.value, {
-      current_page: response.data.current_page,
-      last_page: response.data.last_page,
-      total: response.data.total,
-      per_page: response.data.per_page,
-      from: response.data.from,
-      to: response.data.to,
-    });
+    updateHistoryPagination(response.data);
   } catch (error: any) {
     logError(error, "fetchHistory");
     toast.error(handleApiError(error));
@@ -175,21 +141,14 @@ const handleUpdateStatus = async (bookingId: number) => {
   const booking = activeBookings.value.find((b) => b.id === bookingId);
   if (!booking) return;
 
-  const currentStatus = booking.status.toLowerCase();
-
-  let newStatus = "";
+  const newStatus = getMechanicNextStatus(booking.status);
   let confirmMessage = "";
   let variant: "danger" | "warning" | "info" = "info";
 
-  if (currentStatus === "pending" || currentStatus === "confirmed") {
-    newStatus = "In Progress";
+  if (newStatus === "In Progress") {
     confirmMessage = "Apakah Anda yakin ingin memulai pekerjaan ini?";
     variant = "info";
-  } else if (
-    currentStatus === "in_progress" ||
-    currentStatus === "in progress"
-  ) {
-    newStatus = "Completed";
+  } else if (newStatus === "Completed") {
     confirmMessage = "Apakah Anda yakin pekerjaan ini sudah selesai?";
     variant = "info";
   } else {
@@ -203,11 +162,11 @@ const handleUpdateStatus = async (bookingId: number) => {
     variant,
     async () => {
       try {
-        const token = localStorage.getItem("token");
+        const headers = getAuthHeaders();
         const response = await axios.put(
-          `${API_URL}/mechanic/bookings/${bookingId}/status`,
+          `${API_URL}/mekanik/pemesanan/${bookingId}/status`,
           { status: newStatus },
-          { headers: { Authorization: `Bearer ${token}` } },
+          { headers },
         );
 
         if (response.data.success) {
@@ -236,10 +195,10 @@ const handleDeleteSparepart = async (bookingId: number, itemId: number) => {
     "danger",
     async () => {
       try {
-        const token = localStorage.getItem("token");
+        const headers = getAuthHeaders();
         await axios.delete(
-          `${API_URL}/mechanic/bookings/${bookingId}/items/${itemId}`,
-          { headers: { Authorization: `Bearer ${token}` } },
+          `${API_URL}/mekanik/pemesanan/${bookingId}/item/${itemId}`,
+          { headers },
         );
         toast.success("Sparepart berhasil dihapus");
         await fetchData();
@@ -294,20 +253,14 @@ const filteredBookings = computed(() => {
     return activeBookings.value;
   }
 
-  const statusMap: Record<string, string> = {
-    pending: "Pending",
-    confirmed: "Confirmed",
-    in_progress: "In Progress",
-  };
-
-  const targetStatus = statusMap[statusFilter.value];
+  const targetStatus = mapMechanicFilterToBookingStatus(statusFilter.value);
   return activeBookings.value.filter((b) => b.status === targetStatus);
 });
 
 // Watch filters to refetch history
 const onFilterChange = () => {
   if (activeTab.value === "history") {
-    historyPagination.value.current_page = 1;
+    setHistoryCurrentPage(1);
     fetchHistory(1);
   }
 };

@@ -6,29 +6,15 @@ import { handleApiError, logError } from "@/utils/errorHandler";
 import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
 import CustomerHistoryFilters from "@/components/customer/history/CustomerHistoryFilters.vue";
 import CustomerHistoryList from "@/components/customer/history/CustomerHistoryList.vue";
+import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import { API_URL } from "@/utils/api";
-
-interface Booking {
-  id: number;
-  kode_pemesanan: string;
-  created_at: string;
-  tanggal_pemesanan: string;
-  jam_pemesanan: string;
-  status: string;
-  total_harga: number | null;
-  vespa: { model: string; plat_nomor: string };
-  layanan: { nama_layanan: string; harga: number }[];
-  item_pemesanan?: Array<{
-    id: number;
-    suku_cadang: { nama_suku_cadang: string; kategori: string };
-    jumlah: number;
-    harga_saat_ini: number;
-  }>;
-}
+import { getAuthHeaders } from "@/utils/auth";
+import { useApiPagination } from "@/composables/useApiPagination";
+import type { CustomerBooking } from "@/types/booking";
 
 const toast = useToast();
 
-const list = ref<Booking[]>([]);
+const list = ref<CustomerBooking[]>([]);
 const isLoading = ref(true);
 const cancelling = ref<number | null>(null);
 const showConfirmDialog = ref(false);
@@ -37,15 +23,7 @@ const bookingToCancel = ref<number | null>(null);
 // Filter states
 const selectedMonth = ref<number>(new Date().getMonth() + 1);
 const selectedYear = ref<number>(new Date().getFullYear());
-
-const pagination = ref({
-  current_page: 1,
-  last_page: 1,
-  per_page: 10,
-  total: 0,
-  from: 0,
-  to: 0,
-});
+const { pagination, setCurrentPage, updateFromApi } = useApiPagination(10);
 
 // Cancel booking - show confirmation dialog
 const cancelBooking = (bookingId: number) => {
@@ -60,13 +38,13 @@ const handleConfirmCancel = async () => {
 
   const bookingId = bookingToCancel.value;
   cancelling.value = bookingId;
-  const token = localStorage.getItem("token");
+  const headers = getAuthHeaders();
 
   try {
     await axios.post(
-      `${API_URL}/bookings/${bookingId}/cancel`,
+      `${API_URL}/pemesanan/${bookingId}/batalkan`,
       {},
-      { headers: { Authorization: `Bearer ${token}` } },
+      { headers },
     );
 
     toast.success("Pemesanan berhasil dibatalkan");
@@ -89,28 +67,21 @@ const handleCancelDialog = () => {
 // Fetch bookings with filters
 const fetchBookings = async (page = 1) => {
   isLoading.value = true;
-  const token = localStorage.getItem("token");
+  const headers = getAuthHeaders();
 
-  if (!token) {
+  if (!Object.keys(headers).length) {
     isLoading.value = false;
     return;
   }
 
   try {
     const { data } = await axios.get(
-      `${API_URL}/bookings?page=${page}&per_page=${pagination.value.per_page}&month=${selectedMonth.value}&year=${selectedYear.value}`,
-      { headers: { Authorization: `Bearer ${token}` } },
+      `${API_URL}/pemesanan?page=${page}&per_page=${pagination.value.per_page}&month=${selectedMonth.value}&year=${selectedYear.value}`,
+      { headers },
     );
 
     list.value = data.data;
-    Object.assign(pagination.value, {
-      current_page: data.current_page,
-      last_page: data.last_page,
-      per_page: data.per_page,
-      total: data.total,
-      from: data.from || 0,
-      to: data.to || 0,
-    });
+    updateFromApi(data);
   } catch (error) {
     console.error("Error fetching bookings:", error);
   } finally {
@@ -120,7 +91,7 @@ const fetchBookings = async (page = 1) => {
 
 // Handle filter change
 const handleFilterChange = () => {
-  pagination.value.current_page = 1;
+  setCurrentPage(1);
   fetchBookings(1);
 };
 
@@ -129,24 +100,12 @@ onMounted(() => fetchBookings());
 
 <template>
   <div class="min-h-screen bg-gray-50">
-    <!-- Header -->
-    <div class="bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <div class="flex items-center gap-4">
-          <div
-            class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center"
-          >
-            <i class="mdi mdi-history text-3xl"></i>
-          </div>
-          <div>
-            <h1 class="text-2xl sm:text-3xl font-bold mb-2">Riwayat Servis</h1>
-            <p class="text-sm sm:text-base text-red-100">
-              Pantau semua riwayat pemesanan dan pembayaran Anda
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <AppPageHeader
+      title="Riwayat Servis"
+      icon="mdi-history"
+      subtitle="Pantau semua riwayat pemesanan dan pembayaran Anda"
+      subtitle-class="text-sm sm:text-base text-red-100"
+    />
 
     <!-- Content -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">

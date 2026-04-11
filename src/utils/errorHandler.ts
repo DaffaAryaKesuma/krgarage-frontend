@@ -38,6 +38,10 @@ export function handleApiError(error: any): string {
 
   // Unauthorized (401)
   if (error.response?.status === 401) {
+    const backendMessage = error.response?.data?.message;
+    if (typeof backendMessage === "string" && backendMessage.trim() !== "") {
+      return backendMessage;
+    }
     return "Sesi Anda telah berakhir. Silakan login kembali.";
   }
 

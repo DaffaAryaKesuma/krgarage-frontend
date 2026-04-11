@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from "vue";
 import axios from "axios";
-import OwnerInventoryAnalysisHeader from "@/components/owner/inventory-analysis/OwnerInventoryAnalysisHeader.vue";
+import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import OwnerInventoryAnalysisFilters from "@/components/owner/inventory-analysis/OwnerInventoryAnalysisFilters.vue";
 import OwnerInventoryAnalysisSummaryCards from "@/components/owner/inventory-analysis/OwnerInventoryAnalysisSummaryCards.vue";
 import OwnerInventoryAnalysisTopServices from "@/components/owner/inventory-analysis/OwnerInventoryAnalysisTopServices.vue";
@@ -45,9 +45,9 @@ const fetchInventoryAnalysis = async () => {
     };
 
     const [servicesRes, sparepartsRes, lowStockRes] = await Promise.all([
-      axios.get(`${API_URL}/owner/top-services`, { headers, params }),
-      axios.get(`${API_URL}/owner/top-spareparts`, { headers, params }),
-      axios.get(`${API_URL}/owner/low-stock`, { headers }), // Stok tidak pakai filter tanggal (realtime)
+      axios.get(`${API_URL}/pemilik/layanan-terpopuler`, { headers, params }),
+      axios.get(`${API_URL}/pemilik/suku-cadang-terlaris`, { headers, params }),
+      axios.get(`${API_URL}/pemilik/stok-menipis`, { headers }), // Stok tidak pakai filter tanggal (realtime)
     ]);
 
     topServices.value = servicesRes.data;
@@ -82,43 +82,48 @@ onMounted(fetchInventoryAnalysis);
 
 <template>
   <div class="min-h-screen bg-gray-50">
-    <div class="space-y-6">
-      <OwnerInventoryAnalysisHeader />
+    <AppPageHeader
+      title="Analisa Inventory"
+      icon="mdi-package-variant"
+      subtitle="Insight bisnis untuk optimasi stok dan layanan"
+      subtitle-class="text-sm sm:text-base text-red-100"
+    />
 
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-        <OwnerInventoryAnalysisFilters
-          v-model:selectedMonth="selectedMonth"
-          v-model:selectedYear="selectedYear"
-          :year-options="YEAR_OPTIONS"
-        />
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+      <OwnerInventoryAnalysisFilters
+        v-model:selectedMonth="selectedMonth"
+        v-model:selectedYear="selectedYear"
+        :year-options="YEAR_OPTIONS"
+      />
 
-        <OwnerInventoryAnalysisSummaryCards
-          :summary="summary"
+      <OwnerInventoryAnalysisSummaryCards
+        :summary="summary"
+        :selected-month="selectedMonth"
+        :selected-year="selectedYear"
+      />
+
+      <div
+        class="mb-8 grid grid-cols-1 gap-6 min-[420px]:grid-cols-2 lg:grid-cols-2"
+      >
+        <OwnerInventoryAnalysisTopServices
+          :services="topServices"
+          :loading="loading"
           :selected-month="selectedMonth"
           :selected-year="selectedYear"
         />
 
-        <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 mb-8">
-          <OwnerInventoryAnalysisTopServices
-            :services="topServices"
-            :loading="loading"
-            :selected-month="selectedMonth"
-            :selected-year="selectedYear"
-          />
-
-          <OwnerInventoryAnalysisTopSpareparts
-            :spareparts="topSpareparts"
-            :loading="loading"
-            :selected-month="selectedMonth"
-            :selected-year="selectedYear"
-          />
-        </div>
-
-        <OwnerInventoryAnalysisLowStockTable
-          :items="lowStockItems"
+        <OwnerInventoryAnalysisTopSpareparts
+          :spareparts="topSpareparts"
           :loading="loading"
+          :selected-month="selectedMonth"
+          :selected-year="selectedYear"
         />
       </div>
+
+      <OwnerInventoryAnalysisLowStockTable
+        :items="lowStockItems"
+        :loading="loading"
+      />
     </div>
   </div>
 </template>

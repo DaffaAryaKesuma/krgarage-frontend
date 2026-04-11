@@ -1,25 +1,17 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
 import { getImageUrl, formatWaktu } from "@/utils/format";
-
-interface Service {
-  id: number;
-  nama_layanan: string;
-  deskripsi: string;
-  harga: number;
-  durasi_pengerjaan?: number | null;
-  gambar: string | null;
-}
+import type { ServiceCatalogItem } from "@/types/service";
 
 interface Props {
-  service: Service;
+  service: ServiceCatalogItem;
 }
 
 defineProps<Props>();
 
 const emit = defineEmits<{
-  edit: [service: Service];
-  delete: [service: Service];
+  edit: [service: ServiceCatalogItem];
+  delete: [service: ServiceCatalogItem];
 }>();
 
 const DEFAULT_IMAGE = "https://placehold.co/600x400?text=Tanpa+Gambar";

@@ -4,10 +4,12 @@ import axios from "axios";
 import { formatDateShort } from "../../utils/date";
 import AdminDashboardStatsCards from "@/components/admin/dashboard/AdminDashboardStatsCards.vue";
 import AdminDashboardRecentBookings from "@/components/admin/dashboard/AdminDashboardRecentBookings.vue";
+import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import { useToast } from "@/utils/useToast";
 import { handleApiError, logError } from "@/utils/errorHandler";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
+import { BOOKING_STATUS } from "@/utils/statusBadge";
 import type { Booking } from "@/types/booking";
 import type { MechanicProfile } from "@/types/user";
 
@@ -44,7 +46,7 @@ const mechanicOptions = computed(() =>
 const changeStatus = async (booking: Booking, newStatus: string) => {
   try {
     await axios.patch(
-      `${API_URL}/admin/bookings/${booking.id}/status`,
+      `${API_URL}/admin/pemesanan/${booking.id}/status`,
       { status: newStatus },
       { headers: getAuthHeaders() },
     );
@@ -68,19 +70,19 @@ const assignMechanicAndStart = async (booking: Booking) => {
   try {
     // Assign mekanik
     await axios.patch(
-      `${API_URL}/admin/bookings/${booking.id}/assign-mechanic`,
+      `${API_URL}/admin/pemesanan/${booking.id}/tugaskan-mekanik`,
       { id_mekanik: mechanicId },
       { headers: getAuthHeaders() },
     );
 
     // Update status ke In Progress
     await axios.patch(
-      `${API_URL}/admin/bookings/${booking.id}/status`,
-      { status: "In Progress" },
+      `${API_URL}/admin/pemesanan/${booking.id}/status`,
+      { status: BOOKING_STATUS.IN_PROGRESS },
       { headers: getAuthHeaders() },
     );
 
-    booking.status = "In Progress";
+    booking.status = BOOKING_STATUS.IN_PROGRESS;
     booking.id_mekanik = mechanicId;
     booking.mekanik = mechanics.value.find((m) => m.id === mechanicId) || null;
 
@@ -94,7 +96,7 @@ const assignMechanicAndStart = async (booking: Booking) => {
 
 const fetchMechanics = async () => {
   try {
-    const { data } = await axios.get(`${API_URL}/admin/mechanics`, {
+    const { data } = await axios.get(`${API_URL}/admin/mekanik`, {
       headers: getAuthHeaders(),
     });
     mechanics.value = data.data || [];
@@ -107,13 +109,13 @@ const fetchMechanics = async () => {
 const fetchDashboardData = async () => {
   try {
     const [statsRes, bookingsRes, lowStockRes] = await Promise.all([
-      axios.get(`${API_URL}/admin/dashboard/stats`, {
+      axios.get(`${API_URL}/admin/dashboard/statistik`, {
         headers: getAuthHeaders(),
       }),
-      axios.get(`${API_URL}/admin/dashboard/recent-bookings`, {
+      axios.get(`${API_URL}/admin/dashboard/pemesanan-terbaru`, {
         headers: getAuthHeaders(),
       }),
-      axios.get(`${API_URL}/admin/inventory/low-stock`, {
+      axios.get(`${API_URL}/admin/inventori/stok-menipis`, {
         headers: getAuthHeaders(),
       }),
     ]);
@@ -137,26 +139,12 @@ onMounted(() => {
 
 <template>
   <div class="min-h-screen bg-gray-50">
-    <!-- Header -->
-    <div class="bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3 sm:gap-4">
-            <div
-              class="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0"
-            >
-              <i class="mdi mdi-view-dashboard text-2xl sm:text-4xl"></i>
-            </div>
-            <div>
-              <h1 class="text-2xl sm:text-3xl font-bold mb-1">Dasbor Admin</h1>
-              <p class="text-sm sm:text-base text-blue-100">
-                {{ currentDate }}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <AppPageHeader
+      title="Dasbor Admin"
+      icon="mdi-view-dashboard"
+      :subtitle="currentDate"
+      subtitle-class="text-sm sm:text-base text-blue-100"
+    />
 
     <!-- Content Area -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">

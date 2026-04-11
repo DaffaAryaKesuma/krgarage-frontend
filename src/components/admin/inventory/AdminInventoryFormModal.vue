@@ -1,32 +1,14 @@
 <script setup lang="ts">
 import CustomSelect from "@/components/ui/CustomSelect.vue";
-
-interface Sparepart {
-  id: number;
-  nama_suku_cadang: string;
-  kategori: string;
-  jumlah_stok: number;
-  harga_beli: number;
-  harga_jual: number;
-  batas_minimal_stok: number;
-  deskripsi: string;
-  stok_menipis: boolean;
-}
-
-interface FormData {
-  nama_suku_cadang: string;
-  kategori: string;
-  jumlah_stok: number;
-  harga_beli: number;
-  harga_jual: number;
-  batas_minimal_stok: number;
-  deskripsi: string;
-}
+import type {
+  InventorySparepart,
+  InventorySparepartForm,
+} from "@/types/inventory";
 
 interface Props {
   show: boolean;
-  form: FormData;
-  selectedSparepart: Sparepart | null;
+  form: InventorySparepartForm;
+  selectedSparepart: InventorySparepart | null;
   loading: boolean;
   kategoriOptions: Array<{ value: string; label: string }>;
 }
@@ -36,7 +18,7 @@ const props = defineProps<Props>();
 const emit = defineEmits<{
   close: [];
   submit: [];
-  "update:form": [value: FormData];
+  "update:form": [value: InventorySparepartForm];
 }>();
 
 const handleKategoriChange = (value: string | number | null) => {

@@ -10,7 +10,7 @@ interface Props {
   headerCellClass?: string;
   bodyClass?: string;
   responsiveCards?: boolean;
-  desktopBreakpoint?: "md" | "lg";
+  desktopBreakpoint?: "md" | "lg" | "xl";
   mobileCardsClass?: string;
 }
 
@@ -37,12 +37,14 @@ const useResponsiveCards = computed(
 
 const desktopTableClass = computed(() => {
   if (!useResponsiveCards.value) return "";
+  if (props.desktopBreakpoint === "xl") return "hidden xl:block";
   return props.desktopBreakpoint === "lg"
     ? "hidden lg:block"
     : "hidden md:block";
 });
 
 const mobileCardsVisibilityClass = computed(() => {
+  if (props.desktopBreakpoint === "xl") return "xl:hidden";
   if (props.desktopBreakpoint === "lg") return "lg:hidden";
   return "md:hidden";
 });

@@ -10,21 +10,10 @@ import CustomerServiceSelector from "@/components/customer/bookings/CustomerServ
 import CustomerVespaSelector from "@/components/customer/bookings/CustomerVespaSelector.vue";
 import CustomerSchedulePicker from "@/components/customer/bookings/CustomerSchedulePicker.vue";
 import CustomerBookingSummary from "@/components/customer/bookings/CustomerBookingSummary.vue";
-
-interface Vespa {
-  id: number;
-  model: string;
-  plat_nomor: string;
-}
-
-interface Service {
-  id: number;
-  nama_layanan: string;
-  deskripsi: string;
-  harga: number;
-  durasi_pengerjaan?: number;
-  gambar: string;
-}
+import AppPageHeader from "@/components/ui/AppPageHeader.vue";
+import { getAuthHeaders } from "@/utils/auth";
+import type { ServiceCatalogItem } from "@/types/service";
+import type { VespaBasic } from "@/types/vespa";
 
 const TIME_SLOTS = [
   "10:00",
@@ -38,10 +27,9 @@ const TIME_SLOTS = [
 
 const router = useRouter();
 const toast = useToast();
-const token = localStorage.getItem("token");
 
-const myVespas = ref<Vespa[]>([]);
-const allServices = ref<Service[]>([]);
+const myVespas = ref<VespaBasic[]>([]);
+const allServices = ref<ServiceCatalogItem[]>([]);
 const isLoading = ref(true);
 const isSubmitting = ref(false);
 const bookedSlots = ref<string[]>([]);
@@ -75,8 +63,6 @@ const selectedServices = computed(() =>
 const totalHarga = computed(() =>
   selectedServices.value.reduce((sum, s) => sum + s.harga, 0),
 );
-
-const headers = { Authorization: `Bearer ${token}` };
 
 const validateField = (field: keyof typeof errors.value) => {
   if (!touched.value[field]) return;
@@ -114,10 +100,13 @@ const validateField = (field: keyof typeof errors.value) => {
 
 const checkAvailability = async () => {
   if (!form.value.tanggal_pemesanan) return;
+  const headers = getAuthHeaders();
+  if (!Object.keys(headers).length) return;
+
   form.value.jam_pemesanan = "";
   try {
     const { data } = await axios.get(
-      `${API_URL}/bookings/check-slots?date=${form.value.tanggal_pemesanan}`,
+      `${API_URL}/pemesanan/cek-slot?date=${form.value.tanggal_pemesanan}`,
       { headers },
     );
     bookedSlots.value = data;
@@ -176,6 +165,12 @@ const submit = async () => {
   isSubmitting.value = true;
 
   try {
+    const headers = getAuthHeaders();
+    if (!Object.keys(headers).length) {
+      isSubmitting.value = false;
+      return;
+    }
+
     const bookingData = {
       id_vespa: Number(form.value.id_vespa),
       service_ids: form.value.service_ids.map((id) => Number(id)),
@@ -184,7 +179,7 @@ const submit = async () => {
       catatan_pelanggan: form.value.catatan_pelanggan || null,
     };
 
-    await axios.post(`${API_URL}/bookings`, bookingData, {
+    await axios.post(`${API_URL}/pemesanan`, bookingData, {
       headers,
     });
 
@@ -199,11 +194,12 @@ const submit = async () => {
 };
 
 onMounted(async () => {
-  if (!token) return;
+  const headers = getAuthHeaders();
+  if (!Object.keys(headers).length) return;
   try {
     const [vespas, services] = await Promise.all([
-      axios.get(`${API_URL}/my-vespas`, { headers }),
-      axios.get(`${API_URL}/services`),
+      axios.get(`${API_URL}/vespa-saya`, { headers }),
+      axios.get(`${API_URL}/layanan`),
     ]);
     myVespas.value = vespas.data;
     allServices.value = services.data;
@@ -218,26 +214,12 @@ onMounted(async () => {
 
 <template>
   <div class="min-h-screen bg-gray-50">
-    <!-- Header -->
-    <div class="bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <div class="flex items-center gap-4">
-          <div
-            class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center"
-          >
-            <i class="mdi mdi-calendar-check text-3xl"></i>
-          </div>
-          <div>
-            <h1 class="text-2xl sm:text-3xl font-bold mb-2">
-              Pemesanan Servis Vespa
-            </h1>
-            <p class="text-sm sm:text-base text-red-100">
-              Pesan layanan dengan mudah
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <AppPageHeader
+      title="Pemesanan Servis Vespa"
+      icon="mdi-calendar-check"
+      subtitle="Pesan layanan dengan mudah"
+      subtitle-class="text-sm sm:text-base text-red-100"
+    />
 
     <!-- Content -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">

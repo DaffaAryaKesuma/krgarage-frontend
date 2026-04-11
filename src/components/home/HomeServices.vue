@@ -27,7 +27,7 @@ const isLoading = ref(true);
 const fetchServices = async () => {
   isLoading.value = true;
   try {
-    const response = await axios.get(`${API_URL}/services`);
+    const response = await axios.get(`${API_URL}/layanan`);
     services.value = (response.data || []).map((s: any) => ({
       ...s,
       gambar: getImageUrl(s.gambar, API_URL),

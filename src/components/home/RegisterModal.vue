@@ -159,7 +159,7 @@ const handleRegister = async () => {
       no_telepon: form.no_telepon,
       password: form.password,
     };
-    const response = await axios.post(`${API_URL}/register`, payload);
+    const response = await axios.post(`${API_URL}/daftar`, payload);
     successMessage.value = response.data.message || "Registrasi berhasil!";
 
     Object.keys(form).forEach((key) => (form[key as keyof typeof form] = ""));

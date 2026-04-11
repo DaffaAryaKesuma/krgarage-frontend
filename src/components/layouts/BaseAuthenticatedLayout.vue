@@ -17,7 +17,7 @@ interface Props {
   navItems?: NavItem[];
   appTitle?: string;
   appSubtitle?: string;
-  desktopBreakpoint?: "md" | "lg";
+  desktopBreakpoint?: "md" | "lg" | "xl";
   rootClass?: string;
   navClass?: string;
 }
@@ -44,6 +44,14 @@ const userInitials = computed(() => {
 });
 
 const breakpointClasses = computed(() => {
+  if (props.desktopBreakpoint === "xl") {
+    return {
+      desktopMenu: "hidden xl:flex",
+      mobileMenuButton: "xl:hidden",
+      mobileMenu: "xl:hidden",
+    };
+  }
+
   if (props.desktopBreakpoint === "lg") {
     return {
       desktopMenu: "hidden lg:flex",
@@ -208,7 +216,7 @@ onMounted(() => {
       </div>
     </nav>
 
-    <main>
+    <main class="content-safe">
       <router-view />
     </main>
 

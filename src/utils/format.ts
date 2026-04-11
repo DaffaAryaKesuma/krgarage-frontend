@@ -1,3 +1,5 @@
+import { API_URL } from "@/utils/api";
+
 /**
  * Format waktu dalam menit ke format yang lebih readable
  * @param minutes - Jumlah menit
@@ -34,9 +36,8 @@ export function getImageUrl(
     return "https://placehold.co/600x400?text=No+Image";
   }
 
-  const baseUrl =
-    apiUrl || import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
-  const storageUrl = baseUrl.replace("/api", "");
+  const baseUrl = apiUrl || API_URL;
+  const storageUrl = baseUrl.replace(/\/api\/?$/, "");
 
   return `${storageUrl}/storage/${imagePath}`;
 }

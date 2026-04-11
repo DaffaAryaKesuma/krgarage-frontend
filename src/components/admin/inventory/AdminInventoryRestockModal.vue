@@ -1,19 +1,9 @@
 <script setup lang="ts">
-interface Sparepart {
-  id: number;
-  nama_suku_cadang: string;
-  kategori: string;
-  jumlah_stok: number;
-  harga_beli: number;
-  harga_jual: number;
-  batas_minimal_stok: number;
-  deskripsi: string;
-  stok_menipis: boolean;
-}
+import type { InventorySparepart } from "@/types/inventory";
 
 interface Props {
   show: boolean;
-  selectedSparepart: Sparepart | null;
+  selectedSparepart: InventorySparepart | null;
   restockQuantity: number;
   loading: boolean;
 }

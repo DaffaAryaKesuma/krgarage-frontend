@@ -4,6 +4,15 @@ import axios from "axios";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
 import { useToast } from "@/utils/useToast";
+import {
+  BOOKING_STATUS,
+  canAdminAssignAndStart,
+  canAdminCancelBooking,
+  canAdminCompleteBooking,
+  canAdminConfirmBooking,
+  isCancelledStatus,
+  isCompletedStatus,
+} from "@/utils/statusBadge";
 import CustomSelect from "@/components/ui/CustomSelect.vue";
 
 interface Mechanic {
@@ -33,12 +42,23 @@ const mechanicOptionsList = computed(() => {
   }));
 });
 
+const canConfirm = computed(() => canAdminConfirmBooking(props.currentStatus));
+const canAssignAndStart = computed(() =>
+  canAdminAssignAndStart(props.currentStatus),
+);
+const canComplete = computed(() =>
+  canAdminCompleteBooking(props.currentStatus),
+);
+const canCancel = computed(() => canAdminCancelBooking(props.currentStatus));
+const isCompleted = computed(() => isCompletedStatus(props.currentStatus));
+const isCancelled = computed(() => isCancelledStatus(props.currentStatus));
+
 const CANCEL_BUTTON_CLASS =
   "w-full py-2.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition font-semibold";
 
 async function fetchMechanics() {
   try {
-    const { data } = await axios.get(`${API_URL}/admin/mechanics`, {
+    const { data } = await axios.get(`${API_URL}/admin/mekanik`, {
       headers: getAuthHeaders(),
     });
     availableMechanics.value = data.data || [];
@@ -51,7 +71,7 @@ async function updateStatus(newStatus: string, successMessage: string) {
   isProcessing.value = true;
   try {
     await axios.patch(
-      `${API_URL}/admin/bookings/${props.bookingId}/status`,
+      `${API_URL}/admin/pemesanan/${props.bookingId}/status`,
       { status: newStatus },
       { headers: getAuthHeaders() },
     );
@@ -74,15 +94,15 @@ async function assignMechanicAndStart() {
   try {
     // 1. Assign mechanic
     await axios.post(
-      `${API_URL}/admin/bookings/${props.bookingId}/assign-mechanic`,
+      `${API_URL}/admin/pemesanan/${props.bookingId}/tugaskan-mekanik`,
       { id_mekanik: selectedMechanicId.value },
       { headers: getAuthHeaders() },
     );
 
     // 2. Update status to In Progress
     await axios.patch(
-      `${API_URL}/admin/bookings/${props.bookingId}/status`,
-      { status: "In Progress" },
+      `${API_URL}/admin/pemesanan/${props.bookingId}/status`,
+      { status: BOOKING_STATUS.IN_PROGRESS },
       { headers: getAuthHeaders() },
     );
 
@@ -101,7 +121,7 @@ const handleConfirm = () => {
     "Apakah Anda yakin ingin mengonfirmasi pemesanan ini?",
   );
   if (result) {
-    updateStatus("Confirmed", "Pemesanan berhasil dikonfirmasi!");
+    updateStatus(BOOKING_STATUS.CONFIRMED, "Pemesanan berhasil dikonfirmasi!");
   }
 };
 
@@ -110,7 +130,7 @@ const handleComplete = () => {
     "Apakah Anda yakin ingin menandai servis ini telah selesai?",
   );
   if (result) {
-    updateStatus("Completed", "Pemesanan berhasil diselesaikan!");
+    updateStatus(BOOKING_STATUS.COMPLETED, "Pemesanan berhasil diselesaikan!");
   }
 };
 
@@ -119,7 +139,7 @@ const handleCancel = () => {
     "Apakah Anda yakin ingin membatalkan pemesanan ini?",
   );
   if (result) {
-    updateStatus("Cancelled", "Pemesanan berhasil dibatalkan!");
+    updateStatus(BOOKING_STATUS.CANCELLED, "Pemesanan berhasil dibatalkan!");
   }
 };
 
@@ -138,7 +158,7 @@ onMounted(() => {
 
     <div class="space-y-4 flex-1">
       <!-- PENDING: Show Confirm & Cancel -->
-      <div v-if="currentStatus === 'Pending'" class="space-y-3">
+      <div v-if="canConfirm" class="space-y-3">
         <button
           @click="handleConfirm"
           :disabled="isProcessing"
@@ -153,6 +173,7 @@ onMounted(() => {
           >
         </button>
         <button
+          v-if="canCancel"
           @click="handleCancel"
           :disabled="isProcessing"
           :class="CANCEL_BUTTON_CLASS"
@@ -162,7 +183,7 @@ onMounted(() => {
       </div>
 
       <!-- CONFIRMED: Show Assign Mechanic & Cancel -->
-      <div v-else-if="currentStatus === 'Confirmed'" class="space-y-4">
+      <div v-else-if="canAssignAndStart" class="space-y-4">
         <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <p
             class="text-sm text-blue-800 mb-3 font-medium flex items-center gap-2"
@@ -191,6 +212,7 @@ onMounted(() => {
           </button>
         </div>
         <button
+          v-if="canCancel"
           @click="handleCancel"
           :disabled="isProcessing"
           :class="CANCEL_BUTTON_CLASS"
@@ -200,7 +222,7 @@ onMounted(() => {
       </div>
 
       <!-- IN PROGRESS: Show Complete -->
-      <div v-else-if="currentStatus === 'In Progress'" class="space-y-3">
+      <div v-else-if="canComplete" class="space-y-3">
         <div class="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-3">
           <p class="text-sm text-purple-800 flex items-center gap-2">
             <i class="mdi mdi-cog animate-spin text-lg"></i>
@@ -227,7 +249,7 @@ onMounted(() => {
       <!-- COMPLETED or CANCELLED: Status Info Only -->
       <div v-else>
         <div
-          v-if="currentStatus === 'Completed'"
+          v-if="isCompleted"
           class="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-3"
         >
           <div
@@ -243,7 +265,7 @@ onMounted(() => {
           </div>
         </div>
         <div
-          v-if="currentStatus === 'Cancelled'"
+          v-if="isCancelled"
           class="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center gap-3"
         >
           <div

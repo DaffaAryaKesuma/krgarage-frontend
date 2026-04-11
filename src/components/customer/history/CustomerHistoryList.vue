@@ -3,37 +3,13 @@ import CustomerHistoryCard from "./CustomerHistoryCard.vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
 import Pagination from "@/components/ui/Pagination.vue";
-
-interface Booking {
-  id: number;
-  kode_pemesanan: string;
-  tanggal_pemesanan: string;
-  jam_pemesanan: string;
-  status: string;
-  total_harga: number | null;
-  vespa: { model: string; plat_nomor: string };
-  layanan: { nama_layanan: string; harga: number }[];
-  item_pemesanan?: Array<{
-    id: number;
-    suku_cadang: { nama_suku_cadang: string; kategori: string };
-    jumlah: number;
-    harga_saat_ini: number;
-  }>;
-}
-
-interface PaginationData {
-  current_page: number;
-  last_page: number;
-  per_page: number;
-  total: number;
-  from: number;
-  to: number;
-}
+import type { CustomerBooking } from "@/types/booking";
+import type { ApiPagination } from "@/types/pagination";
 
 interface Props {
-  bookings: Booking[];
+  bookings: CustomerBooking[];
   isLoading?: boolean;
-  pagination: PaginationData;
+  pagination: ApiPagination;
   cancellingId?: number | null;
 }
 
@@ -70,7 +46,9 @@ const handlePageChange = (page: number) => {
 
   <template v-else>
     <!-- Card Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div
+      class="mb-8 grid grid-cols-1 gap-6 min-[420px]:grid-cols-2 lg:grid-cols-2"
+    >
       <CustomerHistoryCard
         v-for="booking in bookings"
         :key="booking.id"

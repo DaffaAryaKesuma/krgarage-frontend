@@ -2,21 +2,10 @@
 import CustomerVespaCard from "./CustomerVespaCard.vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
-
-interface Vespa {
-  id: number;
-  model: string;
-  tahun_produksi: number;
-  plat_nomor: string;
-  tanggal_servis_terakhir?: string;
-  jeda_hari_servis?: number;
-  tanggal_servis_selanjutnya?: string;
-  perlu_servis?: boolean;
-  hari_hingga_servis?: number;
-}
+import type { VespaDetail } from "@/types/vespa";
 
 interface Props {
-  vespas: Vespa[];
+  vespas: VespaDetail[];
   isLoading?: boolean;
 }
 
@@ -25,8 +14,8 @@ withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-  edit: [vespa: Vespa];
-  delete: [vespa: Vespa];
+  edit: [vespa: VespaDetail];
+  delete: [vespa: VespaDetail];
   addNew: [];
 }>();
 </script>
@@ -53,7 +42,10 @@ const emit = defineEmits<{
       />
 
       <!-- Vespa Cards Grid -->
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div
+        v-else
+        class="grid grid-cols-1 min-[420px]:grid-cols-2 lg:grid-cols-3 gap-6"
+      >
         <CustomerVespaCard
           v-for="vespa in vespas"
           :key="vespa.id"

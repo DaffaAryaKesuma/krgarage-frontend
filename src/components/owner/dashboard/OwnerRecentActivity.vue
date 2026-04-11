@@ -3,19 +3,10 @@ import { toIDR } from "@/utils/money";
 import { formatDateShort } from "@/utils/date";
 import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
 import TableShell from "@/components/ui/TableShell.vue";
-
-interface Booking {
-  id: number;
-  kode_pemesanan: string;
-  tanggal_pemesanan: string;
-  nama_pelanggan: string;
-  nama_layanan: string;
-  total_harga: number;
-  status: string;
-}
+import type { OwnerRecentBookingActivity } from "@/types/booking";
 
 interface Props {
-  bookings: Booking[];
+  bookings: OwnerRecentBookingActivity[];
   loading: boolean;
 }
 
@@ -38,7 +29,7 @@ const TABLE_HEADERS = [
         Aktivitas Terbaru Hari Ini
       </h2>
       <router-link
-        to="/owner/laporan-keuangan"
+        to="/pemilik/laporan-keuangan"
         class="flex items-center gap-2 text-sm font-semibold text-red-600 hover:text-red-700"
       >
         Lihat Semua
@@ -89,7 +80,9 @@ const TABLE_HEADERS = [
             </span>
           </div>
 
-          <div class="mt-3 grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
+          <div
+            class="mt-3 grid grid-cols-1 gap-2 text-sm min-[380px]:grid-cols-2"
+          >
             <div>
               <p
                 class="text-[11px] font-medium uppercase tracking-wide text-gray-500"

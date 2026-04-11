@@ -1,26 +1,15 @@
 <script setup lang="ts">
 import { formatDateShort } from "@/utils/date";
-
-interface Vespa {
-  id: number;
-  model: string;
-  tahun_produksi: number;
-  plat_nomor: string;
-  tanggal_servis_terakhir?: string;
-  jeda_hari_servis?: number;
-  tanggal_servis_selanjutnya?: string;
-  perlu_servis?: boolean;
-  hari_hingga_servis?: number;
-}
+import type { VespaDetail } from "@/types/vespa";
 
 interface Props {
-  vespa: Vespa;
+  vespa: VespaDetail;
 }
 
 defineProps<Props>();
 const emit = defineEmits<{
-  edit: [vespa: Vespa];
-  delete: [vespa: Vespa];
+  edit: [vespa: VespaDetail];
+  delete: [vespa: VespaDetail];
 }>();
 </script>
 

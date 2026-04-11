@@ -1,22 +1,18 @@
 <script setup lang="ts">
+import {
+  MECHANIC_STATUS_FILTER_OPTIONS,
+  type MechanicStatusFilter,
+} from "@/utils/statusBadge";
+
 interface Props {
-  statusFilter: "all" | "pending" | "confirmed" | "in_progress";
+  statusFilter: MechanicStatusFilter;
 }
 
 defineProps<Props>();
 
 const emit = defineEmits<{
-  "update:statusFilter": [
-    value: "all" | "pending" | "confirmed" | "in_progress",
-  ];
+  "update:statusFilter": [value: MechanicStatusFilter];
 }>();
-
-const FILTER_BUTTONS = [
-  { value: "all" as const, label: "Semua" },
-  { value: "pending" as const, label: "Menunggu" },
-  { value: "confirmed" as const, label: "Dikonfirmasi" },
-  { value: "in_progress" as const, label: "Dikerjakan" },
-];
 </script>
 
 <template>
@@ -26,7 +22,7 @@ const FILTER_BUTTONS = [
     </h2>
     <div class="flex flex-wrap gap-2 sm:gap-3">
       <button
-        v-for="filter in FILTER_BUTTONS"
+        v-for="filter in MECHANIC_STATUS_FILTER_OPTIONS"
         :key="filter.value"
         @click="emit('update:statusFilter', filter.value)"
         :class="[

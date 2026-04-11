@@ -1,18 +1,10 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
 import { formatWaktu, getImageUrl } from "@/utils/format";
-
-interface Service {
-  id: number;
-  nama_layanan: string;
-  deskripsi: string;
-  harga: number;
-  durasi_pengerjaan?: number;
-  gambar: string;
-}
+import type { ServiceCatalogItem } from "@/types/service";
 
 interface Props {
-  services: Service[];
+  services: ServiceCatalogItem[];
   modelValue: number[];
   error?: string;
   touched?: boolean;
@@ -57,7 +49,7 @@ const toggleService = (id: number) => {
       </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 min-[420px]:grid-cols-2 lg:grid-cols-3 gap-6">
       <div
         v-for="service in services"
         :key="service.id"

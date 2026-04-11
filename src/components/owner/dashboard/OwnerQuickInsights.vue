@@ -18,7 +18,9 @@ const INSIGHT_CARDS = [
 </script>
 
 <template>
-  <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 sm:mt-8 mb-8">
+  <div
+    class="mb-8 grid grid-cols-1 gap-6 min-[420px]:grid-cols-2 sm:mt-8 lg:grid-cols-2"
+  >
     <div
       v-for="card in INSIGHT_CARDS"
       :key="card.title"

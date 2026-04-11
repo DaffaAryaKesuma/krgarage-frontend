@@ -10,7 +10,7 @@ defineProps<Props>();
 
 <template>
   <section
-    class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3"
+    class="grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 sm:gap-4 xl:grid-cols-3"
   >
     <div
       class="bg-white p-4 sm:p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow border-l-4 border-red-500"
@@ -47,7 +47,7 @@ defineProps<Props>();
       </div>
     </div>
     <div
-      class="bg-white p-4 sm:p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow border-l-4 border-purple-500 sm:col-span-2 xl:col-span-1"
+      class="rounded-xl border-l-4 border-purple-500 bg-white p-4 shadow-md transition-shadow hover:shadow-lg min-[380px]:col-span-2 sm:p-6 xl:col-span-1"
     >
       <div class="flex items-center justify-between">
         <div>

@@ -1,7 +1,7 @@
 export const ROLE_ROUTES = {
   admin: "/admin/dasbor",
-  mekanik: "/mechanic/dasbor",
-  owner: "/owner/dasbor",
+  mekanik: "/mekanik/dasbor",
+  owner: "/pemilik/dasbor",
   customer: "/app/dasbor",
 } as const;
 

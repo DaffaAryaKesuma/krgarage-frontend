@@ -7,36 +7,18 @@ import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
+import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import AdminInventoryStatsCards from "@/components/admin/inventory/AdminInventoryStatsCards.vue";
 import AdminInventoryFilters from "@/components/admin/inventory/AdminInventoryFilters.vue";
 import AdminInventoryTable from "@/components/admin/inventory/AdminInventoryTable.vue";
 import AdminInventoryFormModal from "@/components/admin/inventory/AdminInventoryFormModal.vue";
 import AdminInventoryRestockModal from "@/components/admin/inventory/AdminInventoryRestockModal.vue";
+import type {
+  InventorySparepart,
+  InventorySparepartForm,
+} from "@/types/inventory";
 
 const toast = useToast();
-
-// Interfaces
-interface Sparepart {
-  id: number;
-  nama_suku_cadang: string;
-  kategori: string;
-  jumlah_stok: number;
-  harga_beli: number;
-  harga_jual: number;
-  batas_minimal_stok: number;
-  deskripsi: string;
-  stok_menipis: boolean;
-}
-
-interface FormData {
-  nama_suku_cadang: string;
-  kategori: string;
-  jumlah_stok: number;
-  harga_beli: number;
-  harga_jual: number;
-  batas_minimal_stok: number;
-  deskripsi: string;
-}
 
 // Constants
 const kategoriS = [
@@ -63,7 +45,7 @@ const kategori_OPTIONS = [
 ];
 
 // State
-const spareparts = ref<Sparepart[]>([]);
+const spareparts = ref<InventorySparepart[]>([]);
 const loading = ref(false);
 const searchQuery = ref("");
 const selectedkategori = ref("");
@@ -73,12 +55,12 @@ const showLowStock = ref(false);
 const showModal = ref(false);
 const showRestockModal = ref(false);
 const showDeleteConfirm = ref(false);
-const selectedSparepart = ref<Sparepart | null>(null);
+const selectedSparepart = ref<InventorySparepart | null>(null);
 const itemToDelete = ref<number | null>(null);
 const restockQuantity = ref(0);
 
 // Form State
-const form = ref<FormData>({
+const form = ref<InventorySparepartForm>({
   nama_suku_cadang: "",
   kategori: "",
   jumlah_stok: 0,
@@ -137,7 +119,7 @@ const openCreateModal = () => {
   showModal.value = true;
 };
 
-const openEditModal = (sparepart: Sparepart) => {
+const openEditModal = (sparepart: InventorySparepart) => {
   selectedSparepart.value = sparepart;
   form.value = {
     nama_suku_cadang: sparepart.nama_suku_cadang,
@@ -156,7 +138,7 @@ const closeModal = () => {
   resetForm();
 };
 
-const openRestockModal = (sparepart: Sparepart) => {
+const openRestockModal = (sparepart: InventorySparepart) => {
   selectedSparepart.value = sparepart;
   restockQuantity.value = 0;
   showRestockModal.value = true;
@@ -176,7 +158,7 @@ const showDeleteConfirmModal = (id: number) => {
 const fetchSpareparts = async () => {
   loading.value = true;
   try {
-    const { data } = await axios.get(`${API_URL}/admin/inventory`, {
+    const { data } = await axios.get(`${API_URL}/admin/inventori`, {
       headers: getAuthHeaders(),
     });
     spareparts.value = data.data;
@@ -220,14 +202,14 @@ const saveSparepart = async () => {
     if (selectedSparepart.value) {
       // Update
       await axios.put(
-        `${API_URL}/admin/inventory/${selectedSparepart.value.id}`,
+        `${API_URL}/admin/inventori/${selectedSparepart.value.id}`,
         form.value,
         { headers: getAuthHeaders() },
       );
       toast.success("Suku Cadang berhasil diupdate!");
     } else {
       // Create
-      await axios.post(`${API_URL}/admin/inventory`, form.value, {
+      await axios.post(`${API_URL}/admin/inventori`, form.value, {
         headers: getAuthHeaders(),
       });
       toast.success("Suku Cadang berhasil ditambahkan!");
@@ -251,7 +233,7 @@ const restock = async () => {
   loading.value = true;
   try {
     await axios.post(
-      `${API_URL}/admin/inventory/${selectedSparepart.value?.id}/restock`,
+      `${API_URL}/admin/inventori/${selectedSparepart.value?.id}/tambah-stok`,
       { jumlah: restockQuantity.value },
       { headers: getAuthHeaders() },
     );
@@ -273,7 +255,7 @@ const deleteSparepart = async () => {
   loading.value = true;
 
   try {
-    await axios.delete(`${API_URL}/admin/inventory/${itemToDelete.value}`, {
+    await axios.delete(`${API_URL}/admin/inventori/${itemToDelete.value}`, {
       headers: getAuthHeaders(),
     });
     toast.success("Suku Cadang berhasil dihapus!");
@@ -293,26 +275,12 @@ onMounted(() => fetchSpareparts());
 
 <template>
   <div class="min-h-screen bg-gray-50">
-    <!-- Header -->
-    <div class="bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-        <div class="flex items-center gap-3 sm:gap-4">
-          <div
-            class="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0"
-          >
-            <i class="mdi mdi-package-variant text-2xl sm:text-4xl"></i>
-          </div>
-          <div>
-            <h1 class="text-2xl sm:text-3xl font-bold mb-1">
-              Inventori Suku Cadang
-            </h1>
-            <p class="text-sm sm:text-base text-blue-100">
-              Kelola stok suku cadang bengkel
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <AppPageHeader
+      title="Inventori Suku Cadang"
+      icon="mdi-package-variant"
+      subtitle="Kelola stok suku cadang bengkel"
+      subtitle-class="text-sm sm:text-base text-blue-100"
+    />
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
       <AdminInventoryStatsCards :stats="stats" />

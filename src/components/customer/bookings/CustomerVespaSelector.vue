@@ -1,12 +1,8 @@
 <script setup lang="ts">
-interface Vespa {
-  id: number;
-  model: string;
-  plat_nomor: string;
-}
+import type { VespaBasic } from "@/types/vespa";
 
 interface Props {
-  vespas: Vespa[];
+  vespas: VespaBasic[];
   modelValue: number | null;
   error?: string;
   touched?: boolean;
@@ -52,7 +48,10 @@ const selectVespa = (id: number) => {
       </router-link>
     </div>
 
-    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div
+      v-else
+      class="grid grid-cols-1 min-[420px]:grid-cols-2 lg:grid-cols-3 gap-4"
+    >
       <div
         v-for="vespa in vespas"
         :key="vespa.id"

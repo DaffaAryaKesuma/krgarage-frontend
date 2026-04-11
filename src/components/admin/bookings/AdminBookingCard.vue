@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import { formatDateShort } from "@/utils/date";
 import {
+  canAdminAssignAndStart,
+  canAdminCancelBooking,
+  canAdminCompleteBooking,
+  canAdminConfirmBooking,
   getStatusBadgeClass,
   getStatusIcon,
   getStatusLabel,
+  isCompletedStatus,
 } from "@/utils/statusBadge";
 import CustomSelect from "@/components/ui/CustomSelect.vue";
 import type { Booking, MechanicOption } from "@/types/booking";
@@ -127,7 +132,7 @@ const handleMechanicChange = (value: string | number | null) => {
     <!-- Action Buttons Based on Status -->
     <div class="space-y-2">
       <!-- PENDING: Show Confirm Button -->
-      <div v-if="booking.status === 'Pending'" class="space-y-2">
+      <div v-if="canAdminConfirmBooking(booking.status)" class="space-y-2">
         <button
           @click="emit('confirm', booking)"
           class="w-full py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2"
@@ -141,7 +146,7 @@ const handleMechanicChange = (value: string | number | null) => {
       </div>
 
       <!-- CONFIRMED: Show Assign Mechanic & Start Service -->
-      <div v-else-if="booking.status === 'Confirmed'" class="space-y-2">
+      <div v-else-if="canAdminAssignAndStart(booking.status)" class="space-y-2">
         <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
           <p class="text-xs text-blue-800 mb-2 font-medium">
             <i class="mdi mdi-information"></i>
@@ -169,7 +174,10 @@ const handleMechanicChange = (value: string | number | null) => {
       </div>
 
       <!-- IN PROGRESS: Show Complete Button -->
-      <div v-else-if="booking.status === 'In Progress'" class="space-y-2">
+      <div
+        v-else-if="canAdminCompleteBooking(booking.status)"
+        class="space-y-2"
+      >
         <div class="bg-purple-50 border border-purple-200 rounded-lg p-2 mb-2">
           <p class="text-xs text-purple-800">
             <i class="mdi mdi-cog animate-spin"></i>
@@ -189,7 +197,7 @@ const handleMechanicChange = (value: string | number | null) => {
       <!-- COMPLETED or CANCELLED: Show View Details Only -->
       <div v-else>
         <div
-          v-if="booking.status === 'Completed'"
+          v-if="isCompletedStatus(booking.status)"
           class="bg-green-50 border border-green-200 rounded-lg p-2 mb-2"
         >
           <p class="text-xs text-green-800">

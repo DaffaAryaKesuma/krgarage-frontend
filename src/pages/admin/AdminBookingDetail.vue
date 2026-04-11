@@ -5,6 +5,7 @@ import axios from "axios";
 import { useToast } from "@/utils/useToast";
 import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
+import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import AdminBookingInfoCards from "@/components/admin/booking-detail/AdminBookingInfoCards.vue";
 import AdminBookingNotes from "@/components/admin/booking-detail/AdminBookingNotes.vue";
 import AdminBookingControlPanel from "@/components/admin/booking-detail/AdminBookingControlPanel.vue";
@@ -58,7 +59,7 @@ const grandTotal = computed(() => totalHarga.value + totalSpareparts.value);
 async function fetchBookingData() {
   try {
     const { data } = await axios.get(
-      `${API_URL}/admin/bookings/${route.params.id}`,
+      `${API_URL}/admin/pemesanan/${route.params.id}`,
       { headers: getAuthHeaders() },
     );
     booking.value = data;
@@ -70,7 +71,7 @@ async function fetchBookingData() {
 
 async function fetchAvailableSpareparts() {
   try {
-    const { data } = await axios.get(`${API_URL}/admin/inventory`, {
+    const { data } = await axios.get(`${API_URL}/admin/inventori`, {
       headers: getAuthHeaders(),
     });
     availableSpareparts.value = data.data;
@@ -97,7 +98,7 @@ async function addSparepartToBooking(data: {
   isAddingSparepart.value = true;
   try {
     await axios.post(
-      `${API_URL}/admin/bookings/${booking.value?.id}/add-sparepart`,
+      `${API_URL}/admin/pemesanan/${booking.value?.id}/tambah-suku-cadang`,
       {
         id_suku_cadang: data.sparepartId,
         jumlah: data.quantity,
@@ -121,7 +122,7 @@ async function removeSparepartFromBooking() {
 
   try {
     await axios.delete(
-      `${API_URL}/admin/bookings/${booking.value?.id}/items/${itemToDelete.value}`,
+      `${API_URL}/admin/pemesanan/${booking.value?.id}/item/${itemToDelete.value}`,
       { headers: getAuthHeaders() },
     );
 
@@ -144,26 +145,27 @@ onMounted(async () => {
 
 <template>
   <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-    <!-- Red Header Bar -->
-    <div class="bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div class="flex items-center justify-between">
-          <div>
-            <h1 class="text-2xl font-bold text-white mb-1">Detail Pemesanan</h1>
-            <h2 class="text-xl font-semibold text-white">
-              {{ booking?.kode_pemesanan || "Loading..." }}
-            </h2>
-          </div>
-          <router-link
-            to="/admin/pemesanan"
-            class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition no-underline backdrop-blur-sm self-center"
-          >
-            <i class="mdi mdi-arrow-left"></i>
-            <span class="font-medium">Kembali</span>
-          </router-link>
-        </div>
-      </div>
-    </div>
+    <AppPageHeader
+      title="Detail Pemesanan"
+      icon="mdi-clipboard-text"
+      container-class="py-6"
+    >
+      <template #subtitle>
+        <h2 class="text-lg font-semibold text-white sm:text-xl">
+          {{ booking?.kode_pemesanan || "Loading..." }}
+        </h2>
+      </template>
+
+      <template #actions>
+        <router-link
+          to="/admin/pemesanan"
+          class="inline-flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2 text-white no-underline backdrop-blur-sm transition hover:bg-white/20"
+        >
+          <i class="mdi mdi-arrow-left"></i>
+          <span class="font-medium">Kembali</span>
+        </router-link>
+      </template>
+    </AppPageHeader>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Loading State -->

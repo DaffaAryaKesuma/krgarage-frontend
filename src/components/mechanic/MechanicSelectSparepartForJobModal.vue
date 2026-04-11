@@ -7,16 +7,9 @@ import { getAuthHeaders } from "@/utils/auth";
 import { toIDR } from "@/utils/money";
 import CustomSelect from "@/components/ui/CustomSelect.vue";
 import { API_URL } from "@/utils/api";
+import type { SparepartSummary } from "@/types/inventory";
 
 const toast = useToast();
-
-interface Sparepart {
-  id: number;
-  nama_suku_cadang: string;
-  kategori: string;
-  jumlah_stok: number;
-  harga_jual: number;
-}
 
 const props = defineProps<{
   bookingId: number;
@@ -28,7 +21,7 @@ const emit = defineEmits<{
   (e: "success"): void;
 }>();
 
-const spareparts = ref<Sparepart[]>([]);
+const spareparts = ref<SparepartSummary[]>([]);
 const selectedSparepartId = ref<number | null>(null);
 const sparepartQuantity = ref(1);
 const isAddingSparepart = ref(false);
@@ -56,7 +49,7 @@ const estimatedTotal = computed(() => {
 
 const fetchSpareparts = async () => {
   try {
-    const response = await axios.get(`${API_URL}/mechanic/spareparts`, {
+    const response = await axios.get(`${API_URL}/mekanik/suku-cadang`, {
       headers: getAuthHeaders(),
     });
 
@@ -93,7 +86,7 @@ const addSparepart = async () => {
   isAddingSparepart.value = true;
   try {
     await axios.post(
-      `${API_URL}/mechanic/bookings/${props.bookingId}/add-sparepart`,
+      `${API_URL}/mekanik/pemesanan/${props.bookingId}/tambah-suku-cadang`,
       {
         id_suku_cadang: selectedSparepartId.value,
         jumlah: sparepartQuantity.value,

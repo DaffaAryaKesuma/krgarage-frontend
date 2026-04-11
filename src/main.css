@@ -3,6 +3,35 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Prevent long strings from overflowing page content cards on small screens */
+.content-safe,
+.content-safe * {
+  min-width: 0;
+}
+
+.content-safe
+  :is(
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    span,
+    a,
+    li,
+    td,
+    th,
+    label,
+    small,
+    strong,
+    em
+  ) {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 /* Ensure Material Design Icons font is applied and not overridden */
 .mdi,
 i.mdi,

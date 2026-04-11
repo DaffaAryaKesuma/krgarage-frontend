@@ -7,23 +7,16 @@ import { handleApiError, logError } from "@/utils/errorHandler";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
+import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import AdminServiceCard from "@/components/admin/services/AdminServiceCard.vue";
 import AdminServiceFormModal from "@/components/admin/services/AdminServiceFormModal.vue";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
+import type { ServiceCatalogItem } from "@/types/service";
 
 const toast = useToast();
 
 // Interfaces
-interface Service {
-  id: number;
-  nama_layanan: string;
-  deskripsi: string;
-  harga: number;
-  durasi_pengerjaan?: number | null;
-  gambar: string | null;
-}
-
 interface FormData {
   id: number | null;
   nama_layanan: string;
@@ -34,13 +27,13 @@ interface FormData {
 }
 
 // State
-const services = ref<Service[]>([]);
+const services = ref<ServiceCatalogItem[]>([]);
 const isLoading = ref(true);
 const showForm = ref(false);
 const formMode = ref<"add" | "edit">("add");
 const previewgambar = ref<string | null>(null);
 const showDeleteConfirm = ref(false);
-const serviceToDelete = ref<Service | null>(null);
+const serviceToDelete = ref<ServiceCatalogItem | null>(null);
 
 const form = reactive<FormData>({
   id: null,
@@ -74,7 +67,7 @@ const openAddForm = () => {
   showForm.value = true;
 };
 
-const openEditForm = (service: Service) => {
+const openEditForm = (service: ServiceCatalogItem) => {
   formMode.value = "edit";
   form.id = service.id;
   form.nama_layanan = service.nama_layanan;
@@ -104,7 +97,7 @@ const handleFileSelected = (file: File) => {
 const fetchServices = async () => {
   isLoading.value = true;
   try {
-    const { data } = await axios.get(`${API_URL}/services`);
+    const { data } = await axios.get(`${API_URL}/layanan`);
     services.value = data;
   } catch (error: any) {
     logError(error, "fetchServices");
@@ -130,8 +123,8 @@ const handleFormSubmit = async () => {
 
   const url =
     formMode.value === "add"
-      ? `${API_URL}/admin/services`
-      : `${API_URL}/admin/services/${form.id}`;
+      ? `${API_URL}/admin/layanan`
+      : `${API_URL}/admin/layanan/${form.id}`;
 
   if (formMode.value === "edit") {
     formData.append("_method", "PUT");
@@ -158,7 +151,7 @@ const handleFormSubmit = async () => {
   }
 };
 
-const handleDelete = (service: Service) => {
+const handleDelete = (service: ServiceCatalogItem) => {
   serviceToDelete.value = service;
   showDeleteConfirm.value = true;
 };
@@ -167,10 +160,9 @@ const confirmDelete = async () => {
   if (!serviceToDelete.value) return;
 
   try {
-    await axios.delete(
-      `${API_URL}/admin/services/${serviceToDelete.value.id}`,
-      { headers: getAuthHeaders() },
-    );
+    await axios.delete(`${API_URL}/admin/layanan/${serviceToDelete.value.id}`, {
+      headers: getAuthHeaders(),
+    });
     toast.success("Layanan berhasil dihapus!");
     await fetchServices();
   } catch (error: any) {
@@ -188,24 +180,12 @@ onMounted(fetchServices);
 
 <template>
   <div class="min-h-screen bg-gray-50">
-    <!-- Header -->
-    <div class="bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-        <div class="flex items-center gap-3 sm:gap-4">
-          <div
-            class="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0"
-          >
-            <i class="mdi mdi-wrench text-2xl sm:text-4xl"></i>
-          </div>
-          <div>
-            <h1 class="text-2xl sm:text-3xl font-bold mb-1">Kelola Layanan</h1>
-            <p class="text-sm sm:text-base text-blue-100">
-              Atur semua layanan yang tersedia
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <AppPageHeader
+      title="Kelola Layanan"
+      icon="mdi-wrench"
+      subtitle="Atur semua layanan yang tersedia"
+      subtitle-class="text-sm sm:text-base text-blue-100"
+    />
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
       <!-- Loading State -->
@@ -239,7 +219,9 @@ onMounted(fetchServices);
         </button>
 
         <!-- Service Cards Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div
+          class="grid grid-cols-1 min-[420px]:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
           <AdminServiceCard
             v-for="service in services"
             :key="service.id"

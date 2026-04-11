@@ -17,8 +17,18 @@ export function setupAxiosInterceptors401(router: Router) {
   axios.interceptors.response.use(
     (response) => response,
     (error) => {
+      const requestUrl = String(error.config?.url || "");
+      const isAuthRequest =
+        requestUrl.includes("/masuk") || requestUrl.includes("/daftar");
+      const hasToken = !!localStorage.getItem("token");
+
       // Handle 401 - session expired
-      if (error.response?.status === 401 && !hasShownError401) {
+      if (
+        error.response?.status === 401 &&
+        !hasShownError401 &&
+        hasToken &&
+        !isAuthRequest
+      ) {
         hasShownError401 = true;
 
         // Clear auth data
@@ -30,7 +40,7 @@ export function setupAxiosInterceptors401(router: Router) {
           try {
             if ((window as any).__krg_showToast) {
               (window as any).__krg_showToast(
-                "Sesi Anda telah berakhir. Silakan login kembali."
+                "Sesi Anda telah berakhir. Silakan login kembali.",
               );
             }
           } catch (e) {
@@ -54,6 +64,6 @@ export function setupAxiosInterceptors401(router: Router) {
       }
 
       return Promise.reject(error);
-    }
+    },
   );
 }

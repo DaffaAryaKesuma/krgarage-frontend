@@ -5,19 +5,13 @@ import { formatDateShort } from "@/utils/date";
 import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
 import Pagination from "@/components/ui/Pagination.vue";
 import TableShell from "@/components/ui/TableShell.vue";
-
-interface Booking {
-  id: number;
-  kode_pemesanan: string;
-  tanggal_pemesanan: string;
-  pengguna?: { nama: string };
-  vespa?: { plat_nomor: string };
-  total_harga: number;
-  status: string;
-}
+import type {
+  FinancialBooking,
+  FinancialBookingService,
+} from "@/types/booking";
 
 interface Props {
-  bookings: Booking[];
+  bookings: FinancialBooking[];
   loading: boolean;
   startDate: string;
   endDate: string;
@@ -58,6 +52,21 @@ const paginatedBookings = computed(() => {
 const handlePageChange = (page: number) => {
   emit("update:currentPage", page);
 };
+
+const getBookingDate = (booking: FinancialBooking) =>
+  booking.updated_at || booking.tanggal_pemesanan;
+
+const getBookingPlateNumber = (booking: FinancialBooking) =>
+  booking.vespa?.plat_nomor || "-";
+
+const getBookingStatus = (booking: FinancialBooking) =>
+  booking.status || "Completed";
+
+const calculateServiceTotal = (layanan: FinancialBookingService[]) =>
+  layanan.reduce((sum, s) => sum + (s.pivot.harga_saat_pesan || 0), 0);
+
+const getBookingTotal = (booking: FinancialBooking) =>
+  booking.total_harga || calculateServiceTotal(booking.layanan);
 
 const TABLE_HEADERS = [
   "Kode Pemesanan",
@@ -130,12 +139,14 @@ const TABLE_HEADERS = [
                 {{ booking.kode_pemesanan }}
               </p>
             </div>
-            <span :class="getStatusBadgeClass(booking.status)">
-              {{ getStatusLabel(booking.status) }}
+            <span :class="getStatusBadgeClass(getBookingStatus(booking))">
+              {{ getStatusLabel(getBookingStatus(booking)) }}
             </span>
           </div>
 
-          <div class="mt-3 grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
+          <div
+            class="mt-3 grid grid-cols-1 gap-2 text-sm min-[380px]:grid-cols-2"
+          >
             <div>
               <p
                 class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
@@ -143,7 +154,7 @@ const TABLE_HEADERS = [
                 Tanggal
               </p>
               <p class="font-medium text-gray-900">
-                {{ formatDateShort(booking.tanggal_pemesanan) }}
+                {{ formatDateShort(getBookingDate(booking)) }}
               </p>
             </div>
             <div>
@@ -163,7 +174,7 @@ const TABLE_HEADERS = [
                 Plat Nomor
               </p>
               <p class="font-medium text-gray-900">
-                {{ booking.vespa?.plat_nomor || "-" }}
+                {{ getBookingPlateNumber(booking) }}
               </p>
             </div>
             <div>
@@ -173,7 +184,7 @@ const TABLE_HEADERS = [
                 Total Biaya
               </p>
               <p class="font-semibold text-gray-900">
-                {{ toIDR(booking.total_harga) }}
+                {{ toIDR(getBookingTotal(booking)) }}
               </p>
             </div>
           </div>
@@ -189,20 +200,20 @@ const TABLE_HEADERS = [
           {{ booking.kode_pemesanan }}
         </td>
         <td class="px-6 py-4 text-sm text-gray-900">
-          {{ formatDateShort(booking.tanggal_pemesanan) }}
+          {{ formatDateShort(getBookingDate(booking)) }}
         </td>
         <td class="px-6 py-4 text-sm text-gray-900">
           {{ booking.pengguna?.nama }}
         </td>
         <td class="px-6 py-4 text-sm text-gray-900">
-          {{ booking.vespa?.plat_nomor }}
+          {{ getBookingPlateNumber(booking) }}
         </td>
         <td class="px-6 py-4 text-sm text-gray-900">
-          {{ toIDR(booking.total_harga) }}
+          {{ toIDR(getBookingTotal(booking)) }}
         </td>
         <td class="px-6 py-4">
-          <span :class="getStatusBadgeClass(booking.status)">
-            {{ getStatusLabel(booking.status) }}
+          <span :class="getStatusBadgeClass(getBookingStatus(booking))">
+            {{ getStatusLabel(getBookingStatus(booking)) }}
           </span>
         </td>
       </tr>

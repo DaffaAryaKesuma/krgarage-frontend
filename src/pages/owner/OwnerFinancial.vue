@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import axios from "axios";
-import OwnerFinancialHeader from "@/components/owner/financial/OwnerFinancialHeader.vue";
+import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import OwnerFinancialFilters from "@/components/owner/financial/OwnerFinancialFilters.vue";
 import OwnerFinancialSummaryCards from "@/components/owner/financial/OwnerFinancialSummaryCards.vue";
 import OwnerFinancialChart from "@/components/owner/financial/OwnerFinancialChart.vue";
@@ -21,6 +21,7 @@ import {
 } from "chart.js";
 import { getAuthHeaders } from "@/utils/auth";
 import { API_URL } from "@/utils/api";
+import type { FinancialBooking } from "@/types/booking";
 
 ChartJS.register(
   CategoryScale,
@@ -44,7 +45,7 @@ const startDate = ref(firstDay.toISOString().split("T")[0]);
 const endDate = ref(today.toISOString().split("T")[0]);
 
 const revenueData = ref<any>({ labels: [], datasets: [] });
-const bookings = ref<any[]>([]);
+const bookings = ref<FinancialBooking[]>([]);
 const loading = ref(true);
 const summary = ref({
   totalRevenue: 0,
@@ -69,8 +70,8 @@ const fetchFinancialData = async () => {
     };
 
     const [trendRes, bookingsRes] = await Promise.all([
-      axios.get(`${API_URL}/owner/revenue-trend`, { headers, params }),
-      axios.get(`${API_URL}/owner/transactions`, { headers, params }),
+      axios.get(`${API_URL}/pemilik/tren-pendapatan`, { headers, params }),
+      axios.get(`${API_URL}/pemilik/transaksi`, { headers, params }),
     ]);
 
     // Update Chart
@@ -97,7 +98,7 @@ const fetchFinancialData = async () => {
     bookings.value = Array.isArray(bookingsData) ? bookingsData : [];
 
     const total = bookings.value.reduce(
-      (sum, b) => sum + (parseFloat(b.total_harga) || 0),
+      (sum, b) => sum + Number(b.total_harga || 0),
       0,
     );
 
@@ -123,46 +124,48 @@ onMounted(() => {
 
 <template>
   <div class="min-h-screen bg-gray-50">
-    <div class="space-y-6">
-      <!-- Header -->
-      <OwnerFinancialHeader />
+    <AppPageHeader
+      title="Laporan Keuangan"
+      icon="mdi-chart-line"
+      subtitle="Ini adalah ringkasan performa keuangan bengkel"
+      subtitle-class="text-sm sm:text-base text-red-100"
+    />
 
-      <!-- Filter Section -->
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <OwnerFinancialFilters
-          v-model:startDate="startDate"
-          v-model:endDate="endDate"
-          :loading="loading"
-          @apply="fetchFinancialData"
-        />
-      </div>
+    <!-- Filter Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+      <OwnerFinancialFilters
+        v-model:startDate="startDate"
+        v-model:endDate="endDate"
+        :loading="loading"
+        @apply="fetchFinancialData"
+      />
+    </div>
 
-      <!-- Summary Cards -->
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <OwnerFinancialSummaryCards :summary="summary" />
-      </div>
+    <!-- Summary Cards -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <OwnerFinancialSummaryCards :summary="summary" />
+    </div>
 
-      <!-- Chart Section -->
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <OwnerFinancialChart
-          :revenue-data="revenueData"
-          :loading="loading"
-          :start-date="startDate"
-          :end-date="endDate"
-        />
-      </div>
+    <!-- Chart Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <OwnerFinancialChart
+        :revenue-data="revenueData"
+        :loading="loading"
+        :start-date="startDate"
+        :end-date="endDate"
+      />
+    </div>
 
-      <!-- Table Section -->
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-        <OwnerFinancialTable
-          :bookings="bookings"
-          :loading="loading"
-          :start-date="startDate"
-          :end-date="endDate"
-          v-model:currentPage="currentPage"
-          :items-per-page="itemsPerPage"
-        />
-      </div>
+    <!-- Table Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+      <OwnerFinancialTable
+        :bookings="bookings"
+        :loading="loading"
+        :start-date="startDate"
+        :end-date="endDate"
+        v-model:currentPage="currentPage"
+        :items-per-page="itemsPerPage"
+      />
     </div>
   </div>
 </template>

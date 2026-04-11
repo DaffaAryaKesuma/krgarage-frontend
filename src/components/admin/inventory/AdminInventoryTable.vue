@@ -1,28 +1,17 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
 import TableShell from "@/components/ui/TableShell.vue";
-
-interface Sparepart {
-  id: number;
-  nama_suku_cadang: string;
-  kategori: string;
-  jumlah_stok: number;
-  harga_beli: number;
-  harga_jual: number;
-  batas_minimal_stok: number;
-  deskripsi: string;
-  stok_menipis: boolean;
-}
+import type { InventorySparepart } from "@/types/inventory";
 
 interface Props {
-  spareparts: Sparepart[];
+  spareparts: InventorySparepart[];
 }
 
 defineProps<Props>();
 
 const emit = defineEmits<{
-  restock: [sparepart: Sparepart];
-  edit: [sparepart: Sparepart];
+  restock: [sparepart: InventorySparepart];
+  edit: [sparepart: InventorySparepart];
   delete: [id: number];
 }>();
 
@@ -42,7 +31,7 @@ const TABLE_HEADERS = [
       v-if="spareparts.length > 0"
       :headers="TABLE_HEADERS"
       :responsive-cards="true"
-      desktop-breakpoint="lg"
+      desktop-breakpoint="xl"
       mobile-cards-class="space-y-4 p-4"
       table-class="min-w-full divide-y divide-gray-200"
       head-class="bg-gray-50"

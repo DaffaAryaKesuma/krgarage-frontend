@@ -4,19 +4,10 @@ import { formatDateShort } from "@/utils/date";
 import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
-
-interface Booking {
-  id: number;
-  kode_pemesanan: string;
-  tanggal_pemesanan: string;
-  status: string;
-  total_harga?: number;
-  vespa: { model: string; plat_nomor: string };
-  layanan: { nama_layanan: string; harga: number }[];
-}
+import type { CustomerBooking } from "@/types/booking";
 
 interface Props {
-  bookings: Booking[];
+  bookings: CustomerBooking[];
   isLoading?: boolean;
 }
 

@@ -1,27 +1,15 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
 import { formatDateShort } from "@/utils/date";
-import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
-
-interface Booking {
-  id: number;
-  kode_pemesanan: string;
-  tanggal_pemesanan: string;
-  jam_pemesanan: string;
-  status: string;
-  total_harga: number | null;
-  vespa: { model: string; plat_nomor: string };
-  layanan: { nama_layanan: string; harga: number }[];
-  item_pemesanan?: Array<{
-    id: number;
-    suku_cadang: { nama_suku_cadang: string; kategori: string };
-    jumlah: number;
-    harga_saat_ini: number;
-  }>;
-}
+import {
+  canCustomerCancelBooking,
+  getStatusBadgeClass,
+  getStatusLabel,
+} from "@/utils/statusBadge";
+import type { CustomerBooking } from "@/types/booking";
 
 interface Props {
-  booking: Booking;
+  booking: CustomerBooking;
   isCancelling?: boolean;
 }
 
@@ -34,14 +22,8 @@ const emit = defineEmits<{
 }>();
 
 // Hitung total harga
-const getTotalharga = (booking: Booking) =>
+const getTotalharga = (booking: CustomerBooking) =>
   booking.total_harga || booking.layanan.reduce((sum, s) => sum + s.harga, 0);
-
-// Check if booking can be cancelled
-const canCancelBooking = (booking: Booking) => {
-  const status = booking.status?.toLowerCase();
-  return status === "pending" || status === "confirmed";
-};
 
 const handleCancel = () => {
   emit("cancel", props.booking.id);
@@ -147,7 +129,10 @@ const handleCancel = () => {
     </div>
 
     <!-- Cancel Button (only if can cancel) -->
-    <div v-if="canCancelBooking(booking)" class="pt-4 border-t border-gray-200">
+    <div
+      v-if="canCustomerCancelBooking(booking.status)"
+      class="pt-4 border-t border-gray-200"
+    >
       <button
         @click="handleCancel"
         :disabled="isCancelling"

@@ -53,7 +53,7 @@ const STAT_CARDS = [
 </script>
 
 <template>
-  <div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+  <div class="grid grid-cols-1 gap-6 min-[420px]:grid-cols-2 xl:grid-cols-4">
     <OwnerStatCard
       v-for="card in STAT_CARDS"
       :key="card.key"

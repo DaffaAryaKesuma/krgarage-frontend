@@ -4,11 +4,18 @@ import axios from "axios";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
 import Pagination from "@/components/ui/Pagination.vue";
+import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import AdminBookingsFilters from "@/components/admin/bookings/AdminBookingsFilters.vue";
 import AdminBookingCard from "@/components/admin/bookings/AdminBookingCard.vue";
 import { useToast } from "@/utils/useToast";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
+import {
+  BOOKING_STATUS,
+  matchesBookingStatusFilter,
+  type BookingStatusFilter,
+} from "@/utils/statusBadge";
+import { useApiPagination } from "@/composables/useApiPagination";
 import type { Booking } from "@/types/booking";
 import type { MechanicProfile } from "@/types/user";
 
@@ -18,21 +25,14 @@ const toast = useToast();
 const bookings = ref<Booking[]>([]);
 const mechanics = ref<MechanicProfile[]>([]);
 const showTodayOnly = ref(false);
-const pagination = ref({
-  current_page: 1,
-  last_page: 1,
-  per_page: 10,
-  total: 0,
-  from: 0,
-  to: 0,
-});
+const { pagination, updateFromApi } = useApiPagination(10);
 
 const isLoading = ref(true);
 const error = ref("");
 const searchQuery = ref("");
 const monthFilter = ref("");
 const yearFilter = ref(new Date().getFullYear().toString());
-const statusFilter = ref("all");
+const statusFilter = ref<BookingStatusFilter>("all");
 
 // Computed
 const filteredBookings = computed(() => {
@@ -40,7 +40,7 @@ const filteredBookings = computed(() => {
   const today = new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD
 
   return bookings.value.filter((booking) => {
-    if (statusFilter.value !== "all" && booking.status !== statusFilter.value) {
+    if (!matchesBookingStatusFilter(booking.status, statusFilter.value)) {
       return false;
     }
 
@@ -84,19 +84,12 @@ async function fetchAllBookings(page = 1) {
 
   try {
     const { data } = await axios.get(
-      `${API_URL}/admin/bookings?page=${page}&per_page=${pagination.value.per_page}`,
+      `${API_URL}/admin/pemesanan?page=${page}&per_page=${pagination.value.per_page}`,
       { headers: getAuthHeaders() },
     );
 
     bookings.value = data.data || [];
-    Object.assign(pagination.value, {
-      current_page: data.current_page,
-      last_page: data.last_page,
-      per_page: data.per_page,
-      total: data.total,
-      from: data.from || 0,
-      to: data.to || 0,
-    });
+    updateFromApi(data);
   } catch (err: any) {
     console.error("Gagal mengambil data pemesanan:", err);
     error.value =
@@ -111,7 +104,7 @@ async function fetchAllBookings(page = 1) {
 async function changeStatus(booking: Booking, newStatus: string) {
   try {
     const { data } = await axios.patch(
-      `${API_URL}/admin/bookings/${booking.id}/status`,
+      `${API_URL}/admin/pemesanan/${booking.id}/status`,
       { status: newStatus },
       { headers: getAuthHeaders() },
     );
@@ -129,7 +122,7 @@ async function changeStatus(booking: Booking, newStatus: string) {
 
 async function fetchMechanics() {
   try {
-    const { data } = await axios.get(`${API_URL}/admin/mechanics`, {
+    const { data } = await axios.get(`${API_URL}/admin/mekanik`, {
       headers: getAuthHeaders(),
     });
     mechanics.value = data.data || [];
@@ -140,15 +133,15 @@ async function fetchMechanics() {
 
 // Quick action functions
 async function confirmBooking(booking: Booking) {
-  await changeStatus(booking, "Confirmed");
+  await changeStatus(booking, BOOKING_STATUS.CONFIRMED);
 }
 
 async function cancelBooking(booking: Booking) {
-  await changeStatus(booking, "Cancelled");
+  await changeStatus(booking, BOOKING_STATUS.CANCELLED);
 }
 
 async function completeBooking(booking: Booking) {
-  await changeStatus(booking, "Completed");
+  await changeStatus(booking, BOOKING_STATUS.COMPLETED);
 }
 
 const selectedMechanicForBooking = ref<{ [bookingId: number]: number }>({});
@@ -164,15 +157,15 @@ async function assignMechanicAndStart(booking: Booking) {
   try {
     // Assign mekanik
     await axios.patch(
-      `${API_URL}/admin/bookings/${booking.id}/assign-mechanic`,
+      `${API_URL}/admin/pemesanan/${booking.id}/tugaskan-mekanik`,
       { id_mekanik: mechanicId },
       { headers: getAuthHeaders() },
     );
 
     // Update status ke In Progress
     await axios.patch(
-      `${API_URL}/admin/bookings/${booking.id}/status`,
-      { status: "In Progress" },
+      `${API_URL}/admin/pemesanan/${booking.id}/status`,
+      { status: BOOKING_STATUS.IN_PROGRESS },
       { headers: getAuthHeaders() },
     );
 
@@ -197,28 +190,12 @@ onMounted(() => {
 
 <template>
   <div class="min-h-screen bg-gray-50">
-    <!-- Header -->
-    <div class="bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-        <div class="flex items-center justify-between gap-4">
-          <div class="flex items-center gap-3 sm:gap-4">
-            <div
-              class="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0"
-            >
-              <i class="mdi mdi-clipboard-list text-2xl sm:text-4xl"></i>
-            </div>
-            <div>
-              <h1 class="text-2xl sm:text-3xl font-bold mb-1">
-                Kelola Pemesanan
-              </h1>
-              <p class="text-sm sm:text-base text-red-100">
-                Pantau dan kelola semua pemesanan servis pelanggan anda di sini
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <AppPageHeader
+      title="Kelola Pemesanan"
+      icon="mdi-clipboard-list"
+      subtitle="Pantau dan kelola semua pemesanan servis pelanggan anda di sini"
+      subtitle-class="text-sm sm:text-base text-red-100"
+    />
 
     <!-- Content Area -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
@@ -261,7 +238,10 @@ onMounted(() => {
           />
 
           <!-- Booking Cards Grid -->
-          <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div
+            v-else
+            class="grid grid-cols-1 min-[420px]:grid-cols-2 lg:grid-cols-2 gap-6"
+          >
             <AdminBookingCard
               v-for="booking in filteredBookings"
               :key="booking.id"

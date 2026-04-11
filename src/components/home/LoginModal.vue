@@ -109,7 +109,7 @@ const handleLogin = async () => {
   isLoading.value = true;
 
   try {
-    const response = await axios.post(`${API_URL}/login`, form);
+    const response = await axios.post(`${API_URL}/masuk`, form);
 
     localStorage.setItem("token", response.data.access_token);
     localStorage.setItem("user", JSON.stringify(response.data.user));

@@ -111,10 +111,10 @@ const router = createRouter({
 
     // Rute Mechanic
     {
-      path: "/mechanic",
+      path: "/mekanik",
       component: MechanicLayout,
       meta: { requiresAuth: true, requiresMechanic: true },
-      redirect: "/mechanic/dasbor",
+      redirect: "/mekanik/dasbor",
       children: [
         {
           path: "dasbor",
@@ -126,10 +126,10 @@ const router = createRouter({
 
     // Rute Owner
     {
-      path: "/owner",
+      path: "/pemilik",
       component: OwnerLayout,
       meta: { requiresAuth: true, requiresOwner: true },
-      redirect: "/owner/dasbor",
+      redirect: "/pemilik/dasbor",
       children: [
         {
           path: "dasbor",

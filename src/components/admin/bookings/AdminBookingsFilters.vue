@@ -5,12 +5,16 @@ import {
   getMonthOptionsStringWithAll,
   getYearOptionsString,
 } from "@/utils/dateFilters";
+import {
+  BOOKING_STATUS_FILTER_OPTIONS,
+  type BookingStatusFilter,
+} from "@/utils/statusBadge";
 
 interface Props {
   searchQuery: string;
   monthFilter: string;
   yearFilter: string;
-  statusFilter: string;
+  statusFilter: BookingStatusFilter;
   showTodayOnly: boolean;
   totalBookings: number;
   filteredCount: number;
@@ -22,21 +26,12 @@ const emit = defineEmits<{
   "update:searchQuery": [value: string];
   "update:monthFilter": [value: string];
   "update:yearFilter": [value: string];
-  "update:statusFilter": [value: string];
+  "update:statusFilter": [value: BookingStatusFilter];
   "update:showTodayOnly": [value: boolean];
 }>();
 
 const MONTH_OPTIONS = getMonthOptionsStringWithAll();
 const YEAR_OPTIONS = computed(() => getYearOptionsString(6));
-
-const STATUS_OPTIONS = [
-  { value: "all", label: "Semua Status" },
-  { value: "Pending", label: "Menunggu" },
-  { value: "Confirmed", label: "Dikonfirmasi" },
-  { value: "In Progress", label: "Dikerjakan" },
-  { value: "Completed", label: "Selesai" },
-  { value: "Cancelled", label: "Batal" },
-];
 
 const handleMonthChange = (value: string | number | null) => {
   emit("update:monthFilter", String(value || ""));
@@ -47,7 +42,7 @@ const handleYearChange = (value: string | number | null) => {
 };
 
 const handleStatusChange = (value: string | number | null) => {
-  emit("update:statusFilter", String(value || "all"));
+  emit("update:statusFilter", (value || "all") as BookingStatusFilter);
 };
 </script>
 
@@ -101,7 +96,7 @@ const handleStatusChange = (value: string | number | null) => {
         <CustomSelect
           :model-value="statusFilter"
           @update:model-value="handleStatusChange"
-          :options="STATUS_OPTIONS"
+          :options="BOOKING_STATUS_FILTER_OPTIONS"
           placeholder="Semua Status"
         />
       </div>

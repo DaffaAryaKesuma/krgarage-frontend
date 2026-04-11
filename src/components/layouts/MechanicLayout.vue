@@ -4,7 +4,7 @@ import BaseAuthenticatedLayout from "@/components/layouts/BaseAuthenticatedLayou
 
 <template>
   <BaseAuthenticatedLayout
-    home-path="/mechanic/dasbor"
+    home-path="/mekanik/dasbor"
     role-label="Mekanik"
     app-subtitle="Panel Mekanik"
     :nav-items="[]"

@@ -2,7 +2,16 @@
 import { computed } from "vue";
 import { formatDateShort } from "@/utils/date";
 import CustomSelect from "@/components/ui/CustomSelect.vue";
-import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
+import {
+  BOOKING_STATUS,
+  canAdminAssignAndStart,
+  canAdminCancelBooking,
+  canAdminCompleteBooking,
+  canAdminConfirmBooking,
+  getStatusBadgeClass,
+  getStatusLabel,
+  isCompletedStatus,
+} from "@/utils/statusBadge";
 import type { Booking, MechanicOption } from "@/types/booking";
 import TableShell from "@/components/ui/TableShell.vue";
 
@@ -44,21 +53,21 @@ const handleConfirm = (booking: Booking) => {
   const result = window.confirm(
     "Apakah Anda yakin ingin mengonfirmasi pemesanan ini?",
   );
-  if (result) emit("statusChange", booking, "Confirmed");
+  if (result) emit("statusChange", booking, BOOKING_STATUS.CONFIRMED);
 };
 
 const handleComplete = (booking: Booking) => {
   const result = window.confirm(
     "Apakah Anda yakin ingin menandai servis ini telah selesai?",
   );
-  if (result) emit("statusChange", booking, "Completed");
+  if (result) emit("statusChange", booking, BOOKING_STATUS.COMPLETED);
 };
 
 const handleCancel = (booking: Booking) => {
   const result = window.confirm(
     "Apakah Anda yakin ingin membatalkan pemesanan ini?",
   );
-  if (result) emit("statusChange", booking, "Cancelled");
+  if (result) emit("statusChange", booking, BOOKING_STATUS.CANCELLED);
 };
 
 const handleMechanicChange = (
@@ -128,7 +137,9 @@ const handleMechanicChange = (
             </span>
           </div>
 
-          <div class="mt-3 grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
+          <div
+            class="mt-3 grid grid-cols-1 gap-2 text-sm min-[380px]:grid-cols-2"
+          >
             <div>
               <p
                 class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
@@ -152,7 +163,10 @@ const handleMechanicChange = (
           </div>
 
           <div class="mt-3">
-            <div v-if="booking.status === 'Confirmed'" class="space-y-2">
+            <div
+              v-if="canAdminAssignAndStart(booking.status)"
+              class="space-y-2"
+            >
               <p class="text-xs text-blue-700 font-medium">Pilih mekanik</p>
               <CustomSelect
                 :model-value="selectedMechanics[booking.id] ?? null"
@@ -179,7 +193,7 @@ const handleMechanicChange = (
 
           <div class="mt-4 flex flex-wrap gap-2 border-t border-gray-100 pt-3">
             <button
-              v-if="booking.status === 'Pending'"
+              v-if="canAdminConfirmBooking(booking.status)"
               @click="handleConfirm(booking)"
               class="px-3 py-1.5 text-xs font-bold bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg transition"
               title="Konfirmasi"
@@ -188,7 +202,7 @@ const handleMechanicChange = (
             </button>
 
             <button
-              v-if="booking.status === 'In Progress'"
+              v-if="canAdminCompleteBooking(booking.status)"
               @click="handleComplete(booking)"
               class="px-3 py-1.5 text-xs font-bold bg-green-50 text-green-700 hover:bg-green-100 rounded-lg transition"
               title="Tandai Selesai"
@@ -197,9 +211,7 @@ const handleMechanicChange = (
             </button>
 
             <button
-              v-if="
-                booking.status === 'Pending' || booking.status === 'Confirmed'
-              "
+              v-if="canAdminCancelBooking(booking.status)"
               @click="handleCancel(booking)"
               class="w-8 h-8 flex shrink-0 items-center justify-center bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition"
               title="Batalkan"
@@ -240,7 +252,7 @@ const handleMechanicChange = (
         </td>
         <td class="px-3 sm:px-6 py-4 whitespace-nowrap">
           <div
-            v-if="booking.status === 'Confirmed'"
+            v-if="canAdminAssignAndStart(booking.status)"
             class="flex items-center gap-2"
           >
             <div class="w-[180px]">
@@ -277,7 +289,7 @@ const handleMechanicChange = (
         <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
           <div class="flex flex-wrap items-center gap-2">
             <button
-              v-if="booking.status === 'Pending'"
+              v-if="canAdminConfirmBooking(booking.status)"
               @click="handleConfirm(booking)"
               :class="[
                 ACTION_BUTTON_CLASS,
@@ -289,7 +301,7 @@ const handleMechanicChange = (
             </button>
 
             <button
-              v-if="booking.status === 'In Progress'"
+              v-if="canAdminCompleteBooking(booking.status)"
               @click="handleComplete(booking)"
               :class="[
                 ACTION_BUTTON_CLASS,
@@ -301,9 +313,7 @@ const handleMechanicChange = (
             </button>
 
             <button
-              v-if="
-                booking.status === 'Pending' || booking.status === 'Confirmed'
-              "
+              v-if="canAdminCancelBooking(booking.status)"
               @click="handleCancel(booking)"
               :class="[
                 ICON_ACTION_BUTTON_CLASS,

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import axios from "axios";
-import OwnerDashboardHeader from "@/components/owner/dashboard/OwnerDashboardHeader.vue";
+import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import OwnerStatsGrid from "@/components/owner/dashboard/OwnerStatsGrid.vue";
 import OwnerQuickInsights from "@/components/owner/dashboard/OwnerQuickInsights.vue";
 import OwnerRecentActivity from "@/components/owner/dashboard/OwnerRecentActivity.vue";
@@ -25,8 +25,8 @@ const fetchDashboardData = async () => {
     const headers = getAuthHeaders();
 
     const [statsRes, bookingsRes] = await Promise.all([
-      axios.get(`${API_URL}/owner/stats`, { headers }),
-      axios.get(`${API_URL}/owner/recent-bookings`, { headers }),
+      axios.get(`${API_URL}/pemilik/statistik`, { headers }),
+      axios.get(`${API_URL}/pemilik/pemesanan-terbaru`, { headers }),
     ]);
 
     stats.value = {
@@ -49,23 +49,25 @@ onMounted(fetchDashboardData);
 
 <template>
   <div class="min-h-screen bg-gray-50">
-    <div class="space-y-6">
-      <!-- Page Header -->
-      <OwnerDashboardHeader />
+    <AppPageHeader
+      title="Dasbor Pemilik"
+      icon="mdi-view-dashboard"
+      subtitle="Monitoring real-time performa bengkel Anda"
+      subtitle-class="text-sm sm:text-base text-red-100"
+    />
 
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-        <!-- Big Numbers Grid -->
-        <OwnerStatsGrid :stats="stats" />
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+      <!-- Big Numbers Grid -->
+      <OwnerStatsGrid :stats="stats" />
 
-        <!-- Quick Insights -->
-        <OwnerQuickInsights />
+      <!-- Quick Insights -->
+      <OwnerQuickInsights />
 
-        <!-- Recent Activity -->
-        <OwnerRecentActivity
-          :bookings="recentBookings"
-          :loading="stats.loading"
-        />
-      </div>
+      <!-- Recent Activity -->
+      <OwnerRecentActivity
+        :bookings="recentBookings"
+        :loading="stats.loading"
+      />
     </div>
   </div>
 </template>

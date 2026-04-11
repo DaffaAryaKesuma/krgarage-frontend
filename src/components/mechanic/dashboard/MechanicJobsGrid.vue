@@ -1,31 +1,20 @@
 <script setup lang="ts">
 import { formatDateShort } from "@/utils/date";
-import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
+import {
+  canMechanicAddSparepart,
+  canMechanicUpdateStatus,
+  getMechanicActionButtonClass,
+  getMechanicActionButtonText,
+  getStatusBadgeClass,
+  getStatusLabel,
+  isCompletedStatus,
+} from "@/utils/statusBadge";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
-
-interface BookingItem {
-  id: number;
-  suku_cadang: { nama_suku_cadang: string; kategori: string };
-  jumlah: number;
-  harga_saat_ini: number;
-}
-
-interface Booking {
-  id: number;
-  kode_pemesanan: string;
-  pengguna: { nama: string; email: string };
-  vespa: { model: string; tahun_produksi: number; plat_nomor: string };
-  layanan?: { id: number; nama_layanan: string }[];
-  tanggal_pemesanan: string;
-  jam_pemesanan: string;
-  status: string;
-  catatan_pelanggan?: string;
-  item_pemesanan?: BookingItem[];
-}
+import type { MechanicBooking } from "@/types/booking";
 
 interface Props {
-  bookings: Booking[];
+  bookings: MechanicBooking[];
   loading: boolean;
   emptyIcon?: string;
   emptyTitle?: string;
@@ -46,43 +35,9 @@ const emit = defineEmits<{
   deleteSparepart: [bookingId: number, itemId: number];
 }>();
 
-const getServiceName = (booking: Booking) =>
+const getServiceName = (booking: MechanicBooking) =>
   booking.layanan?.map((s) => s.nama_layanan).join(", ") ||
   "Layanan tidak tersedia";
-
-const canUpdateStatus = (status: string) => {
-  const normalizedStatus = status.toLowerCase();
-  return (
-    normalizedStatus === "pending" ||
-    normalizedStatus === "confirmed" ||
-    normalizedStatus === "in progress"
-  );
-};
-
-const canAddSparepart = (status: string) => {
-  const normalizedStatus = status.toLowerCase();
-  return normalizedStatus === "in progress";
-};
-
-const getActionButtonText = (status: string) => {
-  const normalizedStatus = status.toLowerCase();
-  if (normalizedStatus === "pending" || normalizedStatus === "confirmed") {
-    return "Mulai Pekerjaan";
-  } else if (normalizedStatus === "in progress") {
-    return "Selesaikan Pekerjaan";
-  }
-  return "";
-};
-
-const getActionButtonClass = (status: string) => {
-  const normalizedStatus = status.toLowerCase();
-  if (normalizedStatus === "pending" || normalizedStatus === "confirmed") {
-    return "bg-blue-600 hover:bg-blue-700";
-  } else if (normalizedStatus === "in progress") {
-    return "bg-green-600 hover:bg-green-700";
-  }
-  return "";
-};
 </script>
 
 <template>
@@ -183,7 +138,7 @@ const getActionButtonClass = (status: string) => {
               <div class="flex items-center gap-2">
                 <span class="text-gray-600">{{ item.jumlah }}x</span>
                 <button
-                  v-if="canAddSparepart(booking.status)"
+                  v-if="canMechanicAddSparepart(booking.status)"
                   @click="emit('deleteSparepart', booking.id, item.id)"
                   class="text-red-600 hover:text-red-700 ml-2"
                   title="Hapus sparepart"
@@ -199,19 +154,19 @@ const getActionButtonClass = (status: string) => {
         <div class="grid grid-cols-2 gap-2 pt-2">
           <!-- Complete/Start Button -->
           <button
-            v-if="canUpdateStatus(booking.status)"
+            v-if="canMechanicUpdateStatus(booking.status)"
             @click="emit('updateStatus', booking.id)"
             :class="[
               'py-3 text-white font-semibold rounded-lg transition text-sm',
-              getActionButtonClass(booking.status),
+              getMechanicActionButtonClass(booking.status),
             ]"
           >
-            {{ getActionButtonText(booking.status) }}
+            {{ getMechanicActionButtonText(booking.status) }}
           </button>
 
           <!-- Add Sparepart Button -->
           <button
-            v-if="canAddSparepart(booking.status)"
+            v-if="canMechanicAddSparepart(booking.status)"
             @click="emit('addSparepart', booking.id)"
             class="py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition text-sm"
           >
@@ -220,7 +175,7 @@ const getActionButtonClass = (status: string) => {
 
           <!-- Completed Badge (full width) -->
           <div
-            v-if="booking.status === 'Completed'"
+            v-if="isCompletedStatus(booking.status)"
             class="col-span-2 bg-green-50 border border-green-200 rounded-lg p-3 text-center"
           >
             <i class="mdi mdi-check-all text-green-600 text-xl"></i>

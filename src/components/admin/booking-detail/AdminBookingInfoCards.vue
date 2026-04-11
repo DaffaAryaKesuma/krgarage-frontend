@@ -14,7 +14,7 @@ defineProps<Props>();
 </script>
 
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
     <!-- Pelanggan Card -->
     <div
       class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition flex flex-col h-full"
@@ -27,14 +27,16 @@ defineProps<Props>();
         </div>
         <h3 class="font-semibold text-gray-900">Pelanggan</h3>
       </div>
-      <div class="space-y-2">
+      <div class="min-w-0 space-y-2">
         <p class="text-lg font-bold text-gray-900">{{ user.nama }}</p>
-        <p class="text-sm text-gray-600">{{ user.email }}</p>
-        <div v-if="user.no_telepon" class="flex items-center gap-2 mt-2">
-          <i class="mdi mdi-phone text-green-600"></i>
+        <p class="break-all text-xs leading-snug text-gray-600 sm:text-sm">
+          {{ user.email }}
+        </p>
+        <div v-if="user.no_telepon" class="mt-2 flex min-w-0 items-start gap-2">
+          <i class="mdi mdi-phone mt-0.5 shrink-0 text-green-600"></i>
           <a
             :href="`tel:${user.no_telepon}`"
-            class="text-sm font-medium text-green-600 hover:text-green-700 transition"
+            class="break-all text-xs leading-snug font-medium text-green-600 transition hover:text-green-700 sm:text-sm"
           >
             {{ user.no_telepon }}
           </a>

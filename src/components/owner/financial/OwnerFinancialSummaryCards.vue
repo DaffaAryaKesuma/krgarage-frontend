@@ -40,7 +40,7 @@ const SUMMARY_CARDS = computed(() => [
 </script>
 
 <template>
-  <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+  <div class="grid grid-cols-1 gap-6 min-[420px]:grid-cols-2 md:grid-cols-3">
     <div
       v-for="card in SUMMARY_CARDS"
       :key="card.title"

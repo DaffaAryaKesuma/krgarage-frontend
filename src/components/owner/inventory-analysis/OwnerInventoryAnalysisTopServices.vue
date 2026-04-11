@@ -1,16 +1,10 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
 import { getMonthOptions } from "@/utils/dateFilters";
-
-interface Service {
-  id: number;
-  nama_layanan: string;
-  harga: number;
-  total_pemesanan: number;
-}
+import type { TopServiceMetric } from "@/types/service";
 
 interface Props {
-  services: Service[];
+  services: TopServiceMetric[];
   loading: boolean;
   selectedMonth: number;
   selectedYear: number;

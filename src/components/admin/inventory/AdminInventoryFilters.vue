@@ -24,7 +24,9 @@ const handleKategoriChange = (value: string | number | null) => {
 
 <template>
   <div class="bg-white p-4 rounded-lg shadow mb-6">
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-4">
+    <div
+      class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+    >
       <input
         :value="searchQuery"
         @input="
@@ -32,7 +34,7 @@ const handleKategoriChange = (value: string | number | null) => {
         "
         type="text"
         placeholder="Cari suku cadang..."
-        class="md:col-span-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+        class="rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-red-500 md:col-span-2"
       />
       <CustomSelect
         :model-value="selectedKategori"
@@ -42,7 +44,7 @@ const handleKategoriChange = (value: string | number | null) => {
       />
       <button
         @click="emit('addNew')"
-        class="md:col-span-2 xl:col-span-1 w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium flex items-center justify-center gap-2"
+        class="flex w-full items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 font-medium text-white transition hover:bg-red-700 md:col-span-2 lg:col-span-3 xl:col-span-1"
       >
         <i class="mdi mdi-plus"></i>
         <span>Tambah Suku Cadang</span>

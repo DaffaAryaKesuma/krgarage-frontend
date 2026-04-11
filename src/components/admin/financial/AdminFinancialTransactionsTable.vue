@@ -4,27 +4,13 @@ import { formatDateShort } from "@/utils/date";
 import { toIDR } from "@/utils/money";
 import TableShell from "@/components/ui/TableShell.vue";
 import Pagination from "@/components/ui/Pagination.vue";
-
-interface Service {
-  nama_layanan: string;
-  pivot: { harga_saat_pesan: number };
-}
-
-interface Booking {
-  id: number;
-  kode_pemesanan: string;
-  updated_at: string;
-  total_harga: number | null;
-  pengguna: { nama: string };
-  layanan: Service[];
-  item_pemesanan?: Array<{
-    jumlah: number;
-    suku_cadang: { nama_suku_cadang: string };
-  }>;
-}
+import type {
+  FinancialBooking,
+  FinancialBookingService,
+} from "@/types/booking";
 
 interface Props {
-  bookings: Booking[];
+  bookings: FinancialBooking[];
 }
 
 const props = defineProps<Props>();
@@ -72,20 +58,20 @@ const TABLE_HEADERS = [
   "Total",
 ];
 
-const calculateServiceTotal = (layanan: Service[]) =>
+const calculateServiceTotal = (layanan: FinancialBookingService[]) =>
   layanan.reduce((sum, s) => sum + (s.pivot.harga_saat_pesan || 0), 0);
 
-const getBookingServices = (layanan: Service[]) =>
+const getBookingServices = (layanan: FinancialBookingService[]) =>
   layanan.map((s) => s.nama_layanan).join(", ");
 
-const getBookingItems = (items?: Booking["item_pemesanan"]) =>
+const getBookingItems = (items?: FinancialBooking["item_pemesanan"]) =>
   !items?.length
     ? "-"
     : items
         .map((item) => `${item.suku_cadang.nama_suku_cadang} (x${item.jumlah})`)
         .join(", ");
 
-const getBookingTotal = (booking: Booking) =>
+const getBookingTotal = (booking: FinancialBooking) =>
   booking.total_harga || calculateServiceTotal(booking.layanan);
 </script>
 

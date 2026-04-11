@@ -16,6 +16,6 @@ const menuItems = [
     role-label="Admin"
     app-subtitle="Panel Admin"
     :nav-items="menuItems"
-    desktop-breakpoint="lg"
+    desktop-breakpoint="xl"
   />
 </template>

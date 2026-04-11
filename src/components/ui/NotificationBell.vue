@@ -35,7 +35,7 @@ const fetchNotifications = async (background = false) => {
   try {
     if (!background) isLoading.value = true;
 
-    const response = await axios.get(`${API_URL}/notifications`, {
+    const response = await axios.get(`${API_URL}/notifikasi`, {
       headers: getAuthHeaders(),
     });
     notifications.value = response.data.notifikasi || [];
@@ -50,7 +50,7 @@ const fetchNotifications = async (background = false) => {
 const markAsRead = async (notificationId: number) => {
   try {
     await axios.post(
-      `${API_URL}/notifications/${notificationId}/mark-read`,
+      `${API_URL}/notifikasi/${notificationId}/tandai-dibaca`,
       {},
       { headers: getAuthHeaders() },
     );
@@ -70,7 +70,7 @@ const markAsRead = async (notificationId: number) => {
 const markAllAsRead = async () => {
   try {
     await axios.post(
-      `${API_URL}/notifications/mark-all-read`,
+      `${API_URL}/notifikasi/tandai-semua-dibaca`,
       {},
       { headers: getAuthHeaders() },
     );
@@ -93,7 +93,7 @@ const handleNotificationClick = async (notification: Notification) => {
     if (role === "admin") {
       router.push(`/admin/pemesanan/${notification.id_pemesanan}`);
     } else if (role === "mechanic" || role === "mekanik") {
-      router.push(`/mechanic/dasbor`);
+      router.push(`/mekanik/dasbor`);
     } else {
       router.push(`/app/riwayat`);
     }

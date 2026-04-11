@@ -1,18 +1,10 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
 import { getMonthOptions } from "@/utils/dateFilters";
-
-interface Sparepart {
-  id: number;
-  nama_barang: string;
-  jumlah_stok: number;
-  harga_jual: number;
-  total_terjual: number;
-  total_pendapatan?: number;
-}
+import type { TopSparepartMetric } from "@/types/inventory";
 
 interface Props {
-  spareparts: Sparepart[];
+  spareparts: TopSparepartMetric[];
   loading: boolean;
   selectedMonth: number;
   selectedYear: number;

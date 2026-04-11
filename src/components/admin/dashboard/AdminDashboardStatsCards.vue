@@ -83,24 +83,24 @@ const getCardColorClasses = (color: string) => {
 </script>
 
 <template>
-  <div
-    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8"
-  >
+  <div class="mb-6 grid grid-cols-2 gap-3 sm:mb-8 sm:gap-6 lg:grid-cols-4">
     <router-link
       v-for="card in STAT_CARDS"
       :key="card.key"
       :to="card.route"
-      class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow border-l-4"
+      class="rounded-xl border-l-4 bg-white p-3 shadow-md transition-shadow hover:shadow-lg sm:p-6"
       :class="getCardColorClasses(card.color).border"
     >
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-sm text-gray-600 font-medium">{{ card.label }}</p>
-          <h3 class="text-3xl font-bold text-gray-900 mt-2">
+          <p class="text-xs leading-tight text-gray-600 font-medium sm:text-sm">
+            {{ card.label }}
+          </p>
+          <h3 class="mt-1 text-2xl font-bold text-gray-900 sm:mt-2 sm:text-3xl">
             {{ getStatValue(card.key) }}
           </h3>
           <p
-            class="text-xs mt-1"
+            class="mt-1 text-[11px] sm:text-xs"
             :class="
               card.color === 'red'
                 ? 'text-red-600 font-medium'
@@ -111,11 +111,11 @@ const getCardColorClasses = (color: string) => {
           </p>
         </div>
         <div
-          class="p-3 rounded-full"
+          class="rounded-full p-2 sm:p-3"
           :class="getCardColorClasses(card.color).bg"
         >
           <i
-            :class="`${card.icon} text-4xl ${
+            :class="`${card.icon} text-2xl sm:text-4xl ${
               getCardColorClasses(card.color).text
             }`"
           ></i>

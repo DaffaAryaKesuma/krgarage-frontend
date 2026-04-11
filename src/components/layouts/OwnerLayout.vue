@@ -2,15 +2,15 @@
 import BaseAuthenticatedLayout from "@/components/layouts/BaseAuthenticatedLayout.vue";
 
 const navLinks = [
-  { label: "Dasbor", to: "/owner/dasbor", icon: "mdi-view-dashboard" },
+  { label: "Dasbor", to: "/pemilik/dasbor", icon: "mdi-view-dashboard" },
   {
     label: "Laporan Keuangan",
-    to: "/owner/laporan-keuangan",
+    to: "/pemilik/laporan-keuangan",
     icon: "mdi-chart-line",
   },
   {
     label: "Analisa Inventaris",
-    to: "/owner/analisa-inventaris",
+    to: "/pemilik/analisa-inventaris",
     icon: "mdi-package-variant",
   },
 ];
@@ -18,7 +18,7 @@ const navLinks = [
 
 <template>
   <BaseAuthenticatedLayout
-    home-path="/owner/dasbor"
+    home-path="/pemilik/dasbor"
     role-label="Pemilik"
     app-subtitle="Portal Pemilik"
     :nav-items="navLinks"

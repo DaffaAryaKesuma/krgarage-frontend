@@ -3,19 +3,10 @@ import { toIDR } from "@/utils/money";
 import { formatDateShort } from "@/utils/date";
 import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
-
-interface Booking {
-  id: number;
-  kode_pemesanan: string;
-  tanggal_pemesanan: string;
-  status: string;
-  total_harga?: number;
-  vespa: { model: string; plat_nomor: string };
-  layanan: { nama_layanan: string; harga: number }[];
-}
+import type { CustomerBooking } from "@/types/booking";
 
 interface Props {
-  bookings: Booking[];
+  bookings: CustomerBooking[];
   isLoading?: boolean;
 }
 
@@ -65,7 +56,9 @@ withDefaults(defineProps<Props>(), {
             {{ getStatusLabel(b.status || "Pending") }}
           </span>
         </div>
-        <div class="mb-4 grid grid-cols-1 gap-3 sm:gap-4 lg:grid-cols-2">
+        <div
+          class="mb-4 grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 sm:gap-4 lg:grid-cols-2"
+        >
           <div class="flex items-start gap-2">
             <i class="mdi mdi-motorbike text-xl text-gray-600"></i>
             <div>
