@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
+import axios from "axios";
 import { useRouter } from "vue-router";
-import { getCurrentUser, clearAuth } from "@/utils/auth";
+import { API_URL } from "@/utils/api";
+import { getCurrentUser, clearAuth, getAuthHeaders } from "@/utils/auth";
 import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
 import NotificationBell from "@/components/ui/NotificationBell.vue";
 
@@ -67,10 +69,19 @@ const breakpointClasses = computed(() => {
   };
 });
 
-const handleLogout = () => {
-  clearAuth();
-  showLogoutConfirm.value = false;
-  router.push("/");
+const handleLogout = async () => {
+  try {
+    const headers = getAuthHeaders();
+    if (Object.keys(headers).length) {
+      await axios.post(`${API_URL}/keluar`, {}, { headers });
+    }
+  } catch {
+    // Local auth cleanup tetap dijalankan meskipun request logout gagal.
+  } finally {
+    clearAuth();
+    showLogoutConfirm.value = false;
+    router.push("/");
+  }
 };
 
 const closeMenu = () => {

@@ -19,7 +19,9 @@ export function setupAxiosInterceptors401(router: Router) {
     (error) => {
       const requestUrl = String(error.config?.url || "");
       const isAuthRequest =
-        requestUrl.includes("/masuk") || requestUrl.includes("/daftar");
+        requestUrl.includes("/masuk") ||
+        requestUrl.includes("/daftar") ||
+        requestUrl.includes("/keluar");
       const hasToken = !!localStorage.getItem("token");
 
       // Handle 401 - session expired

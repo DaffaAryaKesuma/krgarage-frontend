@@ -162,6 +162,7 @@ router.beforeEach((to, _from, next) => {
       user = null;
     }
   }
+  const roleRedirectPath = getRedirectPathForRole(user?.role);
 
   if (to.meta.guestOnly && isLoggedIn) {
     return next(getRedirectPathForRole(user?.role));
@@ -183,15 +184,15 @@ router.beforeEach((to, _from, next) => {
   }
 
   if (to.meta.requiresAdmin && (!user || user.role !== "admin")) {
-    return next({ name: "dashboard" });
+    return next(user ? roleRedirectPath : { name: "home" });
   }
 
   if (to.meta.requiresMechanic && (!user || user.role !== "mekanik")) {
-    return next({ name: "dashboard" });
+    return next(user ? roleRedirectPath : { name: "home" });
   }
 
   if (to.meta.requiresOwner && (!user || user.role !== "owner")) {
-    return next({ name: "dashboard" });
+    return next(user ? roleRedirectPath : { name: "home" });
   }
 
   // Mark that user is logged in (for session expiration detection)
