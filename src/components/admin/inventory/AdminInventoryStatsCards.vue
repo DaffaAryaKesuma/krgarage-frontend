@@ -22,7 +22,7 @@ const STAT_CARDS = [
   },
   {
     key: "lowStock" as keyof Stats,
-    label: "Peringatan Stok Rendah",
+    label: "Peringatan Stok Kritis/Habis",
     icon: "mdi-alert-circle",
     bgColor: "bg-yellow-100",
     iconColor: "text-yellow-600",
@@ -40,7 +40,7 @@ const STAT_CARDS = [
 </script>
 
 <template>
-  <div class="grid grid-cols-2 xl:grid-cols-3 gap-4 mb-6">
+  <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
     <div
       v-for="card in STAT_CARDS"
       :key="card.key"

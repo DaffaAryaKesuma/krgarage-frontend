@@ -217,7 +217,6 @@ onMounted(() => {
               Menambahkan...
             </span>
             <span v-else class="flex items-center justify-center gap-2">
-              <i class="mdi mdi-check"></i>
               Tambahkan
             </span>
           </button>

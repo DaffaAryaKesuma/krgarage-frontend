@@ -28,12 +28,15 @@ defineProps<Props>();
         class="flex justify-between text-2xl font-bold text-gray-900 pt-3 border-t"
       >
         <span>Total:</span>
-        <span class="text-red-600">{{ toIDR(grandTotal) }}</span>
+        <span class="text-green-600">{{ toIDR(grandTotal) }}</span>
       </div>
 
       <div class="mt-4 flex items-start gap-2 text-xs text-gray-500">
         <i class="mdi mdi-information-outline text-base flex-shrink-0"></i>
-        <p>Pembayaran dilakukan di tempat setelah service selesai</p>
+        <p>
+          Pembayaran dilakukan saat pelanggan mengambil Vespa setelah servis
+          selesai
+        </p>
       </div>
     </div>
   </div>

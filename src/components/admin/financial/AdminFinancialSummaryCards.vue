@@ -51,11 +51,11 @@ const SUMMARY_CARDS: SummaryCard[] = [
 </script>
 
 <template>
-  <div class="grid grid-cols-2 gap-6 mb-8">
+  <div class="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
     <div
       v-for="card in SUMMARY_CARDS"
       :key="card.key"
-      class="bg-gradient-to-br rounded-2xl shadow-lg p-8 text-white"
+      class="rounded-2xl bg-gradient-to-br p-5 text-white shadow-lg sm:p-8"
       :class="CARD_COLOR_CLASSES[card.color].gradient"
     >
       <div class="flex items-center justify-between">
@@ -66,12 +66,12 @@ const SUMMARY_CARDS: SummaryCard[] = [
           >
             {{ card.title }}
           </p>
-          <p class="text-4xl font-bold mt-2">
+          <p class="mt-2 text-3xl font-bold leading-tight sm:text-4xl">
             {{ card.format(summary[card.key]) }}
           </p>
         </div>
-        <div class="bg-white/20 rounded-full p-4">
-          <i :class="`mdi ${card.icon} text-4xl`"></i>
+        <div class="rounded-full bg-white/20 p-3 sm:p-4">
+          <i :class="`mdi ${card.icon} text-3xl sm:text-4xl`"></i>
         </div>
       </div>
     </div>

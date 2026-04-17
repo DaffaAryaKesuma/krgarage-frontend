@@ -24,9 +24,11 @@ export interface Booking {
   tanggal_pemesanan: string;
   jam_pemesanan: string;
   status: string;
+  status_pembayaran?: string | null;
   total_harga: number | null;
   id_mekanik: number | null;
   catatan_pelanggan?: string;
+  catatan_mekanik?: string;
   pengguna: UserProfile;
   vespa: BookingVespa;
   layanan: Array<Pick<ServiceSummary, "id" | "nama_layanan" | "harga">>;
@@ -52,7 +54,9 @@ export interface CustomerBooking {
   tanggal_pemesanan: string;
   jam_pemesanan?: string;
   status: string;
+  status_pembayaran?: string | null;
   total_harga?: number | null;
+  catatan_mekanik?: string;
   vespa: Pick<BookingVespa, "model" | "plat_nomor">;
   layanan: BookingServiceLine[];
   item_pemesanan?: BookingItem[];
@@ -72,7 +76,9 @@ export interface MechanicBooking {
   tanggal_pemesanan: string;
   jam_pemesanan: string;
   status: string;
+  status_pembayaran?: string | null;
   catatan_pelanggan?: string;
+  catatan_mekanik?: string;
   item_pemesanan?: BookingItem[];
 }
 
@@ -90,6 +96,7 @@ export interface FinancialBooking {
   tanggal_pemesanan?: string;
   total_harga: number | null;
   status?: string;
+  status_pembayaran?: string | null;
   pengguna: Pick<UserProfile, "nama">;
   vespa?: Pick<BookingVespa, "plat_nomor">;
   layanan: FinancialBookingService[];
@@ -109,4 +116,5 @@ export interface OwnerRecentBookingActivity {
   nama_layanan: string;
   total_harga: number;
   status: string;
+  status_pembayaran?: string | null;
 }

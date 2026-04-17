@@ -219,9 +219,7 @@ onMounted(fetchServices);
         </button>
 
         <!-- Service Cards Grid -->
-        <div
-          class="grid grid-cols-1 min-[420px]:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
           <AdminServiceCard
             v-for="service in services"
             :key="service.id"

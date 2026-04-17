@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <section class="grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 sm:gap-4">
+  <section class="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 sm:gap-4">
     <router-link
       to="/app/pemesanan"
       class="group relative overflow-hidden rounded-xl bg-gradient-to-br from-red-600 to-red-700 p-3 text-white transition-all duration-300 hover:shadow-2xl sm:p-4 md:p-6"

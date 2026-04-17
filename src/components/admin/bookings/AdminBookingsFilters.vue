@@ -9,12 +9,17 @@ import {
   BOOKING_STATUS_FILTER_OPTIONS,
   type BookingStatusFilter,
 } from "@/utils/statusBadge";
+import {
+  PAYMENT_STATUS_FILTER_OPTIONS,
+  type PaymentStatusFilter,
+} from "@/utils/paymentStatus";
 
 interface Props {
   searchQuery: string;
   monthFilter: string;
   yearFilter: string;
   statusFilter: BookingStatusFilter;
+  paymentFilter: PaymentStatusFilter;
   showTodayOnly: boolean;
   totalBookings: number;
   filteredCount: number;
@@ -27,6 +32,7 @@ const emit = defineEmits<{
   "update:monthFilter": [value: string];
   "update:yearFilter": [value: string];
   "update:statusFilter": [value: BookingStatusFilter];
+  "update:paymentFilter": [value: PaymentStatusFilter];
   "update:showTodayOnly": [value: boolean];
 }>();
 
@@ -43,6 +49,10 @@ const handleYearChange = (value: string | number | null) => {
 
 const handleStatusChange = (value: string | number | null) => {
   emit("update:statusFilter", (value || "all") as BookingStatusFilter);
+};
+
+const handlePaymentChange = (value: string | number | null) => {
+  emit("update:paymentFilter", (value || "all") as PaymentStatusFilter);
 };
 </script>
 
@@ -98,6 +108,16 @@ const handleStatusChange = (value: string | number | null) => {
           @update:model-value="handleStatusChange"
           :options="BOOKING_STATUS_FILTER_OPTIONS"
           placeholder="Semua Status"
+        />
+      </div>
+
+      <!-- Payment Status Filter -->
+      <div class="md:w-48">
+        <CustomSelect
+          :model-value="paymentFilter"
+          @update:model-value="handlePaymentChange"
+          :options="PAYMENT_STATUS_FILTER_OPTIONS"
+          placeholder="Semua Pembayaran"
         />
       </div>
     </div>

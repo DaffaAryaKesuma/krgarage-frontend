@@ -11,7 +11,7 @@ import {
 } from "@/utils/statusBadge";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
-import type { MechanicBooking } from "@/types/booking";
+import type { MechanicBooking, MechanicBookingService } from "@/types/booking";
 
 interface Props {
   bookings: MechanicBooking[];
@@ -36,8 +36,9 @@ const emit = defineEmits<{
 }>();
 
 const getServiceName = (booking: MechanicBooking) =>
-  booking.layanan?.map((s) => s.nama_layanan).join(", ") ||
-  "Layanan tidak tersedia";
+  booking.layanan
+    ?.map((s: MechanicBookingService) => s.nama_layanan)
+    .join(", ") || "Layanan tidak tersedia";
 </script>
 
 <template>
@@ -148,6 +149,19 @@ const getServiceName = (booking: MechanicBooking) =>
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- Mechanic Notes -->
+        <div
+          v-if="booking.catatan_mekanik"
+          class="bg-green-50 border border-green-200 rounded-lg p-2.5"
+        >
+          <p class="text-xs font-semibold text-gray-700 mb-0.5">
+            Catatan Mekanik:
+          </p>
+          <p class="text-xs text-gray-600 whitespace-pre-line">
+            {{ booking.catatan_mekanik }}
+          </p>
         </div>
 
         <!-- Action Buttons -->

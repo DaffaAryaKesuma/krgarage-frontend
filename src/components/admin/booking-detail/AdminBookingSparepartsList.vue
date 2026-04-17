@@ -16,9 +16,10 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="border-t border-gray-100 pt-6">
+  <div>
     <div class="flex justify-between items-center mb-3">
-      <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">
+      <h3 class="font-semibold text-gray-900 tracking-wide">
+        <i class="mdi mdi-cog text-orange-600 text-xl"></i>
         Suku Cadang
       </h3>
       <button
@@ -36,24 +37,23 @@ const emit = defineEmits<{
       <div
         v-for="item in bookingItems"
         :key="item.id"
-        class="flex items-center justify-between py-3 px-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition group"
+        class="group flex items-center justify-between rounded-lg bg-gray-100 px-4 py-3"
       >
         <div class="flex-1">
           <span class="font-medium text-gray-900">{{
             item.suku_cadang.nama_suku_cadang
           }}</span>
-          <p class="text-sm text-gray-600 mt-1">
-            {{ item.jumlah }} × {{ toIDR(item.harga_saat_ini) }}
-          </p>
+          <span class="text-sm text-gray-600 mx-3">x</span>
+          <span class="text-sm text-gray-600">{{ item.jumlah }}</span>
         </div>
         <div class="flex items-center gap-3">
-          <span class="font-bold text-gray-900">
+          <span class="font-medium text-gray-900">
             {{ toIDR(item.harga_saat_ini * item.jumlah) }}
           </span>
           <button
             v-if="isInProgress"
             @click="emit('deleteItem', item.id)"
-            class="opacity-0 group-hover:opacity-100 p-2 text-red-600 hover:bg-red-100 rounded-lg transition"
+            class="rounded-lg p-2 text-red-600 transition hover:bg-red-100 opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
             title="Hapus"
           >
             <i class="mdi mdi-delete"></i>

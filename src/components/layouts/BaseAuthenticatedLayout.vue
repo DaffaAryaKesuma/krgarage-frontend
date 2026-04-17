@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import axios from "axios";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { API_URL } from "@/utils/api";
 import { getCurrentUser, clearAuth, getAuthHeaders } from "@/utils/auth";
 import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
@@ -34,6 +34,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const router = useRouter();
+const route = useRoute();
 const isMobileMenuOpen = ref(false);
 const showLogoutConfirm = ref(false);
 const user = ref({ nama: "Guest", email: "" });
@@ -228,7 +229,7 @@ onMounted(() => {
     </nav>
 
     <main class="content-safe">
-      <router-view />
+      <router-view :key="route.fullPath" />
     </main>
 
     <ConfirmationModal

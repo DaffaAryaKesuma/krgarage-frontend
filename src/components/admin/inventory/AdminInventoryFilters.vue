@@ -63,7 +63,7 @@ const handleKategoriChange = (value: string | number | null) => {
         type="checkbox"
         class="w-4 h-4 text-red-600 rounded focus:ring-red-500 mr-2"
       />
-      Tampilkan hanya stok rendah
+      Tampilkan hanya stok kritis/habis
     </label>
   </div>
 </template>

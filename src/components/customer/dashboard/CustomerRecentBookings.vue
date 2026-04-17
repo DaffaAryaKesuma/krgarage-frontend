@@ -2,6 +2,10 @@
 import { toIDR } from "@/utils/money";
 import { formatDateShort } from "@/utils/date";
 import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
+import {
+  getPaymentStatusBadgeClass,
+  getPaymentStatusLabel,
+} from "@/utils/paymentStatus";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
 import type { CustomerBooking } from "@/types/booking";
@@ -14,6 +18,19 @@ interface Props {
 withDefaults(defineProps<Props>(), {
   isLoading: false,
 });
+
+const getMechanicNotePreview = (note: string | undefined): string => {
+  if (!note) {
+    return "";
+  }
+
+  const cleaned = note.trim();
+  if (cleaned.length <= 140) {
+    return cleaned;
+  }
+
+  return `${cleaned.slice(0, 140)}...`;
+};
 </script>
 
 <template>
@@ -65,14 +82,32 @@ withDefaults(defineProps<Props>(), {
               </p>
             </div>
           </div>
-          <span :class="getStatusBadgeClass(b.status || 'Pending')">
-            {{ getStatusLabel(b.status || "Pending") }}
-          </span>
+          <div class="flex flex-col items-end gap-2">
+            <span :class="getStatusBadgeClass(b.status || 'Pending')">
+              {{ getStatusLabel(b.status || "Pending") }}
+            </span>
+            <span :class="getPaymentStatusBadgeClass(b.status_pembayaran)">
+              {{ getPaymentStatusLabel(b.status_pembayaran) }}
+            </span>
+          </div>
         </div>
         <div class="text-xs sm:text-sm text-gray-600 mb-2">
           <span class="font-medium">{{ b.vespa?.model }}</span> •
           {{ b.layanan.map((s) => s.nama_layanan).join(", ") }}
         </div>
+
+        <div
+          v-if="b.catatan_mekanik"
+          class="mb-2 rounded-lg border border-green-200 bg-green-50 p-2"
+        >
+          <p class="mb-1 text-[11px] font-semibold text-green-800">
+            Catatan Mekanik
+          </p>
+          <p class="text-xs text-gray-700">
+            {{ getMechanicNotePreview(b.catatan_mekanik) }}
+          </p>
+        </div>
+
         <p class="text-base sm:text-lg font-bold text-gray-900">
           {{
             toIDR(
@@ -80,6 +115,14 @@ withDefaults(defineProps<Props>(), {
             )
           }}
         </p>
+
+        <router-link
+          :to="`/app/riwayat/${b.id}`"
+          class="mt-3 inline-flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 transition hover:bg-gray-50 sm:text-sm"
+        >
+          <i class="mdi mdi-text-box-search-outline"></i>
+          <span>Lihat Detail</span>
+        </router-link>
       </div>
     </div>
   </section>

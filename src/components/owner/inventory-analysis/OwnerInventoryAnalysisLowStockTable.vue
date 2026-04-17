@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from "vue";
 import { toIDR } from "@/utils/money";
 import TableShell from "@/components/ui/TableShell.vue";
 
@@ -22,33 +21,14 @@ const props = defineProps<Props>();
 const STOCK_STATUS = {
   habis: { label: "Habis", class: "bg-red-100 text-red-800" },
   kritis: { label: "Kritis", class: "bg-orange-100 text-orange-800" },
-  rendah: { label: "Rendah", class: "bg-yellow-100 text-yellow-800" },
 };
 
-const getStockStatus = (stock: number, minStock: number) => {
+const getStockStatus = (stock: number, _minStock: number) => {
   if (stock === 0) return STOCK_STATUS.habis;
-  if (stock <= minStock) return STOCK_STATUS.kritis;
-  return STOCK_STATUS.rendah;
+  return STOCK_STATUS.kritis;
 };
 
-const estimateRestockQuantity = (item: LowStockItem) =>
-  item.minimum_stok - item.jumlah_stok + 10;
-
-const estimateRestockCost = (item: LowStockItem) =>
-  estimateRestockQuantity(item) * item.harga_beli;
-
-const TABLE_HEADERS = [
-  "Nama Barang",
-  "Stok",
-  "Min",
-  "Harga Beli",
-  "Est. Pembelian",
-  "Status",
-];
-
-const totalRestockCost = computed(() =>
-  props.items.reduce((sum, item) => sum + estimateRestockCost(item), 0),
-);
+const TABLE_HEADERS = ["Nama Barang", "Stok", "Min", "Harga Beli", "Status"];
 </script>
 
 <template>
@@ -152,19 +132,6 @@ const totalRestockCost = computed(() =>
                 {{ toIDR(item.harga_beli) }}
               </p>
             </div>
-            <div>
-              <p
-                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-              >
-                Estimasi Pembelian
-              </p>
-              <p class="font-bold text-red-600">
-                {{ toIDR(estimateRestockCost(item)) }}
-              </p>
-              <p class="text-xs text-gray-500">
-                ~{{ estimateRestockQuantity(item) }} unit
-              </p>
-            </div>
           </div>
         </div>
       </template>
@@ -195,14 +162,6 @@ const totalRestockCost = computed(() =>
           {{ toIDR(item.harga_beli) }}
         </td>
         <td class="py-3">
-          <div class="font-bold text-red-600">
-            {{ toIDR(estimateRestockCost(item)) }}
-          </div>
-          <div class="text-xs text-gray-600">
-            ~{{ estimateRestockQuantity(item) }} unit
-          </div>
-        </td>
-        <td class="py-3">
           <span
             :class="[
               'inline-flex rounded-full px-3 py-1 text-xs font-semibold',
@@ -213,23 +172,6 @@ const totalRestockCost = computed(() =>
           </span>
         </td>
       </tr>
-
-      <template #tfoot>
-        <tfoot>
-          <tr class="border-t-2 border-gray-300 bg-gray-50">
-            <td
-              colspan="4"
-              class="py-3 font-bold text-gray-900 text-right pr-4"
-            >
-              Total Estimasi Biaya Restock:
-            </td>
-            <td class="py-3 text-lg font-bold text-red-600">
-              {{ toIDR(totalRestockCost) }}
-            </td>
-            <td></td>
-          </tr>
-        </tfoot>
-      </template>
     </TableShell>
 
     <div

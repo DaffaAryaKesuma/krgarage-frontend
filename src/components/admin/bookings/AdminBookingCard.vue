@@ -10,6 +10,10 @@ import {
   getStatusLabel,
   isCompletedStatus,
 } from "@/utils/statusBadge";
+import {
+  getPaymentStatusBadgeClass,
+  getPaymentStatusLabel,
+} from "@/utils/paymentStatus";
 import CustomSelect from "@/components/ui/CustomSelect.vue";
 import type { Booking, MechanicOption } from "@/types/booking";
 
@@ -48,7 +52,7 @@ const handleMechanicChange = (value: string | number | null) => {
   >
     <!-- Header -->
     <div
-      class="flex items-start justify-between mb-4 pb-4 border-b border-gray-100"
+      class="mb-4 flex flex-wrap items-start justify-between gap-2 border-b border-gray-100 pb-4"
     >
       <div class="flex items-center gap-3">
         <div
@@ -63,14 +67,14 @@ const handleMechanicChange = (value: string | number | null) => {
         </div>
       </div>
       <span
-        class="text-xs font-mono text-gray-500 bg-gray-100 px-2 py-1 rounded"
+        class="shrink-0 rounded bg-gray-100 px-2 py-1 font-mono text-xs text-gray-500"
       >
         {{ booking.kode_pemesanan }}
       </span>
     </div>
 
     <!-- Vespa & Date Info -->
-    <div class="grid grid-cols-2 gap-4 mb-4">
+    <div class="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
       <div class="flex items-start gap-2">
         <i class="mdi mdi-motorbike text-2xl text-gray-600 flex-shrink-0"></i>
         <div>
@@ -114,7 +118,7 @@ const handleMechanicChange = (value: string | number | null) => {
     <!-- Status Display -->
     <div class="mb-4">
       <p class="text-xs text-gray-500 mb-2">Status Pemesanan:</p>
-      <div class="flex items-center gap-2">
+      <div class="flex flex-wrap items-center gap-2">
         <span :class="getStatusBadgeClass(booking.status)">
           <i :class="['mdi mr-1', getStatusIcon(booking.status)]"></i>
           {{ getStatusLabel(booking.status) }}
@@ -125,6 +129,14 @@ const handleMechanicChange = (value: string | number | null) => {
         >
           <i class="mdi mdi-account-wrench"></i>
           {{ booking.mekanik.nama }}
+        </span>
+      </div>
+
+      <div class="mt-3 flex items-center justify-between gap-3">
+        <p class="text-xs text-gray-500">Status Pembayaran:</p>
+        <span :class="getPaymentStatusBadgeClass(booking.status_pembayaran)">
+          <i class="mdi mdi-cash-check mr-1"></i>
+          {{ getPaymentStatusLabel(booking.status_pembayaran) }}
         </span>
       </div>
     </div>

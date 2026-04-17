@@ -7,7 +7,6 @@ import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import AdminBookingInfoCards from "@/components/admin/booking-detail/AdminBookingInfoCards.vue";
-import AdminBookingNotes from "@/components/admin/booking-detail/AdminBookingNotes.vue";
 import AdminBookingControlPanel from "@/components/admin/booking-detail/AdminBookingControlPanel.vue";
 import AdminBookingServicesList from "@/components/admin/booking-detail/AdminBookingServicesList.vue";
 import AdminBookingSparepartsList from "@/components/admin/booking-detail/AdminBookingSparepartsList.vue";
@@ -15,6 +14,8 @@ import AdminBookingTotalSummary from "@/components/admin/booking-detail/AdminBoo
 import AdminAddSparepartModal from "@/components/admin/booking-detail/AdminAddSparepartModal.vue";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
+import { formatDateShort, formatTimeShort } from "@/utils/date";
+import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
 import type { Booking } from "@/types/booking";
 import type { SparepartSummary } from "@/types/inventory";
 
@@ -54,6 +55,10 @@ const totalSpareparts = computed(() => {
 });
 
 const grandTotal = computed(() => totalHarga.value + totalSpareparts.value);
+
+const totalAkhir = computed(
+  () => booking.value?.total_harga || grandTotal.value,
+);
 
 // API Functions
 async function fetchBookingData() {
@@ -144,18 +149,17 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+  <div class="min-h-screen bg-gray-50">
     <AppPageHeader
       title="Detail Pemesanan"
       icon="mdi-clipboard-text"
-      container-class="py-6"
+      :subtitle="
+        booking
+          ? `Kelola rincian lengkap untuk ${booking.kode_pemesanan}`
+          : 'Kelola rincian lengkap pemesanan pelanggan'
+      "
+      subtitle-class="text-sm sm:text-base text-red-100"
     >
-      <template #subtitle>
-        <h2 class="text-lg font-semibold text-white sm:text-xl">
-          {{ booking?.kode_pemesanan || "Loading..." }}
-        </h2>
-      </template>
-
       <template #actions>
         <router-link
           to="/admin/pemesanan"
@@ -167,56 +171,65 @@ onMounted(async () => {
       </template>
     </AppPageHeader>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- Loading State -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
       <LoadingSpinner v-if="isLoading" message="Memuat data..." />
 
-      <!-- Error State -->
       <div
         v-else-if="error"
-        class="bg-red-50 border border-red-200 rounded-xl p-6 text-center"
+        class="rounded-xl border border-red-200 bg-red-50 p-6 text-center"
       >
-        <i class="mdi mdi-alert-circle text-4xl text-red-600 mb-2"></i>
-        <p class="text-red-800 font-medium">{{ error }}</p>
+        <i class="mdi mdi-alert-circle mb-2 text-4xl text-red-600"></i>
+        <p class="font-medium text-red-800">{{ error }}</p>
       </div>
 
-      <!-- Main Content -->
       <div v-else-if="booking" class="space-y-6">
-        <!-- Info Cards (Pelanggan, Vespa, Tanggal, & Kontrol Pemesanan) -->
-        <AdminBookingInfoCards
-          :user="booking.pengguna"
-          :vespa="booking.vespa"
-          :tanggal-pemesanan="booking.tanggal_pemesanan"
-          :jam-pemesanan="booking.jam_pemesanan"
-        >
-          <!-- Panel Kontrol yang sekarang numpang di layout Grid 4 Kolom di atas -->
-          <AdminBookingControlPanel
-            :booking-id="booking.id"
-            :current-status="booking.status"
-            :current-mechanic-id="booking.id_mekanik"
-            :current-mechanic-name="booking.mekanik?.nama"
-            @refresh="fetchBookingData"
-          />
-        </AdminBookingInfoCards>
-
-        <!-- Catatan Pelanggan -->
-        <AdminBookingNotes :catatan="booking.catatan_pelanggan" />
-
-        <!-- Layanan & Sparepart Section -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100">
-          <div
-            class="p-6 border-b border-gray-100 flex items-center gap-4 justify-between"
+        <section>
+          <AdminBookingInfoCards
+            :user="booking.pengguna"
+            :vespa="booking.vespa"
+            :tanggal-pemesanan="booking.tanggal_pemesanan"
+            :jam-pemesanan="booking.jam_pemesanan"
           >
-            <h2 class="text-xl font-bold text-gray-900">Rincian Layanan</h2>
+            <AdminBookingControlPanel
+              :booking-id="booking.id"
+              :current-status="booking.status"
+              :current-payment-status="booking.status_pembayaran"
+              :current-mechanic-id="booking.id_mekanik"
+              :current-mechanic-name="booking.mekanik?.nama"
+              @refresh="fetchBookingData"
+            />
+          </AdminBookingInfoCards>
+        </section>
+
+        <section class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-5">
+            <div class="mb-2 flex items-center gap-2">
+              <i class="mdi mdi-note-outline text-amber-600"></i>
+              <h2 class="font-semibold text-gray-900">Catatan Pelanggan</h2>
+            </div>
+            <p class="text-sm text-gray-700 whitespace-pre-line">
+              {{ booking.catatan_pelanggan || "Tidak ada catatan pelanggan." }}
+            </p>
           </div>
 
-          <div class="p-6 space-y-6">
-            <!-- Services -->
-            <AdminBookingServicesList :services="booking.layanan" />
+          <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-5">
+            <div class="mb-2 flex items-center gap-2">
+              <i class="mdi mdi-note-text text-green-600"></i>
+              <h2 class="font-semibold text-gray-900">Catatan Mekanik</h2>
+            </div>
+            <p class="text-sm text-gray-700 whitespace-pre-line">
+              {{ booking.catatan_mekanik || "Belum ada catatan dari mekanik." }}
+            </p>
+          </div>
+        </section>
 
-            <!-- Sparepart Section -->
+        <section class="grid grid-cols-1 gap-4 xl:grid-cols-2">
+          <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
+            <AdminBookingServicesList :services="booking.layanan" />
+          </div>
+
+          <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
             <AdminBookingSparepartsList
-              v-if="isInProgress || booking.item_pemesanan?.length"
               :booking-items="booking.item_pemesanan"
               :is-in-progress="isInProgress"
               @add-sparepart="openAddSparepartModal"
@@ -225,27 +238,26 @@ onMounted(async () => {
                 showDeleteConfirm = true;
               "
             />
-
-            <!-- Total Section -->
-            <AdminBookingTotalSummary
-              :total-harga="totalHarga"
-              :total-spareparts="totalSpareparts"
-              :grand-total="booking.total_harga || grandTotal"
-            />
           </div>
-        </div>
+        </section>
 
-        <!-- Add Sparepart Modal -->
-        <AdminAddSparepartModal
-          :show="showAddSparepartModal"
-          :available-spareparts="availableSpareparts"
-          :is-adding="isAddingSparepart"
-          @submit="addSparepartToBooking"
-          @close="closeAddSparepartModal"
-        />
+        <section class="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
+          <AdminBookingTotalSummary
+            :total-harga="totalHarga"
+            :total-spareparts="totalSpareparts"
+            :grand-total="totalAkhir"
+          />
+
+          <AdminAddSparepartModal
+            :show="showAddSparepartModal"
+            :available-spareparts="availableSpareparts"
+            :is-adding="isAddingSparepart"
+            @submit="addSparepartToBooking"
+            @close="closeAddSparepartModal"
+          />
+        </section>
       </div>
 
-      <!-- Delete Confirmation Modal -->
       <ConfirmationModal
         :show="showDeleteConfirm"
         title="Hapus Suku Cadang"

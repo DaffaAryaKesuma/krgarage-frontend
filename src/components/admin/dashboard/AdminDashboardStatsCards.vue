@@ -49,7 +49,7 @@ const STAT_CARDS: StatCard[] = [
     suffix: () => "pemesanan",
   },
   {
-    label: "Peringatan Stok Rendah",
+    label: "Peringatan Stok Kritis/Habis",
     key: "lowStock",
     color: "red",
     icon: "mdi mdi-alert-circle",

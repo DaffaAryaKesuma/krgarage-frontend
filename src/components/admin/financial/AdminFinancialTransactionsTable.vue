@@ -73,12 +73,24 @@ const getBookingItems = (items?: FinancialBooking["item_pemesanan"]) =>
 
 const getBookingTotal = (booking: FinancialBooking) =>
   booking.total_harga || calculateServiceTotal(booking.layanan);
+
+const TABLE_WRAPPER_CLASS =
+  "mb-8 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm";
+
+const TABLE_CLASS = "min-w-full divide-y divide-gray-200";
+
+const TABLE_HEADER_CELL_CLASS =
+  "px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-gray-500 sm:px-6";
+
+const TABLE_BODY_CLASS = "divide-y divide-gray-100 bg-white";
+
+const TABLE_MOBILE_CARDS_CLASS = "space-y-4 bg-gray-50 p-4";
+
+const TABLE_ROW_CLASS = "transition-colors hover:bg-gray-50/80";
 </script>
 
 <template>
-  <div
-    class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8"
-  >
+  <div :class="TABLE_WRAPPER_CLASS">
     <div class="px-6 py-4 border-b border-gray-200">
       <h2 class="text-lg font-semibold text-gray-900">Detail Transaksi</h2>
     </div>
@@ -86,9 +98,11 @@ const getBookingTotal = (booking: FinancialBooking) =>
       :headers="TABLE_HEADERS"
       :responsive-cards="true"
       desktop-breakpoint="lg"
-      mobile-cards-class="space-y-4 p-4"
-      table-class="w-full"
+      :mobile-cards-class="TABLE_MOBILE_CARDS_CLASS"
+      :table-class="TABLE_CLASS"
       head-class="bg-gray-50"
+      :header-cell-class="TABLE_HEADER_CELL_CLASS"
+      :body-class="TABLE_BODY_CLASS"
     >
       <template #mobile>
         <div
@@ -173,30 +187,39 @@ const getBookingTotal = (booking: FinancialBooking) =>
       <tr
         v-for="booking in paginatedBookings"
         :key="booking.id"
-        class="hover:bg-gray-50"
+        :class="TABLE_ROW_CLASS"
       >
-        <td class="px-6 py-4 text-sm text-gray-600">
+        <td class="px-4 py-4 text-sm font-semibold text-gray-900 sm:px-6">
           {{ booking.kode_pemesanan }}
         </td>
-        <td class="px-6 py-4 text-sm text-gray-600">
+        <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-700 sm:px-6">
           {{ formatDateShort(booking.updated_at) }}
         </td>
-        <td class="px-6 py-4 text-sm text-gray-600">
+        <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-700 sm:px-6">
           {{ booking.pengguna.nama }}
         </td>
-        <td class="px-6 py-4 text-sm text-gray-600">
-          {{ getBookingServices(booking.layanan) }}
-        </td>
-        <td class="px-6 py-4 text-sm text-gray-600">
+        <td class="px-4 py-4 text-sm text-gray-700 sm:px-6">
           <span
-            :class="
-              booking.item_pemesanan?.length ? '' : 'text-gray-400 italic'
-            "
+            class="block max-w-[240px] truncate"
+            :title="getBookingServices(booking.layanan)"
+          >
+            {{ getBookingServices(booking.layanan) }}
+          </span>
+        </td>
+        <td class="px-4 py-4 text-sm text-gray-700 sm:px-6">
+          <span
+            :class="[
+              'block max-w-[260px] truncate',
+              booking.item_pemesanan?.length ? '' : 'text-gray-400 italic',
+            ]"
+            :title="getBookingItems(booking.item_pemesanan)"
           >
             {{ getBookingItems(booking.item_pemesanan) }}
           </span>
         </td>
-        <td class="px-6 py-4 text-sm text-gray-600">
+        <td
+          class="whitespace-nowrap px-4 py-4 text-sm font-semibold text-gray-900 sm:px-6"
+        >
           {{ toIDR(getBookingTotal(booking)) }}
         </td>
       </tr>

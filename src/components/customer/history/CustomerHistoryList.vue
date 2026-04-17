@@ -46,9 +46,7 @@ const handlePageChange = (page: number) => {
 
   <template v-else>
     <!-- Card Grid -->
-    <div
-      class="mb-8 grid grid-cols-1 gap-6 min-[420px]:grid-cols-2 lg:grid-cols-2"
-    >
+    <div class="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
       <CustomerHistoryCard
         v-for="booking in bookings"
         :key="booking.id"

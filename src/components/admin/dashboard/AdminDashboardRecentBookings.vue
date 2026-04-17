@@ -1,7 +1,8 @@
 ﻿<script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { formatDateShort } from "@/utils/date";
 import CustomSelect from "@/components/ui/CustomSelect.vue";
+import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
 import {
   BOOKING_STATUS,
   canAdminAssignAndStart,
@@ -10,8 +11,11 @@ import {
   canAdminConfirmBooking,
   getStatusBadgeClass,
   getStatusLabel,
-  isCompletedStatus,
 } from "@/utils/statusBadge";
+import {
+  getPaymentStatusBadgeClass,
+  getPaymentStatusLabel,
+} from "@/utils/paymentStatus";
 import type { Booking, MechanicOption } from "@/types/booking";
 import TableShell from "@/components/ui/TableShell.vue";
 
@@ -19,6 +23,13 @@ interface Props {
   bookings: Booking[];
   mechanicOptions: MechanicOption[];
   selectedMechanics: { [bookingId: number]: number };
+}
+
+type DashboardActionType = "confirm" | "complete" | "cancel";
+
+interface PendingStatusAction {
+  booking: Booking;
+  action: DashboardActionType;
 }
 
 const props = defineProps<Props>();
@@ -34,6 +45,7 @@ const TABLE_HEADERS = [
   "Tanggal",
   "Pelanggan",
   "Status",
+  "Pembayaran",
   "Mekanik",
   "Aksi",
 ];
@@ -47,27 +59,102 @@ const ICON_ACTION_BUTTON_CLASS =
 const DETAIL_LINK_CLASS =
   "inline-flex h-8 shrink-0 items-center rounded-lg border-2 border-indigo-50 bg-white px-3 text-xs font-semibold text-indigo-600 no-underline transition hover:bg-indigo-50 hover:text-indigo-800";
 
+const TABLE_WRAPPER_CLASS =
+  "overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm";
+
+const TABLE_CLASS = "w-full table-fixed divide-y divide-gray-200";
+
+const TABLE_HEADER_CELL_CLASS =
+  "px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-gray-500 sm:px-6 [&:nth-child(1)]:w-[15%] [&:nth-child(2)]:w-[14%] [&:nth-child(3)]:w-[12%] [&:nth-child(4)]:w-[12%] [&:nth-child(5)]:w-[13%] [&:nth-child(6)]:w-[17%] [&:nth-child(7)]:w-[17%]";
+
+const TABLE_BODY_CLASS = "divide-y divide-gray-100 bg-white";
+
+const TABLE_MOBILE_CARDS_CLASS = "space-y-4 bg-gray-50 p-4";
+
+const TABLE_ROW_CLASS = "transition-colors hover:bg-gray-50/80";
+
+const STATUS_ACTION_CONFIG: Record<
+  DashboardActionType,
+  {
+    title: string;
+    message: string;
+    confirmText: string;
+    variant: "danger" | "warning" | "info" | "success";
+    newStatus: string;
+  }
+> = {
+  confirm: {
+    title: "Konfirmasi Pemesanan",
+    message: "Apakah Anda yakin ingin mengonfirmasi pemesanan ini?",
+    confirmText: "Ya, Konfirmasi",
+    variant: "info",
+    newStatus: BOOKING_STATUS.CONFIRMED,
+  },
+  complete: {
+    title: "Selesaikan Pemesanan",
+    message: "Apakah Anda yakin ingin menandai servis ini telah selesai?",
+    confirmText: "Ya, Selesaikan",
+    variant: "success",
+    newStatus: BOOKING_STATUS.COMPLETED,
+  },
+  cancel: {
+    title: "Batalkan Pemesanan",
+    message: "Apakah Anda yakin ingin membatalkan pemesanan ini?",
+    confirmText: "Ya, Batalkan",
+    variant: "danger",
+    newStatus: BOOKING_STATUS.CANCELLED,
+  },
+};
+
+const showStatusConfirmModal = ref(false);
+const pendingStatusAction = ref<PendingStatusAction | null>(null);
+
 const hasBookings = computed(() => props.bookings.length > 0);
 
+const activeStatusConfig = computed(() => {
+  if (!pendingStatusAction.value) {
+    return null;
+  }
+
+  return STATUS_ACTION_CONFIG[pendingStatusAction.value.action];
+});
+
+const requestStatusConfirmation = (
+  booking: Booking,
+  action: DashboardActionType,
+) => {
+  pendingStatusAction.value = { booking, action };
+  showStatusConfirmModal.value = true;
+};
+
+const closeStatusConfirmModal = () => {
+  showStatusConfirmModal.value = false;
+  pendingStatusAction.value = null;
+};
+
+const applyStatusChange = () => {
+  const action = pendingStatusAction.value;
+  const config = activeStatusConfig.value;
+
+  if (!action || !config) {
+    closeStatusConfirmModal();
+    return;
+  }
+
+  emit("statusChange", action.booking, config.newStatus);
+  closeStatusConfirmModal();
+};
+
 const handleConfirm = (booking: Booking) => {
-  const result = window.confirm(
-    "Apakah Anda yakin ingin mengonfirmasi pemesanan ini?",
-  );
-  if (result) emit("statusChange", booking, BOOKING_STATUS.CONFIRMED);
+  requestStatusConfirmation(booking, "confirm");
 };
 
 const handleComplete = (booking: Booking) => {
-  const result = window.confirm(
-    "Apakah Anda yakin ingin menandai servis ini telah selesai?",
-  );
-  if (result) emit("statusChange", booking, BOOKING_STATUS.COMPLETED);
+  requestStatusConfirmation(booking, "complete");
 };
 
 const handleCancel = (booking: Booking) => {
-  const result = window.confirm(
-    "Apakah Anda yakin ingin membatalkan pemesanan ini?",
-  );
-  if (result) emit("statusChange", booking, BOOKING_STATUS.CANCELLED);
+  requestStatusConfirmation(booking, "cancel");
 };
 
 const handleMechanicChange = (
@@ -82,9 +169,9 @@ const handleMechanicChange = (
 </script>
 
 <template>
-  <div class="bg-white rounded-xl shadow-md overflow-hidden">
+  <div :class="TABLE_WRAPPER_CLASS">
     <div
-      class="px-6 py-4 border-b border-gray-200 flex justify-between items-center"
+      class="flex items-center justify-between border-b border-gray-200 px-5 py-4 sm:px-6"
     >
       <h2 class="text-xl font-bold text-gray-900">
         <i class="mdi mdi-calendar-clock mr-2 text-xl"></i>Pemesanan Terbaru
@@ -109,11 +196,11 @@ const handleMechanicChange = (
       :headers="TABLE_HEADERS"
       :responsive-cards="true"
       desktop-breakpoint="lg"
-      mobile-cards-class="space-y-4 p-4"
-      table-class="min-w-full divide-y divide-gray-200"
+      :mobile-cards-class="TABLE_MOBILE_CARDS_CLASS"
+      :table-class="TABLE_CLASS"
       head-class="bg-gray-50"
-      header-cell-class="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-      body-class="bg-white divide-y divide-gray-200"
+      :header-cell-class="TABLE_HEADER_CELL_CLASS"
+      :body-class="TABLE_BODY_CLASS"
     >
       <template #mobile>
         <div
@@ -134,6 +221,19 @@ const handleMechanicChange = (
             </div>
             <span :class="getStatusBadgeClass(booking.status)">
               {{ getStatusLabel(booking.status) }}
+            </span>
+          </div>
+
+          <div class="mt-2 flex items-center justify-between gap-2">
+            <p
+              class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+            >
+              Pembayaran
+            </p>
+            <span
+              :class="getPaymentStatusBadgeClass(booking.status_pembayaran)"
+            >
+              {{ getPaymentStatusLabel(booking.status_pembayaran) }}
             </span>
           </div>
 
@@ -232,25 +332,32 @@ const handleMechanicChange = (
       <tr
         v-for="booking in bookings"
         :key="booking.id"
-        class="hover:bg-gray-50 transition-colors"
+        :class="TABLE_ROW_CLASS"
       >
-        <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+        <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 sm:px-6">
           <span class="font-semibold text-gray-800">{{
             booking.kode_pemesanan
           }}</span>
         </td>
-        <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+        <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-700 sm:px-6">
           {{ formatDateShort(booking.tanggal_pemesanan) }}
         </td>
-        <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-          {{ booking.pengguna.nama }}
+        <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 sm:px-6">
+          <span class="block truncate" :title="booking.pengguna.nama">
+            {{ booking.pengguna.nama }}
+          </span>
         </td>
-        <td class="px-3 sm:px-6 py-4 whitespace-nowrap">
+        <td class="whitespace-nowrap px-4 py-4 sm:px-6">
           <span :class="getStatusBadgeClass(booking.status)">
             {{ getStatusLabel(booking.status) }}
           </span>
         </td>
-        <td class="px-3 sm:px-6 py-4 whitespace-nowrap">
+        <td class="whitespace-nowrap px-4 py-4 sm:px-6">
+          <span :class="getPaymentStatusBadgeClass(booking.status_pembayaran)">
+            {{ getPaymentStatusLabel(booking.status_pembayaran) }}
+          </span>
+        </td>
+        <td class="px-4 py-4 sm:px-6">
           <div
             v-if="canAdminAssignAndStart(booking.status)"
             class="flex items-center gap-2"
@@ -286,7 +393,7 @@ const handleMechanicChange = (
             Belum ditetapkan
           </span>
         </td>
-        <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
+        <td class="px-4 py-4 text-sm font-medium sm:px-6">
           <div class="flex flex-wrap items-center gap-2">
             <button
               v-if="canAdminConfirmBooking(booking.status)"
@@ -334,5 +441,16 @@ const handleMechanicChange = (
         </td>
       </tr>
     </TableShell>
+
+    <ConfirmationModal
+      :show="showStatusConfirmModal"
+      :title="activeStatusConfig?.title || 'Konfirmasi Aksi'"
+      :message="activeStatusConfig?.message || ''"
+      :confirm-text="activeStatusConfig?.confirmText || 'Ya, Lanjutkan'"
+      cancel-text="Batal"
+      :variant="activeStatusConfig?.variant || 'info'"
+      @confirm="applyStatusChange"
+      @cancel="closeStatusConfirmModal"
+    />
   </div>
 </template>

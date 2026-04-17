@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed, watch } from "vue";
 import axios from "axios";
-import { useRouter, useRoute } from "vue-router";
-import { getAuthHeaders } from "@/utils/auth";
+import {
+  NavigationFailureType,
+  isNavigationFailure,
+  useRouter,
+  useRoute,
+  type RouteLocationRaw,
+} from "vue-router";
+import { getAuthHeaders, getCurrentUser } from "@/utils/auth";
 import { logError } from "@/utils/errorHandler";
 import { formatDateShort } from "@/utils/date";
 import { API_URL } from "@/utils/api";
+import { getRedirectPathForRole } from "@/utils/roleRoutes";
 
 interface Notification {
   id: number;
@@ -16,9 +23,12 @@ interface Notification {
   id_pemesanan: number | null;
   created_at: string;
   pemesanan?: {
+    id?: number;
     kode_pemesanan: string;
   };
 }
+
+type AppRole = "admin" | "mekanik" | "owner" | "customer";
 
 const router = useRouter();
 const route = useRoute();
@@ -81,25 +91,100 @@ const markAllAsRead = async () => {
   }
 };
 
+const normalizeRole = (role?: string | null): AppRole => {
+  if (role === "admin") {
+    return "admin";
+  }
+
+  if (role === "mekanik" || role === "mechanic") {
+    return "mekanik";
+  }
+
+  if (role === "owner") {
+    return "owner";
+  }
+
+  return "customer";
+};
+
+const getBookingIdFromNotification = (
+  notification: Notification,
+): number | null => {
+  const directBookingId = Number(notification.id_pemesanan);
+  if (Number.isFinite(directBookingId) && directBookingId > 0) {
+    return directBookingId;
+  }
+
+  const relationBookingId = Number(notification.pemesanan?.id);
+  if (Number.isFinite(relationBookingId) && relationBookingId > 0) {
+    return relationBookingId;
+  }
+
+  return null;
+};
+
+const resolveNotificationTarget = (
+  notification: Notification,
+): RouteLocationRaw => {
+  const currentUser = getCurrentUser();
+  const normalizedRole = normalizeRole(currentUser?.role);
+  const bookingId = getBookingIdFromNotification(notification);
+
+  if (normalizedRole === "admin") {
+    if (bookingId) {
+      return {
+        name: "admin-booking-detail",
+        params: { id: String(bookingId) },
+      };
+    }
+
+    return { name: "admin-bookings" };
+  }
+
+  if (normalizedRole === "mekanik") {
+    if (bookingId) {
+      return {
+        name: "mechanic-dashboard",
+        query: { pemesanan: String(bookingId) },
+      };
+    }
+
+    return { name: "mechanic-dashboard" };
+  }
+
+  if (normalizedRole === "owner") {
+    return { name: "owner-dashboard" };
+  }
+
+  if (bookingId) {
+    return {
+      name: "history-detail",
+      params: { id: String(bookingId) },
+    };
+  }
+
+  return { name: "history" };
+};
+
 const handleNotificationClick = async (notification: Notification) => {
   if (!notification.sudah_dibaca) {
     await markAsRead(notification.id);
   }
 
-  if (notification.id_pemesanan) {
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-    const role = user.role || "customer";
+  isOpen.value = false;
 
-    if (role === "admin") {
-      router.push(`/admin/pemesanan/${notification.id_pemesanan}`);
-    } else if (role === "mechanic" || role === "mekanik") {
-      router.push(`/mekanik/dasbor`);
-    } else {
-      router.push(`/app/riwayat`);
+  const target = resolveNotificationTarget(notification);
+
+  try {
+    await router.push(target);
+  } catch (error: any) {
+    if (!isNavigationFailure(error, NavigationFailureType.duplicated)) {
+      logError(error, "NotificationBell.handleNotificationClick");
+
+      const fallbackRole = normalizeRole(getCurrentUser()?.role);
+      await router.push(getRedirectPathForRole(fallbackRole));
     }
   }
-
-  isOpen.value = false;
 };
 
 const toggleDropdown = () => {

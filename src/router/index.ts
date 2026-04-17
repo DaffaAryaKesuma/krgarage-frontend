@@ -16,6 +16,7 @@ import CustomerDashboard from "../pages/customer/CustomerDashboard.vue";
 import CustomerVespasPage from "../pages/customer/CustomerVespasPage.vue";
 import CustomerBookingPage from "../pages/customer/CustomerBookingPage.vue";
 import CustomerHistoryPage from "../pages/customer/CustomerHistoryPage.vue";
+import CustomerBookingDetail from "../pages/customer/CustomerBookingDetail.vue";
 
 // Halaman admin
 import AdminDashboard from "../pages/admin/AdminDashboard.vue";
@@ -65,6 +66,11 @@ const router = createRouter({
           path: "riwayat",
           name: "history",
           component: CustomerHistoryPage,
+        },
+        {
+          path: "riwayat/:id",
+          name: "history-detail",
+          component: CustomerBookingDetail,
         },
       ],
     },

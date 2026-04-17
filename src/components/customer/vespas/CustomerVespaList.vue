@@ -42,10 +42,7 @@ const emit = defineEmits<{
       />
 
       <!-- Vespa Cards Grid -->
-      <div
-        v-else
-        class="grid grid-cols-1 min-[420px]:grid-cols-2 lg:grid-cols-3 gap-6"
-      >
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <CustomerVespaCard
           v-for="vespa in vespas"
           :key="vespa.id"

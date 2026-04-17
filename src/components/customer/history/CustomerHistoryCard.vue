@@ -6,6 +6,10 @@ import {
   getStatusBadgeClass,
   getStatusLabel,
 } from "@/utils/statusBadge";
+import {
+  getPaymentStatusBadgeClass,
+  getPaymentStatusLabel,
+} from "@/utils/paymentStatus";
 import type { CustomerBooking } from "@/types/booking";
 
 interface Props {
@@ -55,9 +59,14 @@ const handleCancel = () => {
           </p>
         </div>
       </div>
-      <span :class="getStatusBadgeClass(booking.status)">
-        {{ getStatusLabel(booking.status || "Pending") }}
-      </span>
+      <div class="flex flex-col items-end gap-2">
+        <span :class="getStatusBadgeClass(booking.status)">
+          {{ getStatusLabel(booking.status || "Pending") }}
+        </span>
+        <span :class="getPaymentStatusBadgeClass(booking.status_pembayaran)">
+          {{ getPaymentStatusLabel(booking.status_pembayaran) }}
+        </span>
+      </div>
     </div>
 
     <!-- Vespa Info -->
@@ -83,72 +92,38 @@ const handleCancel = () => {
           <p class="text-sm font-medium text-gray-900">
             {{ booking.layanan.map((s) => s.nama_layanan).join(", ") }}
           </p>
-          <span class="font-medium text-gray-900">{{
-            toIDR(booking.layanan.reduce((sum, s) => sum + s.harga, 0))
-          }}</span>
         </div>
       </div>
     </div>
 
-    <!-- Spareparts -->
-    <div
-      v-if="booking.item_pemesanan?.length"
-      class="mb-4 p-3 bg-orange-50 rounded-lg"
-    >
-      <div class="flex items-start gap-3">
-        <i class="mdi mdi-cog text-2xl text-orange-600 flex-shrink-0"></i>
-        <div class="flex-1">
-          <p class="text-xs text-gray-500 mb-2">Sparepart yang Digunakan</p>
-          <div class="space-y-1">
-            <div
-              v-for="item in booking.item_pemesanan"
-              :key="item.id"
-              class="flex justify-between text-sm"
-            >
-              <span class="text-gray-700">
-                {{ item.suku_cadang.nama_suku_cadang }}
-                <span class="text-xs text-gray-500">(x{{ item.jumlah }})</span>
-              </span>
-              <span class="font-medium text-gray-900">{{
-                toIDR(item.harga_saat_ini * item.jumlah)
-              }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Total harga -->
-    <div class="mb-4 p-3 bg-green-50 rounded-lg">
-      <div class="flex items-center justify-between">
-        <p class="text-lg text-gray-900 font-medium">Total Biaya</p>
-        <p class="text-lg font-bold text-green-600">
-          {{ toIDR(getTotalharga(booking)) }}
-        </p>
-      </div>
-    </div>
-
-    <!-- Cancel Button (only if can cancel) -->
-    <div
-      v-if="canCustomerCancelBooking(booking.status)"
-      class="pt-4 border-t border-gray-200"
-    >
-      <button
-        @click="handleCancel"
-        :disabled="isCancelling"
-        class="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+    <!-- Actions -->
+    <div class="pt-4 border-t border-gray-200 space-y-3">
+      <router-link
+        :to="`/app/riwayat/${booking.id}`"
+        class="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition flex items-center justify-center gap-2"
       >
-        <i v-if="isCancelling" class="mdi mdi-loading mdi-spin"></i>
-        <i v-else class="mdi mdi-close-circle"></i>
-        <span>{{
-          isCancelling ? "Membatalkan..." : "Batalkan Pemesanan"
-        }}</span>
-      </button>
-      <p class="text-xs text-gray-500 mt-2 text-center">
-        <i class="mdi mdi-information"></i>
-        Pemesanan dapat dibatalkan selama statusnya masih "Menunggu" atau
-        "Dikonfirmasi"
-      </p>
+        <i class="mdi mdi-text-box-search-outline"></i>
+        <span>Lihat Detail Pemesanan</span>
+      </router-link>
+
+      <template v-if="canCustomerCancelBooking(booking.status)">
+        <button
+          @click="handleCancel"
+          :disabled="isCancelling"
+          class="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        >
+          <i v-if="isCancelling" class="mdi mdi-loading mdi-spin"></i>
+          <i v-else class="mdi mdi-close-circle"></i>
+          <span>{{
+            isCancelling ? "Membatalkan..." : "Batalkan Pemesanan"
+          }}</span>
+        </button>
+        <p class="text-xs text-gray-500 text-center">
+          <i class="mdi mdi-information"></i>
+          Pemesanan dapat dibatalkan selama statusnya masih "Menunggu" atau
+          "Dikonfirmasi"
+        </p>
+      </template>
     </div>
   </div>
 </template>

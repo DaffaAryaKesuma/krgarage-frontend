@@ -1,160 +1,76 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
-import axios from "axios";
-import { API_URL } from "@/utils/api";
-import { getAuthHeaders } from "@/utils/auth";
-import { useToast } from "@/utils/useToast";
-import {
-  BOOKING_STATUS,
-  canAdminAssignAndStart,
-  canAdminCancelBooking,
-  canAdminCompleteBooking,
-  canAdminConfirmBooking,
-  isCancelledStatus,
-  isCompletedStatus,
-} from "@/utils/statusBadge";
+import { onMounted } from "vue";
+import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
 import CustomSelect from "@/components/ui/CustomSelect.vue";
-
-interface Mechanic {
-  id: number;
-  nama: string;
-  email: string;
-}
+import {
+  CANCEL_BUTTON_CLASS,
+  useAdminBookingControlPanel,
+} from "@/composables/useAdminBookingControlPanel";
 
 const props = defineProps<{
   bookingId: number;
   currentStatus: string;
+  currentPaymentStatus?: string | null;
   currentMechanicId: number | null;
   currentMechanicName?: string;
 }>();
 
 const emit = defineEmits(["refresh"]);
-const toast = useToast();
-
-const availableMechanics = ref<Mechanic[]>([]);
-const isProcessing = ref(false);
-const selectedMechanicId = ref<number | null>(props.currentMechanicId);
-
-const mechanicOptionsList = computed(() => {
-  return availableMechanics.value.map((mech) => ({
-    value: mech.id,
-    label: mech.nama,
-  }));
-});
-
-const canConfirm = computed(() => canAdminConfirmBooking(props.currentStatus));
-const canAssignAndStart = computed(() =>
-  canAdminAssignAndStart(props.currentStatus),
-);
-const canComplete = computed(() =>
-  canAdminCompleteBooking(props.currentStatus),
-);
-const canCancel = computed(() => canAdminCancelBooking(props.currentStatus));
-const isCompleted = computed(() => isCompletedStatus(props.currentStatus));
-const isCancelled = computed(() => isCancelledStatus(props.currentStatus));
-
-const CANCEL_BUTTON_CLASS =
-  "w-full py-2.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition font-semibold";
-
-async function fetchMechanics() {
-  try {
-    const { data } = await axios.get(`${API_URL}/admin/mekanik`, {
-      headers: getAuthHeaders(),
-    });
-    availableMechanics.value = data.data || [];
-  } catch (err) {
-    console.error("Gagal mengambil daftar mekanik:", err);
-  }
-}
-
-async function updateStatus(newStatus: string, successMessage: string) {
-  isProcessing.value = true;
-  try {
-    await axios.patch(
-      `${API_URL}/admin/pemesanan/${props.bookingId}/status`,
-      { status: newStatus },
-      { headers: getAuthHeaders() },
-    );
-    toast.success(successMessage);
-    emit("refresh");
-  } catch (err: any) {
-    console.error(`Gagal memperbarui status ke ${newStatus}:`, err);
-    toast.error(err.response?.data?.message || "Gagal memperbarui status");
-  } finally {
-    isProcessing.value = false;
-  }
-}
-
-async function assignMechanicAndStart() {
-  if (!selectedMechanicId.value) {
-    toast.error("Silakan pilih mekanik terlebih dahulu");
-    return;
-  }
-  isProcessing.value = true;
-  try {
-    // 1. Assign mechanic
-    await axios.post(
-      `${API_URL}/admin/pemesanan/${props.bookingId}/tugaskan-mekanik`,
-      { id_mekanik: selectedMechanicId.value },
-      { headers: getAuthHeaders() },
-    );
-
-    // 2. Update status to In Progress
-    await axios.patch(
-      `${API_URL}/admin/pemesanan/${props.bookingId}/status`,
-      { status: BOOKING_STATUS.IN_PROGRESS },
-      { headers: getAuthHeaders() },
-    );
-
-    toast.success("Mekanik ditugaskan dan servis dimulai!");
-    emit("refresh");
-  } catch (err: any) {
-    console.error("Gagal menugaskan mekanik dan memulai servis:", err);
-    toast.error(err.response?.data?.message || "Gagal memulai servis");
-  } finally {
-    isProcessing.value = false;
-  }
-}
-
-const handleConfirm = () => {
-  const result = window.confirm(
-    "Apakah Anda yakin ingin mengonfirmasi pemesanan ini?",
-  );
-  if (result) {
-    updateStatus(BOOKING_STATUS.CONFIRMED, "Pemesanan berhasil dikonfirmasi!");
-  }
-};
-
-const handleComplete = () => {
-  const result = window.confirm(
-    "Apakah Anda yakin ingin menandai servis ini telah selesai?",
-  );
-  if (result) {
-    updateStatus(BOOKING_STATUS.COMPLETED, "Pemesanan berhasil diselesaikan!");
-  }
-};
-
-const handleCancel = () => {
-  const result = window.confirm(
-    "Apakah Anda yakin ingin membatalkan pemesanan ini?",
-  );
-  if (result) {
-    updateStatus(BOOKING_STATUS.CANCELLED, "Pemesanan berhasil dibatalkan!");
-  }
-};
+const {
+  mechanicOptionsList,
+  isProcessing,
+  selectedMechanicId,
+  canConfirm,
+  canAssignAndStart,
+  canComplete,
+  canCancel,
+  isCompleted,
+  isCancelled,
+  canMarkAsPaid,
+  paymentStatusLabel,
+  paymentStatusBadgeClass,
+  assignedMechanicName,
+  showActionConfirmation,
+  actionConfirmationConfig,
+  handleConfirm,
+  handleComplete,
+  handleCancel,
+  handleMarkAsPaid,
+  closeActionConfirmation,
+  confirmAction,
+  fetchMechanics,
+  assignMechanicAndStart,
+} = useAdminBookingControlPanel(props, () => emit("refresh"));
 
 onMounted(() => {
-  fetchMechanics();
+  void fetchMechanics();
 });
 </script>
 
 <template>
   <div
-    class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col h-full"
+    class="flex h-full flex-col rounded-xl border border-gray-100 bg-white p-4 shadow-sm sm:p-5"
   >
-    <h3 class="text-sm font-bold text-gray-900 mb-4 h-9 flex items-center">
+    <h3 class="mb-3 flex items-center text-sm font-bold text-gray-900">
       Kontrol Pemesanan
     </h3>
+
+    <div
+      class="mb-4 rounded-lg border px-3 py-2"
+      :class="
+        assignedMechanicName
+          ? 'border-blue-200 bg-blue-50'
+          : 'border-gray-200 bg-gray-50'
+      "
+    >
+      <p class="text-xs text-gray-500">Mekanik Ditugaskan</p>
+      <p
+        class="text-sm font-semibold"
+        :class="assignedMechanicName ? 'text-blue-800' : 'text-gray-600'"
+      >
+        {{ assignedMechanicName || "Belum ditugaskan" }}
+      </p>
+    </div>
 
     <div class="space-y-4 flex-1">
       <!-- PENDING: Show Confirm & Cancel -->
@@ -228,7 +144,7 @@ onMounted(() => {
             <i class="mdi mdi-cog animate-spin text-lg"></i>
             <span>
               Sedang dikerjakan oleh:
-              <strong>{{ currentMechanicName || "Mekanik" }}</strong>
+              <strong>{{ assignedMechanicName || "Mekanik" }}</strong>
             </span>
           </p>
         </div>
@@ -262,6 +178,29 @@ onMounted(() => {
             <p class="text-xs text-green-600 mt-1">
               Pemesanan ini telah selesai dikerjakan.
             </p>
+
+            <div
+              class="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-green-200 bg-white px-3 py-2"
+            >
+              <div>
+                <p class="text-[11px] font-medium uppercase tracking-wide text-gray-500">
+                  Status Pembayaran
+                </p>
+                <span :class="paymentStatusBadgeClass">
+                  {{ paymentStatusLabel }}
+                </span>
+              </div>
+
+              <button
+                v-if="canMarkAsPaid"
+                @click="handleMarkAsPaid"
+                :disabled="isProcessing"
+                class="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <i class="mdi mdi-cash-check"></i>
+                Tandai Lunas
+              </button>
+            </div>
           </div>
         </div>
         <div
@@ -278,9 +217,23 @@ onMounted(() => {
             <p class="text-xs text-red-600 mt-1">
               Pemesanan ini telah dibatalkan.
             </p>
+            <p v-if="assignedMechanicName" class="mt-2 text-xs text-gray-600">
+              Mekanik: <strong>{{ assignedMechanicName }}</strong>
+            </p>
           </div>
         </div>
       </div>
     </div>
+
+    <ConfirmationModal
+      :show="showActionConfirmation"
+      :title="actionConfirmationConfig?.title || 'Konfirmasi Aksi'"
+      :message="actionConfirmationConfig?.message || ''"
+      :confirm-text="actionConfirmationConfig?.confirmText || 'Ya, Lanjutkan'"
+      cancel-text="Batal"
+      :variant="actionConfirmationConfig?.variant || 'info'"
+      @confirm="confirmAction"
+      @cancel="closeActionConfirmation"
+    />
   </div>
 </template>

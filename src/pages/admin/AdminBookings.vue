@@ -15,6 +15,10 @@ import {
   matchesBookingStatusFilter,
   type BookingStatusFilter,
 } from "@/utils/statusBadge";
+import {
+  matchesPaymentStatusFilter,
+  type PaymentStatusFilter,
+} from "@/utils/paymentStatus";
 import { useApiPagination } from "@/composables/useApiPagination";
 import type { Booking } from "@/types/booking";
 import type { MechanicProfile } from "@/types/user";
@@ -33,6 +37,7 @@ const searchQuery = ref("");
 const monthFilter = ref("");
 const yearFilter = ref(new Date().getFullYear().toString());
 const statusFilter = ref<BookingStatusFilter>("all");
+const paymentFilter = ref<PaymentStatusFilter>("all");
 
 // Computed
 const filteredBookings = computed(() => {
@@ -41,6 +46,15 @@ const filteredBookings = computed(() => {
 
   return bookings.value.filter((booking) => {
     if (!matchesBookingStatusFilter(booking.status, statusFilter.value)) {
+      return false;
+    }
+
+    if (
+      !matchesPaymentStatusFilter(
+        booking.status_pembayaran,
+        paymentFilter.value,
+      )
+    ) {
       return false;
     }
 
@@ -224,6 +238,7 @@ onMounted(() => {
             v-model:month-filter="monthFilter"
             v-model:year-filter="yearFilter"
             v-model:status-filter="statusFilter"
+            v-model:payment-filter="paymentFilter"
             v-model:show-today-only="showTodayOnly"
             :total-bookings="bookings.length"
             :filtered-count="filteredBookings.length"
@@ -238,10 +253,7 @@ onMounted(() => {
           />
 
           <!-- Booking Cards Grid -->
-          <div
-            v-else
-            class="grid grid-cols-1 min-[420px]:grid-cols-2 lg:grid-cols-2 gap-6"
-          >
+          <div v-else class="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <AdminBookingCard
               v-for="booking in filteredBookings"
               :key="booking.id"

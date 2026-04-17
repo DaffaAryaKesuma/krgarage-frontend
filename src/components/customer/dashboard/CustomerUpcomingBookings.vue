@@ -2,6 +2,10 @@
 import { toIDR } from "@/utils/money";
 import { formatDateShort } from "@/utils/date";
 import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
+import {
+  getPaymentStatusBadgeClass,
+  getPaymentStatusLabel,
+} from "@/utils/paymentStatus";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import type { CustomerBooking } from "@/types/booking";
 
@@ -52,12 +56,17 @@ withDefaults(defineProps<Props>(), {
               </p>
             </div>
           </div>
-          <span :class="getStatusBadgeClass(b.status || 'Pending')">
-            {{ getStatusLabel(b.status || "Pending") }}
-          </span>
+          <div class="flex flex-col items-end gap-2">
+            <span :class="getStatusBadgeClass(b.status || 'Pending')">
+              {{ getStatusLabel(b.status || "Pending") }}
+            </span>
+            <span :class="getPaymentStatusBadgeClass(b.status_pembayaran)">
+              {{ getPaymentStatusLabel(b.status_pembayaran) }}
+            </span>
+          </div>
         </div>
         <div
-          class="mb-4 grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 sm:gap-4 lg:grid-cols-2"
+          class="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-2"
         >
           <div class="flex items-start gap-2">
             <i class="mdi mdi-motorbike text-xl text-gray-600"></i>
