@@ -11,15 +11,15 @@ const props = defineProps<{
   bookingId: number;
   currentStatus: string;
   currentPaymentStatus?: string | null;
-  currentMechanicId: number | null;
-  currentMechanicName?: string;
+  currentMekanikId: number | null;
+  currentMekanikName?: string;
 }>();
 
 const emit = defineEmits(["refresh"]);
 const {
-  mechanicOptionsList,
+  mekanikOptionsList,
   isProcessing,
-  selectedMechanicId,
+  selectedMekanikId,
   canConfirm,
   canAssignAndStart,
   canComplete,
@@ -29,7 +29,7 @@ const {
   canMarkAsPaid,
   paymentStatusLabel,
   paymentStatusBadgeClass,
-  assignedMechanicName,
+  assignedMekanikName,
   showActionConfirmation,
   actionConfirmationConfig,
   handleConfirm,
@@ -38,12 +38,12 @@ const {
   handleMarkAsPaid,
   closeActionConfirmation,
   confirmAction,
-  fetchMechanics,
-  assignMechanicAndStart,
+  fetchMekaniks,
+  assignMekanikAndStart,
 } = useAdminBookingControlPanel(props, () => emit("refresh"));
 
 onMounted(() => {
-  void fetchMechanics();
+  void fetchMekaniks();
 });
 </script>
 
@@ -58,7 +58,7 @@ onMounted(() => {
     <div
       class="mb-4 rounded-lg border px-3 py-2"
       :class="
-        assignedMechanicName
+        assignedMekanikName
           ? 'border-blue-200 bg-blue-50'
           : 'border-gray-200 bg-gray-50'
       "
@@ -66,14 +66,13 @@ onMounted(() => {
       <p class="text-xs text-gray-500">Mekanik Ditugaskan</p>
       <p
         class="text-sm font-semibold"
-        :class="assignedMechanicName ? 'text-blue-800' : 'text-gray-600'"
+        :class="assignedMekanikName ? 'text-blue-800' : 'text-gray-600'"
       >
-        {{ assignedMechanicName || "Belum ditugaskan" }}
+        {{ assignedMekanikName || "Belum ditugaskan" }}
       </p>
     </div>
 
     <div class="space-y-4 flex-1">
-      <!-- PENDING: Show Confirm & Cancel -->
       <div v-if="canConfirm" class="space-y-3">
         <button
           @click="handleConfirm"
@@ -98,7 +97,6 @@ onMounted(() => {
         </button>
       </div>
 
-      <!-- CONFIRMED: Show Assign Mechanic & Cancel -->
       <div v-else-if="canAssignAndStart" class="space-y-4">
         <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <p
@@ -108,14 +106,14 @@ onMounted(() => {
             Pilih mekanik untuk mulai servis
           </p>
           <CustomSelect
-            v-model="selectedMechanicId"
-            :options="mechanicOptionsList"
+            v-model="selectedMekanikId"
+            :options="mekanikOptionsList"
             placeholder="-- Pilih Mekanik --"
             class="mb-3"
           />
           <button
-            @click="assignMechanicAndStart"
-            :disabled="!selectedMechanicId || isProcessing"
+            @click="assignMekanikAndStart"
+            :disabled="!selectedMekanikId || isProcessing"
             class="w-full py-3 bg-purple-600 text-white text-sm font-semibold rounded-lg hover:bg-purple-700 transition flex items-center justify-center gap-2 disabled:bg-gray-300 disabled:cursor-not-allowed"
           >
             <span v-if="isProcessing"
@@ -137,14 +135,13 @@ onMounted(() => {
         </button>
       </div>
 
-      <!-- IN PROGRESS: Show Complete -->
       <div v-else-if="canComplete" class="space-y-3">
         <div class="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-3">
           <p class="text-sm text-purple-800 flex items-center gap-2">
             <i class="mdi mdi-cog animate-spin text-lg"></i>
             <span>
               Sedang dikerjakan oleh:
-              <strong>{{ assignedMechanicName || "Mekanik" }}</strong>
+              <strong>{{ assignedMekanikName || "Mekanik" }}</strong>
             </span>
           </p>
         </div>
@@ -162,7 +159,6 @@ onMounted(() => {
         </button>
       </div>
 
-      <!-- COMPLETED or CANCELLED: Status Info Only -->
       <div v-else>
         <div
           v-if="isCompleted"
@@ -183,7 +179,9 @@ onMounted(() => {
               class="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-green-200 bg-white px-3 py-2"
             >
               <div>
-                <p class="text-[11px] font-medium uppercase tracking-wide text-gray-500">
+                <p
+                  class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+                >
                   Status Pembayaran
                 </p>
                 <span :class="paymentStatusBadgeClass">
@@ -217,8 +215,8 @@ onMounted(() => {
             <p class="text-xs text-red-600 mt-1">
               Pemesanan ini telah dibatalkan.
             </p>
-            <p v-if="assignedMechanicName" class="mt-2 text-xs text-gray-600">
-              Mekanik: <strong>{{ assignedMechanicName }}</strong>
+            <p v-if="assignedMekanikName" class="mt-2 text-xs text-gray-600">
+              Mekanik: <strong>{{ assignedMekanikName }}</strong>
             </p>
           </div>
         </div>

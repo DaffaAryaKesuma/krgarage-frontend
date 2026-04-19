@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, watch } from "vue";
+import { toRef } from "vue";
+import { useBaseDatePicker } from "@/composables/useBaseDatePicker";
 
 interface Props {
   modelValue: string;
@@ -15,119 +16,24 @@ const emit = defineEmits<{
   (e: "update:modelValue", value: string): void;
 }>();
 
-const showPicker = ref(false);
-
-// Initialize month and year based on modelValue or current date
-const initDate = new Date(props.modelValue || new Date());
-const currentMonth = ref(initDate.getMonth());
-const currentYear = ref(initDate.getFullYear());
-
-// Sync month and year when modelValue changes from outside
-watch(
-  () => props.modelValue,
-  (newVal) => {
-    if (newVal) {
-      const d = new Date(newVal);
-      currentMonth.value = d.getMonth();
-      currentYear.value = d.getFullYear();
-    }
-  },
-);
-
-const MONTHS = [
-  "Januari",
-  "Februari",
-  "Maret",
-  "April",
-  "Mei",
-  "Juni",
-  "Juli",
-  "Agustus",
-  "September",
-  "Oktober",
-  "November",
-  "Desember",
-];
-
-const DAYS = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
-
-const formatDateDisplay = (dateStr: string) => {
-  if (!dateStr) return "Pilih tanggal";
-  const date = new Date(dateStr);
-  return `${date.getDate()} ${MONTHS[date.getMonth()].slice(0, 3)} ${date.getFullYear()}`;
-};
-
-const getDaysInMonth = (month: number, year: number) => {
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const days = [];
-
-  for (let i = 0; i < firstDay; i++) {
-    days.push(null);
-  }
-  for (let i = 1; i <= daysInMonth; i++) {
-    days.push(i);
-  }
-
-  return days;
-};
-
-const calendarDays = computed(() =>
-  getDaysInMonth(currentMonth.value, currentYear.value),
-);
-
-const selectDate = (day: number | null) => {
-  if (!day) return;
-  const y = currentYear.value;
-  const m = String(currentMonth.value + 1).padStart(2, "0");
-  const d = String(day).padStart(2, "0");
-  emit("update:modelValue", `${y}-${m}-${d}`);
-  showPicker.value = false;
-};
-
-const changeMonth = (delta: number) => {
-  currentMonth.value += delta;
-  if (currentMonth.value > 11) {
-    currentMonth.value = 0;
-    currentYear.value++;
-  } else if (currentMonth.value < 0) {
-    currentMonth.value = 11;
-    currentYear.value--;
-  }
-};
-
-const changeYear = (delta: number) => {
-  currentYear.value += delta;
-};
-
-const isDateSelected = (day: number | null) => {
-  if (!day || !props.modelValue) return false;
-  const y = currentYear.value;
-  const m = String(currentMonth.value + 1).padStart(2, "0");
-  const d = String(day).padStart(2, "0");
-  return `${y}-${m}-${d}` === props.modelValue;
-};
-
-const isToday = (day: number | null, month: number, year: number) => {
-  if (!day) return false;
-  const today = new Date();
-  return (
-    day === today.getDate() &&
-    month === today.getMonth() &&
-    year === today.getFullYear()
-  );
-};
-
-const handleBlur = () => {
-  window.setTimeout(() => {
-    showPicker.value = false;
-  }, 200);
-};
-
-const setToday = () => {
-  emit("update:modelValue", new Date().toISOString().split("T")[0]);
-  showPicker.value = false;
-};
+const {
+  showPicker,
+  currentMonth,
+  currentYear,
+  MONTHS,
+  DAYS,
+  calendarDays,
+  formatDateDisplay,
+  selectDate,
+  changeMonth,
+  changeYear,
+  isDateSelected,
+  isToday,
+  handleBlur,
+  setToday,
+} = useBaseDatePicker(toRef(props, "modelValue"), (value) => {
+  emit("update:modelValue", value);
+});
 </script>
 
 <template>
@@ -144,7 +50,6 @@ const setToday = () => {
       <i class="mdi mdi-calendar text-red-600"></i>
     </button>
 
-    <!-- Calendar Dropdown -->
     <div
       v-if="showPicker"
       @mousedown.prevent
@@ -153,7 +58,6 @@ const setToday = () => {
         alignRight ? 'right-0 sm:right-auto sm:left-0' : '',
       ]"
     >
-      <!-- Month/Year Navigation -->
       <div class="flex items-center justify-between mb-3">
         <div class="flex gap-1">
           <button
@@ -190,7 +94,6 @@ const setToday = () => {
         </div>
       </div>
 
-      <!-- Days Header -->
       <div class="grid grid-cols-7 gap-1 mb-2">
         <div
           v-for="day in DAYS"
@@ -201,7 +104,6 @@ const setToday = () => {
         </div>
       </div>
 
-      <!-- Calendar Grid -->
       <div class="grid grid-cols-7 gap-1">
         <button
           v-for="(day, index) in calendarDays"
@@ -223,7 +125,6 @@ const setToday = () => {
         </button>
       </div>
 
-      <!-- Quick Actions -->
       <div class="flex gap-2 mt-3 pt-3 border-t">
         <button
           @click="setToday"

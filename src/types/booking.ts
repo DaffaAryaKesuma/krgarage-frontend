@@ -1,6 +1,6 @@
 import type { SparepartSummary } from "./inventory";
 import type { ServiceSummary } from "./service";
-import type { MechanicProfile, UserProfile } from "./user";
+import type { MekanikProfile, UserProfile } from "./user";
 
 export interface BookingVespa {
   model: string;
@@ -32,11 +32,11 @@ export interface Booking {
   pengguna: UserProfile;
   vespa: BookingVespa;
   layanan: Array<Pick<ServiceSummary, "id" | "nama_layanan" | "harga">>;
-  mekanik?: MechanicProfile | null;
+  mekanik?: MekanikProfile | null;
   item_pemesanan?: BookingItem[];
 }
 
-export interface MechanicOption {
+export interface MekanikOption {
   value: number;
   label: string;
 }
@@ -47,7 +47,7 @@ export interface BookingServiceLine {
   harga: number;
 }
 
-export interface CustomerBooking {
+export interface PelangganBooking {
   id: number;
   kode_pemesanan: string;
   created_at?: string;
@@ -62,17 +62,17 @@ export interface CustomerBooking {
   item_pemesanan?: BookingItem[];
 }
 
-export interface MechanicBookingService {
+export interface MekanikBookingService {
   id: number;
   nama_layanan: string;
 }
 
-export interface MechanicBooking {
+export interface MekanikBooking {
   id: number;
   kode_pemesanan: string;
   pengguna: UserProfile;
   vespa: BookingVespa;
-  layanan?: MechanicBookingService[];
+  layanan?: MekanikBookingService[];
   tanggal_pemesanan: string;
   jam_pemesanan: string;
   status: string;
@@ -108,7 +108,7 @@ export interface FinancialBooking {
   }>;
 }
 
-export interface OwnerRecentBookingActivity {
+export interface PemilikRecentBookingActivity {
   id: number;
   kode_pemesanan: string;
   tanggal_pemesanan: string;

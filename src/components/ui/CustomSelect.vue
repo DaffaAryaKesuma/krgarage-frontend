@@ -7,6 +7,7 @@ interface Props {
   label?: string;
   placeholder?: string;
   disabled?: boolean;
+  truncateSelectedLabel?: boolean;
   class?: string;
 }
 
@@ -18,6 +19,7 @@ interface Emits {
 const props = withDefaults(defineProps<Props>(), {
   placeholder: "Pilih opsi...",
   disabled: false,
+  truncateSelectedLabel: true,
 });
 
 const emit = defineEmits<Emits>();
@@ -109,7 +111,7 @@ onUnmounted(() => {
       :disabled="disabled"
       type="button"
       :class="[
-        'w-full px-4 py-2 border border-gray-300 rounded-lg text-left flex items-center justify-between',
+        'w-full min-w-0 px-4 py-2 border border-gray-300 rounded-lg text-left flex items-center justify-between',
         'transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent',
         'text-sm sm:text-base',
         disabled
@@ -118,12 +120,18 @@ onUnmounted(() => {
         props.class,
       ]"
     >
-      <span :class="modelValue === null ? 'text-gray-500' : 'text-gray-900'">
+      <span
+        :class="[
+          'block min-w-0 flex-1 pr-2',
+          props.truncateSelectedLabel ? 'truncate' : 'whitespace-nowrap',
+          modelValue === null ? 'text-gray-500' : 'text-gray-900',
+        ]"
+      >
         {{ selectedLabel }}
       </span>
       <i
         :class="[
-          'mdi mdi-chevron-down text-lg transition-transform duration-200',
+          'mdi mdi-chevron-down shrink-0 text-lg transition-transform duration-200',
           isOpen ? 'rotate-180' : '',
         ]"
       ></i>

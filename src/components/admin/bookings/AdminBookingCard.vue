@@ -1,26 +1,21 @@
 <script setup lang="ts">
 import { formatDateShort } from "@/utils/date";
 import {
-  canAdminAssignAndStart,
-  canAdminCancelBooking,
-  canAdminCompleteBooking,
-  canAdminConfirmBooking,
   getStatusBadgeClass,
   getStatusIcon,
   getStatusLabel,
-  isCompletedStatus,
 } from "@/utils/statusBadge";
 import {
   getPaymentStatusBadgeClass,
   getPaymentStatusLabel,
 } from "@/utils/paymentStatus";
-import CustomSelect from "@/components/ui/CustomSelect.vue";
-import type { Booking, MechanicOption } from "@/types/booking";
+import AdminBookingActionPanel from "@/components/admin/bookings/AdminBookingActionPanel.vue";
+import type { Booking, MekanikOption } from "@/types/booking";
 
 interface Props {
   booking: Booking;
-  mechanicOptions: MechanicOption[];
-  selectedMechanicId?: number | null;
+  mekanikOptions: MekanikOption[];
+  selectedMekanikId?: number | null;
 }
 
 defineProps<Props>();
@@ -29,21 +24,15 @@ const emit = defineEmits<{
   confirm: [booking: Booking];
   cancel: [booking: Booking];
   complete: [booking: Booking];
+  markPaid: [booking: Booking];
   assignAndStart: [booking: Booking];
-  "update:selectedMechanicId": [mechanicId: number | null];
+  "update:selectedMekanikId": [mekanikId: number | null];
 }>();
 
 const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
 
 const getServicesList = (layanan: Booking["layanan"]) =>
   layanan.map((s) => s.nama_layanan).join(", ");
-
-const CANCEL_BUTTON_CLASS =
-  "w-full py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition";
-
-const handleMechanicChange = (value: string | number | null) => {
-  emit("update:selectedMechanicId", typeof value === "number" ? value : null);
-};
 </script>
 
 <template>
@@ -141,92 +130,16 @@ const handleMechanicChange = (value: string | number | null) => {
       </div>
     </div>
 
-    <!-- Action Buttons Based on Status -->
-    <div class="space-y-2">
-      <!-- PENDING: Show Confirm Button -->
-      <div v-if="canAdminConfirmBooking(booking.status)" class="space-y-2">
-        <button
-          @click="emit('confirm', booking)"
-          class="w-full py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2"
-        >
-          <i class="mdi mdi-check-circle"></i>
-          Konfirmasi Pemesanan
-        </button>
-        <button @click="emit('cancel', booking)" :class="CANCEL_BUTTON_CLASS">
-          Batalkan
-        </button>
-      </div>
-
-      <!-- CONFIRMED: Show Assign Mechanic & Start Service -->
-      <div v-else-if="canAdminAssignAndStart(booking.status)" class="space-y-2">
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
-          <p class="text-xs text-blue-800 mb-2 font-medium">
-            <i class="mdi mdi-information"></i>
-            Pilih mekanik untuk mulai servis
-          </p>
-          <CustomSelect
-            :model-value="selectedMechanicId ?? null"
-            @update:model-value="handleMechanicChange"
-            :options="mechanicOptions"
-            placeholder="Pilih Mekanik"
-            class="mb-2"
-          />
-          <button
-            @click="emit('assignAndStart', booking)"
-            :disabled="!selectedMechanicId"
-            class="w-full py-2.5 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition flex items-center justify-center gap-2 disabled:bg-gray-300 disabled:cursor-not-allowed"
-          >
-            <i class="mdi mdi-play-circle"></i>
-            Assign & Mulai Servis
-          </button>
-        </div>
-        <button @click="emit('cancel', booking)" :class="CANCEL_BUTTON_CLASS">
-          Batalkan
-        </button>
-      </div>
-
-      <!-- IN PROGRESS: Show Complete Button -->
-      <div
-        v-else-if="canAdminCompleteBooking(booking.status)"
-        class="space-y-2"
-      >
-        <div class="bg-purple-50 border border-purple-200 rounded-lg p-2 mb-2">
-          <p class="text-xs text-purple-800">
-            <i class="mdi mdi-cog animate-spin"></i>
-            Sedang dikerjakan oleh:
-            <strong>{{ booking.mekanik?.nama || "Belum ditentukan" }}</strong>
-          </p>
-        </div>
-        <button
-          @click="emit('complete', booking)"
-          class="w-full py-2.5 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition flex items-center justify-center gap-2"
-        >
-          <i class="mdi mdi-check-all"></i>
-          Tandai Selesai
-        </button>
-      </div>
-
-      <!-- COMPLETED or CANCELLED: Show View Details Only -->
-      <div v-else>
-        <div
-          v-if="isCompletedStatus(booking.status)"
-          class="bg-green-50 border border-green-200 rounded-lg p-2 mb-2"
-        >
-          <p class="text-xs text-green-800">
-            <i class="mdi mdi-check-all"></i>
-            Servis telah selesai
-          </p>
-        </div>
-      </div>
-
-      <!-- Detail Button (Always Show) -->
-      <router-link
-        :to="`/admin/pemesanan/${booking.id}`"
-        class="block w-full py-2.5 text-center bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition"
-      >
-        <i class="mdi mdi-eye"></i>
-        Lihat Detail Lengkap
-      </router-link>
-    </div>
+    <AdminBookingActionPanel
+      :booking="booking"
+      :mekanik-options="mekanikOptions"
+      :selected-mekanik-id="selectedMekanikId ?? null"
+      @confirm="emit('confirm', $event)"
+      @cancel="emit('cancel', $event)"
+      @complete="emit('complete', $event)"
+      @mark-paid="emit('markPaid', $event)"
+      @assign-and-start="emit('assignAndStart', $event)"
+      @update:selected-mekanik-id="emit('update:selectedMekanikId', $event)"
+    />
   </div>
 </template>

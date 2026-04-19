@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { formatDateShort } from "@/utils/date";
-import { toIDR } from "@/utils/money";
 import TableShell from "@/components/ui/TableShell.vue";
 import Pagination from "@/components/ui/Pagination.vue";
+import AdminFinancialTransactionMobileCard from "@/components/admin/financial/AdminFinancialTransactionMobileCard.vue";
+import AdminFinancialTransactionDesktopRow from "@/components/admin/financial/AdminFinancialTransactionDesktopRow.vue";
 import type {
   FinancialBooking,
   FinancialBookingService,
@@ -85,8 +85,6 @@ const TABLE_HEADER_CELL_CLASS =
 const TABLE_BODY_CLASS = "divide-y divide-gray-100 bg-white";
 
 const TABLE_MOBILE_CARDS_CLASS = "space-y-4 bg-gray-50 p-4";
-
-const TABLE_ROW_CLASS = "transition-colors hover:bg-gray-50/80";
 </script>
 
 <template>
@@ -105,124 +103,24 @@ const TABLE_ROW_CLASS = "transition-colors hover:bg-gray-50/80";
       :body-class="TABLE_BODY_CLASS"
     >
       <template #mobile>
-        <div
+        <AdminFinancialTransactionMobileCard
           v-for="booking in paginatedBookings"
           :key="`mobile-${booking.id}`"
-          class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm"
-        >
-          <div class="flex items-start justify-between gap-3">
-            <div>
-              <p
-                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-              >
-                Kode Pemesanan
-              </p>
-              <p class="text-sm font-semibold text-gray-900">
-                {{ booking.kode_pemesanan }}
-              </p>
-            </div>
-            <div class="text-right">
-              <p
-                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-              >
-                Tanggal
-              </p>
-              <p class="text-sm font-medium text-gray-900">
-                {{ formatDateShort(booking.updated_at) }}
-              </p>
-            </div>
-          </div>
-
-          <div class="mt-3 space-y-2 text-sm">
-            <div>
-              <p
-                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-              >
-                Pelanggan
-              </p>
-              <p class="font-medium text-gray-900">
-                {{ booking.pengguna.nama }}
-              </p>
-            </div>
-            <div>
-              <p
-                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-              >
-                Layanan
-              </p>
-              <p class="text-gray-900">
-                {{ getBookingServices(booking.layanan) }}
-              </p>
-            </div>
-            <div>
-              <p
-                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-              >
-                Suku Cadang
-              </p>
-              <p
-                :class="
-                  booking.item_pemesanan?.length
-                    ? 'text-gray-900'
-                    : 'text-gray-400 italic'
-                "
-              >
-                {{ getBookingItems(booking.item_pemesanan) }}
-              </p>
-            </div>
-            <div class="pt-2 border-t border-gray-100">
-              <p
-                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-              >
-                Total
-              </p>
-              <p class="font-semibold text-gray-900">
-                {{ toIDR(getBookingTotal(booking)) }}
-              </p>
-            </div>
-          </div>
-        </div>
+          :booking="booking"
+          :booking-services="getBookingServices(booking.layanan)"
+          :booking-items="getBookingItems(booking.item_pemesanan)"
+          :booking-total="getBookingTotal(booking)"
+        />
       </template>
 
-      <tr
+      <AdminFinancialTransactionDesktopRow
         v-for="booking in paginatedBookings"
         :key="booking.id"
-        :class="TABLE_ROW_CLASS"
-      >
-        <td class="px-4 py-4 text-sm font-semibold text-gray-900 sm:px-6">
-          {{ booking.kode_pemesanan }}
-        </td>
-        <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-700 sm:px-6">
-          {{ formatDateShort(booking.updated_at) }}
-        </td>
-        <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-700 sm:px-6">
-          {{ booking.pengguna.nama }}
-        </td>
-        <td class="px-4 py-4 text-sm text-gray-700 sm:px-6">
-          <span
-            class="block max-w-[240px] truncate"
-            :title="getBookingServices(booking.layanan)"
-          >
-            {{ getBookingServices(booking.layanan) }}
-          </span>
-        </td>
-        <td class="px-4 py-4 text-sm text-gray-700 sm:px-6">
-          <span
-            :class="[
-              'block max-w-[260px] truncate',
-              booking.item_pemesanan?.length ? '' : 'text-gray-400 italic',
-            ]"
-            :title="getBookingItems(booking.item_pemesanan)"
-          >
-            {{ getBookingItems(booking.item_pemesanan) }}
-          </span>
-        </td>
-        <td
-          class="whitespace-nowrap px-4 py-4 text-sm font-semibold text-gray-900 sm:px-6"
-        >
-          {{ toIDR(getBookingTotal(booking)) }}
-        </td>
-      </tr>
+        :booking="booking"
+        :booking-services="getBookingServices(booking.layanan)"
+        :booking-items="getBookingItems(booking.item_pemesanan)"
+        :booking-total="getBookingTotal(booking)"
+      />
 
       <template #footer>
         <div class="px-4 pb-3 sm:px-6">

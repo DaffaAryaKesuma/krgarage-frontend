@@ -1,254 +1,19 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed, watch } from "vue";
-import axios from "axios";
-import {
-  NavigationFailureType,
-  isNavigationFailure,
-  useRouter,
-  useRoute,
-  type RouteLocationRaw,
-} from "vue-router";
-import { getAuthHeaders, getCurrentUser } from "@/utils/auth";
-import { logError } from "@/utils/errorHandler";
 import { formatDateShort } from "@/utils/date";
-import { API_URL } from "@/utils/api";
-import { getRedirectPathForRole } from "@/utils/roleRoutes";
+import { useNotificationBell } from "@/composables/useNotificationBell";
 
-interface Notification {
-  id: number;
-  tipe: string;
-  judul: string;
-  pesan: string;
-  sudah_dibaca: boolean;
-  id_pemesanan: number | null;
-  created_at: string;
-  pemesanan?: {
-    id?: number;
-    kode_pemesanan: string;
-  };
-}
-
-type AppRole = "admin" | "mekanik" | "owner" | "customer";
-
-const router = useRouter();
-const route = useRoute();
-const isOpen = ref(false);
-const notifications = ref<Notification[]>([]);
-const unreadCount = ref(0);
-const isLoading = ref(false);
-
-let pollingInterval: ReturnType<typeof setInterval> | null = null;
-
-const hasUnread = computed(() => unreadCount.value > 0);
-
-const fetchNotifications = async (background = false) => {
-  try {
-    if (!background) isLoading.value = true;
-
-    const response = await axios.get(`${API_URL}/notifikasi`, {
-      headers: getAuthHeaders(),
-    });
-    notifications.value = response.data.notifikasi || [];
-    unreadCount.value = response.data.jumlah_belum_dibaca || 0;
-  } catch (error: any) {
-    if (!background) logError(error, "NotificationBell.fetchNotifications");
-  } finally {
-    if (!background) isLoading.value = false;
-  }
-};
-
-const markAsRead = async (notificationId: number) => {
-  try {
-    await axios.post(
-      `${API_URL}/notifikasi/${notificationId}/tandai-dibaca`,
-      {},
-      { headers: getAuthHeaders() },
-    );
-
-    const notification = notifications.value.find(
-      (n) => n.id === notificationId,
-    );
-    if (notification && !notification.sudah_dibaca) {
-      notification.sudah_dibaca = true;
-      unreadCount.value = Math.max(0, unreadCount.value - 1);
-    }
-  } catch (error: any) {
-    logError(error, "NotificationBell.markAsRead");
-  }
-};
-
-const markAllAsRead = async () => {
-  try {
-    await axios.post(
-      `${API_URL}/notifikasi/tandai-semua-dibaca`,
-      {},
-      { headers: getAuthHeaders() },
-    );
-    notifications.value.forEach((n) => (n.sudah_dibaca = true));
-    unreadCount.value = 0;
-  } catch (error: any) {
-    logError(error, "NotificationBell.markAllAsRead");
-  }
-};
-
-const normalizeRole = (role?: string | null): AppRole => {
-  if (role === "admin") {
-    return "admin";
-  }
-
-  if (role === "mekanik" || role === "mechanic") {
-    return "mekanik";
-  }
-
-  if (role === "owner") {
-    return "owner";
-  }
-
-  return "customer";
-};
-
-const getBookingIdFromNotification = (
-  notification: Notification,
-): number | null => {
-  const directBookingId = Number(notification.id_pemesanan);
-  if (Number.isFinite(directBookingId) && directBookingId > 0) {
-    return directBookingId;
-  }
-
-  const relationBookingId = Number(notification.pemesanan?.id);
-  if (Number.isFinite(relationBookingId) && relationBookingId > 0) {
-    return relationBookingId;
-  }
-
-  return null;
-};
-
-const resolveNotificationTarget = (
-  notification: Notification,
-): RouteLocationRaw => {
-  const currentUser = getCurrentUser();
-  const normalizedRole = normalizeRole(currentUser?.role);
-  const bookingId = getBookingIdFromNotification(notification);
-
-  if (normalizedRole === "admin") {
-    if (bookingId) {
-      return {
-        name: "admin-booking-detail",
-        params: { id: String(bookingId) },
-      };
-    }
-
-    return { name: "admin-bookings" };
-  }
-
-  if (normalizedRole === "mekanik") {
-    if (bookingId) {
-      return {
-        name: "mechanic-dashboard",
-        query: { pemesanan: String(bookingId) },
-      };
-    }
-
-    return { name: "mechanic-dashboard" };
-  }
-
-  if (normalizedRole === "owner") {
-    return { name: "owner-dashboard" };
-  }
-
-  if (bookingId) {
-    return {
-      name: "history-detail",
-      params: { id: String(bookingId) },
-    };
-  }
-
-  return { name: "history" };
-};
-
-const handleNotificationClick = async (notification: Notification) => {
-  if (!notification.sudah_dibaca) {
-    await markAsRead(notification.id);
-  }
-
-  isOpen.value = false;
-
-  const target = resolveNotificationTarget(notification);
-
-  try {
-    await router.push(target);
-  } catch (error: any) {
-    if (!isNavigationFailure(error, NavigationFailureType.duplicated)) {
-      logError(error, "NotificationBell.handleNotificationClick");
-
-      const fallbackRole = normalizeRole(getCurrentUser()?.role);
-      await router.push(getRedirectPathForRole(fallbackRole));
-    }
-  }
-};
-
-const toggleDropdown = () => {
-  isOpen.value = !isOpen.value;
-  if (isOpen.value) {
-    fetchNotifications(false);
-  }
-};
-
-const getNotificationIcon = (tipe: string) => {
-  const icons: Record<string, string> = {
-    booking_confirmed: "mdi-check-circle",
-    booking_in_progress: "mdi-progress-clock",
-    booking_completed: "mdi-check-all",
-    booking_cancelled: "mdi-close-circle",
-    booking_assigned: "mdi-account-check",
-    low_stock: "mdi-alert",
-  };
-  return icons[tipe] || "mdi-bell";
-};
-
-const getNotificationColor = (tipe: string) => {
-  const colors: Record<string, string> = {
-    booking_confirmed: "text-green-600 bg-green-50",
-    booking_in_progress: "text-blue-600 bg-blue-50",
-    booking_completed: "text-purple-600 bg-purple-50",
-    booking_cancelled: "text-red-600 bg-red-50",
-    booking_assigned: "text-orange-600 bg-orange-50",
-    low_stock: "text-yellow-600 bg-yellow-50",
-  };
-  return colors[tipe] || "text-gray-600 bg-gray-50";
-};
-
-const handleClickOutside = (event: MouseEvent) => {
-  const target = event.target as HTMLElement;
-  if (!target.closest(".notification-bell-container")) {
-    isOpen.value = false;
-  }
-};
-
-watch(
-  () => route.path,
-  () => {
-    fetchNotifications(true);
-  },
-);
-
-onMounted(() => {
-  document.addEventListener("click", handleClickOutside);
-
-  fetchNotifications(false);
-
-  pollingInterval = setInterval(() => {
-    fetchNotifications(true);
-  }, 10000);
-});
-
-onUnmounted(() => {
-  document.removeEventListener("click", handleClickOutside);
-
-  if (pollingInterval) {
-    clearInterval(pollingInterval);
-  }
-});
+const {
+  isOpen,
+  notifications,
+  unreadCount,
+  isLoading,
+  hasUnread,
+  toggleDropdown,
+  markAllAsRead,
+  getNotificationIcon,
+  getNotificationColor,
+  handleNotificationClick,
+} = useNotificationBell();
 </script>
 
 <template>
@@ -315,13 +80,13 @@ onUnmounted(() => {
             v-for="notification in notifications"
             :key="notification.id"
             @click="handleNotificationClick(notification)"
-            class="w-full px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0 text-left"
+            class="w-full border-b border-gray-100 px-4 py-3 text-left transition-colors hover:bg-gray-50 last:border-b-0"
             :class="{ 'bg-blue-50': !notification.sudah_dibaca }"
           >
             <div class="flex items-start gap-3">
               <div
                 :class="[
-                  'flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center',
+                  'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full',
                   getNotificationColor(notification.tipe),
                 ]"
               >
@@ -334,33 +99,33 @@ onUnmounted(() => {
                 ></i>
               </div>
 
-              <div class="flex-1 min-w-0">
+              <div class="min-w-0 flex-1">
                 <div class="flex items-start justify-between gap-2">
                   <div class="flex-1">
                     <p
-                      class="text-sm font-semibold text-gray-900 line-clamp-1"
+                      class="line-clamp-1 text-sm font-semibold text-gray-900"
                       :class="{ 'font-bold': !notification.sudah_dibaca }"
                     >
                       {{ notification.judul }}
                     </p>
                     <span
                       v-if="notification.pemesanan?.kode_pemesanan"
-                      class="inline-block mt-1 text-xs font-mono font-bold bg-red-100 text-red-700 px-2 py-0.5 rounded"
+                      class="mt-1 inline-block rounded bg-red-100 px-2 py-0.5 text-xs font-mono font-bold text-red-700"
                     >
                       {{ notification.pemesanan.kode_pemesanan }}
                     </span>
                   </div>
                   <span
                     v-if="!notification.sudah_dibaca"
-                    class="flex-shrink-0 w-2.5 h-2.5 bg-blue-600 rounded-full animate-pulse"
+                    class="h-2.5 w-2.5 flex-shrink-0 animate-pulse rounded-full bg-blue-600"
                   ></span>
                 </div>
 
-                <p class="text-xs text-gray-600 mt-1.5 line-clamp-2">
+                <p class="mt-1.5 line-clamp-2 text-xs text-gray-600">
                   {{ notification.pesan }}
                 </p>
 
-                <div class="flex items-center gap-1 mt-2 text-xs text-gray-500">
+                <div class="mt-2 flex items-center gap-1 text-xs text-gray-500">
                   <i class="mdi mdi-clock-outline"></i>
                   <span>{{ formatDateShort(notification.created_at) }}</span>
                 </div>

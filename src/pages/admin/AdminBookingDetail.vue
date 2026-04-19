@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
+import { onMounted } from "vue";
 import { useRoute } from "vue-router";
-import axios from "axios";
-import { useToast } from "@/utils/useToast";
 import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import AppPageHeader from "@/components/ui/AppPageHeader.vue";
@@ -12,133 +10,28 @@ import AdminBookingServicesList from "@/components/admin/booking-detail/AdminBoo
 import AdminBookingSparepartsList from "@/components/admin/booking-detail/AdminBookingSparepartsList.vue";
 import AdminBookingTotalSummary from "@/components/admin/booking-detail/AdminBookingTotalSummary.vue";
 import AdminAddSparepartModal from "@/components/admin/booking-detail/AdminAddSparepartModal.vue";
-import { API_URL } from "@/utils/api";
-import { getAuthHeaders } from "@/utils/auth";
-import { formatDateShort, formatTimeShort } from "@/utils/date";
-import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
-import type { Booking } from "@/types/booking";
-import type { SparepartSummary } from "@/types/inventory";
+import { useAdminBookingDetailPage } from "@/composables/useAdminBookingDetailPage";
 
-const toast = useToast();
 const route = useRoute();
-
-// State
-const booking = ref<Booking | null>(null);
-const isLoading = ref(true);
-const error = ref("");
-
-// Sparepart Modal State
-const showAddSparepartModal = ref(false);
-const availableSpareparts = ref<SparepartSummary[]>([]);
-const isAddingSparepart = ref(false);
-
-// Delete Confirmation State
-const showDeleteConfirm = ref(false);
-const itemToDelete = ref<number | null>(null);
-
-// Computed Properties
-const isInProgress = computed(() => {
-  return booking.value?.status.toLowerCase().includes("progress") || false;
-});
-
-const totalHarga = computed(() => {
-  return booking.value?.layanan?.reduce((sum, s) => sum + s.harga, 0) || 0;
-});
-
-const totalSpareparts = computed(() => {
-  return (
-    booking.value?.item_pemesanan?.reduce(
-      (sum, item) => sum + item.harga_saat_ini * item.jumlah,
-      0,
-    ) || 0
-  );
-});
-
-const grandTotal = computed(() => totalHarga.value + totalSpareparts.value);
-
-const totalAkhir = computed(
-  () => booking.value?.total_harga || grandTotal.value,
-);
-
-// API Functions
-async function fetchBookingData() {
-  try {
-    const { data } = await axios.get(
-      `${API_URL}/admin/pemesanan/${route.params.id}`,
-      { headers: getAuthHeaders() },
-    );
-    booking.value = data;
-  } catch (err) {
-    console.error("Gagal mengambil detail pemesanan:", err);
-    if (!booking.value) error.value = "Gagal memload data.";
-  }
-}
-
-async function fetchAvailableSpareparts() {
-  try {
-    const { data } = await axios.get(`${API_URL}/admin/inventori`, {
-      headers: getAuthHeaders(),
-    });
-    availableSpareparts.value = data.data;
-  } catch (err) {
-    console.error("Gagal mengambil suku cadang:", err);
-  }
-}
-
-// Modal Functions
-const openAddSparepartModal = () => {
-  showAddSparepartModal.value = true;
-  fetchAvailableSpareparts();
-};
-
-const closeAddSparepartModal = () => {
-  showAddSparepartModal.value = false;
-};
-
-// CRUD Operations
-async function addSparepartToBooking(data: {
-  sparepartId: number;
-  quantity: number;
-}) {
-  isAddingSparepart.value = true;
-  try {
-    await axios.post(
-      `${API_URL}/admin/pemesanan/${booking.value?.id}/tambah-suku-cadang`,
-      {
-        id_suku_cadang: data.sparepartId,
-        jumlah: data.quantity,
-      },
-      { headers: getAuthHeaders() },
-    );
-
-    toast.success("Suku cadang berhasil ditambahkan!");
-    closeAddSparepartModal();
-    await fetchBookingData();
-  } catch (err: any) {
-    console.error("Gagal menambahkan suku cadang:", err);
-    toast.error(err.response?.data?.message || "Gagal menambahkan suku cadang");
-  } finally {
-    isAddingSparepart.value = false;
-  }
-}
-
-async function removeSparepartFromBooking() {
-  if (!itemToDelete.value) return;
-
-  try {
-    await axios.delete(
-      `${API_URL}/admin/pemesanan/${booking.value?.id}/item/${itemToDelete.value}`,
-      { headers: getAuthHeaders() },
-    );
-
-    toast.success("Suku cadang berhasil dihapus!");
-    showDeleteConfirm.value = false;
-    await fetchBookingData();
-  } catch (err: any) {
-    console.error("Gagal menghapus suku cadang:", err);
-    toast.error(err.response?.data?.message || "Gagal menghapus suku cadang");
-  }
-}
+const {
+  booking,
+  isLoading,
+  error,
+  showAddSparepartModal,
+  availableSpareparts,
+  isAddingSparepart,
+  showDeleteConfirm,
+  isInProgress,
+  totalHarga,
+  totalSpareparts,
+  totalAkhir,
+  fetchBookingData,
+  openAddSparepartModal,
+  closeAddSparepartModal,
+  addSparepartToBooking,
+  promptDeleteSparepart,
+  removeSparepartFromBooking,
+} = useAdminBookingDetailPage(String(route.params.id));
 
 // Lifecycle
 onMounted(async () => {
@@ -194,8 +87,8 @@ onMounted(async () => {
               :booking-id="booking.id"
               :current-status="booking.status"
               :current-payment-status="booking.status_pembayaran"
-              :current-mechanic-id="booking.id_mekanik"
-              :current-mechanic-name="booking.mekanik?.nama"
+              :current-mekanik-id="booking.id_mekanik"
+              :current-mekanik-name="booking.mekanik?.nama"
               @refresh="fetchBookingData"
             />
           </AdminBookingInfoCards>
@@ -233,10 +126,7 @@ onMounted(async () => {
               :booking-items="booking.item_pemesanan"
               :is-in-progress="isInProgress"
               @add-sparepart="openAddSparepartModal"
-              @delete-item="
-                itemToDelete = $event;
-                showDeleteConfirm = true;
-              "
+              @delete-item="promptDeleteSparepart"
             />
           </div>
         </section>

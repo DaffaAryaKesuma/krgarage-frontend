@@ -1,22 +1,22 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 // Layouts
-import CustomerLayout from "../components/layouts/CustomerLayout.vue";
+import PelangganLayout from "../components/layouts/PelangganLayout.vue";
 import AdminLayout from "../components/layouts/AdminLayout.vue";
-import MechanicLayout from "../components/layouts/MechanicLayout.vue";
-import OwnerLayout from "../components/layouts/OwnerLayout.vue";
+import MekanikLayout from "../components/layouts/MekanikLayout.vue";
+import PemilikLayout from "../components/layouts/PemilikLayout.vue";
 
-import { getRedirectPathForRole } from "@/utils/roleRoutes";
+import { getRedirectPathForRole, normalizeUserRole } from "@/utils/roleRoutes";
 
 // Halaman Publik
 import HomePage from "../pages/HomePage.vue";
 
-// Halaman Customer
-import CustomerDashboard from "../pages/customer/CustomerDashboard.vue";
-import CustomerVespasPage from "../pages/customer/CustomerVespasPage.vue";
-import CustomerBookingPage from "../pages/customer/CustomerBookingPage.vue";
-import CustomerHistoryPage from "../pages/customer/CustomerHistoryPage.vue";
-import CustomerBookingDetail from "../pages/customer/CustomerBookingDetail.vue";
+// Halaman Pelanggan
+import PelangganDashboard from "../pages/pelanggan/PelangganDashboard.vue";
+import PelangganVespasPage from "../pages/pelanggan/PelangganVespasPage.vue";
+import PelangganBookingPage from "../pages/pelanggan/PelangganBookingPage.vue";
+import PelangganHistoryPage from "../pages/pelanggan/PelangganHistoryPage.vue";
+import PelangganBookingDetail from "../pages/pelanggan/PelangganBookingDetail.vue";
 
 // Halaman admin
 import AdminDashboard from "../pages/admin/AdminDashboard.vue";
@@ -26,51 +26,56 @@ import AdminBookingDetail from "../pages/admin/AdminBookingDetail.vue";
 import AdminFinancialReport from "../pages/admin/AdminFinancialReport.vue";
 import AdminInventory from "../pages/admin/AdminInventory.vue";
 
-// Halaman mechanic
-import MechanicDashboard from "../pages/mechanic/MechanicDashboard.vue";
+// Halaman mekanik
+import MekanikDashboard from "../pages/mekanik/MekanikDashboard.vue";
 
-// Halaman owner
-import OwnerDashboard from "../pages/owner/OwnerDashboard.vue";
-import OwnerFinancial from "../pages/owner/OwnerFinancial.vue";
-import OwnerInventoryAnalysis from "../pages/owner/OwnerInventoryAnalysis.vue";
+// Halaman pemilik
+import PemilikDashboard from "../pages/pemilik/PemilikDashboard.vue";
+import PemilikFinancial from "../pages/pemilik/PemilikFinancial.vue";
+import PemilikInventoryAnalysis from "../pages/pemilik/PemilikInventoryAnalysis.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     // Rute Publik (tanpa login)
-    { path: "/", name: "home", component: HomePage, meta: { guestOnly: true } },
+    {
+      path: "/",
+      name: "beranda",
+      component: HomePage,
+      meta: { guestOnly: true },
+    },
 
     // Rute Pengguna Biasa (butuh login)
     {
       path: "/app",
-      component: CustomerLayout,
-      meta: { requiresAuth: true },
+      component: PelangganLayout,
+      meta: { requiresAuth: true, requiresPelanggan: true },
       redirect: "/app/dasbor",
       children: [
         {
           path: "dasbor",
-          name: "dashboard",
-          component: CustomerDashboard,
+          name: "pelanggan-dasbor",
+          component: PelangganDashboard,
         },
         {
           path: "vespa-saya",
-          name: "my-vespas",
-          component: CustomerVespasPage,
+          name: "pelanggan-vespa-saya",
+          component: PelangganVespasPage,
         },
         {
           path: "pemesanan",
-          name: "bookings",
-          component: CustomerBookingPage,
+          name: "pelanggan-pemesanan",
+          component: PelangganBookingPage,
         },
         {
           path: "riwayat",
-          name: "history",
-          component: CustomerHistoryPage,
+          name: "pelanggan-riwayat",
+          component: PelangganHistoryPage,
         },
         {
           path: "riwayat/:id",
-          name: "history-detail",
-          component: CustomerBookingDetail,
+          name: "pelanggan-riwayat-detail",
+          component: PelangganBookingDetail,
         },
       ],
     },
@@ -84,73 +89,73 @@ const router = createRouter({
       children: [
         {
           path: "dasbor",
-          name: "admin-dashboard",
+          name: "admin-dasbor",
           component: AdminDashboard,
         },
         {
           path: "pemesanan",
-          name: "admin-bookings",
+          name: "admin-pemesanan",
           component: AdminBookings,
         },
         {
           path: "pemesanan/:id",
-          name: "admin-booking-detail",
+          name: "admin-pemesanan-detail",
           component: AdminBookingDetail,
         },
         {
           path: "layanan",
-          name: "admin-services",
+          name: "admin-layanan",
           component: AdminServices,
         },
         {
           path: "laporan-keuangan",
-          name: "admin-financial-report",
+          name: "admin-laporan-keuangan",
           component: AdminFinancialReport,
         },
         {
           path: "inventaris",
-          name: "admin-inventory",
+          name: "admin-inventaris",
           component: AdminInventory,
         },
       ],
     },
 
-    // Rute Mechanic
+    // Rute Mekanik
     {
       path: "/mekanik",
-      component: MechanicLayout,
-      meta: { requiresAuth: true, requiresMechanic: true },
+      component: MekanikLayout,
+      meta: { requiresAuth: true, requiresMekanik: true },
       redirect: "/mekanik/dasbor",
       children: [
         {
           path: "dasbor",
-          name: "mechanic-dashboard",
-          component: MechanicDashboard,
+          name: "mekanik-dasbor",
+          component: MekanikDashboard,
         },
       ],
     },
 
-    // Rute Owner
+    // Rute Pemilik
     {
       path: "/pemilik",
-      component: OwnerLayout,
-      meta: { requiresAuth: true, requiresOwner: true },
+      component: PemilikLayout,
+      meta: { requiresAuth: true, requiresPemilik: true },
       redirect: "/pemilik/dasbor",
       children: [
         {
           path: "dasbor",
-          name: "owner-dashboard",
-          component: OwnerDashboard,
+          name: "pemilik-dasbor",
+          component: PemilikDashboard,
         },
         {
           path: "laporan-keuangan",
-          name: "owner-financial",
-          component: OwnerFinancial,
+          name: "pemilik-laporan-keuangan",
+          component: PemilikFinancial,
         },
         {
           path: "analisa-inventaris",
-          name: "owner-inventory-analysis",
-          component: OwnerInventoryAnalysis,
+          name: "pemilik-analisa-inventaris",
+          component: PemilikInventoryAnalysis,
         },
       ],
     },
@@ -168,10 +173,11 @@ router.beforeEach((to, _from, next) => {
       user = null;
     }
   }
-  const roleRedirectPath = getRedirectPathForRole(user?.role);
+  const normalizedRole = normalizeUserRole(user?.role);
+  const roleRedirectPath = getRedirectPathForRole(normalizedRole);
 
   if (to.meta.guestOnly && isLoggedIn) {
-    return next(getRedirectPathForRole(user?.role));
+    return next(roleRedirectPath);
   }
 
   if (to.meta.requiresAuth && !isLoggedIn) {
@@ -186,19 +192,23 @@ router.beforeEach((to, _from, next) => {
         );
       }
     }
-    return next({ name: "home" });
+    return next({ name: "beranda" });
   }
 
-  if (to.meta.requiresAdmin && (!user || user.role !== "admin")) {
-    return next(user ? roleRedirectPath : { name: "home" });
+  if (to.meta.requiresAdmin && (!user || normalizedRole !== "admin")) {
+    return next(user ? roleRedirectPath : { name: "beranda" });
   }
 
-  if (to.meta.requiresMechanic && (!user || user.role !== "mekanik")) {
-    return next(user ? roleRedirectPath : { name: "home" });
+  if (to.meta.requiresMekanik && (!user || normalizedRole !== "mekanik")) {
+    return next(user ? roleRedirectPath : { name: "beranda" });
   }
 
-  if (to.meta.requiresOwner && (!user || user.role !== "owner")) {
-    return next(user ? roleRedirectPath : { name: "home" });
+  if (to.meta.requiresPemilik && (!user || normalizedRole !== "pemilik")) {
+    return next(user ? roleRedirectPath : { name: "beranda" });
+  }
+
+  if (to.meta.requiresPelanggan && (!user || normalizedRole !== "pelanggan")) {
+    return next(user ? roleRedirectPath : { name: "beranda" });
   }
 
   // Mark that user is logged in (for session expiration detection)

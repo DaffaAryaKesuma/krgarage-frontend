@@ -1,7 +1,4 @@
 import { computed, ref, watch } from "vue";
-import axios from "axios";
-import { API_URL } from "@/utils/api";
-import { getAuthHeaders } from "@/utils/auth";
 import { useToast } from "@/utils/useToast";
 import {
   BOOKING_STATUS,
@@ -13,79 +10,33 @@ import {
   isCompletedStatus,
 } from "@/utils/statusBadge";
 import {
-  PAYMENT_STATUS,
   getPaymentStatusBadgeClass,
   getPaymentStatusLabel,
   isPaidStatus,
 } from "@/utils/paymentStatus";
+import {
+  ACTION_CONFIG,
+  CANCEL_BUTTON_CLASS,
+  type ActionConfirmationConfig,
+  type BookingActionType,
+  type Mekanik,
+} from "@/composables/helpers/adminBookingControlPanelHelpers";
+import {
+  assignMekanikToBooking,
+  fetchAdminMekaniks,
+  patchAdminBookingStatus,
+  patchAdminPaymentStatus,
+} from "@/composables/helpers/adminBookingControlPanelApi";
 
-interface Mechanic {
-  id: number;
-  nama: string;
-  email: string;
-}
+export { CANCEL_BUTTON_CLASS };
 
 export interface AdminBookingControlPanelProps {
   bookingId: number;
   currentStatus: string;
   currentPaymentStatus?: string | null;
-  currentMechanicId: number | null;
-  currentMechanicName?: string;
+  currentMekanikId: number | null;
+  currentMekanikName?: string;
 }
-
-type BookingActionType = "confirm" | "complete" | "cancel" | "markPaid";
-
-interface ActionConfirmationConfig {
-  title: string;
-  message: string;
-  confirmText: string;
-  variant: "danger" | "warning" | "info" | "success";
-  requestType: "status" | "payment";
-  value: string;
-  successMessage: string;
-}
-
-const ACTION_CONFIG: Record<BookingActionType, ActionConfirmationConfig> = {
-  confirm: {
-    title: "Konfirmasi Pemesanan",
-    message: "Apakah Anda yakin ingin mengonfirmasi pemesanan ini?",
-    confirmText: "Ya, Konfirmasi",
-    variant: "info",
-    requestType: "status",
-    value: BOOKING_STATUS.CONFIRMED,
-    successMessage: "Pemesanan berhasil dikonfirmasi!",
-  },
-  complete: {
-    title: "Selesaikan Pemesanan",
-    message: "Apakah Anda yakin ingin menandai servis ini telah selesai?",
-    confirmText: "Ya, Selesaikan",
-    variant: "success",
-    requestType: "status",
-    value: BOOKING_STATUS.COMPLETED,
-    successMessage: "Pemesanan berhasil diselesaikan!",
-  },
-  cancel: {
-    title: "Batalkan Pemesanan",
-    message: "Apakah Anda yakin ingin membatalkan pemesanan ini?",
-    confirmText: "Ya, Batalkan",
-    variant: "danger",
-    requestType: "status",
-    value: BOOKING_STATUS.CANCELLED,
-    successMessage: "Pemesanan berhasil dibatalkan!",
-  },
-  markPaid: {
-    title: "Tandai Pembayaran Lunas",
-    message: "Apakah Anda yakin pembayaran untuk pemesanan ini sudah lunas?",
-    confirmText: "Ya, Tandai Lunas",
-    variant: "success",
-    requestType: "payment",
-    value: PAYMENT_STATUS.PAID,
-    successMessage: "Status pembayaran berhasil diperbarui menjadi lunas!",
-  },
-};
-
-export const CANCEL_BUTTON_CLASS =
-  "w-full py-2.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition font-semibold";
 
 export function useAdminBookingControlPanel(
   props: AdminBookingControlPanelProps,
@@ -93,25 +44,25 @@ export function useAdminBookingControlPanel(
 ) {
   const toast = useToast();
 
-  const availableMechanics = ref<Mechanic[]>([]);
+  const availableMekaniks = ref<Mekanik[]>([]);
   const isProcessing = ref(false);
-  const selectedMechanicId = ref<number | null>(props.currentMechanicId);
+  const selectedMekanikId = ref<number | null>(props.currentMekanikId);
   const showActionConfirmation = ref(false);
   const pendingAction = ref<BookingActionType | null>(null);
 
   watch(
-    () => props.currentMechanicId,
-    (nextMechanicId) => {
-      selectedMechanicId.value = nextMechanicId;
+    () => props.currentMekanikId,
+    (nextMekanikId) => {
+      selectedMekanikId.value = nextMekanikId;
     },
   );
 
-  const mechanicOptionsList = computed(() => {
-    return availableMechanics.value.map((mech) => ({
+  const mekanikOptionsList = computed(() =>
+    availableMekaniks.value.map((mech) => ({
       value: mech.id,
       label: mech.nama,
-    }));
-  });
+    })),
+  );
 
   const canConfirm = computed(() =>
     canAdminConfirmBooking(props.currentStatus),
@@ -137,31 +88,25 @@ export function useAdminBookingControlPanel(
     getPaymentStatusBadgeClass(props.currentPaymentStatus),
   );
 
-  const assignedMechanicName = computed(() => {
-    const explicitName = props.currentMechanicName?.trim();
+  const assignedMekanikName = computed(() => {
+    const explicitName = props.currentMekanikName?.trim();
     if (explicitName) {
       return explicitName;
     }
 
-    if (!props.currentMechanicId) {
+    if (!props.currentMekanikId) {
       return null;
     }
 
-    const matchedMechanic = availableMechanics.value.find(
-      (mech) => mech.id === props.currentMechanicId,
+    const matchedMekanik = availableMekaniks.value.find(
+      (mech) => mech.id === props.currentMekanikId,
     );
 
-    return matchedMechanic?.nama || null;
+    return matchedMekanik?.nama || null;
   });
 
   const actionConfirmationConfig = computed<ActionConfirmationConfig | null>(
-    () => {
-      if (!pendingAction.value) {
-        return null;
-      }
-
-      return ACTION_CONFIG[pendingAction.value];
-    },
+    () => (pendingAction.value ? ACTION_CONFIG[pendingAction.value] : null),
   );
 
   const requestActionConfirmation = (action: BookingActionType) => {
@@ -177,11 +122,7 @@ export function useAdminBookingControlPanel(
   async function updateStatus(newStatus: string, successMessage: string) {
     isProcessing.value = true;
     try {
-      await axios.patch(
-        `${API_URL}/admin/pemesanan/${props.bookingId}/status`,
-        { status: newStatus },
-        { headers: getAuthHeaders() },
-      );
+      await patchAdminBookingStatus(props.bookingId, newStatus);
       toast.success(successMessage);
       onRefresh();
     } catch (err: any) {
@@ -198,11 +139,7 @@ export function useAdminBookingControlPanel(
   ) {
     isProcessing.value = true;
     try {
-      await axios.patch(
-        `${API_URL}/admin/pemesanan/${props.bookingId}/status-pembayaran`,
-        { status_pembayaran: newPaymentStatus },
-        { headers: getAuthHeaders() },
-      );
+      await patchAdminPaymentStatus(props.bookingId, newPaymentStatus);
       toast.success(successMessage);
       onRefresh();
     } catch (err: any) {
@@ -234,35 +171,26 @@ export function useAdminBookingControlPanel(
     void updateStatus(config.value, config.successMessage);
   };
 
-  async function fetchMechanics() {
+  async function fetchMekaniks() {
     try {
-      const { data } = await axios.get(`${API_URL}/admin/mekanik`, {
-        headers: getAuthHeaders(),
-      });
-      availableMechanics.value = data.data || [];
+      availableMekaniks.value = await fetchAdminMekaniks();
     } catch (err) {
       console.error("Gagal mengambil daftar mekanik:", err);
     }
   }
 
-  async function assignMechanicAndStart() {
-    if (!selectedMechanicId.value) {
+  async function assignMekanikAndStart() {
+    if (!selectedMekanikId.value) {
       toast.error("Silakan pilih mekanik terlebih dahulu");
       return;
     }
 
     isProcessing.value = true;
     try {
-      await axios.post(
-        `${API_URL}/admin/pemesanan/${props.bookingId}/tugaskan-mekanik`,
-        { id_mekanik: selectedMechanicId.value },
-        { headers: getAuthHeaders() },
-      );
-
-      await axios.patch(
-        `${API_URL}/admin/pemesanan/${props.bookingId}/status`,
-        { status: BOOKING_STATUS.IN_PROGRESS },
-        { headers: getAuthHeaders() },
+      await assignMekanikToBooking(props.bookingId, selectedMekanikId.value);
+      await patchAdminBookingStatus(
+        props.bookingId,
+        BOOKING_STATUS.IN_PROGRESS,
       );
 
       toast.success("Mekanik ditugaskan dan servis dimulai!");
@@ -281,9 +209,9 @@ export function useAdminBookingControlPanel(
   const handleMarkAsPaid = () => requestActionConfirmation("markPaid");
 
   return {
-    mechanicOptionsList,
+    mekanikOptionsList,
     isProcessing,
-    selectedMechanicId,
+    selectedMekanikId,
     canConfirm,
     canAssignAndStart,
     canComplete,
@@ -294,7 +222,7 @@ export function useAdminBookingControlPanel(
     canMarkAsPaid,
     paymentStatusLabel,
     paymentStatusBadgeClass,
-    assignedMechanicName,
+    assignedMekanikName,
     showActionConfirmation,
     actionConfirmationConfig,
     handleConfirm,
@@ -303,7 +231,7 @@ export function useAdminBookingControlPanel(
     handleMarkAsPaid,
     closeActionConfirmation,
     confirmAction,
-    fetchMechanics,
-    assignMechanicAndStart,
+    fetchMekaniks,
+    assignMekanikAndStart,
   };
 }

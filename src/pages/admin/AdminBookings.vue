@@ -1,204 +1,39 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
-import axios from "axios";
+import { onMounted } from "vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
 import Pagination from "@/components/ui/Pagination.vue";
 import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import AdminBookingsFilters from "@/components/admin/bookings/AdminBookingsFilters.vue";
 import AdminBookingCard from "@/components/admin/bookings/AdminBookingCard.vue";
-import { useToast } from "@/utils/useToast";
-import { API_URL } from "@/utils/api";
-import { getAuthHeaders } from "@/utils/auth";
-import {
-  BOOKING_STATUS,
-  matchesBookingStatusFilter,
-  type BookingStatusFilter,
-} from "@/utils/statusBadge";
-import {
-  matchesPaymentStatusFilter,
-  type PaymentStatusFilter,
-} from "@/utils/paymentStatus";
-import { useApiPagination } from "@/composables/useApiPagination";
-import type { Booking } from "@/types/booking";
-import type { MechanicProfile } from "@/types/user";
+import { useAdminBookingsPage } from "@/composables/useAdminBookingsPage";
 
-const toast = useToast();
+const {
+  bookings,
+  showTodayOnly,
+  pagination,
+  isLoading,
+  error,
+  searchQuery,
+  monthFilter,
+  yearFilter,
+  statusFilter,
+  paymentFilter,
+  filteredBookings,
+  selectedMekanikForBooking,
+  mekanikOptions,
+  fetchAllBookings,
+  fetchMekaniks,
+  confirmBooking,
+  cancelBooking,
+  completeBooking,
+  markBookingAsPaid,
+  assignMekanikAndStart,
+} = useAdminBookingsPage();
 
-// State
-const bookings = ref<Booking[]>([]);
-const mechanics = ref<MechanicProfile[]>([]);
-const showTodayOnly = ref(false);
-const { pagination, updateFromApi } = useApiPagination(10);
-
-const isLoading = ref(true);
-const error = ref("");
-const searchQuery = ref("");
-const monthFilter = ref("");
-const yearFilter = ref(new Date().getFullYear().toString());
-const statusFilter = ref<BookingStatusFilter>("all");
-const paymentFilter = ref<PaymentStatusFilter>("all");
-
-// Computed
-const filteredBookings = computed(() => {
-  const query = searchQuery.value.trim().toLowerCase();
-  const today = new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD
-
-  return bookings.value.filter((booking) => {
-    if (!matchesBookingStatusFilter(booking.status, statusFilter.value)) {
-      return false;
-    }
-
-    if (
-      !matchesPaymentStatusFilter(
-        booking.status_pembayaran,
-        paymentFilter.value,
-      )
-    ) {
-      return false;
-    }
-
-    // Filter berdasarkan bulan dan tahun_produksi
-    if (monthFilter.value || yearFilter.value) {
-      const bookingDate = new Date(booking.tanggal_pemesanan);
-      const bookingMonth = String(bookingDate.getMonth() + 1).padStart(2, "0");
-      const bookingYear = bookingDate.getFullYear().toString();
-
-      if (monthFilter.value && bookingMonth !== monthFilter.value) {
-        return false;
-      }
-
-      if (yearFilter.value && bookingYear !== yearFilter.value) {
-        return false;
-      }
-    }
-
-    // Filter booking hari ini
-    if (showTodayOnly.value) {
-      const bookingDate = booking.tanggal_pemesanan.split("T")[0];
-      if (bookingDate !== today) {
-        return false;
-      }
-    }
-
-    if (!query) return true;
-
-    return (
-      booking.pengguna?.nama.toLowerCase().includes(query) ||
-      booking.vespa?.model.toLowerCase().includes(query) ||
-      booking.vespa?.plat_nomor.toLowerCase().includes(query)
-    );
-  });
-});
-
-// Functions
-async function fetchAllBookings(page = 1) {
-  isLoading.value = true;
-  error.value = "";
-
-  try {
-    const { data } = await axios.get(
-      `${API_URL}/admin/pemesanan?page=${page}&per_page=${pagination.value.per_page}`,
-      { headers: getAuthHeaders() },
-    );
-
-    bookings.value = data.data || [];
-    updateFromApi(data);
-  } catch (err: any) {
-    console.error("Gagal mengambil data pemesanan:", err);
-    error.value =
-      err.response?.status === 401
-        ? "Sesi tidak valid. Silakan login kembali."
-        : "Gagal memuat data pemesanan.";
-  } finally {
-    isLoading.value = false;
-  }
-}
-
-async function changeStatus(booking: Booking, newStatus: string) {
-  try {
-    const { data } = await axios.patch(
-      `${API_URL}/admin/pemesanan/${booking.id}/status`,
-      { status: newStatus },
-      { headers: getAuthHeaders() },
-    );
-
-    booking.status = data.pemesanan?.status ?? newStatus;
-    toast.success("Status pemesanan berhasil diubah!");
-    await fetchAllBookings(pagination.value.current_page);
-  } catch (err: any) {
-    console.error("Gagal mengubah status:", err);
-    toast.error(
-      err.response?.data?.message || "Gagal mengubah status pemesanan.",
-    );
-  }
-}
-
-async function fetchMechanics() {
-  try {
-    const { data } = await axios.get(`${API_URL}/admin/mekanik`, {
-      headers: getAuthHeaders(),
-    });
-    mechanics.value = data.data || [];
-  } catch (err: any) {
-    console.error("Gagal mengambil data mekanik:", err);
-  }
-}
-
-// Quick action functions
-async function confirmBooking(booking: Booking) {
-  await changeStatus(booking, BOOKING_STATUS.CONFIRMED);
-}
-
-async function cancelBooking(booking: Booking) {
-  await changeStatus(booking, BOOKING_STATUS.CANCELLED);
-}
-
-async function completeBooking(booking: Booking) {
-  await changeStatus(booking, BOOKING_STATUS.COMPLETED);
-}
-
-const selectedMechanicForBooking = ref<{ [bookingId: number]: number }>({});
-
-async function assignMechanicAndStart(booking: Booking) {
-  const mechanicId = selectedMechanicForBooking.value[booking.id];
-
-  if (!mechanicId) {
-    toast.error("Pilih mekanik terlebih dahulu");
-    return;
-  }
-
-  try {
-    // Assign mekanik
-    await axios.patch(
-      `${API_URL}/admin/pemesanan/${booking.id}/tugaskan-mekanik`,
-      { id_mekanik: mechanicId },
-      { headers: getAuthHeaders() },
-    );
-
-    // Update status ke In Progress
-    await axios.patch(
-      `${API_URL}/admin/pemesanan/${booking.id}/status`,
-      { status: BOOKING_STATUS.IN_PROGRESS },
-      { headers: getAuthHeaders() },
-    );
-
-    toast.success("Mekanik di-assign dan servis dimulai!");
-    await fetchAllBookings(pagination.value.current_page);
-  } catch (err: any) {
-    console.error("Gagal assign mekanik dan mulai servis:", err);
-    toast.error(err.response?.data?.message || "Gagal memproses pemesanan.");
-  }
-}
-
-const mechanicOptions = computed(() =>
-  mechanics.value.map((m) => ({ value: m.id, label: m.nama })),
-);
-
-// Lifecycle
 onMounted(() => {
   fetchAllBookings();
-  fetchMechanics();
+  fetchMekaniks();
 });
 </script>
 
@@ -227,7 +62,7 @@ onMounted(() => {
           v-else-if="bookings.length === 0"
           icon="mdi mdi-clipboard-list"
           title="Belum Ada Pemesanan"
-          message="Belum ada pemesanan yang masuk dari customer."
+          message="Belum ada pemesanan yang masuk dari pelanggan."
         />
 
         <!-- Main Content -->
@@ -258,14 +93,15 @@ onMounted(() => {
               v-for="booking in filteredBookings"
               :key="booking.id"
               :booking="booking"
-              :mechanic-options="mechanicOptions"
-              v-model:selected-mechanic-id="
-                selectedMechanicForBooking[booking.id]
+              :mekanik-options="mekanikOptions"
+              v-model:selected-mekanik-id="
+                selectedMekanikForBooking[booking.id]
               "
               @confirm="confirmBooking"
               @cancel="cancelBooking"
               @complete="completeBooking"
-              @assign-and-start="assignMechanicAndStart"
+              @mark-paid="markBookingAsPaid"
+              @assign-and-start="assignMekanikAndStart"
             />
           </div>
 

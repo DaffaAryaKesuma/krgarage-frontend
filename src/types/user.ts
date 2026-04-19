@@ -4,7 +4,7 @@ export interface UserProfile {
   no_telepon?: string;
 }
 
-export interface MechanicProfile {
+export interface MekanikProfile {
   id: number;
   nama: string;
   email?: string;
