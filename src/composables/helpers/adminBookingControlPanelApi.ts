@@ -37,7 +37,7 @@ export async function assignMekanikToBooking(
   bookingId: number,
   mekanikId: number,
 ) {
-  return axios.post(
+  return axios.patch(
     `${API_URL}/admin/pemesanan/${bookingId}/tugaskan-mekanik`,
     { id_mekanik: mekanikId },
     { headers: getAuthHeaders() },

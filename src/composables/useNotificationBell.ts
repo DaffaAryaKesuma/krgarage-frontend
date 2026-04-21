@@ -94,6 +94,7 @@ export function useNotificationBell() {
     const target = resolveNotificationTarget(
       normalizeRole(getCurrentUser()?.role),
       getBookingIdFromNotification(notification),
+      notification.tipe,
     );
 
     try {

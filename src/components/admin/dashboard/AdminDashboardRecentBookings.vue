@@ -78,7 +78,8 @@ const {
         to="/admin/pemesanan"
         class="text-red-600 hover:text-red-700 font-medium text-sm no-underline"
       >
-        Lihat Semua ?
+        Lihat Semua
+        <i class="mdi mdi-arrow-right text-lg"></i>
       </router-link>
     </div>
 

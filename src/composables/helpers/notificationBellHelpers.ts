@@ -24,6 +24,7 @@ const NOTIFICATION_ICONS: Record<string, string> = {
   booking_cancelled: "mdi-close-circle",
   booking_assigned: "mdi-account-check",
   low_stock: "mdi-alert",
+  payment_received: "mdi-cash-check",
 };
 
 const NOTIFICATION_COLORS: Record<string, string> = {
@@ -33,6 +34,7 @@ const NOTIFICATION_COLORS: Record<string, string> = {
   booking_cancelled: "text-red-600 bg-red-50",
   booking_assigned: "text-orange-600 bg-orange-50",
   low_stock: "text-yellow-600 bg-yellow-50",
+  payment_received: "text-emerald-700 bg-emerald-50",
 };
 
 export function normalizeRole(role?: string | null): AppRole {
@@ -58,6 +60,7 @@ export function getBookingIdFromNotification(
 export function resolveNotificationTarget(
   role: AppRole,
   bookingId: number | null,
+  notificationType?: string,
 ): RouteLocationRaw {
   if (role === "admin") {
     if (bookingId) {
@@ -82,6 +85,18 @@ export function resolveNotificationTarget(
   }
 
   if (role === "pemilik") {
+    if (notificationType === "low_stock") {
+      return { name: "pemilik-analisa-inventaris" };
+    }
+
+    if (notificationType === "payment_received") {
+      return { name: "pemilik-laporan-keuangan" };
+    }
+
+    if (bookingId) {
+      return { name: "pemilik-laporan-keuangan" };
+    }
+
     return { name: "pemilik-dasbor" };
   }
 

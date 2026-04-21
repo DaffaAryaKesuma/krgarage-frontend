@@ -11,6 +11,29 @@ interface LayoutUser {
   email: string;
 }
 
+function normalizeLayoutUser(rawUser: unknown): LayoutUser {
+  if (!rawUser || typeof rawUser !== "object") {
+    return { nama: "Guest", email: "" };
+  }
+
+  const source = rawUser as Record<string, unknown>;
+  const namaCandidate =
+    typeof source.nama === "string"
+      ? source.nama
+      : typeof source.name === "string"
+        ? source.name
+        : "";
+
+  const emailCandidate = typeof source.email === "string" ? source.email : "";
+
+  const nama = namaCandidate.trim() || "Guest";
+
+  return {
+    nama,
+    email: emailCandidate,
+  };
+}
+
 export function useAuthenticatedLayoutShell(
   desktopBreakpoint: DesktopBreakpoint,
 ) {
@@ -18,13 +41,19 @@ export function useAuthenticatedLayoutShell(
 
   const isMobileMenuOpen = ref(false);
   const showLogoutConfirm = ref(false);
-  const user = ref<LayoutUser>({ nama: "Guest", email: "" });
+  const user = ref<LayoutUser>(normalizeLayoutUser(null));
 
   const userInitials = computed(() => {
-    const names = user.value.nama.trim().split(" ").filter(Boolean);
+    const safeName = (user.value.nama || "Guest").trim();
+    const names = safeName.split(" ").filter(Boolean);
+
+    if (!names.length) {
+      return "G";
+    }
+
     return names.length >= 2
       ? (names[0][0] + names[1][0]).toUpperCase()
-      : user.value.nama.charAt(0).toUpperCase();
+      : names[0].charAt(0).toUpperCase();
   });
 
   const breakpointClasses = computed(() => {
@@ -72,9 +101,7 @@ export function useAuthenticatedLayoutShell(
 
   onMounted(() => {
     const storedUser = getCurrentUser();
-    if (storedUser) {
-      user.value = storedUser;
-    }
+    user.value = normalizeLayoutUser(storedUser);
   });
 
   return {
