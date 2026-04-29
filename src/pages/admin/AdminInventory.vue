@@ -21,6 +21,8 @@ const {
   showDeleteConfirm,
   selectedSparepart,
   restockQuantity,
+  categoryName,
+  categoryLoading,
   form,
   filteredSpareparts,
   stats,
@@ -30,6 +32,7 @@ const {
   openRestockModal,
   closeRestockModal,
   showDeleteConfirmModal,
+  saveCategory,
   saveSparepart,
   restock,
   deleteSparepart,
@@ -73,8 +76,11 @@ const {
       :selected-sparepart="selectedSparepart"
       :loading="loading"
       :kategori-options="kategoriOptions"
+      v-model:category-name="categoryName"
+      :category-loading="categoryLoading"
       @close="closeModal"
       @submit="saveSparepart"
+      @create-category="saveCategory"
     />
 
     <AdminInventoryRestockModal

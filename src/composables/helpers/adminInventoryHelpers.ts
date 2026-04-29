@@ -1,26 +1,15 @@
 import type {
+  InventoryCategory,
   InventorySparepart,
   InventorySparepartForm,
 } from "@/types/inventory";
 
-const INVENTORY_CATEGORIES = [
-  "Oli",
-  "Busi",
-  "Kampas Rem",
-  "Kampas Kopling",
-  "Kopling",
-  "Kabel",
-  "Filter",
-  "Bearing",
-  "Karburator",
-  "Aki",
-  "Lampu",
-  "Ban",
-  "Lainnya",
-];
+export function mapInventoryCategoriesToOptions(
+  categories: InventoryCategory[],
+) {
+  const source = categories.map((category) => category.nama);
 
-export function getInventoryCategoryOptions() {
-  const kategoriOptions = INVENTORY_CATEGORIES.map((kat) => ({
+  const kategoriOptions = source.map((kat) => ({
     value: kat,
     label: kat,
   }));
@@ -41,7 +30,7 @@ export function createEmptyInventoryForm(): InventorySparepartForm {
     jumlah_stok: 0,
     harga_beli: 0,
     harga_jual: 0,
-    batas_minimal_stok: 5,
+    batas_minimal_stok: null,
     deskripsi: "",
   };
 }
@@ -67,6 +56,13 @@ export function validateInventoryForm(
 
   if (form.harga_jual < 0) {
     return "Harga Jual tidak boleh negatif";
+  }
+
+  if (
+    form.batas_minimal_stok === null ||
+    Number.isNaN(form.batas_minimal_stok)
+  ) {
+    return "Batas Minimal Stok wajib diisi";
   }
 
   if (form.batas_minimal_stok < 0) {

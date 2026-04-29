@@ -2,9 +2,26 @@ import axios from "axios";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
 import type {
+  InventoryCategory,
   InventorySparepart,
   InventorySparepartForm,
 } from "@/types/inventory";
+
+export async function fetchAdminInventoryCategories() {
+  const { data } = await axios.get(`${API_URL}/admin/inventori/kategori`, {
+    headers: getAuthHeaders(),
+  });
+
+  return (data.data || []) as InventoryCategory[];
+}
+
+export function createAdminInventoryCategory(name: string) {
+  return axios.post(
+    `${API_URL}/admin/inventori/kategori`,
+    { nama: name },
+    { headers: getAuthHeaders() },
+  );
+}
 
 export async function fetchAdminInventorySpareparts() {
   const { data } = await axios.get(`${API_URL}/admin/inventori`, {

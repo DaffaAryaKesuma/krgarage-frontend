@@ -6,6 +6,7 @@ import {
   getPaymentStatusBadgeClass,
   getPaymentStatusLabel,
 } from "@/utils/paymentStatus";
+import { toMoneyNumber } from "@/utils/money";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
 import type { PelangganBooking } from "@/types/booking";
@@ -31,6 +32,14 @@ const getMekanikNotePreview = (note: string | undefined): string => {
 
   return `${cleaned.slice(0, 140)}...`;
 };
+
+const getServicePrice = (booking: PelangganBooking) =>
+  booking.layanan.reduce(
+    (sum, layanan) =>
+      sum +
+      toMoneyNumber(layanan.pivot?.harga_saat_pesan ?? layanan.harga ?? 0),
+    0,
+  );
 </script>
 
 <template>
@@ -109,11 +118,7 @@ const getMekanikNotePreview = (note: string | undefined): string => {
         </div>
 
         <p class="text-base sm:text-lg font-bold text-gray-900">
-          {{
-            toIDR(
-              b.total_harga || b.layanan.reduce((sum, s) => sum + s.harga, 0),
-            )
-          }}
+          {{ toIDR(b.total_harga || getServicePrice(b)) }}
         </p>
 
         <router-link

@@ -1,5 +1,4 @@
 import type { SparepartSummary } from "./inventory";
-import type { ServiceSummary } from "./service";
 import type { MekanikProfile, UserProfile } from "./user";
 
 export interface BookingVespa {
@@ -17,6 +16,15 @@ export interface BookingItem {
   harga_saat_ini: number;
 }
 
+export interface BookingServiceLine {
+  id?: number;
+  nama_layanan: string;
+  harga?: number;
+  pivot?: {
+    harga_saat_pesan?: number;
+  };
+}
+
 export interface Booking {
   id: number;
   kode_pemesanan: string;
@@ -31,7 +39,7 @@ export interface Booking {
   catatan_mekanik?: string;
   pengguna: UserProfile;
   vespa: BookingVespa;
-  layanan: Array<Pick<ServiceSummary, "id" | "nama_layanan" | "harga">>;
+  layanan: BookingServiceLine[];
   mekanik?: MekanikProfile | null;
   item_pemesanan?: BookingItem[];
 }
@@ -39,12 +47,6 @@ export interface Booking {
 export interface MekanikOption {
   value: number;
   label: string;
-}
-
-export interface BookingServiceLine {
-  id?: number;
-  nama_layanan: string;
-  harga: number;
 }
 
 export interface PelangganBooking {

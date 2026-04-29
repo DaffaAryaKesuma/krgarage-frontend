@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import CustomSelect from "@/components/ui/CustomSelect.vue";
+import { ref, watch } from "vue";
 import type {
   InventorySparepart,
   InventorySparepartForm,
@@ -11,6 +12,8 @@ interface Props {
   selectedSparepart: InventorySparepart | null;
   loading: boolean;
   kategoriOptions: Array<{ value: string; label: string }>;
+  categoryName: string;
+  categoryLoading: boolean;
 }
 
 const props = defineProps<Props>();
@@ -19,31 +22,73 @@ const emit = defineEmits<{
   close: [];
   submit: [];
   "update:form": [value: InventorySparepartForm];
+  "update:categoryName": [value: string];
+  "create-category": [];
 }>();
 
 const handleKategoriChange = (value: string | number | null) => {
   emit("update:form", { ...props.form, kategori: String(value || "") });
 };
+
+const showCategoryCreator = ref(false);
+
+watch(
+  () => props.show,
+  (isVisible) => {
+    if (!isVisible) {
+      showCategoryCreator.value = false;
+    }
+  },
+);
+
+const formCardClass = "rounded-2xl border border-slate-200 bg-slate-50 p-4";
+const inputClass =
+  "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-red-500 focus:ring-4 focus:ring-red-100";
+const buttonBaseClass =
+  "inline-flex items-center justify-center rounded-xl px-5 py-3 font-semibold transition disabled:cursor-not-allowed disabled:opacity-50";
+const buttonPrimaryClass = `${buttonBaseClass} bg-red-600 text-white hover:bg-red-700`;
+const buttonSecondaryClass = `${buttonBaseClass} border border-slate-300 text-slate-700 hover:bg-slate-100`;
 </script>
 
 <template>
   <div
     v-if="show"
-    class="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50 p-4"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
     @click.self="emit('close')"
   >
     <div
-      class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+      class="w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-black/5"
     >
-      <div class="sticky top-0 bg-white border-b p-6">
-        <h2 class="text-2xl font-bold text-gray-900">
-          {{ selectedSparepart ? "Edit Suku Cadang" : "Tambah Suku Cadang" }}
-        </h2>
+      <div class="border-b border-slate-200 px-6 py-5">
+        <div class="flex items-center gap-3">
+          <div
+            class="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-red-600"
+          >
+            <i
+              class="mdi text-xl"
+              :class="
+                selectedSparepart
+                  ? 'mdi-pencil-outline'
+                  : 'mdi-package-variant-closed'
+              "
+            ></i>
+          </div>
+          <div>
+            <h2 class="text-xl font-bold">
+              {{
+                selectedSparepart ? "Edit Suku Cadang" : "Tambah Suku Cadang"
+              }}
+            </h2>
+          </div>
+        </div>
       </div>
 
-      <form @submit.prevent="emit('submit')" class="p-6 space-y-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+      <form
+        @submit.prevent="emit('submit')"
+        class="max-h-[calc(90vh-5.5rem)] space-y-4 overflow-y-auto p-6"
+      >
+        <div :class="formCardClass">
+          <label class="mb-2 block text-sm font-semibold text-slate-700">
             Nama Suku Cadang <span class="text-red-600">*</span>
           </label>
           <input
@@ -56,13 +101,14 @@ const handleKategoriChange = (value: string | number | null) => {
             "
             type="text"
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+            placeholder="Contoh: Aki 6V 4Ah"
+            :class="inputClass"
           />
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div :class="formCardClass">
+            <label class="mb-2 block text-sm font-semibold text-slate-700">
               Kategori <span class="text-red-600">*</span>
             </label>
             <CustomSelect
@@ -71,10 +117,34 @@ const handleKategoriChange = (value: string | number | null) => {
               :options="kategoriOptions"
               placeholder="Pilih kategori"
             />
+            <div class="mt-3">
+              <div class="mt-2 flex gap-2">
+                <input
+                  :value="categoryName"
+                  @input="
+                    emit(
+                      'update:categoryName',
+                      ($event.target as HTMLInputElement).value,
+                    )
+                  "
+                  type="text"
+                  placeholder=" Kategori baru"
+                  class="min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-red-500 focus:ring-4 focus:ring-red-100"
+                />
+                <button
+                  type="button"
+                  @click="emit('create-category')"
+                  :disabled="categoryLoading"
+                  class="inline-flex items-center justify-center rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {{ categoryLoading ? "Menyimpan..." : "Tambah" }}
+                </button>
+              </div>
+            </div>
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
+          <div :class="formCardClass">
+            <label class="mb-2 block text-sm font-semibold text-slate-700">
               Stok Awal <span class="text-red-600">*</span>
             </label>
             <input
@@ -90,14 +160,21 @@ const handleKategoriChange = (value: string | number | null) => {
               type="number"
               min="0"
               required
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              :disabled="!!selectedSparepart"
+              placeholder="0"
+              :class="[
+                inputClass,
+                selectedSparepart
+                  ? 'cursor-not-allowed bg-slate-100 text-slate-500'
+                  : '',
+              ]"
             />
           </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div :class="formCardClass">
+            <label class="mb-2 block text-sm font-semibold text-slate-700">
               Harga Beli <span class="text-red-600">*</span>
             </label>
             <input
@@ -109,14 +186,17 @@ const handleKategoriChange = (value: string | number | null) => {
                 })
               "
               type="number"
+              step="1"
+              inputmode="numeric"
               min="0"
               required
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              placeholder="120000"
+              :class="inputClass"
             />
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
+          <div :class="formCardClass">
+            <label class="mb-2 block text-sm font-semibold text-slate-700">
               Harga Jual <span class="text-red-600">*</span>
             </label>
             <input
@@ -128,15 +208,18 @@ const handleKategoriChange = (value: string | number | null) => {
                 })
               "
               type="number"
+              step="1"
+              inputmode="numeric"
               min="0"
               required
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              placeholder="175000"
+              :class="inputClass"
             />
           </div>
         </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+        <div :class="formCardClass">
+          <label class="mb-2 block text-sm font-semibold text-slate-700">
             Batas Minimal Stok <span class="text-red-600">*</span>
           </label>
           <input
@@ -144,23 +227,25 @@ const handleKategoriChange = (value: string | number | null) => {
             @input="
               emit('update:form', {
                 ...form,
-                batas_minimal_stok: Number(
-                  ($event.target as HTMLInputElement).value,
-                ),
+                batas_minimal_stok:
+                  ($event.target as HTMLInputElement).value === ''
+                    ? null
+                    : Number(($event.target as HTMLInputElement).value),
               })
             "
             type="number"
             min="0"
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+            placeholder="Contoh: 5"
+            :class="inputClass"
           />
-          <p class="text-xs text-gray-500 mt-1">
-            Alert akan muncul jika stok mencapai nilai ini
+          <p class="mt-2 text-xs text-slate-500">
+            Peringatan akan muncul jika stok mencapai nilai ini
           </p>
         </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+        <div :class="formCardClass">
+          <label class="mb-2 block text-sm font-semibold text-slate-700">
             Deskripsi
           </label>
           <textarea
@@ -172,23 +257,23 @@ const handleKategoriChange = (value: string | number | null) => {
               })
             "
             rows="3"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+            placeholder="Tulis informasi tambahan jika perlu"
+            :class="inputClass"
           ></textarea>
         </div>
 
-        <div class="flex justify-end gap-3 pt-4 border-t">
+        <div
+          class="flex flex-col-reverse gap-3 border-t border-slate-200 pt-5 sm:flex-row sm:justify-end"
+        >
           <button
             type="button"
             @click="emit('close')"
-            class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition"
+            :class="buttonSecondaryClass"
           >
             Batal
           </button>
-          <button
-            type="submit"
-            class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition disabled:opacity-50"
-            :disabled="loading"
-          >
+          <button type="submit" :class="buttonPrimaryClass" :disabled="loading">
+            <i v-if="loading" class="mdi mdi-loading mdi-spin mr-2"></i>
             {{ loading ? "Menyimpan..." : "Simpan" }}
           </button>
         </div>

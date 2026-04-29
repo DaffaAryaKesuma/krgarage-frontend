@@ -6,6 +6,7 @@ import {
   getPaymentStatusBadgeClass,
   getPaymentStatusLabel,
 } from "@/utils/paymentStatus";
+import { toMoneyNumber } from "@/utils/money";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import type { PelangganBooking } from "@/types/booking";
 
@@ -17,6 +18,14 @@ interface Props {
 withDefaults(defineProps<Props>(), {
   isLoading: false,
 });
+
+const getServiceTotal = (booking: PelangganBooking) =>
+  booking.layanan.reduce(
+    (sum, layanan) =>
+      sum +
+      toMoneyNumber(layanan.pivot?.harga_saat_pesan ?? layanan.harga ?? 0),
+    0,
+  );
 </script>
 
 <template>
@@ -96,12 +105,7 @@ withDefaults(defineProps<Props>(), {
           <div>
             <p class="text-xs text-gray-500">Total Biaya</p>
             <p class="text-lg font-bold text-red-600 sm:text-xl">
-              {{
-                toIDR(
-                  b.total_harga ||
-                    b.layanan.reduce((sum, s) => sum + s.harga, 0),
-                )
-              }}
+              {{ toIDR(b.total_harga || getServiceTotal(b)) }}
             </p>
           </div>
         </div>

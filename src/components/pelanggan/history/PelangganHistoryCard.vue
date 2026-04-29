@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { toIDR } from "@/utils/money";
 import { formatDateShort } from "@/utils/date";
 import {
   canPelangganCancelBooking,
@@ -24,10 +23,6 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   cancel: [bookingId: number];
 }>();
-
-// Hitung total harga
-const getTotalharga = (booking: PelangganBooking) =>
-  booking.total_harga || booking.layanan.reduce((sum, s) => sum + s.harga, 0);
 
 const handleCancel = () => {
   emit("cancel", props.booking.id);

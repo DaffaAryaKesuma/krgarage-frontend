@@ -27,8 +27,13 @@ export interface InventorySparepartForm {
   jumlah_stok: number;
   harga_beli: number;
   harga_jual: number;
-  batas_minimal_stok: number;
+  batas_minimal_stok: number | null;
   deskripsi: string;
+}
+
+export interface InventoryCategory {
+  id: number;
+  nama: string;
 }
 
 export interface TopSparepartMetric {

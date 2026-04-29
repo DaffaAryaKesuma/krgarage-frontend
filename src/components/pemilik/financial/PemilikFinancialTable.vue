@@ -5,6 +5,7 @@ import Pagination from "@/components/ui/Pagination.vue";
 import TableShell from "@/components/ui/TableShell.vue";
 import PemilikFinancialMobileCard from "@/components/pemilik/financial/PemilikFinancialMobileCard.vue";
 import PemilikFinancialDesktopRow from "@/components/pemilik/financial/PemilikFinancialDesktopRow.vue";
+import { toMoneyNumber } from "@/utils/money";
 import type {
   FinancialBooking,
   FinancialBookingService,
@@ -63,7 +64,10 @@ const getBookingStatus = (booking: FinancialBooking) =>
   booking.status || "Completed";
 
 const calculateServiceTotal = (layanan: FinancialBookingService[]) =>
-  layanan.reduce((sum, s) => sum + (s.pivot.harga_saat_pesan || 0), 0);
+  layanan.reduce(
+    (sum, s) => sum + toMoneyNumber(s.pivot.harga_saat_pesan || 0),
+    0,
+  );
 
 const getBookingTotal = (booking: FinancialBooking) =>
   booking.total_harga || calculateServiceTotal(booking.layanan);

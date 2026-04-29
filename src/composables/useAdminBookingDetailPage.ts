@@ -3,6 +3,7 @@ import axios from "axios";
 import { useToast } from "@/utils/useToast";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
+import { toMoneyNumber } from "@/utils/money";
 import type { Booking } from "@/types/booking";
 import type { SparepartSummary } from "@/types/inventory";
 
@@ -25,7 +26,13 @@ export function useAdminBookingDetailPage(bookingId: string) {
   });
 
   const totalHarga = computed(() => {
-    return booking.value?.layanan?.reduce((sum, s) => sum + s.harga, 0) || 0;
+    return (
+      booking.value?.layanan?.reduce(
+        (sum, s) =>
+          sum + toMoneyNumber(s.pivot?.harga_saat_pesan ?? s.harga ?? 0),
+        0,
+      ) || 0
+    );
   });
 
   const totalSpareparts = computed(() => {
@@ -40,7 +47,7 @@ export function useAdminBookingDetailPage(bookingId: string) {
   const grandTotal = computed(() => totalHarga.value + totalSpareparts.value);
 
   const totalAkhir = computed(
-    () => booking.value?.total_harga || grandTotal.value,
+    () => toMoneyNumber(booking.value?.total_harga) || grandTotal.value,
   );
 
   const fetchBookingData = async () => {

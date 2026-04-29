@@ -4,6 +4,7 @@ import TableShell from "@/components/ui/TableShell.vue";
 import Pagination from "@/components/ui/Pagination.vue";
 import AdminFinancialTransactionMobileCard from "@/components/admin/financial/AdminFinancialTransactionMobileCard.vue";
 import AdminFinancialTransactionDesktopRow from "@/components/admin/financial/AdminFinancialTransactionDesktopRow.vue";
+import { toMoneyNumber } from "@/utils/money";
 import type {
   FinancialBooking,
   FinancialBookingService,
@@ -59,7 +60,10 @@ const TABLE_HEADERS = [
 ];
 
 const calculateServiceTotal = (layanan: FinancialBookingService[]) =>
-  layanan.reduce((sum, s) => sum + (s.pivot.harga_saat_pesan || 0), 0);
+  layanan.reduce(
+    (sum, s) => sum + toMoneyNumber(s.pivot.harga_saat_pesan || 0),
+    0,
+  );
 
 const getBookingServices = (layanan: FinancialBookingService[]) =>
   layanan.map((s) => s.nama_layanan).join(", ");

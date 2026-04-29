@@ -1,16 +1,19 @@
 import { computed, onMounted, ref } from "vue";
 import { useToast } from "@/utils/useToast";
 import { handleApiError, logError } from "@/utils/errorHandler";
-import type { InventorySparepart } from "@/types/inventory";
+import { toMoneyNumber } from "@/utils/money";
+import type { InventoryCategory, InventorySparepart } from "@/types/inventory";
 import {
   createEmptyInventoryForm,
-  getInventoryCategoryOptions,
+  mapInventoryCategoriesToOptions,
   matchesInventoryFilters,
   validateInventoryForm,
 } from "@/composables/helpers/adminInventoryHelpers";
 import {
+  createAdminInventoryCategory,
   createAdminInventorySparepart,
   deleteAdminInventorySparepart,
+  fetchAdminInventoryCategories,
   fetchAdminInventorySpareparts,
   restockAdminInventorySparepart,
   updateAdminInventorySparepart,
@@ -18,11 +21,11 @@ import {
 
 export function useAdminInventoryPage() {
   const toast = useToast();
-  const { kategoriOptions, kategoriFilterOptions } =
-    getInventoryCategoryOptions();
 
   const spareparts = ref<InventorySparepart[]>([]);
+  const categories = ref<InventoryCategory[]>([]);
   const loading = ref(false);
+  const categoryLoading = ref(false);
   const searchQuery = ref("");
   const selectedKategori = ref("");
   const showLowStock = ref(false);
@@ -33,8 +36,18 @@ export function useAdminInventoryPage() {
   const selectedSparepart = ref<InventorySparepart | null>(null);
   const itemToDelete = ref<number | null>(null);
   const restockQuantity = ref(0);
+  const categoryName = ref("");
 
   const form = ref(createEmptyInventoryForm());
+
+  const categoryOptions = computed(() =>
+    mapInventoryCategoriesToOptions(categories.value),
+  );
+
+  const kategoriOptions = computed(() => categoryOptions.value.kategoriOptions);
+  const kategoriFilterOptions = computed(
+    () => categoryOptions.value.kategoriFilterOptions,
+  );
 
   const filteredSpareparts = computed(() => {
     return spareparts.value.filter((sp) =>
@@ -61,6 +74,15 @@ export function useAdminInventoryPage() {
     goodStock: goodStockCount.value,
   }));
 
+  const refreshCategoryOptions = async () => {
+    try {
+      categories.value = await fetchAdminInventoryCategories();
+    } catch (error: any) {
+      logError(error, "refreshCategoryOptions");
+      toast.error(handleApiError(error));
+    }
+  };
+
   const resetForm = () => {
     form.value = createEmptyInventoryForm();
   };
@@ -77,8 +99,8 @@ export function useAdminInventoryPage() {
       nama_suku_cadang: sparepart.nama_suku_cadang,
       kategori: sparepart.kategori || "",
       jumlah_stok: sparepart.jumlah_stok,
-      harga_beli: sparepart.harga_beli,
-      harga_jual: sparepart.harga_jual,
+      harga_beli: Math.trunc(toMoneyNumber(sparepart.harga_beli)),
+      harga_jual: Math.trunc(toMoneyNumber(sparepart.harga_jual)),
       batas_minimal_stok: sparepart.batas_minimal_stok,
       deskripsi: sparepart.deskripsi,
     };
@@ -88,6 +110,7 @@ export function useAdminInventoryPage() {
   const closeModal = () => {
     showModal.value = false;
     resetForm();
+    categoryName.value = "";
   };
 
   const openRestockModal = (sparepart: InventorySparepart) => {
@@ -115,6 +138,38 @@ export function useAdminInventoryPage() {
       toast.error(handleApiError(error));
     } finally {
       loading.value = false;
+    }
+  };
+
+  const saveCategory = async () => {
+    const trimmedName = categoryName.value.trim();
+
+    if (!trimmedName) {
+      toast.error("Nama kategori tidak boleh kosong");
+      return;
+    }
+
+    const isDuplicate = categories.value.some(
+      (category) => category.nama.toLowerCase() === trimmedName.toLowerCase(),
+    );
+
+    if (isDuplicate) {
+      toast.error("Kategori sudah ada");
+      return;
+    }
+
+    categoryLoading.value = true;
+    try {
+      await createAdminInventoryCategory(trimmedName);
+      toast.success("Kategori berhasil ditambahkan!");
+      form.value.kategori = trimmedName;
+      categoryName.value = "";
+      await refreshCategoryOptions();
+    } catch (error: any) {
+      logError(error, "saveCategory");
+      toast.error(handleApiError(error));
+    } finally {
+      categoryLoading.value = false;
     }
   };
 
@@ -195,6 +250,7 @@ export function useAdminInventoryPage() {
   };
 
   onMounted(() => {
+    refreshCategoryOptions();
     fetchSpareparts();
   });
 
@@ -203,6 +259,7 @@ export function useAdminInventoryPage() {
     kategoriFilterOptions,
     spareparts,
     loading,
+    categoryLoading,
     searchQuery,
     selectedKategori,
     showLowStock,
@@ -212,6 +269,7 @@ export function useAdminInventoryPage() {
     selectedSparepart,
     itemToDelete,
     restockQuantity,
+    categoryName,
     form,
     filteredSpareparts,
     stats,
@@ -222,6 +280,7 @@ export function useAdminInventoryPage() {
     closeRestockModal,
     showDeleteConfirmModal,
     fetchSpareparts,
+    saveCategory,
     saveSparepart,
     restock,
     deleteSparepart,

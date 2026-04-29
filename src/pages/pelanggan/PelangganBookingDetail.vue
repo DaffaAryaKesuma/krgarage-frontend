@@ -13,6 +13,7 @@ import { useToast } from "@/utils/useToast";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
 import { handleApiError, logError } from "@/utils/errorHandler";
+import { toMoneyNumber } from "@/utils/money";
 import { canPelangganCancelBooking } from "@/utils/statusBadge";
 import type { Booking } from "@/types/booking";
 
@@ -27,24 +28,35 @@ const errorMessage = ref("");
 
 const bookingId = computed(() => Number(route.params.id));
 
+const getServiceSnapshotPrice = (layanan: Booking["layanan"][number]) =>
+  toMoneyNumber(layanan.pivot?.harga_saat_pesan ?? layanan.harga ?? 0);
+
 const totalLayanan = computed(
   () =>
-    booking.value?.layanan?.reduce((sum, layanan) => sum + layanan.harga, 0) ||
-    0,
+    booking.value?.layanan?.reduce(
+      (sum, layanan) => sum + getServiceSnapshotPrice(layanan),
+      0,
+    ) || 0,
 );
 
 const totalSukuCadang = computed(
   () =>
     booking.value?.item_pemesanan?.reduce(
-      (sum, item) => sum + item.harga_saat_ini * item.jumlah,
+      (sum, item) => sum + toMoneyNumber(item.harga_saat_ini) * item.jumlah,
       0,
     ) || 0,
 );
 
-const totalBiaya = computed(
-  () =>
-    booking.value?.total_harga ?? totalLayanan.value + totalSukuCadang.value,
-);
+const totalBiaya = computed(() => {
+  const rawTotal = booking.value?.total_harga;
+
+  if (rawTotal === null || rawTotal === undefined) {
+    return totalLayanan.value + totalSukuCadang.value;
+  }
+
+  const parsedTotal = toMoneyNumber(rawTotal);
+  return parsedTotal;
+});
 
 const canCancel = computed(() =>
   canPelangganCancelBooking(booking.value?.status || null),

@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
+import { toMoneyNumber } from "@/utils/money";
 import type { Booking } from "@/types/booking";
 
 defineProps<{
   booking: Booking;
 }>();
+
+const getServicePrice = (layanan: Booking["layanan"][number]) =>
+  toMoneyNumber(layanan.pivot?.harga_saat_pesan ?? layanan.harga ?? 0);
 </script>
 
 <template>
@@ -25,7 +29,7 @@ defineProps<{
             {{ layanan.nama_layanan }}
           </span>
           <span class="text-sm font-semibold text-gray-900">
-            {{ toIDR(layanan.harga) }}
+            {{ toIDR(getServicePrice(layanan)) }}
           </span>
         </div>
       </div>
