@@ -13,7 +13,7 @@ interface Props {
   bookingDate: string;
   plateNumber: string;
   bookingStatus: string;
-  bookingTotal: number;
+  bookingTotal: number | string;
 }
 
 defineProps<Props>();

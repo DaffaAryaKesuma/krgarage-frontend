@@ -65,69 +65,99 @@ const getServicePrice = (booking: PelangganBooking) =>
       action-text="Buat Pemesanan Pertama →"
       action-link="/app/pemesanan"
     />
-    <div v-else class="space-y-4">
+    <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
       <div
         v-for="b in bookings"
         :key="b.id"
-        class="rounded-xl border border-gray-200 p-4 transition-shadow hover:shadow-md sm:p-5"
+        class="group rounded-2xl border border-gray-200 bg-white p-4 transition-all duration-300 hover:-translate-y-1 hover:border-gray-200 hover:shadow-xl hover:shadow-gray-500/5 sm:p-5 flex flex-col justify-between h-full gap-4"
       >
-        <div class="mb-3 flex flex-wrap items-start justify-between gap-3">
-          <div class="flex min-w-0 items-center gap-3">
-            <i
-              :class="[
-                'text-3xl',
-                b.status === 'Completed'
-                  ? 'mdi mdi-check-circle text-green-600'
-                  : 'mdi mdi-close-circle text-red-600',
-              ]"
-            ></i>
-            <div>
-              <p class="text-xs text-gray-500">Kode Pemesanan</p>
-              <p class="text-base font-semibold text-gray-900 sm:text-lg">
+        <!-- Top Half: Info -->
+        <div class="flex items-start gap-3 sm:gap-4 min-w-0">
+          <i
+            :class="[
+              'text-3xl mt-0.5 shrink-0',
+              b.status === 'Completed'
+                ? 'mdi mdi-check-circle text-green-500'
+                : 'mdi mdi-close-circle text-red-500',
+            ]"
+          ></i>
+          <div class="min-w-0">
+            <div class="flex flex-col gap-0.5 mb-2">
+              <h3
+                class="text-base sm:text-lg font-bold text-gray-900 leading-tight"
+              >
                 {{ b.kode_pemesanan }}
-              </p>
-              <p class="text-xs text-gray-600 mt-1">
+              </h3>
+              <span class="text-xs text-gray-500 font-medium">
                 {{ formatDateShort(b.tanggal_pemesanan) }}
+              </span>
+            </div>
+
+            <p class="text-xs sm:text-sm text-gray-600 mb-3">
+              <span class="font-bold text-gray-800">{{
+                b.vespa?.model || "Vespa"
+              }}</span>
+              <span class="line-clamp-2 mt-0.5">{{
+                b.layanan.map((s) => s.nama_layanan).join(", ")
+              }}</span>
+            </p>
+
+            <div
+              v-if="b.catatan_mekanik"
+              class="rounded border border-green-100 bg-green-50 px-2.5 py-1.5 w-full"
+            >
+              <div class="flex items-center gap-1.5 mb-0.5">
+                <i
+                  class="mdi mdi-message-text-outline text-[11px] text-green-700"
+                ></i>
+                <span
+                  class="text-[10px] font-bold uppercase tracking-wider text-green-800"
+                  >Catatan Mekanik</span
+                >
+              </div>
+              <p class="text-xs text-gray-700 w-full whitespace-normal">
+                {{ getMekanikNotePreview(b.catatan_mekanik) }}
               </p>
             </div>
           </div>
-          <div class="flex flex-col items-end gap-2">
-            <span :class="getStatusBadgeClass(b.status || 'Pending')">
+        </div>
+
+        <!-- Bottom Half: Status, Price, Action -->
+        <div
+          class="flex flex-wrap items-end justify-between gap-3 shrink-0 border-t border-gray-100 pt-3 mt-auto"
+        >
+          <div class="flex flex-col gap-1.5 min-w-0">
+            <span
+              :class="[
+                getStatusBadgeClass(b.status || 'Pending'),
+                'text-[10px] sm:text-[11px] px-2 py-0.5 w-fit',
+              ]"
+            >
               {{ getStatusLabel(b.status || "Pending") }}
             </span>
-            <span :class="getPaymentStatusBadgeClass(b.status_pembayaran)">
+            <span
+              :class="[
+                getPaymentStatusBadgeClass(b.status_pembayaran),
+                'text-[10px] sm:text-[11px] px-2 py-0.5 w-fit',
+              ]"
+            >
               {{ getPaymentStatusLabel(b.status_pembayaran) }}
             </span>
           </div>
-        </div>
-        <div class="text-xs sm:text-sm text-gray-600 mb-2">
-          <span class="font-medium">{{ b.vespa?.model }}</span> •
-          {{ b.layanan.map((s) => s.nama_layanan).join(", ") }}
-        </div>
 
-        <div
-          v-if="b.catatan_mekanik"
-          class="mb-2 rounded-lg border border-green-200 bg-green-50 p-2"
-        >
-          <p class="mb-1 text-[11px] font-semibold text-green-800">
-            Catatan Mekanik
-          </p>
-          <p class="text-xs text-gray-700">
-            {{ getMekanikNotePreview(b.catatan_mekanik) }}
-          </p>
+          <div class="flex flex-col items-end text-right shrink-0">
+            <p class="text-sm sm:text-base font-bold text-gray-900 mb-2">
+              {{ toIDR(b.total_harga || getServicePrice(b)) }}
+            </p>
+            <router-link
+              :to="`/app/riwayat/${b.id}`"
+              class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 w-auto"
+            >
+              <i class="mdi mdi-eye-outline text-sm"></i>
+              <span>Detail</span>
+            </router-link>
+          </div>
         </div>
-
-        <p class="text-base sm:text-lg font-bold text-gray-900">
-          {{ toIDR(b.total_harga || getServicePrice(b)) }}
-        </p>
-
-        <router-link
-          :to="`/app/riwayat/${b.id}`"
-          class="mt-3 inline-flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 transition hover:bg-gray-50 sm:text-sm"
-        >
-          <i class="mdi mdi-text-box-search-outline"></i>
-          <span>Lihat Detail</span>
-        </router-link>
       </div>
     </div>
   </section>

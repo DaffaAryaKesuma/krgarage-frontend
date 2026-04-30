@@ -67,7 +67,12 @@ onMounted(async () => {
 // Computed properties
 const upcomingBookings = computed(() =>
   bookingList.value
-    .filter((b) => b.status === "Pending" || b.status === "In Progress")
+    .filter(
+      (b) =>
+        b.status === "Pending" ||
+        b.status === "Confirmed" ||
+        b.status === "In Progress",
+    )
     .slice(0, 3),
 );
 
@@ -96,20 +101,20 @@ const recentBookings = computed(() =>
         <!-- Service Reminder Banner -->
         <PelangganServiceReminderBanner :vespas="vespasDueService" />
 
-        <!-- Quick Actions -->
-        <PelangganQuickActions />
-
-        <!-- Stats Cards -->
+        <!-- Top Row: Stats Cards -->
         <PelangganStatsCards
           :vespa-count="vespaList.length"
           :total-bookings="bookingList.length"
           :active-bookings="upcomingBookings.length"
         />
 
-        <!-- Quick Tips Widget -->
-        <PelangganTipsWidget />
+        <!-- Second Row: Quick Actions + Tips -->
+        <div class="grid gap-4 lg:gap-6 xl:grid-cols-[1.5fr_1fr]">
+          <PelangganQuickActions class="h-full" />
+          <PelangganTipsWidget class="h-full" />
+        </div>
 
-        <!-- Upcoming Bookings Section -->
+        <!-- Third Row & Below: Bookings -->
         <PelangganUpcomingBookings
           :bookings="upcomingBookings"
           :is-loading="isLoading"

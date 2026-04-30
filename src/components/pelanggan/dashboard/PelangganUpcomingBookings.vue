@@ -46,11 +46,11 @@ const getServiceTotal = (booking: PelangganBooking) =>
       </router-link>
     </div>
     <LoadingSpinner v-if="isLoading" message="Memuat pemesanan..." />
-    <div v-else class="space-y-4">
+    <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
       <div
         v-for="b in bookings"
         :key="b.id"
-        class="rounded-xl border border-gray-200 bg-gradient-to-r from-white to-gray-50 p-4 transition-shadow hover:shadow-lg sm:p-5"
+        class="group rounded-2xl border border-gray-200 bg-white p-4 transition-all duration-300 hover:-translate-y-1 hover:border-gray-200 hover:shadow-xl hover:shadow-gray-500/5 sm:p-5 flex flex-col h-full"
       >
         <div class="mb-3 flex flex-wrap items-start justify-between gap-3">
           <div class="flex min-w-0 items-center gap-3">
@@ -84,9 +84,6 @@ const getServiceTotal = (booking: PelangganBooking) =>
               <p class="font-semibold text-gray-900">
                 {{ b.vespa?.model || "N/A" }}
               </p>
-              <p class="text-xs text-gray-600">
-                {{ b.vespa?.plat_nomor || "N/A" }}
-              </p>
             </div>
           </div>
           <div class="flex items-start gap-2">
@@ -100,7 +97,7 @@ const getServiceTotal = (booking: PelangganBooking) =>
           </div>
         </div>
         <div
-          class="flex items-center justify-between pt-4 border-t border-gray-200"
+          class="flex items-center justify-between pt-4 border-t border-gray-200 mt-auto"
         >
           <div>
             <p class="text-xs text-gray-500">Total Biaya</p>

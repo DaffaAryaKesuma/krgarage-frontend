@@ -40,23 +40,27 @@ const SUMMARY_CARDS = computed(() => [
 </script>
 
 <template>
-  <div class="grid grid-cols-1 gap-6 min-[420px]:grid-cols-2 md:grid-cols-3">
+  <div
+    class="grid grid-cols-1 gap-4 min-[420px]:gap-6 sm:grid-cols-2 md:grid-cols-3"
+  >
     <div
       v-for="card in SUMMARY_CARDS"
       :key="card.title"
-      class="rounded-xl bg-white p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow"
+      class="rounded-xl bg-white p-4 sm:p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow"
     >
-      <div class="flex items-start justify-between">
-        <div>
-          <p class="text-sm font-medium text-gray-600">
+      <div class="flex items-start justify-between gap-2">
+        <div class="min-w-0">
+          <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">
             {{ card.title }}
           </p>
-          <h3 class="mt-2 text-2xl font-bold text-gray-900">
+          <h3
+            class="mt-1 sm:mt-2 text-lg min-[420px]:text-base sm:text-2xl font-bold text-gray-900 truncate"
+          >
             {{ card.value }}
           </h3>
         </div>
-        <div :class="['rounded-xl p-3', card.bg]">
-          <i :class="['mdi', card.icon, 'text-2xl', card.color]"></i>
+        <div :class="['rounded-xl p-2 sm:p-3 shrink-0', card.bg]">
+          <i :class="['mdi', card.icon, 'text-xl sm:text-2xl', card.color]"></i>
         </div>
       </div>
     </div>
