@@ -23,7 +23,7 @@ const MONTH_OPTIONS = getMonthOptions();
       </div>
       <div>
         <h2 class="text-xl font-bold text-gray-900">
-          Top 5 Sparepart Terlaris
+          Top 5 Suku Cadang Terlaris
         </h2>
         <p class="text-sm text-gray-600">
           Periode:
@@ -85,7 +85,7 @@ const MONTH_OPTIONS = getMonthOptions();
     >
       <i class="mdi mdi-package-variant-closed text-5xl text-gray-300"></i>
       <p class="mt-3 text-gray-600 font-medium">
-        Belum ada penjualan sparepart
+        Belum ada penjualan suku cadang
       </p>
       <p class="text-xs text-gray-400">Pada periode ini</p>
     </div>

@@ -12,7 +12,11 @@ axios.defaults.baseURL = "http://127.0.0.1:8000";
 // Add request interceptor untuk show loading state
 axios.interceptors.request.use(
   (config) => {
-    // Bisa tambahkan global loading indicator di sini jika perlu
+    // Inject token ke header Authorization jika ada
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {

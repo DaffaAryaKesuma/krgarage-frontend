@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
+import axios from "axios";
 import MekanikSelectSparepartForJobModal from "@/components/mekanik/dashboard/MekanikSelectSparepartForJobModal.vue";
 import MekanikCompleteJobModal from "@/components/mekanik/dashboard/MekanikCompleteJobModal.vue";
 import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
@@ -51,9 +52,29 @@ const {
   fetchData,
 });
 
+// Activity ping to update last_seen
+let pingTimer: number | undefined;
+
+async function sendPing() {
+  try {
+    await axios.post("/api/ping");
+  } catch (error) {
+    // Ignore errors silently - just for activity tracking
+    console.debug("Ping error (non-critical):", error);
+  }
+}
+
 // Lifecycle
 onMounted(() => {
   void fetchActiveJobs();
+
+  // Send ping immediately and then every 30 seconds
+  sendPing();
+  pingTimer = window.setInterval(sendPing, 30 * 1000);
+});
+
+onUnmounted(() => {
+  if (pingTimer) clearInterval(pingTimer);
 });
 </script>
 
@@ -68,7 +89,6 @@ onMounted(() => {
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
       <!-- Active Jobs Tab -->
       <div v-if="activeTab === 'active'">
-
         <MekanikJobsGrid
           :bookings="filteredBookings"
           :loading="loading"

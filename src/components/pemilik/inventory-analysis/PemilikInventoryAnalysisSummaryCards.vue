@@ -27,7 +27,7 @@ const SUMMARY_CARDS = computed(() => [
     icon: "mdi-wrench",
   },
   {
-    title: "Total Sparepart Terjual",
+    title: "Total Suku Cadang Terjual",
     key: "totalSpareparts" as keyof Summary,
     subtitle: `Periode ${MONTH_OPTIONS[props.selectedMonth - 1].label} ${props.selectedYear}`,
     gradient: "from-green-500 to-green-600",

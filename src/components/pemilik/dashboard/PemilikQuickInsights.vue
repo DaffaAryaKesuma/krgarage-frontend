@@ -1,20 +1,72 @@
 <script setup lang="ts">
-const INSIGHT_CARDS = [
-  {
-    title: "Status Operasional",
-    value: "Bengkel Buka",
-    subtitle: "Setiap Hari (Kecuali Jumat), 10:00 - 17:00",
-    icon: "mdi-store-clock",
-    gradient: "from-red-500 to-red-600",
-  },
-  {
-    title: "Tim Aktif",
-    value: "5 Mekanik",
-    subtitle: "Siap melayani pelanggan",
-    icon: "mdi-account-group",
-    gradient: "from-blue-500 to-blue-600",
-  },
-];
+import { ref, computed, onMounted, onUnmounted } from "vue";
+import axios from "axios";
+
+const now = ref(new Date());
+const mechanicsCount = ref(5); // Default fallback
+let timeTimer: number | undefined;
+let pollTimer: number | undefined;
+
+function updateNow() {
+  now.value = new Date();
+}
+
+async function loadMechanicsCount() {
+  try {
+    const response = await axios.get("/api/pemilik/mekanik-online");
+    mechanicsCount.value = response.data.count ?? 5;
+  } catch (error) {
+    console.error("Failed to load mechanics count:", error);
+    // Keep fallback value on error
+  }
+}
+
+const isFriday = computed(() => now.value.getDay() === 5);
+const OPEN_HOUR = 10;
+const CLOSE_HOUR = 17;
+
+const isOpen = computed(() => {
+  if (isFriday.value) return false;
+  const h = now.value.getHours();
+  return h >= OPEN_HOUR && h < CLOSE_HOUR;
+});
+
+const firstCard = computed(() => ({
+  title: "Status Operasional",
+  value: isOpen.value ? "Bengkel Buka" : "Bengkel Tutup",
+  subtitle: isFriday.value ? "Libur: Jumat" : `Jam Operasional: 10:00 - 17:00`,
+  icon: isOpen.value ? "mdi-store-clock" : "mdi-store-off",
+  gradient: isOpen.value
+    ? "from-green-500 to-green-600"
+    : "from-gray-500 to-gray-600",
+}));
+
+const teamCard = computed(() => ({
+  title: "Tim Aktif",
+  value: `${mechanicsCount.value} Mekanik`,
+  subtitle: "Siap melayani pelanggan",
+  icon: "mdi-account-group",
+  gradient: "from-blue-500 to-blue-600",
+}));
+
+const INSIGHT_CARDS = computed(() => [firstCard.value, teamCard.value]);
+
+onMounted(() => {
+  updateNow();
+
+  timeTimer = window.setInterval(updateNow, 60 * 1000);
+
+  // Delay mechanics count fetch by 500ms to ensure token is ready
+  setTimeout(() => {
+    loadMechanicsCount();
+    pollTimer = window.setInterval(loadMechanicsCount, 30 * 1000);
+  }, 500);
+});
+
+onUnmounted(() => {
+  if (timeTimer) clearInterval(timeTimer);
+  if (pollTimer) clearInterval(pollTimer);
+});
 </script>
 
 <template>

@@ -68,7 +68,7 @@ const handleYearBlur = () => {
           <button
             @click="showMonthDropdown = !showMonthDropdown"
             @blur="handleMonthBlur"
-            class="px-4 py-2 rounded-lg border border-gray-300 hover:border-red-400 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none bg-white text-sm font-medium text-gray-700 flex items-center gap-2 min-w-[140px] justify-between transition-colors"
+            class="px-8 py-2 rounded-lg border border-gray-300 hover:border-red-400 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none bg-white text-sm font-medium text-gray-700 flex items-center gap-2 min-w-[140px] justify-between transition-colors"
           >
             <span>{{ getSelectedMonthLabel() }}</span>
             <i
