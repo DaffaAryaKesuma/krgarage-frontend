@@ -11,10 +11,8 @@ defineProps<Props>();
 
 <template>
   <div>
-    <h3
-      class="font-semibold text-gray-900 tracking-wide mb-3"
-    >
-    <i class="mdi mdi-wrench text-purple-600 text-xl"></i>
+    <h3 class="font-semibold text-gray-900 tracking-wide mb-3">
+      <i class="mdi mdi-wrench text-purple-600 text-xl"></i>
       Layanan
     </h3>
     <div class="space-y-2">
@@ -28,7 +26,9 @@ defineProps<Props>();
             service.nama_layanan
           }}</span>
         </div>
-        <span class="font-medium text-gray-900">{{ toIDR(service.harga) }}</span>
+        <span class="font-medium text-gray-900">{{
+          toIDR(service.harga ?? 0)
+        }}</span>
       </div>
     </div>
   </div>

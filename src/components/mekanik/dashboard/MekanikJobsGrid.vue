@@ -84,7 +84,10 @@ const getServiceName = (booking: MekanikBooking) =>
         <div>
           <p class="text-xs text-gray-500 mb-1">Vespa</p>
           <p class="text-sm font-semibold text-gray-900">
-            {{ booking.vespa.model }} - {{ booking.vespa.tahun_produksi }}
+            {{ booking.vespa.model }}
+            <span v-if="booking.vespa.plat_nomor" class="text-gray-500 font-normal ml-1">
+              ({{ booking.vespa.plat_nomor }})
+            </span>
           </p>
         </div>
 

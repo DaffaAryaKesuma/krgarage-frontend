@@ -74,7 +74,7 @@ export function canAdminCompleteBooking(
 export function canMekanikUpdateStatus(
   status: string | null | undefined,
 ): boolean {
-  return isPendingOrConfirmedStatus(status) || isInProgressStatus(status);
+  return isInProgressStatus(status);
 }
 
 export function canMekanikAddSparepart(
@@ -86,9 +86,6 @@ export function canMekanikAddSparepart(
 export function getMekanikActionButtonText(
   status: string | null | undefined,
 ): string {
-  if (isPendingOrConfirmedStatus(status)) {
-    return "Mulai Pekerjaan";
-  }
   if (isInProgressStatus(status)) {
     return "Selesaikan Pekerjaan";
   }
@@ -98,9 +95,6 @@ export function getMekanikActionButtonText(
 export function getMekanikActionButtonClass(
   status: string | null | undefined,
 ): string {
-  if (isPendingOrConfirmedStatus(status)) {
-    return "bg-blue-600 hover:bg-blue-700";
-  }
   if (isInProgressStatus(status)) {
     return "bg-green-600 hover:bg-green-700";
   }
@@ -110,9 +104,6 @@ export function getMekanikActionButtonClass(
 export function getMekanikNextStatus(
   currentStatus: string | null | undefined,
 ): BookingStatus | null {
-  if (isPendingOrConfirmedStatus(currentStatus)) {
-    return BOOKING_STATUS.IN_PROGRESS;
-  }
   if (isInProgressStatus(currentStatus)) {
     return BOOKING_STATUS.COMPLETED;
   }
