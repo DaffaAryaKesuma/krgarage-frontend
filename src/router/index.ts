@@ -25,6 +25,7 @@ import AdminServices from "../pages/admin/AdminServices.vue";
 import AdminBookingDetail from "../pages/admin/AdminBookingDetail.vue";
 import AdminFinancialReport from "../pages/admin/AdminFinancialReport.vue";
 import AdminInventory from "../pages/admin/AdminInventory.vue";
+import AdminKaryawan from "../pages/admin/AdminKaryawan.vue";
 
 // Halaman mekanik
 import MekanikDashboard from "../pages/mekanik/MekanikDashboard.vue";
@@ -116,6 +117,11 @@ const router = createRouter({
           path: "inventaris",
           name: "admin-inventaris",
           component: AdminInventory,
+        },
+        {
+          path: "karyawan",
+          name: "admin-karyawan",
+          component: AdminKaryawan,
         },
       ],
     },

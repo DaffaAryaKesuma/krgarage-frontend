@@ -35,9 +35,9 @@ const toggleService = (id: number) => {
   <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
     <div class="flex items-center gap-3 mb-6">
       <div
-        class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center"
+        class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center"
       >
-        <i class="mdi mdi-wrench text-xl text-orange-600"></i>
+        <i class="mdi mdi-wrench text-xl text-red-600"></i>
       </div>
       <div>
         <h2 class="text-xl sm:text-2xl font-bold text-gray-900">
@@ -89,15 +89,15 @@ const toggleService = (id: number) => {
 
           <!-- Info -->
           <div class="grid grid-cols-2 gap-2 mb-3">
-            <div class="bg-orange-50 p-2 rounded border border-orange-200">
+            <div class="bg-red-50 p-2 rounded border border-red-200">
               <p class="text-xs text-gray-600">Harga</p>
-              <p class="text-sm font-bold text-orange-600">
+              <p class="text-sm font-bold text-red-600">
                 {{ toIDR(service.harga) }}
               </p>
             </div>
-            <div class="bg-blue-50 p-2 rounded border border-blue-200">
+            <div class="bg-green-50 p-2 rounded border border-green-200">
               <p class="text-xs text-gray-600">Durasi</p>
-              <p class="text-sm font-bold text-blue-600">
+              <p class="text-sm font-bold text-green-600">
                 {{ formatWaktu(service.durasi_pengerjaan) }}
               </p>
             </div>

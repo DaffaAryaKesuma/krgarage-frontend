@@ -17,6 +17,8 @@ const {
   form,
   errors,
   touched,
+  selectedServices,
+  selectedVespa,
   totalHarga,
   handleServiceChange,
   handleVespaChange,
@@ -85,7 +87,8 @@ onMounted(() => {
 
         <!-- Summary & Submit -->
         <PelangganBookingSummary
-          :service-count="form.service_ids.length"
+          :selected-services="selectedServices"
+          :selected-vespa="selectedVespa"
           :total-price="totalHarga"
           :selected-date="form.tanggal_pemesanan"
           :selected-time="form.jam_pemesanan"

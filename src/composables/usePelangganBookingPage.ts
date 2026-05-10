@@ -47,6 +47,10 @@ export function usePelangganBookingPage() {
     ),
   );
 
+  const selectedVespa = computed(() =>
+    myVespas.value.find((v) => v.id === form.value.id_vespa)
+  );
+
   const totalHarga = computed(() =>
     selectedServices.value.reduce((sum, service) => sum + service.harga, 0),
   );
@@ -73,7 +77,11 @@ export function usePelangganBookingPage() {
         `${API_URL}/pemesanan/cek-slot?date=${form.value.tanggal_pemesanan}`,
         { headers },
       );
-      bookedSlots.value = data;
+      // Data dari Laravel mengembalikan jam dengan format "15:00:00" (HH:mm:ss)
+      // Kita perlu mengambil "HH:mm" (5 karakter pertama) agar cocok dengan TIME_SLOTS
+      bookedSlots.value = (data as string[]).map((time) =>
+        time.substring(0, 5),
+      );
     } catch (error: any) {
       logError(error, "checkAvailability");
       toast.error(handleApiError(error));
@@ -180,6 +188,8 @@ export function usePelangganBookingPage() {
     form,
     errors,
     touched,
+    selectedServices,
+    selectedVespa,
     totalHarga,
     handleServiceChange,
     handleVespaChange,

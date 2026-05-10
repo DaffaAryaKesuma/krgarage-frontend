@@ -67,96 +67,93 @@ const getServicePrice = (booking: PelangganBooking) =>
     />
     <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
       <div
-        v-for="b in bookings"
-        :key="b.id"
-        class="group rounded-2xl border border-gray-200 bg-white p-4 transition-all duration-300 hover:-translate-y-1 hover:border-gray-200 hover:shadow-xl hover:shadow-gray-500/5 sm:p-5 flex flex-col justify-between h-full gap-4"
+        v-for="booking in bookings"
+        :key="booking.id"
+        class="group rounded-2xl border border-gray-200 bg-white p-4 transition-all duration-300 hover:-translate-y-1 hover:border-gray-200 hover:shadow-xl hover:shadow-gray-500/5 sm:p-5 flex flex-col h-full"
       >
-        <!-- Top Half: Info -->
-        <div class="flex items-start gap-3 sm:gap-4 min-w-0">
-          <i
-            :class="[
-              'text-3xl mt-0.5 shrink-0',
-              b.status === 'Completed'
-                ? 'mdi mdi-check-circle text-green-500'
-                : 'mdi mdi-close-circle text-red-500',
-            ]"
-          ></i>
-          <div class="min-w-0">
-            <div class="flex flex-col gap-0.5 mb-2">
-              <h3
-                class="text-base sm:text-lg font-bold text-gray-900 leading-tight"
-              >
-                {{ b.kode_pemesanan }}
-              </h3>
-              <span class="text-xs text-gray-500 font-medium">
-                {{ formatDateShort(b.tanggal_pemesanan) }}
-              </span>
+        <div class="mb-3 flex flex-wrap items-start justify-between gap-3">
+          <div class="flex min-w-0 items-center gap-3">
+            <i
+              :class="
+                booking.status === 'Completed'
+                  ? 'mdi mdi-check-circle text-green-500 text-3xl'
+                  : 'mdi mdi-close-circle text-red-500 text-3xl'
+              "
+            ></i>
+            <div>
+              <p class="text-xs text-gray-500 mb-1">Kode Pemesanan</p>
+              <p class="text-base font-bold text-gray-900 sm:text-lg">
+                {{ booking.kode_pemesanan }}
+              </p>
+              <p class="text-xs text-gray-600 mt-1">
+                {{ formatDateShort(booking.tanggal_pemesanan) }}
+              </p>
             </div>
-
-            <p class="text-xs sm:text-sm text-gray-600 mb-3">
-              <span class="font-bold text-gray-800">{{
-                b.vespa?.model || "Vespa"
-              }}</span>
-              <span class="line-clamp-2 mt-0.5">{{
-                b.layanan.map((s) => s.nama_layanan).join(", ")
-              }}</span>
-            </p>
-
-            <div
-              v-if="b.catatan_mekanik"
-              class="rounded border border-green-100 bg-green-50 px-2.5 py-1.5 w-full"
+          </div>
+          <div class="flex flex-col items-end gap-2">
+            <span :class="getStatusBadgeClass(booking.status || 'Pending')">
+              {{ getStatusLabel(booking.status || "Pending") }}
+            </span>
+            <span
+              :class="getPaymentStatusBadgeClass(booking.status_pembayaran)"
             >
-              <div class="flex items-center gap-1.5 mb-0.5">
-                <i
-                  class="mdi mdi-message-text-outline text-[11px] text-green-700"
-                ></i>
-                <span
-                  class="text-[10px] font-bold uppercase tracking-wider text-green-800"
-                  >Catatan Mekanik</span
-                >
-              </div>
-              <p class="text-xs text-gray-700 w-full whitespace-normal">
-                {{ getMekanikNotePreview(b.catatan_mekanik) }}
+              {{ getPaymentStatusLabel(booking.status_pembayaran) }}
+            </span>
+          </div>
+        </div>
+        <div
+          class="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-2"
+        >
+          <div class="flex items-start gap-2">
+            <i class="mdi mdi-motorbike text-xl text-gray-600"></i>
+            <div>
+              <p class="text-xs text-gray-500">Vespa</p>
+              <p class="font-semibold text-gray-900">
+                {{ booking.vespa?.model || "N/A" }}
+              </p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2">
+            <i class="mdi mdi-wrench text-xl text-gray-600"></i>
+            <div>
+              <p class="text-xs text-gray-500">Layanan</p>
+              <p class="font-semibold text-gray-900 text-sm">
+                {{ booking.layanan.map((s) => s.nama_layanan).join(", ") }}
               </p>
             </div>
           </div>
         </div>
-
-        <!-- Bottom Half: Status, Price, Action -->
         <div
-          class="flex flex-wrap items-end justify-between gap-3 shrink-0 border-t border-gray-100 pt-3 mt-auto"
+          v-if="booking.catatan_mekanik"
+          class="mb-4 rounded border border-green-100 bg-green-50 px-3 py-2 w-full"
         >
-          <div class="flex flex-col gap-1.5 min-w-0">
+          <div class="flex items-center gap-1.5 mb-1">
+            <i class="mdi mdi-message-text-outline text-xs text-green-700"></i>
             <span
-              :class="[
-                getStatusBadgeClass(b.status || 'Pending'),
-                'text-[10px] sm:text-[11px] px-2 py-0.5 w-fit',
-              ]"
+              class="text-[10px] font-bold uppercase tracking-wider text-green-800"
+              >Catatan Mekanik</span
             >
-              {{ getStatusLabel(b.status || "Pending") }}
-            </span>
-            <span
-              :class="[
-                getPaymentStatusBadgeClass(b.status_pembayaran),
-                'text-[10px] sm:text-[11px] px-2 py-0.5 w-fit',
-              ]"
-            >
-              {{ getPaymentStatusLabel(b.status_pembayaran) }}
-            </span>
           </div>
-
-          <div class="flex flex-col items-end text-right shrink-0">
-            <p class="text-sm sm:text-base font-bold text-gray-900 mb-2">
-              {{ toIDR(b.total_harga || getServicePrice(b)) }}
+          <p class="text-xs text-gray-700 w-full whitespace-normal">
+            {{ getMekanikNotePreview(booking.catatan_mekanik) }}
+          </p>
+        </div>
+        <div
+          class="flex items-center justify-between pt-4 border-t border-gray-200 mt-auto"
+        >
+          <div>
+            <p class="text-xs text-gray-500">Total Biaya</p>
+            <p class="text-lg font-bold text-gray-900 sm:text-xl">
+              {{ toIDR(booking.total_harga || getServicePrice(booking)) }}
             </p>
-            <router-link
-              :to="`/app/riwayat/${b.id}`"
-              class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 w-auto"
-            >
-              <i class="mdi mdi-eye-outline text-sm"></i>
-              <span>Detail</span>
-            </router-link>
           </div>
+          <router-link
+            :to="`/app/riwayat/${booking.id}`"
+            class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+          >
+            <i class="mdi mdi-eye-outline text-sm"></i>
+            <span>Detail</span>
+          </router-link>
         </div>
       </div>
     </div>

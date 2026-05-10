@@ -62,9 +62,9 @@ const selectVespa = (id: number) => {
       >
         <div class="flex items-start gap-3">
           <div
-            class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0"
+            class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0"
           >
-            <i class="mdi mdi-motorbike text-lg text-red-600"></i>
+            <i class="mdi mdi-motorbike text-lg text-blue-600"></i>
           </div>
           <div class="flex-1">
             <h4 class="font-bold text-gray-900">{{ vespa.model }}</h4>

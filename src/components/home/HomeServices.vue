@@ -113,7 +113,7 @@ onMounted(fetchServices);
               class="bg-gray-100 p-2.5 rounded mb-4 flex justify-between gap-2 text-sm"
             >
               <div>
-                <p class="text-gray-600">Estimasi Harga</p>
+                <p class="text-gray-600">Harga</p>
                 <p class="font-bold text-red-600">
                   {{ toIDR(s.harga) }}
                 </p>

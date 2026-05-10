@@ -6,6 +6,7 @@ const menuItems = [
   { label: "Pemesanan", to: "/admin/pemesanan", icon: "mdi-clipboard-list" },
   { label: "Layanan", to: "/admin/layanan", icon: "mdi-wrench" },
   { label: "Inventaris", to: "/admin/inventaris", icon: "mdi-package-variant" },
+  { label: "Karyawan", to: "/admin/karyawan", icon: "mdi-account-group" },
   { label: "Laporan", to: "/admin/laporan-keuangan", icon: "mdi-chart-line" },
 ];
 </script>

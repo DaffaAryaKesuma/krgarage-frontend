@@ -145,16 +145,6 @@ onMounted(fetchVespas);
       subtitle="Kelola semua Vespa Anda untuk pemesanan servis"
       subtitle-class="text-sm sm:text-base text-red-100"
     >
-      <template #actions>
-        <button
-          v-if="!isFormVisible"
-          @click="openAddForm"
-          class="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-bold text-red-600 shadow-lg transition hover:bg-red-50 sm:px-6 sm:py-3 sm:text-base"
-        >
-          <i class="mdi mdi-plus-circle text-lg sm:text-xl"></i>
-          Tambah Vespa
-        </button>
-      </template>
     </AppPageHeader>
 
     <!-- Content Area -->

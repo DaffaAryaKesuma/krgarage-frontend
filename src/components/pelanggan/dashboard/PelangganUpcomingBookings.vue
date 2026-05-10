@@ -48,8 +48,8 @@ const getServiceTotal = (booking: PelangganBooking) =>
     <LoadingSpinner v-if="isLoading" message="Memuat pemesanan..." />
     <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
       <div
-        v-for="b in bookings"
-        :key="b.id"
+        v-for="booking in bookings"
+        :key="booking.id"
         class="group rounded-2xl border border-gray-200 bg-white p-4 transition-all duration-300 hover:-translate-y-1 hover:border-gray-200 hover:shadow-xl hover:shadow-gray-500/5 sm:p-5 flex flex-col h-full"
       >
         <div class="mb-3 flex flex-wrap items-start justify-between gap-3">
@@ -58,19 +58,21 @@ const getServiceTotal = (booking: PelangganBooking) =>
             <div>
               <p class="text-xs text-gray-500 mb-1">Kode Pemesanan</p>
               <p class="text-base font-bold text-gray-900 sm:text-lg">
-                {{ b.kode_pemesanan }}
+                {{ booking.kode_pemesanan }}
               </p>
               <p class="text-xs text-gray-600 mt-1">
-                {{ formatDateShort(b.tanggal_pemesanan) }}
+                {{ formatDateShort(booking.tanggal_pemesanan) }}
               </p>
             </div>
           </div>
           <div class="flex flex-col items-end gap-2">
-            <span :class="getStatusBadgeClass(b.status || 'Pending')">
-              {{ getStatusLabel(b.status || "Pending") }}
+            <span :class="getStatusBadgeClass(booking.status || 'Pending')">
+              {{ getStatusLabel(booking.status || "Pending") }}
             </span>
-            <span :class="getPaymentStatusBadgeClass(b.status_pembayaran)">
-              {{ getPaymentStatusLabel(b.status_pembayaran) }}
+            <span
+              :class="getPaymentStatusBadgeClass(booking.status_pembayaran)"
+            >
+              {{ getPaymentStatusLabel(booking.status_pembayaran) }}
             </span>
           </div>
         </div>
@@ -82,7 +84,7 @@ const getServiceTotal = (booking: PelangganBooking) =>
             <div>
               <p class="text-xs text-gray-500">Vespa</p>
               <p class="font-semibold text-gray-900">
-                {{ b.vespa?.model || "N/A" }}
+                {{ booking.vespa?.model || "N/A" }}
               </p>
             </div>
           </div>
@@ -91,7 +93,11 @@ const getServiceTotal = (booking: PelangganBooking) =>
             <div>
               <p class="text-xs text-gray-500">Layanan</p>
               <p class="font-semibold text-gray-900 text-sm">
-                {{ b.layanan.map((s) => s.nama_layanan).join(", ") }}
+                {{
+                  booking.layanan
+                    .map((service) => service.nama_layanan)
+                    .join(", ")
+                }}
               </p>
             </div>
           </div>
@@ -102,7 +108,7 @@ const getServiceTotal = (booking: PelangganBooking) =>
           <div>
             <p class="text-xs text-gray-500">Total Biaya</p>
             <p class="text-lg font-bold text-red-600 sm:text-xl">
-              {{ toIDR(b.total_harga || getServiceTotal(b)) }}
+              {{ toIDR(booking.total_harga || getServiceTotal(booking)) }}
             </p>
           </div>
         </div>
