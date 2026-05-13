@@ -84,7 +84,7 @@ const handleMekanikChange = (value: string | number | null) => {
     class="inline-flex items-center gap-1 rounded-md border border-gray-200 bg-gray-100 px-2.5 py-1.5 text-xs font-medium text-gray-700"
   >
     <i class="mdi mdi-account-wrench text-sm text-gray-500"></i>
-    {{ props.booking.mekanik.nama }}
+    <span class="capitalize">{{ props.booking.mekanik.nama }}</span>
   </span>
 
   <span

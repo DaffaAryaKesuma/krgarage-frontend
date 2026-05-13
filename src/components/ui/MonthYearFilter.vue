@@ -41,7 +41,7 @@ const handleYearChange = (value: string | number | null) => {
     >
       {{ title }}
     </h2>
-    <div class="flex flex-col sm:flex-row gap-4">
+    <div class="grid grid-cols-2 gap-4">
       <div class="flex-1">
         <label class="block text-sm font-medium text-gray-700 mb-2">
           Bulan

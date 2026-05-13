@@ -4,12 +4,14 @@ interface Props {
   icon: string;
   subtitle?: string;
   subtitleClass?: string;
+  titleClass?: string;
   containerClass?: string;
 }
 
 withDefaults(defineProps<Props>(), {
   subtitle: "",
   subtitleClass: "text-sm sm:text-base text-red-100",
+  titleClass: "",
   containerClass: "",
 });
 </script>
@@ -33,7 +35,9 @@ withDefaults(defineProps<Props>(), {
           </div>
 
           <div class="min-w-0">
-            <h1 class="mb-1 text-2xl font-bold sm:text-3xl">{{ title }}</h1>
+            <h1 :class="['mb-1 text-2xl font-bold sm:text-3xl', titleClass]">
+              {{ title }}
+            </h1>
 
             <slot name="subtitle">
               <p v-if="subtitle" :class="subtitleClass">

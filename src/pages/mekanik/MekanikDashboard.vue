@@ -2,7 +2,7 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import axios from "axios";
 import MekanikSelectSparepartForJobModal from "@/components/mekanik/dashboard/MekanikSelectSparepartForJobModal.vue";
-import MekanikCompleteJobModal from "@/components/mekanik/dashboard/MekanikCompleteJobModal.vue";
+import NoteInputModal from "@/components/ui/NoteInputModal.vue";
 import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
 import Pagination from "@/components/ui/Pagination.vue";
 import MekanikDashboardTabs from "@/components/mekanik/dashboard/MekanikDashboardTabs.vue";
@@ -143,11 +143,15 @@ onUnmounted(() => {
       @success="onSparepartAdded"
     />
 
-    <MekanikCompleteJobModal
+    <NoteInputModal
       :show="showCompleteJobModal"
       :loading="isCompletingJob"
-      :booking-code="completeJobTarget?.kodePemesanan"
-      @close="closeCompleteJobModal"
+      title="Selesaikan Pekerjaan"
+      :subtitle="completeJobTarget?.kodePemesanan ? `Kode Pemesanan: ${completeJobTarget.kodePemesanan}` : undefined"
+      message="Tuliskan catatan servis untuk pelanggan. Catatan ini akan disimpan saat pekerjaan diselesaikan."
+      confirm-text="Selesaikan Pekerjaan"
+      required
+      @cancel="closeCompleteJobModal"
       @confirm="submitCompleteJob"
     />
 

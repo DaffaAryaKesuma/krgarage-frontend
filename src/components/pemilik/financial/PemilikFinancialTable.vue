@@ -3,6 +3,7 @@ import { computed } from "vue";
 import { formatDateShort } from "@/utils/date";
 import Pagination from "@/components/ui/Pagination.vue";
 import TableShell from "@/components/ui/TableShell.vue";
+import EmptyState from "@/components/ui/EmptyState.vue";
 import PemilikFinancialMobileCard from "@/components/pemilik/financial/PemilikFinancialMobileCard.vue";
 import PemilikFinancialDesktopRow from "@/components/pemilik/financial/PemilikFinancialDesktopRow.vue";
 import { toMoneyNumber } from "@/utils/money";
@@ -163,25 +164,11 @@ const TABLE_HEADERS = [
       </template>
     </TableShell>
 
-    <div
+    <EmptyState
       v-else
-      class="py-16 text-center bg-gray-50 rounded-xl border-2 border-dashed border-gray-200"
-    >
-      <div
-        class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4"
-      >
-        <i class="mdi mdi-calendar-search text-3xl text-gray-400"></i>
-      </div>
-      <h3 class="text-lg font-medium text-gray-900">
-        Tidak ada data ditemukan
-      </h3>
-      <p class="mt-2 text-gray-500 max-w-sm mx-auto">
-        Tidak ada transaksi yang selesai dalam rentang tanggal
-        <span class="font-semibold">{{ formatDateShort(startDate) }}</span>
-        sampai
-        <span class="font-semibold">{{ formatDateShort(endDate) }}</span
-        >.
-      </p>
-    </div>
+      icon="mdi mdi-calendar-search"
+      title="Tidak ada data ditemukan"
+      :message="`Tidak ada transaksi yang selesai dari ${formatDateShort(startDate)} sampai ${formatDateShort(endDate)}.`"
+    />
   </div>
 </template>

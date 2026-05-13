@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import TableShell from "@/components/ui/TableShell.vue";
+import EmptyState from "@/components/ui/EmptyState.vue";
 import PemilikRecentActivityMobileCard from "@/components/pemilik/dashboard/PemilikRecentActivityMobileCard.vue";
 import PemilikRecentActivityDesktopRow from "@/components/pemilik/dashboard/PemilikRecentActivityDesktopRow.vue";
 import type { PemilikRecentBookingActivity } from "@/types/booking";
@@ -25,7 +26,7 @@ const TABLE_HEADERS = [
   <div class="rounded-2xl bg-white p-6 shadow-lg mb-8">
     <div class="mb-6 flex items-center justify-between">
       <h2 class="text-xl font-bold text-gray-900">
-        Aktivitas Terbaru Hari Ini
+        Aktivitas Terbaru
       </h2>
       <router-link
         to="/pemilik/laporan-keuangan"
@@ -51,11 +52,11 @@ const TABLE_HEADERS = [
       :headers="TABLE_HEADERS"
       :responsive-cards="true"
       desktop-breakpoint="lg"
-      mobile-cards-class="space-y-4 p-4"
+      mobile-cards-class="space-y-3"
       table-class="w-full"
-      header-row-class="border-b text-left text-sm text-gray-600"
-      header-cell-class="pb-3 font-semibold"
-      body-class="divide-y"
+      header-row-class="border-b border-gray-200"
+      header-cell-class="pb-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider"
+      body-class="divide-y divide-gray-100"
     >
       <template #mobile>
         <PemilikRecentActivityMobileCard
@@ -73,9 +74,11 @@ const TABLE_HEADERS = [
     </TableShell>
 
     <!-- Empty State -->
-    <div v-else class="py-12 text-center">
-      <i class="mdi mdi-calendar-blank text-6xl text-gray-300"></i>
-      <p class="mt-4 text-gray-600">Belum ada pemesanan hari ini</p>
-    </div>
+    <EmptyState
+      v-else
+      icon="mdi mdi-calendar-blank"
+      title="Belum ada pemesanan terbaru"
+      message="Aktivitas pemesanan terbaru akan muncul di sini."
+    />
   </div>
 </template>

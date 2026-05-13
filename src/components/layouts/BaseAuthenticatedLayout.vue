@@ -95,7 +95,7 @@ const {
 
               <div class="hidden text-right xl:block">
                 <p class="text-sm font-semibold text-gray-900">
-                  {{ user.nama }}
+                  <span class="capitalize">{{ user.nama }}</span>
                 </p>
                 <p class="text-xs text-red-600 font-medium">{{ roleLabel }}</p>
               </div>
@@ -145,7 +145,7 @@ const {
               {{ userInitials }}
             </div>
             <div class="flex-1">
-              <p class="text-sm font-semibold text-gray-900">{{ user.nama }}</p>
+              <p class="text-sm font-semibold text-gray-900"><span class="capitalize">{{ user.nama }}</span></p>
               <p class="text-xs text-gray-500">{{ roleLabel }}</p>
             </div>
             <NotificationBell />

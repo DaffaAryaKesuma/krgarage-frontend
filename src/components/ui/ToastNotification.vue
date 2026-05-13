@@ -65,11 +65,5 @@ const typeIcons = {
     <div class="flex-1 font-medium">
       {{ toast.message }}
     </div>
-    <button
-      @click="handleClose"
-      class="text-white hover:text-gray-200 transition-colors text-xl font-bold"
-    >
-      ×
-    </button>
   </div>
 </template>

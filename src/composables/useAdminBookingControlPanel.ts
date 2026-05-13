@@ -1,4 +1,4 @@
-import { computed, ref, watch } from "vue";
+﻿import { computed, ref, watch } from "vue";
 import { useToast } from "@/utils/useToast";
 import {
   BOOKING_STATUS,
@@ -119,10 +119,10 @@ export function useAdminBookingControlPanel(
     pendingAction.value = null;
   };
 
-  async function updateStatus(newStatus: string, successMessage: string) {
+  async function updateStatus(newStatus: string, successMessage: string, catatan?: string) {
     isProcessing.value = true;
     try {
-      await patchAdminBookingStatus(props.bookingId, newStatus);
+      await patchAdminBookingStatus(props.bookingId, newStatus, catatan);
       toast.success(successMessage);
       onRefresh();
     } catch (err: any) {
@@ -155,7 +155,7 @@ export function useAdminBookingControlPanel(
     }
   }
 
-  const confirmAction = () => {
+  const confirmAction = (catatan?: string) => {
     const config = actionConfirmationConfig.value;
     if (!config || isProcessing.value) {
       closeActionConfirmation();
@@ -168,7 +168,7 @@ export function useAdminBookingControlPanel(
       return;
     }
 
-    void updateStatus(config.value, config.successMessage);
+    void updateStatus(config.value, config.successMessage, catatan);
   };
 
   async function fetchMekaniks() {
@@ -235,3 +235,4 @@ export function useAdminBookingControlPanel(
     assignMekanikAndStart,
   };
 }
+

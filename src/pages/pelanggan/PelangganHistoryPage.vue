@@ -83,7 +83,8 @@ const fetchBookings = async (page = 1) => {
     list.value = data.data;
     updateFromApi(data);
   } catch (error) {
-    console.error("Error fetching bookings:", error);
+    logError(error, "fetchBookings");
+    toast.error("Gagal memuat riwayat pemesanan.");
   } finally {
     isLoading.value = false;
   }

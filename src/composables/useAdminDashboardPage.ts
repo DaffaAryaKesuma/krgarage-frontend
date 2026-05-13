@@ -19,6 +19,7 @@ interface DashboardStats {
 export function useAdminDashboardPage() {
   const toast = useToast();
 
+  const isLoading = ref(true);
   const stats = ref<DashboardStats>({
     pemesanan_hari_ini: 0,
     sedang_diproses: 0,
@@ -65,6 +66,7 @@ export function useAdminDashboardPage() {
   };
 
   const fetchDashboardData = async () => {
+    isLoading.value = true;
     try {
       const [bookingsRes, lowStockRes] = await Promise.all([
         axios.get(`${API_URL}/admin/dashboard/pemesanan-terbaru`, {
@@ -81,6 +83,8 @@ export function useAdminDashboardPage() {
     } catch (error: any) {
       logError(error, "fetchDashboardData");
       toast.error(handleApiError(error));
+    } finally {
+      isLoading.value = false;
     }
   };
 
@@ -159,6 +163,7 @@ export function useAdminDashboardPage() {
   });
 
   return {
+    isLoading,
     stats,
     lowStockCount,
     recentBookings,

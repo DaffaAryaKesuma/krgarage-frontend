@@ -83,42 +83,61 @@ const handleCancel = () => {
       <i class="mdi mdi-wrench text-2xl text-purple-600 flex-shrink-0"></i>
       <div class="flex-1">
         <p class="text-xs text-gray-500 mb-1">Layanan</p>
-        <div class="flex items-center justify-between">
-          <p class="text-sm font-medium text-gray-900">
-            {{ booking.layanan.map((s) => s.nama_layanan).join(", ") }}
+        <div class="space-y-0.5">
+          <p
+            v-for="(layanan, i) in booking.layanan"
+            :key="i"
+            class="text-sm font-medium text-gray-900 leading-snug"
+          >
+            {{ layanan.nama_layanan }}
           </p>
         </div>
       </div>
     </div>
 
     <!-- Actions -->
-    <div class="pt-4 border-t border-gray-200 space-y-3">
-      <router-link
-        :to="`/app/riwayat/${booking.id}`"
-        class="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition flex items-center justify-center gap-2"
+    <div class="pt-4 border-t border-gray-200">
+      <div
+        :class="
+          canPelangganCancelBooking(booking.status)
+            ? 'grid grid-cols-2 gap-3'
+            : 'block'
+        "
       >
-        <i class="mdi mdi-text-box-search-outline"></i>
-        <span>Lihat Detail Pemesanan</span>
-      </router-link>
+        <template v-if="canPelangganCancelBooking(booking.status)">
+          <button
+            @click="handleCancel"
+            :disabled="isCancelling"
+            class="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            <i v-if="isCancelling" class="mdi mdi-loading mdi-spin"></i>
+            <i v-else class="mdi mdi-close-circle"></i>
+            <span>{{ isCancelling ? "Membatalkan..." : "Batalkan" }}</span>
+          </button>
+        </template>
 
-      <template v-if="canPelangganCancelBooking(booking.status)">
-        <button
-          @click="handleCancel"
-          :disabled="isCancelling"
-          class="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        <router-link
+          :to="`/app/riwayat/${booking.id}`"
+          :class="[
+            'w-full px-4 py-2 border border-gray-600 text-gray-600 rounded-lg hover:bg-gray-50 transition flex items-center justify-center gap-2',
+            !canPelangganCancelBooking(booking.status)
+              ? 'bg-gray-600 text-white hover:text-white hover:bg-gray-700'
+              : '',
+          ]"
         >
-          <i v-if="isCancelling" class="mdi mdi-loading mdi-spin"></i>
-          <i v-else class="mdi mdi-close-circle"></i>
-          <span>{{
-            isCancelling ? "Membatalkan..." : "Batalkan Pemesanan"
-          }}</span>
-        </button>
-        <p class="text-xs text-gray-500 text-center">
-          <i class="mdi mdi-information"></i>
-          Pemesanan dapat dibatalkan selama statusnya masih "Menunggu" atau
-          "Dikonfirmasi"
-        </p>
-      </template>
+          <i class="mdi mdi-text-box-search-outline"></i>
+          <span>Lihat Detail</span>
+        </router-link>
+      </div>
+
+      <p
+        v-if="canPelangganCancelBooking(booking.status)"
+        class="text-xs text-gray-500 text-center mt-3"
+      >
+        <i class="mdi mdi-information"></i>
+        Pemesanan dapat dibatalkan selama statusnya masih "Menunggu" atau
+        "Dikonfirmasi"
+      </p>
     </div>
   </div>
 </template>

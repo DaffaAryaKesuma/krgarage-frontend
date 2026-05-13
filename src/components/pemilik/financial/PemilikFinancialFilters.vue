@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import BaseDatePicker from "../../ui/BaseDatePicker.vue";
 
 interface Props {

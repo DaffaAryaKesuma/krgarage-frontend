@@ -33,17 +33,17 @@ const emit = defineEmits<{
 
 <template>
   <tr :class="props.rowClass">
-    <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 sm:px-6">
-      <span class="font-semibold text-gray-800">{{
+    <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-700 sm:px-6">
+      <span class="text-gray-700">{{
         props.booking.kode_pemesanan
       }}</span>
     </td>
     <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-700 sm:px-6">
       {{ formatDateShort(props.booking.tanggal_pemesanan) }}
     </td>
-    <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 sm:px-6">
+    <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-700 sm:px-6">
       <span class="block truncate" :title="props.booking.pengguna.nama">
-        {{ props.booking.pengguna.nama }}
+        <span class="capitalize">{{ props.booking.pengguna.nama }}</span>
       </span>
     </td>
     <td class="whitespace-nowrap px-4 py-4 sm:px-6">

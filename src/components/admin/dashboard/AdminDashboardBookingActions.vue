@@ -35,7 +35,11 @@ const canShowMarkPaidAction = computed(
     isUnpaidStatus(props.booking.status_pembayaran),
 );
 const shouldPairDetailOnMobile = computed(
-  () => canShowCancelAction.value || canShowMarkPaidAction.value,
+  () =>
+    canShowCancelAction.value ||
+    canShowMarkPaidAction.value ||
+    canAdminCompleteBooking(props.booking.status) ||
+    canAdminConfirmBooking(props.booking.status),
 );
 
 const wrapperClass = computed(() =>

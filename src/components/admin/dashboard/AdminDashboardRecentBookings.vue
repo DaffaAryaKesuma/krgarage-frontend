@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { toRef } from "vue";
 import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
+import NoteInputModal from "@/components/ui/NoteInputModal.vue";
 import type { Booking, MekanikOption } from "@/types/booking";
 import TableShell from "@/components/ui/TableShell.vue";
+import EmptyState from "@/components/ui/EmptyState.vue";
 import AdminDashboardBookingMobileCard from "@/components/admin/dashboard/AdminDashboardBookingMobileCard.vue";
 import AdminDashboardBookingDesktopRow from "@/components/admin/dashboard/AdminDashboardBookingDesktopRow.vue";
 import { useAdminDashboardRecentBookings } from "@/composables/useAdminDashboardRecentBookings";
-
 interface Props {
   bookings: Booking[];
   mekanikOptions: MekanikOption[];
@@ -16,8 +17,8 @@ interface Props {
 const props = defineProps<Props>();
 
 const emit = defineEmits<{
-  statusChange: [booking: Booking, newStatus: string];
-  paymentStatusChange: [booking: Booking, newStatus: string];
+  statusChange: [booking: Booking, newStatus: string, catatan?: string];
+  paymentstatusChange: [booking: Booking, newStatus: string, catatan?: string];
   assignAndStart: [booking: Booking];
   "update:selectedMekaniks": [value: { [bookingId: number]: number }];
 }>();
@@ -38,7 +39,7 @@ const TABLE_WRAPPER_CLASS =
 const TABLE_CLASS = "w-full table-fixed divide-y divide-gray-200";
 
 const TABLE_HEADER_CELL_CLASS =
-  "px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-gray-500 sm:px-6 [&:nth-child(1)]:w-[14%] [&:nth-child(2)]:w-[13%] [&:nth-child(3)]:w-[12%] [&:nth-child(4)]:w-[11%] [&:nth-child(5)]:w-[12%] [&:nth-child(6)]:w-[22%] [&:nth-child(7)]:w-[16%]";
+  "px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-gray-900 sm:px-6 [&:nth-child(1)]:w-[14%] [&:nth-child(2)]:w-[13%] [&:nth-child(3)]:w-[12%] [&:nth-child(4)]:w-[11%] [&:nth-child(5)]:w-[12%] [&:nth-child(6)]:w-[22%] [&:nth-child(7)]:w-[16%]";
 
 const TABLE_BODY_CLASS = "divide-y divide-gray-100 bg-white";
 
@@ -61,7 +62,7 @@ const {
   onStatusChange: (booking, newStatus) =>
     emit("statusChange", booking, newStatus),
   onPaymentStatusChange: (booking, newStatus) =>
-    emit("paymentStatusChange", booking, newStatus),
+    emit("paymentstatusChange", booking, newStatus),
   onSelectedMekaniksChange: (value) => emit("update:selectedMekaniks", value),
 });
 </script>
@@ -83,10 +84,12 @@ const {
       </router-link>
     </div>
 
-    <div v-if="!hasBookings" class="px-6 py-12 text-center">
-      <i class="mdi mdi-clipboard-text mx-auto text-gray-400 text-3xl"></i>
-      <p class="mt-2 text-sm text-gray-500">Belum ada pemesanan</p>
-    </div>
+    <EmptyState
+      v-if="!hasBookings"
+      icon="mdi mdi-clipboard-text"
+      title="Belum ada pemesanan"
+      message="Pemesanan terbaru akan muncul di sini."
+    />
 
     <TableShell
       v-else
@@ -130,15 +133,28 @@ const {
       />
     </TableShell>
 
+        <NoteInputModal
+      v-if="activeStatusConfig?.newStatus === 'Completed'"
+      :show="showStatusConfirmModal"
+      :title="activeStatusConfig?.title || 'Konfirmasi Aksi'"
+      message="Tambahkan catatan servis (Wajib diisi):"
+      :confirm-text="activeStatusConfig?.confirmText || 'Ya, Lanjutkan'"
+      cancel-text="Batal"
+      required
+      @confirm="applyStatusChange"
+      @cancel="closeStatusConfirmModal"
+    />
     <ConfirmationModal
+      v-else
       :show="showStatusConfirmModal"
       :title="activeStatusConfig?.title || 'Konfirmasi Aksi'"
       :message="activeStatusConfig?.message || ''"
       :confirm-text="activeStatusConfig?.confirmText || 'Ya, Lanjutkan'"
       cancel-text="Batal"
       :variant="activeStatusConfig?.variant || 'info'"
-      @confirm="applyStatusChange"
+      @confirm="applyStatusChange()"
       @cancel="closeStatusConfirmModal"
     />
   </div>
 </template>
+

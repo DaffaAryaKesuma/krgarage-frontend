@@ -18,7 +18,7 @@ withDefaults(defineProps<Props>(), {
 
 <template>
   <div
-    class="relative overflow-hidden rounded-2xl bg-white p-6 shadow-lg transition-all hover:shadow-xl"
+    class="relative overflow-hidden rounded-2xl bg-white p-4 sm:p-6 shadow-md transition-all hover:shadow-lg"
   >
     <div class="flex items-start justify-between">
       <div class="flex-1">
@@ -30,7 +30,7 @@ withDefaults(defineProps<Props>(), {
         </div>
 
         <!-- Value -->
-        <h3 v-else class="mt-2 text-2xl font-bold text-gray-900">
+        <h3 v-else class="mt-2 text-xl font-bold text-gray-900 break-words leading-tight">
           {{ value }}
         </h3>
 

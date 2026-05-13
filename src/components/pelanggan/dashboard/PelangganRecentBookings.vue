@@ -117,9 +117,15 @@ const getServicePrice = (booking: PelangganBooking) =>
             <i class="mdi mdi-wrench text-xl text-gray-600"></i>
             <div>
               <p class="text-xs text-gray-500">Layanan</p>
-              <p class="font-semibold text-gray-900 text-sm">
-                {{ booking.layanan.map((s) => s.nama_layanan).join(", ") }}
-              </p>
+              <div class="space-y-0.5">
+                <p
+                  v-for="(layanan, i) in booking.layanan"
+                  :key="i"
+                  class="font-semibold text-gray-900 text-sm leading-snug"
+                >
+                  {{ layanan.nama_layanan }}
+                </p>
+              </div>
             </div>
           </div>
         </div>

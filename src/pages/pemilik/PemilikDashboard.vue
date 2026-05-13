@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import AppPageHeader from "@/components/ui/AppPageHeader.vue";
+import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import PemilikStatsGrid from "@/components/pemilik/dashboard/PemilikStatsGrid.vue";
 import PemilikQuickInsights from "@/components/pemilik/dashboard/PemilikQuickInsights.vue";
 import PemilikRecentActivity from "@/components/pemilik/dashboard/PemilikRecentActivity.vue";
@@ -57,17 +58,21 @@ onMounted(fetchDashboardData);
     />
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-      <!-- Big Numbers Grid -->
-      <PemilikStatsGrid :stats="stats" />
+      <LoadingSpinner v-if="stats.loading" message="Memuat data dasbor..." />
 
-      <!-- Quick Insights -->
-      <PemilikQuickInsights />
+      <template v-else>
+        <!-- Big Numbers Grid -->
+        <PemilikStatsGrid :stats="stats" />
 
-      <!-- Recent Activity -->
-      <PemilikRecentActivity
-        :bookings="recentBookings"
-        :loading="stats.loading"
-      />
+        <!-- Quick Insights -->
+        <PemilikQuickInsights />
+
+        <!-- Recent Activity -->
+        <PemilikRecentActivity
+          :bookings="recentBookings"
+          :loading="stats.loading"
+        />
+      </template>
     </div>
   </div>
 </template>

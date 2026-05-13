@@ -15,6 +15,13 @@ import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
 import type { PelangganBooking } from "@/types/booking";
 import type { VespaDetail } from "@/types/vespa";
+import {
+  isPendingStatus,
+  isConfirmedStatus,
+  isInProgressStatus,
+  isCompletedStatus,
+  isCancelledStatus,
+} from "@/utils/statusBadge";
 
 const toast = useToast();
 
@@ -68,17 +75,20 @@ onMounted(async () => {
 const upcomingBookings = computed(() =>
   bookingList.value
     .filter(
-      (b) =>
-        b.status === "Pending" ||
-        b.status === "Confirmed" ||
-        b.status === "In Progress",
+      (booking) =>
+        isPendingStatus(booking.status) ||
+        isConfirmedStatus(booking.status) ||
+        isInProgressStatus(booking.status),
     )
     .slice(0, 3),
 );
 
 const recentBookings = computed(() =>
   bookingList.value
-    .filter((b) => b.status === "Completed" || b.status === "Cancelled")
+    .filter(
+      (booking) =>
+        isCompletedStatus(booking.status) || isCancelledStatus(booking.status),
+    )
     .slice(0, 3),
 );
 </script>
@@ -88,6 +98,7 @@ const recentBookings = computed(() =>
     <AppPageHeader
       :title="`Selamat Datang, ${user.nama}!`"
       icon="mdi-account"
+      title-class="capitalize"
       subtitle="Ini adalah ringkasan aktivitas Anda di KRGarage"
       subtitle-class="max-w-2xl text-sm text-red-100 sm:text-base"
     />
@@ -116,6 +127,7 @@ const recentBookings = computed(() =>
 
         <!-- Third Row & Below: Bookings -->
         <PelangganUpcomingBookings
+          v-if="upcomingBookings.length > 0 || isLoading"
           :bookings="upcomingBookings"
           :is-loading="isLoading"
         />

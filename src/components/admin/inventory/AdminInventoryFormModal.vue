@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import CustomSelect from "@/components/ui/CustomSelect.vue";
-import { ref, watch } from "vue";
+import { watch } from "vue";
 import type {
   InventorySparepart,
   InventorySparepartForm,
@@ -26,18 +26,21 @@ const emit = defineEmits<{
   "create-category": [];
 }>();
 
-const handleKategoriChange = (value: string | number | null) => {
-  emit("update:form", { ...props.form, kategori: String(value || "") });
+// Generic field updater — replaces repetitive @input inline handlers
+const updateField = <K extends keyof InventorySparepartForm>(
+  key: K,
+  value: InventorySparepartForm[K],
+) => {
+  emit("update:form", { ...props.form, [key]: value });
 };
 
-const showCategoryCreator = ref(false);
+const toNum = (e: Event) => Number((e.target as HTMLInputElement).value);
+const toStr = (e: Event) => (e.target as HTMLInputElement).value;
 
 watch(
   () => props.show,
   (isVisible) => {
-    if (!isVisible) {
-      showCategoryCreator.value = false;
-    }
+    if (!isVisible) return;
   },
 );
 
@@ -56,49 +59,36 @@ const buttonSecondaryClass = `${buttonBaseClass} border border-slate-300 text-sl
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
     @click.self="emit('close')"
   >
-    <div
-      class="w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-black/5"
-    >
+    <div class="w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-black/5">
+
+      <!-- Header -->
       <div class="border-b border-slate-200 px-6 py-5">
         <div class="flex items-center gap-3">
-          <div
-            class="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-red-600"
-          >
+          <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-red-600">
             <i
               class="mdi text-xl"
-              :class="
-                selectedSparepart
-                  ? 'mdi-pencil-outline'
-                  : 'mdi-package-variant-closed'
-              "
+              :class="selectedSparepart ? 'mdi-pencil-outline' : 'mdi-package-variant-closed'"
             ></i>
           </div>
-          <div>
-            <h2 class="text-xl font-bold">
-              {{
-                selectedSparepart ? "Edit Suku Cadang" : "Tambah Suku Cadang"
-              }}
-            </h2>
-          </div>
+          <h2 class="text-xl font-bold">
+            {{ selectedSparepart ? "Edit Suku Cadang" : "Tambah Suku Cadang" }}
+          </h2>
         </div>
       </div>
 
+      <!-- Form -->
       <form
         @submit.prevent="emit('submit')"
         class="max-h-[calc(90vh-5.5rem)] space-y-4 overflow-y-auto p-6"
       >
+        <!-- Nama Suku Cadang -->
         <div :class="formCardClass">
           <label class="mb-2 block text-sm font-semibold text-slate-700">
             Nama Suku Cadang <span class="text-red-600">*</span>
           </label>
           <input
             :value="form.nama_suku_cadang"
-            @input="
-              emit('update:form', {
-                ...form,
-                nama_suku_cadang: ($event.target as HTMLInputElement).value,
-              })
-            "
+            @input="updateField('nama_suku_cadang', toStr($event))"
             type="text"
             required
             placeholder="Contoh: Aki 6V 4Ah"
@@ -106,6 +96,7 @@ const buttonSecondaryClass = `${buttonBaseClass} border border-slate-300 text-sl
           />
         </div>
 
+        <!-- Kategori + Stok Awal -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div :class="formCardClass">
             <label class="mb-2 block text-sm font-semibold text-slate-700">
@@ -113,33 +104,26 @@ const buttonSecondaryClass = `${buttonBaseClass} border border-slate-300 text-sl
             </label>
             <CustomSelect
               :model-value="form.kategori"
-              @update:model-value="handleKategoriChange"
+              @update:model-value="updateField('kategori', String($event || ''))"
               :options="kategoriOptions"
               placeholder="Pilih kategori"
             />
-            <div class="mt-3">
-              <div class="mt-2 flex gap-2">
-                <input
-                  :value="categoryName"
-                  @input="
-                    emit(
-                      'update:categoryName',
-                      ($event.target as HTMLInputElement).value,
-                    )
-                  "
-                  type="text"
-                  placeholder=" Kategori baru"
-                  class="min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-red-500 focus:ring-4 focus:ring-red-100"
-                />
-                <button
-                  type="button"
-                  @click="emit('create-category')"
-                  :disabled="categoryLoading"
-                  class="inline-flex items-center justify-center rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {{ categoryLoading ? "Menyimpan..." : "Tambah" }}
-                </button>
-              </div>
+            <div class="mt-3 flex gap-2">
+              <input
+                :value="categoryName"
+                @input="emit('update:categoryName', toStr($event))"
+                type="text"
+                placeholder="Kategori baru"
+                class="min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-red-500 focus:ring-4 focus:ring-red-100"
+              />
+              <button
+                type="button"
+                @click="emit('create-category')"
+                :disabled="categoryLoading"
+                class="inline-flex items-center justify-center rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {{ categoryLoading ? "Menyimpan..." : "Tambah" }}
+              </button>
             </div>
           </div>
 
@@ -149,29 +133,18 @@ const buttonSecondaryClass = `${buttonBaseClass} border border-slate-300 text-sl
             </label>
             <input
               :value="form.jumlah_stok"
-              @input="
-                emit('update:form', {
-                  ...form,
-                  jumlah_stok: Number(
-                    ($event.target as HTMLInputElement).value,
-                  ),
-                })
-              "
+              @input="updateField('jumlah_stok', toNum($event))"
               type="number"
               min="0"
               required
               :disabled="!!selectedSparepart"
               placeholder="0"
-              :class="[
-                inputClass,
-                selectedSparepart
-                  ? 'cursor-not-allowed bg-slate-100 text-slate-500'
-                  : '',
-              ]"
+              :class="[inputClass, selectedSparepart ? 'cursor-not-allowed bg-slate-100 text-slate-500' : '']"
             />
           </div>
         </div>
 
+        <!-- Harga Beli + Harga Jual -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div :class="formCardClass">
             <label class="mb-2 block text-sm font-semibold text-slate-700">
@@ -179,12 +152,7 @@ const buttonSecondaryClass = `${buttonBaseClass} border border-slate-300 text-sl
             </label>
             <input
               :value="form.harga_beli"
-              @input="
-                emit('update:form', {
-                  ...form,
-                  harga_beli: Number(($event.target as HTMLInputElement).value),
-                })
-              "
+              @input="updateField('harga_beli', toNum($event))"
               type="number"
               step="1"
               inputmode="numeric"
@@ -201,12 +169,7 @@ const buttonSecondaryClass = `${buttonBaseClass} border border-slate-300 text-sl
             </label>
             <input
               :value="form.harga_jual"
-              @input="
-                emit('update:form', {
-                  ...form,
-                  harga_jual: Number(($event.target as HTMLInputElement).value),
-                })
-              "
+              @input="updateField('harga_jual', toNum($event))"
               type="number"
               step="1"
               inputmode="numeric"
@@ -218,21 +181,14 @@ const buttonSecondaryClass = `${buttonBaseClass} border border-slate-300 text-sl
           </div>
         </div>
 
+        <!-- Batas Minimal Stok -->
         <div :class="formCardClass">
           <label class="mb-2 block text-sm font-semibold text-slate-700">
             Batas Minimal Stok <span class="text-red-600">*</span>
           </label>
           <input
             :value="form.batas_minimal_stok"
-            @input="
-              emit('update:form', {
-                ...form,
-                batas_minimal_stok:
-                  ($event.target as HTMLInputElement).value === ''
-                    ? null
-                    : Number(($event.target as HTMLInputElement).value),
-              })
-            "
+            @input="updateField('batas_minimal_stok', toStr($event) === '' ? null : toNum($event))"
             type="number"
             min="0"
             required
@@ -244,32 +200,21 @@ const buttonSecondaryClass = `${buttonBaseClass} border border-slate-300 text-sl
           </p>
         </div>
 
+        <!-- Deskripsi -->
         <div :class="formCardClass">
-          <label class="mb-2 block text-sm font-semibold text-slate-700">
-            Deskripsi
-          </label>
+          <label class="mb-2 block text-sm font-semibold text-slate-700">Deskripsi</label>
           <textarea
             :value="form.deskripsi"
-            @input="
-              emit('update:form', {
-                ...form,
-                deskripsi: ($event.target as HTMLInputElement).value,
-              })
-            "
+            @input="updateField('deskripsi', toStr($event))"
             rows="3"
             placeholder="Tulis informasi tambahan jika perlu"
             :class="inputClass"
           ></textarea>
         </div>
 
-        <div
-          class="flex flex-col-reverse gap-3 border-t border-slate-200 pt-5 sm:flex-row sm:justify-end"
-        >
-          <button
-            type="button"
-            @click="emit('close')"
-            :class="buttonSecondaryClass"
-          >
+        <!-- Footer -->
+        <div class="flex flex-col-reverse gap-3 border-t border-slate-200 pt-5 sm:flex-row sm:justify-end">
+          <button type="button" @click="emit('close')" :class="buttonSecondaryClass">
             Batal
           </button>
           <button type="submit" :class="buttonPrimaryClass" :disabled="loading">

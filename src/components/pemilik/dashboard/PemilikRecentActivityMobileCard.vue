@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { toIDR } from "@/utils/money";
 import { formatDateShort } from "@/utils/date";
 import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
@@ -12,63 +12,43 @@ defineProps<Props>();
 </script>
 
 <template>
-  <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-    <div class="flex items-start justify-between gap-3">
+  <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+    <div class="mb-3 flex items-center justify-between border-b border-gray-100 pb-3">
       <div>
-        <p
-          class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-        >
-          Kode Pemesanan
-        </p>
-        <p class="text-sm font-semibold text-gray-900">
-          {{ booking.kode_pemesanan }}
-        </p>
+        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-900">Kode Pemesanan</p>
+        <p class="font-bold text-gray-900">{{ booking.kode_pemesanan }}</p>
       </div>
-      <span :class="getStatusBadgeClass(booking.status)">
-        {{ getStatusLabel(booking.status) }}
-      </span>
+      <div class="text-right">
+        <span :class="getStatusBadgeClass(booking.status)">
+          {{ getStatusLabel(booking.status) }}
+        </span>
+      </div>
     </div>
-
-    <div class="mt-3 grid grid-cols-1 gap-2 text-sm min-[380px]:grid-cols-2">
+    
+    <div class="grid grid-cols-2 gap-4 text-sm">
       <div>
-        <p
-          class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-        >
-          Tanggal
-        </p>
-        <p class="font-medium text-gray-900">
-          {{ formatDateShort(booking.tanggal_pemesanan) }}
-        </p>
+        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-900">Tanggal</p>
+        <p class="text-gray-700">{{ formatDateShort(booking.tanggal_pemesanan) }}</p>
       </div>
       <div>
-        <p
-          class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-        >
-          Pelanggan
-        </p>
-        <p class="font-medium text-gray-900">
-          {{ booking.nama_pelanggan }}
-        </p>
+        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-900">Pelanggan</p>
+        <p class="text-gray-700"><span class="capitalize">{{ booking.nama_pelanggan }}</span></p>
       </div>
-      <div>
-        <p
-          class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-        >
-          Layanan
-        </p>
-        <p class="font-medium text-gray-900">
-          {{ booking.nama_layanan }}
-        </p>
+      <div class="col-span-2">
+        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-900">Layanan</p>
+        <div class="space-y-0.5">
+          <p
+            v-for="(layanan, i) in booking.nama_layanan.split(', ')"
+            :key="i"
+            class="text-gray-700 leading-snug"
+          >
+            {{ layanan }}
+          </p>
+        </div>
       </div>
-      <div>
-        <p
-          class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-        >
-          Total
-        </p>
-        <p class="font-semibold text-gray-900">
-          {{ toIDR(booking.total_harga) }}
-        </p>
+      <div class="col-span-2 mt-2 border-t border-gray-100 pt-3 flex justify-between items-center">
+        <p class="text-xs font-semibold text-gray-900 uppercase">Total</p>
+        <p class="text-base font-bold text-gray-900">{{ toIDR(booking.total_harga) }}</p>
       </div>
     </div>
   </div>

@@ -34,11 +34,11 @@ const emit = defineEmits<{
     <div class="flex items-start justify-between gap-3">
       <div>
         <p
-          class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+          class="text-[11px] font-medium uppercase tracking-wide text-gray-900"
         >
           Kode Pemesanan
         </p>
-        <p class="text-sm font-semibold text-gray-900">
+        <p class="text-sm text-gray-700">
           {{ props.booking.kode_pemesanan }}
         </p>
       </div>
@@ -48,7 +48,7 @@ const emit = defineEmits<{
     </div>
 
     <div class="mt-2 flex items-center justify-between gap-2">
-      <p class="text-[11px] font-medium uppercase tracking-wide text-gray-500">
+      <p class="text-[11px] font-medium uppercase tracking-wide text-gray-900">
         Pembayaran
       </p>
       <span
@@ -61,22 +61,22 @@ const emit = defineEmits<{
     <div class="mt-3 grid grid-cols-1 gap-2 text-sm min-[380px]:grid-cols-2">
       <div>
         <p
-          class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+          class="text-[11px] font-medium uppercase tracking-wide text-gray-900"
         >
           Tanggal
         </p>
-        <p class="font-medium text-gray-900">
+        <p class="text-gray-700">
           {{ formatDateShort(props.booking.tanggal_pemesanan) }}
         </p>
       </div>
       <div>
         <p
-          class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+          class="text-[11px] font-medium uppercase tracking-wide text-gray-900"
         >
           Pelanggan
         </p>
-        <p class="font-medium text-gray-900">
-          {{ props.booking.pengguna.nama }}
+        <p class="text-gray-700">
+          <span class="capitalize">{{ props.booking.pengguna.nama }}</span>
         </p>
       </div>
     </div>

@@ -66,25 +66,24 @@ const calculateServiceTotal = (layanan: FinancialBookingService[]) =>
   );
 
 const getBookingServices = (layanan: FinancialBookingService[]) =>
-  layanan.map((s) => s.nama_layanan).join(", ");
+  layanan.map((s) => s.nama_layanan);
 
 const getBookingItems = (items?: FinancialBooking["item_pemesanan"]) =>
-  !items?.length
-    ? "-"
-    : items
-        .map((item) => `${item.suku_cadang.nama_suku_cadang} (x${item.jumlah})`)
-        .join(", ");
+  items?.length
+    ? items.map((item) => `${item.suku_cadang.nama_suku_cadang} (x${item.jumlah})`)
+    : [];
 
 const getBookingTotal = (booking: FinancialBooking) =>
-  booking.total_harga || calculateServiceTotal(booking.layanan);
+  Number(booking.total_harga) || calculateServiceTotal(booking.layanan);
 
 const TABLE_WRAPPER_CLASS =
   "mb-8 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm";
 
-const TABLE_CLASS = "min-w-full divide-y divide-gray-200";
+const TABLE_CLASS = "min-w-full table-fixed divide-y divide-gray-200";
 
 const TABLE_HEADER_CELL_CLASS =
-  "px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-gray-500 sm:px-6";
+  "px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-gray-900 sm:px-6 " +
+  "[&:nth-child(1)]:w-[16%] [&:nth-child(2)]:w-[12%] [&:nth-child(3)]:w-[12%] [&:nth-child(4)]:w-[24%] [&:nth-child(5)]:w-[24%] [&:nth-child(6)]:w-[12%]";
 
 const TABLE_BODY_CLASS = "divide-y divide-gray-100 bg-white";
 

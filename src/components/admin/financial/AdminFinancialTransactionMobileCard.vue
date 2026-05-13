@@ -5,8 +5,8 @@ import type { FinancialBooking } from "@/types/booking";
 
 interface Props {
   booking: FinancialBooking;
-  bookingServices: string;
-  bookingItems: string;
+  bookingServices: string[];
+  bookingItems: string[];
   bookingTotal: number;
 }
 
@@ -18,21 +18,21 @@ defineProps<Props>();
     <div class="flex items-start justify-between gap-3">
       <div>
         <p
-          class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+          class="text-[11px] font-semibold uppercase tracking-wide text-gray-900"
         >
           Kode Pemesanan
         </p>
-        <p class="text-sm font-semibold text-gray-900">
+        <p class="text-sm text-gray-700">
           {{ booking.kode_pemesanan }}
         </p>
       </div>
       <div class="text-right">
         <p
-          class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+          class="text-[11px] font-semibold uppercase tracking-wide text-gray-900"
         >
           Tanggal
         </p>
-        <p class="text-sm font-medium text-gray-900">
+        <p class="text-sm text-gray-900">
           {{ formatDateShort(booking.updated_at) }}
         </p>
       </div>
@@ -41,47 +41,42 @@ defineProps<Props>();
     <div class="mt-3 space-y-2 text-sm">
       <div>
         <p
-          class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+          class="text-[11px] font-semibold uppercase tracking-wide text-gray-900"
         >
           Pelanggan
         </p>
-        <p class="font-medium text-gray-900">
-          {{ booking.pengguna.nama }}
+        <p class=" text-gray-900">
+          <span class="capitalize">{{ booking.pengguna.nama }}</span>
         </p>
       </div>
       <div>
-        <p
-          class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-        >
+        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-900">
           Layanan
         </p>
-        <p class="text-gray-900">
-          {{ bookingServices }}
-        </p>
+        <div class="space-y-0.5">
+          <p v-for="(service, i) in bookingServices" :key="i" class="text-gray-700 leading-snug">
+            {{ service }}
+          </p>
+        </div>
       </div>
       <div>
-        <p
-          class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-        >
+        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-900">
           Suku Cadang
         </p>
-        <p
-          :class="
-            booking.item_pemesanan?.length
-              ? 'text-gray-900'
-              : 'text-gray-400 italic'
-          "
-        >
-          {{ bookingItems }}
-        </p>
+        <div v-if="bookingItems.length" class="space-y-0.5">
+          <p v-for="(item, i) in bookingItems" :key="i" class="text-gray-700 leading-snug">
+            {{ item }}
+          </p>
+        </div>
+        <p v-else class="text-gray-700 italic">-</p>
       </div>
       <div class="border-t border-gray-100 pt-2">
         <p
-          class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+          class="text-[11px] font-semibold uppercase tracking-wide text-gray-900"
         >
           Total
         </p>
-        <p class="font-semibold text-gray-900">
+        <p class=" text-gray-700">
           {{ toIDR(bookingTotal) }}
         </p>
       </div>

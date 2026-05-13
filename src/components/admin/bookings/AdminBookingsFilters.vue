@@ -58,82 +58,53 @@ const handlePaymentChange = (value: string | number | null) => {
 
 <template>
   <div>
-    <!-- Search & Filter Bar -->
-    <div class="mb-6 space-y-3 md:space-y-0 md:flex md:gap-4">
-      <!-- Search Input -->
-      <div class="flex-1">
-        <div class="relative">
-          <input
-            :value="searchQuery"
-            @input="
-              emit(
-                'update:searchQuery',
-                ($event.target as HTMLInputElement).value,
-              )
-            "
-            type="text"
-            placeholder="Cari pelanggan, vespa, atau plat nomor..."
-            class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-          />
-          <i
-            class="mdi mdi-magnify absolute left-3 top-1/2 -translate-y-1/2 text-xl text-gray-400"
-          ></i>
-        </div>
-      </div>
+    <!-- Search Input (full width) -->
+    <div class="relative mb-3">
+      <input
+        :value="searchQuery"
+        @input="emit('update:searchQuery', ($event.target as HTMLInputElement).value)"
+        type="text"
+        placeholder="Cari pelanggan, vespa, atau plat nomor..."
+        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+      />
+      <i class="mdi mdi-magnify absolute left-3 top-1/2 -translate-y-1/2 text-xl text-gray-400"></i>
+    </div>
 
-      <!-- Month Filter -->
-      <div class="md:w-40">
-        <CustomSelect
-          :model-value="monthFilter"
-          @update:model-value="handleMonthChange"
-          :options="MONTH_OPTIONS"
-          placeholder="Semua Bulan"
-        />
-      </div>
-
-      <!-- Year Filter -->
-      <div class="md:w-40">
-        <CustomSelect
-          :model-value="yearFilter"
-          @update:model-value="handleYearChange"
-          :options="YEAR_OPTIONS"
-          placeholder="Pilih tahun"
-        />
-      </div>
-
-      <!-- Status Filter -->
-      <div class="md:w-48">
-        <CustomSelect
-          :model-value="statusFilter"
-          @update:model-value="handleStatusChange"
-          :options="BOOKING_STATUS_FILTER_OPTIONS"
-          placeholder="Semua Status"
-        />
-      </div>
-
-      <!-- Payment Status Filter -->
-      <div class="md:w-48">
-        <CustomSelect
-          :model-value="paymentFilter"
-          @update:model-value="handlePaymentChange"
-          :options="PAYMENT_STATUS_FILTER_OPTIONS"
-          placeholder="Semua Pembayaran"
-        />
-      </div>
+    <!-- Filter Grid: 2 kolom di mobile, 4 kolom di desktop -->
+    <div class="grid grid-cols-2 gap-2 md:flex md:gap-4 mb-3">
+      <CustomSelect
+        :model-value="monthFilter"
+        @update:model-value="handleMonthChange"
+        :options="MONTH_OPTIONS"
+        placeholder="Semua Bulan"
+      />
+      <CustomSelect
+        :model-value="yearFilter"
+        @update:model-value="handleYearChange"
+        :options="YEAR_OPTIONS"
+        placeholder="Pilih tahun"
+      />
+      <CustomSelect
+        :model-value="statusFilter"
+        @update:model-value="handleStatusChange"
+        :options="BOOKING_STATUS_FILTER_OPTIONS"
+        placeholder="Semua Status"
+      />
+      <CustomSelect
+        :model-value="paymentFilter"
+        @update:model-value="handlePaymentChange"
+        :options="PAYMENT_STATUS_FILTER_OPTIONS"
+        placeholder="Semua Pembayaran"
+      />
     </div>
 
     <!-- Show Today Only Checkbox -->
-    <div class="mb-4">
+    <div class="mb-3">
       <label class="inline-flex items-center gap-2">
         <input
           type="checkbox"
           :checked="showTodayOnly"
-          @change="
-            emit(
-              'update:showTodayOnly',
-              ($event.target as HTMLInputElement).checked,
-            )
-          "
+          @change="emit('update:showTodayOnly', ($event.target as HTMLInputElement).checked)"
           class="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
         />
         <span class="text-sm text-gray-700">Tampilkan Pemesanan Hari Ini</span>

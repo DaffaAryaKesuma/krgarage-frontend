@@ -29,7 +29,7 @@ const emit = defineEmits<{
 }>();
 
 const CANCEL_BUTTON_CLASS =
-  "w-full py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition";
+  "w-full py-2 bg-white border border-red-500 text-red-600 text-sm font-medium rounded-lg transition hover:bg-red-50 flex items-center justify-center gap-2";
 
 const canShowMarkPaidAction = (booking: Booking): boolean =>
   isCompletedStatus(booking.status) &&
@@ -50,12 +50,22 @@ const handleMekanikChange = (value: string | number | null) => {
         <i class="mdi mdi-check-circle"></i>
         Konfirmasi Pemesanan
       </button>
-      <button
-        @click="emit('cancel', props.booking)"
-        :class="CANCEL_BUTTON_CLASS"
-      >
-        Batalkan
-      </button>
+      <div class="grid grid-cols-2 gap-2">
+        <button
+          @click="emit('cancel', props.booking)"
+          :class="CANCEL_BUTTON_CLASS + ' !py-2.5'"
+        >
+          <i class="mdi mdi-close-circle"></i>
+          Batalkan Pemesanan
+        </button>
+        <router-link
+          :to="`/admin/pemesanan/${props.booking.id}`"
+          class="inline-flex w-full items-center justify-center rounded-lg bg-white border border-gray-700 py-2.5 text-center text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+        >
+          <i class="mdi mdi-eye mr-2"></i>
+          Lihat Detail Pemesanan
+        </router-link>
+      </div>
     </div>
 
     <div
@@ -77,18 +87,28 @@ const handleMekanikChange = (value: string | number | null) => {
         <button
           @click="emit('assignAndStart', props.booking)"
           :disabled="!props.selectedMekanikId"
-          class="w-full flex items-center justify-center gap-2 rounded-lg bg-purple-600 py-2.5 text-sm font-medium text-white transition hover:bg-purple-700 disabled:cursor-not-allowed disabled:bg-gray-300"
+          class="w-full flex items-center justify-center gap-2 rounded-lg bg-blue-600 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300"
         >
           <i class="mdi mdi-play-circle"></i>
-          Assign & Mulai Servis
+          Mulai Servis
         </button>
       </div>
-      <button
-        @click="emit('cancel', props.booking)"
-        :class="CANCEL_BUTTON_CLASS"
-      >
-        Batalkan
-      </button>
+      <div class="grid grid-cols-2 gap-2">
+        <button
+          @click="emit('cancel', props.booking)"
+          :class="CANCEL_BUTTON_CLASS + ' !py-2.5'"
+        >
+          <i class="mdi mdi-close-circle"></i>
+          Batalkan Pemesanan
+        </button>
+        <router-link
+          :to="`/admin/pemesanan/${props.booking.id}`"
+          class="inline-flex w-full items-center justify-center rounded-lg bg-white border border-gray-700 py-2.5 text-center text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+        >
+          <i class="mdi mdi-eye mr-2"></i>
+          Lihat Detail Pemesanan
+        </router-link>
+      </div>
     </div>
 
     <div
@@ -104,39 +124,52 @@ const handleMekanikChange = (value: string | number | null) => {
           }}</strong>
         </p>
       </div>
-      <button
-        @click="emit('complete', props.booking)"
-        class="w-full flex items-center justify-center gap-2 rounded-lg bg-green-600 py-2.5 text-sm font-medium text-white transition hover:bg-green-700"
-      >
-        <i class="mdi mdi-check-all"></i>
-        Tandai Selesai
-      </button>
+      <div class="grid grid-cols-2 gap-2">
+        <button
+          @click="emit('complete', props.booking)"
+          class="w-full flex items-center justify-center gap-2 rounded-lg bg-white border border-green-700 py-2.5 text-sm font-medium text-green-700 transition hover:bg-green-50"
+        >
+          <i class="mdi mdi-check-all"></i>
+          Tandai Selesai
+        </button>
+        <router-link
+          :to="`/admin/pemesanan/${props.booking.id}`"
+          class="inline-flex w-full items-center justify-center rounded-lg bg-white border border-gray-700 py-2.5 text-center text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+        >
+          <i class="mdi mdi-eye mr-2"></i>
+          Lihat Detail Pemesanan
+        </router-link>
+      </div>
     </div>
 
     <div
-      :class="
-        canShowMarkPaidAction(props.booking) ? 'grid grid-cols-2 gap-2' : ''
-      "
+      v-else-if="canShowMarkPaidAction(props.booking)"
+      class="grid grid-cols-2 gap-2"
     >
       <button
-        v-if="canShowMarkPaidAction(props.booking)"
         @click="emit('markPaid', props.booking)"
-        class="w-full flex items-center justify-center gap-2 rounded-lg bg-emerald-600 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-700"
+        class="w-full flex items-center justify-center gap-2 rounded-lg bg-white border border-green-700 py-2.5 text-sm font-medium text-green-700 transition hover:bg-green-50"
       >
         <i class="mdi mdi-cash-check"></i>
         Tandai Lunas
       </button>
-
       <router-link
         :to="`/admin/pemesanan/${props.booking.id}`"
-        :class="
-          canShowMarkPaidAction(props.booking)
-            ? 'inline-flex w-full items-center justify-center rounded-lg bg-indigo-600 py-2.5 text-center text-sm font-medium text-white transition hover:bg-indigo-700'
-            : 'block w-full rounded-lg bg-indigo-600 py-2.5 text-center text-sm font-medium text-white transition hover:bg-indigo-700'
-        "
+        class="inline-flex w-full items-center justify-center rounded-lg bg-white border border-gray-700 py-2.5 text-center text-sm font-medium text-gray-700 transition hover:bg-gray-50"
       >
-        <i class="mdi mdi-eye"></i>
-        Lihat Detail Lengkap
+        <i class="mdi mdi-eye mr-2"></i>
+        Lihat Detail Pemesanan
+      </router-link>
+    </div>
+
+    <!-- Hanya Lihat Detail Lengkap (Full Baris) -->
+    <div v-else>
+      <router-link
+        :to="`/admin/pemesanan/${props.booking.id}`"
+        class="block w-full rounded-lg bg-white border border-gray-700 py-2.5 text-center text-sm font-medium text-gray-700 transition hover:bg-gray-50 mt-2"
+      >
+        <i class="mdi mdi-eye mr-2"></i>
+        Lihat Detail Pemesanan
       </router-link>
     </div>
   </div>

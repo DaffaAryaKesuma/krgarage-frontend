@@ -76,11 +76,16 @@ export function useAdminBookingsPage() {
     }
   };
 
-  const changeStatus = async (booking: Booking, newStatus: string) => {
+  const changeStatus = async (booking: Booking, newStatus: string, catatan?: string) => {
     try {
+      const payload: any = { status: newStatus };
+      if (catatan) {
+        payload.catatan_mekanik = catatan;
+      }
+
       const { data } = await axios.patch(
         `${API_URL}/admin/pemesanan/${booking.id}/status`,
-        { status: newStatus },
+        payload,
         { headers: getAuthHeaders() },
       );
 
@@ -114,8 +119,24 @@ export function useAdminBookingsPage() {
     await changeStatus(booking, BOOKING_STATUS.CANCELLED);
   };
 
+  const isCompleteModalOpen = ref(false);
+  const bookingToComplete = ref<Booking | null>(null);
+
+  const handleCompleteClick = (booking: Booking) => {
+    bookingToComplete.value = booking;
+    isCompleteModalOpen.value = true;
+  };
+
+  const handleCompleteConfirm = async (catatan: string) => {
+    if (bookingToComplete.value) {
+      await changeStatus(bookingToComplete.value, BOOKING_STATUS.COMPLETED, catatan);
+      isCompleteModalOpen.value = false;
+      bookingToComplete.value = null;
+    }
+  };
+
   const completeBooking = async (booking: Booking) => {
-    await changeStatus(booking, BOOKING_STATUS.COMPLETED);
+    handleCompleteClick(booking);
   };
 
   const markBookingAsPaid = async (booking: Booking) => {
@@ -188,5 +209,8 @@ export function useAdminBookingsPage() {
     completeBooking,
     markBookingAsPaid,
     assignMekanikAndStart,
+    isCompleteModalOpen,
+    handleCompleteClick,
+    handleCompleteConfirm,
   };
 }

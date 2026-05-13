@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
+import NoteInputModal from "@/components/ui/NoteInputModal.vue";
 import CustomSelect from "@/components/ui/CustomSelect.vue";
 import {
   CANCEL_BUTTON_CLASS,
@@ -120,8 +121,7 @@ onMounted(() => {
               ><i class="mdi mdi-loading mdi-spin"></i
             ></span>
             <span v-else
-              ><i class="mdi mdi-play-circle text-lg"></i> Pilih & Mulai
-              Servis</span
+              ><i class="mdi mdi-play-circle text-lg"></i> Mulai Servis</span
             >
           </button>
         </div>
@@ -223,15 +223,28 @@ onMounted(() => {
       </div>
     </div>
 
+        <NoteInputModal
+      v-if="actionConfirmationConfig?.value === 'Completed'"
+      :show="showActionConfirmation"
+      :title="actionConfirmationConfig?.title || 'Konfirmasi Aksi'"
+      message="Tambahkan catatan servis (Wajib diisi):"
+      :confirm-text="actionConfirmationConfig?.confirmText || 'Ya, Lanjutkan'"
+      cancel-text="Batal"
+      required
+      @confirm="confirmAction"
+      @cancel="closeActionConfirmation"
+    />
     <ConfirmationModal
+      v-else
       :show="showActionConfirmation"
       :title="actionConfirmationConfig?.title || 'Konfirmasi Aksi'"
       :message="actionConfirmationConfig?.message || ''"
       :confirm-text="actionConfirmationConfig?.confirmText || 'Ya, Lanjutkan'"
       cancel-text="Batal"
       :variant="actionConfirmationConfig?.variant || 'info'"
-      @confirm="confirmAction"
+      @confirm="confirmAction()"
       @cancel="closeActionConfirmation"
     />
   </div>
 </template>
+

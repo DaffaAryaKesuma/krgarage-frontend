@@ -1,8 +1,10 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { onMounted } from "vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
 import Pagination from "@/components/ui/Pagination.vue";
+import { ref } from "vue";
+import NoteInputModal from "@/components/ui/NoteInputModal.vue";
 import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import AdminBookingsFilters from "@/components/admin/bookings/AdminBookingsFilters.vue";
 import AdminBookingCard from "@/components/admin/bookings/AdminBookingCard.vue";
@@ -29,6 +31,9 @@ const {
   completeBooking,
   markBookingAsPaid,
   assignMekanikAndStart,
+  isCompleteModalOpen,
+  handleCompleteClick,
+  handleCompleteConfirm,
 } = useAdminBookingsPage();
 
 onMounted(() => {
@@ -99,7 +104,7 @@ onMounted(() => {
               "
               @confirm="confirmBooking"
               @cancel="cancelBooking"
-              @complete="completeBooking"
+              @complete="handleCompleteClick"
               @mark-paid="markBookingAsPaid"
               @assign-and-start="assignMekanikAndStart"
             />
@@ -120,4 +125,14 @@ onMounted(() => {
       </section>
     </div>
   </div>
+
+  <NoteInputModal
+    :show="isCompleteModalOpen"
+    title="Tandai Selesai"
+    message="Tuliskan catatan servis untuk pelanggan. Catatan ini akan disimpan saat pekerjaan selesai"
+    confirm-text="Tandai Selesai"
+    required
+    @confirm="handleCompleteConfirm"
+    @cancel="isCompleteModalOpen = false"
+  />
 </template>

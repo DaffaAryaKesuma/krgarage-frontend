@@ -8,6 +8,7 @@ import {
 } from "@/utils/paymentStatus";
 import { toMoneyNumber } from "@/utils/money";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
+import EmptyState from "@/components/ui/EmptyState.vue";
 import type { PelangganBooking } from "@/types/booking";
 
 interface Props {
@@ -29,10 +30,7 @@ const getServiceTotal = (booking: PelangganBooking) =>
 </script>
 
 <template>
-  <section
-    v-if="bookings.length > 0"
-    class="rounded-xl bg-white p-4 shadow-md sm:p-6"
-  >
+  <section class="rounded-xl bg-white p-4 shadow-md sm:p-6">
     <div class="mb-5 flex flex-wrap items-center justify-between gap-2 sm:mb-6">
       <h2 class="text-xl font-bold text-gray-900 sm:text-2xl">
         Pemesanan Mendatang
@@ -45,7 +43,19 @@ const getServiceTotal = (booking: PelangganBooking) =>
         <i class="mdi mdi-arrow-right text-lg"></i>
       </router-link>
     </div>
+
+    <!-- Loading -->
     <LoadingSpinner v-if="isLoading" message="Memuat pemesanan..." />
+
+    <!-- Empty -->
+    <EmptyState
+      v-else-if="bookings.length === 0"
+      icon="mdi mdi-calendar-blank-outline"
+      title="Belum ada pemesanan mendatang"
+      message="Pemesanan servis Anda yang akan datang akan muncul di sini."
+    />
+
+    <!-- List -->
     <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
       <div
         v-for="booking in bookings"
@@ -69,16 +79,12 @@ const getServiceTotal = (booking: PelangganBooking) =>
             <span :class="getStatusBadgeClass(booking.status || 'Pending')">
               {{ getStatusLabel(booking.status || "Pending") }}
             </span>
-            <span
-              :class="getPaymentStatusBadgeClass(booking.status_pembayaran)"
-            >
+            <span :class="getPaymentStatusBadgeClass(booking.status_pembayaran)">
               {{ getPaymentStatusLabel(booking.status_pembayaran) }}
             </span>
           </div>
         </div>
-        <div
-          class="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-2"
-        >
+        <div class="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-2">
           <div class="flex items-start gap-2">
             <i class="mdi mdi-motorbike text-xl text-gray-600"></i>
             <div>
@@ -92,19 +98,19 @@ const getServiceTotal = (booking: PelangganBooking) =>
             <i class="mdi mdi-wrench text-xl text-gray-600"></i>
             <div>
               <p class="text-xs text-gray-500">Layanan</p>
-              <p class="font-semibold text-gray-900 text-sm">
-                {{
-                  booking.layanan
-                    .map((service) => service.nama_layanan)
-                    .join(", ")
-                }}
-              </p>
+              <div class="space-y-0.5">
+                <p
+                  v-for="(layanan, i) in booking.layanan"
+                  :key="i"
+                  class="font-semibold text-gray-900 text-sm leading-snug"
+                >
+                  {{ layanan.nama_layanan }}
+                </p>
+              </div>
             </div>
           </div>
         </div>
-        <div
-          class="flex items-center justify-between pt-4 border-t border-gray-200 mt-auto"
-        >
+        <div class="flex items-center justify-between pt-4 border-t border-gray-200 mt-auto">
           <div>
             <p class="text-xs text-gray-500">Total Biaya</p>
             <p class="text-lg font-bold text-red-600 sm:text-xl">

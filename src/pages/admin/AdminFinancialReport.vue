@@ -6,6 +6,7 @@ import { useToast } from "@/utils/useToast";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
 import AppPageHeader from "@/components/ui/AppPageHeader.vue";
+import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import AdminFinancialFilters from "@/components/admin/financial/AdminFinancialFilters.vue";
 import AdminFinancialSummaryCards from "@/components/admin/financial/AdminFinancialSummaryCards.vue";
 import AdminFinancialChart from "@/components/admin/financial/AdminFinancialChart.vue";
@@ -30,6 +31,7 @@ interface MonthlyData {
 // State
 const selectedYear = ref(new Date().getFullYear());
 const selectedMonth = ref<number | string>("");
+const isLoading = ref(true);
 
 const summary = ref<Summary>({
   total_pendapatan: 0,
@@ -42,6 +44,7 @@ const topServices = ref<any[]>([]);
 const bookings = ref<FinancialBooking[]>([]);
 
 const fetchReport = async () => {
+  isLoading.value = true;
   try {
     const params = {
       year: selectedYear.value,
@@ -60,6 +63,8 @@ const fetchReport = async () => {
   } catch (error: any) {
     logError(error, "fetchReport");
     toast.error(handleApiError(error));
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -83,16 +88,17 @@ onMounted(() => fetchReport());
         @change="fetchReport"
       />
 
-      <AdminFinancialSummaryCards :summary="summary" />
+      <LoadingSpinner v-if="isLoading" message="Memuat laporan keuangan..." />
 
-      <AdminFinancialChart
-        :monthly-data="monthlyData"
-        :selected-year="selectedYear"
-      />
-
-      <AdminFinancialTopServices :top-services="topServices" />
-
-      <AdminFinancialTransactionsTable :bookings="bookings" />
+      <template v-else>
+        <AdminFinancialSummaryCards :summary="summary" />
+        <AdminFinancialChart
+          :monthly-data="monthlyData"
+          :selected-year="selectedYear"
+        />
+        <AdminFinancialTopServices :top-services="topServices" />
+        <AdminFinancialTransactionsTable :bookings="bookings" />
+      </template>
     </div>
   </div>
 </template>

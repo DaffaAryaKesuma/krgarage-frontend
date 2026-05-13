@@ -131,33 +131,24 @@ onMounted(() => {
       subtitle-class="text-sm sm:text-base text-red-100"
     />
 
-    <!-- Filter Section -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+    <!-- Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-6 pb-8">
       <PemilikFinancialFilters
         v-model:startDate="startDate"
         v-model:endDate="endDate"
         :loading="loading"
         @apply="fetchFinancialData"
       />
-    </div>
 
-    <!-- Summary Cards -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <PemilikFinancialSummaryCards :summary="summary" />
-    </div>
 
-    <!-- Chart Section -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <PemilikFinancialChart
         :revenue-data="revenueData"
         :loading="loading"
         :start-date="startDate"
         :end-date="endDate"
       />
-    </div>
 
-    <!-- Table Section -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
       <PemilikFinancialTable
         :bookings="bookings"
         :loading="loading"

@@ -6,10 +6,16 @@ import type { Mekanik } from "@/composables/helpers/adminBookingControlPanelHelp
 export async function patchAdminBookingStatus(
   bookingId: number,
   status: string,
+  catatan?: string,
 ) {
+  const payload: any = { status };
+  if (catatan) {
+    payload.catatan_mekanik = catatan;
+  }
+
   return axios.patch(
     `${API_URL}/admin/pemesanan/${bookingId}/status`,
-    { status },
+    payload,
     { headers: getAuthHeaders() },
   );
 }
@@ -43,3 +49,4 @@ export async function assignMekanikToBooking(
     { headers: getAuthHeaders() },
   );
 }
+

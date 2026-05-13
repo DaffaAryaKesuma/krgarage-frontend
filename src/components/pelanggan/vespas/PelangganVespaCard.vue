@@ -121,7 +121,7 @@ const emit = defineEmits<{
           <p
             class="text-[11px] font-semibold text-gray-500 uppercase tracking-widest mb-0.5"
           >
-            Terakhir
+            Terakhir Servis
           </p>
           <p
             class="font-bold text-gray-900 text-sm truncate"

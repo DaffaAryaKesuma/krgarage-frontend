@@ -2,9 +2,11 @@
 import AdminDashboardStatsCards from "@/components/admin/dashboard/AdminDashboardStatsCards.vue";
 import AdminDashboardRecentBookings from "@/components/admin/dashboard/AdminDashboardRecentBookings.vue";
 import AppPageHeader from "@/components/ui/AppPageHeader.vue";
+import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import { useAdminDashboardPage } from "@/composables/useAdminDashboardPage";
 
 const {
+  isLoading,
   stats,
   lowStockCount,
   recentBookings,
@@ -28,21 +30,25 @@ const {
 
     <!-- Content Area -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-      <!-- Summary Cards -->
-      <AdminDashboardStatsCards
-        :stats="stats"
-        :low-stock-count="lowStockCount"
-      />
+      <LoadingSpinner v-if="isLoading" message="Memuat data dasbor..." />
 
-      <!-- Recent Bookings -->
-      <AdminDashboardRecentBookings
-        :bookings="recentBookings"
-        :mekanik-options="mekanikOptions"
-        v-model:selected-mekaniks="selectedMekanikForBooking"
-        @status-change="changeStatus"
-        @payment-status-change="changePaymentStatus"
-        @assign-and-start="assignMekanikAndStart"
-      />
+      <template v-else>
+        <!-- Summary Cards -->
+        <AdminDashboardStatsCards
+          :stats="stats"
+          :low-stock-count="lowStockCount"
+        />
+
+        <!-- Recent Bookings -->
+        <AdminDashboardRecentBookings
+          :bookings="recentBookings"
+          :mekanik-options="mekanikOptions"
+          v-model:selected-mekaniks="selectedMekanikForBooking"
+          @status-change="changeStatus"
+          @payment-status-change="changePaymentStatus"
+          @assign-and-start="assignMekanikAndStart"
+        />
+      </template>
     </div>
   </div>
 </template>

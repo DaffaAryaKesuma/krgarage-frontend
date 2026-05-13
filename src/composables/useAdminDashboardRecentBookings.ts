@@ -1,4 +1,4 @@
-import { computed, ref, type Ref } from "vue";
+﻿import { computed, ref, type Ref } from "vue";
 import { PAYMENT_STATUS } from "@/utils/paymentStatus";
 import {
   ACTION_CONFIG,
@@ -24,7 +24,7 @@ type StatusActionConfig = Pick<
 interface UseAdminDashboardRecentBookingsOptions {
   bookings: Ref<Booking[]>;
   selectedMekaniks: Ref<Record<number, number>>;
-  onStatusChange: (booking: Booking, newStatus: string) => void;
+  onStatusChange: (booking: Booking, newStatus: string, catatan?: string) => void;
   onPaymentStatusChange: (booking: Booking, newStatus: string) => void;
   onSelectedMekaniksChange: (value: Record<number, number>) => void;
 }
@@ -74,7 +74,7 @@ export function useAdminDashboardRecentBookings({
     pendingStatusAction.value = null;
   };
 
-  const applyStatusChange = () => {
+  const applyStatusChange = (catatan?: string) => {
     const action = pendingStatusAction.value;
     const config = activeStatusConfig.value;
 
@@ -83,7 +83,7 @@ export function useAdminDashboardRecentBookings({
       return;
     }
 
-    onStatusChange(action.booking, config.newStatus);
+    onStatusChange(action.booking, config.newStatus, catatan);
     closeStatusConfirmModal();
   };
 
@@ -132,3 +132,4 @@ export function useAdminDashboardRecentBookings({
     applyStatusChange,
   };
 }
+

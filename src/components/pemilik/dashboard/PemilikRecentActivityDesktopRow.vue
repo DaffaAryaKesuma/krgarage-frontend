@@ -12,18 +12,28 @@ defineProps<Props>();
 </script>
 
 <template>
-  <tr class="text-sm hover:bg-gray-50">
-    <td class="py-4 font-semibold text-gray-900">
+  <tr class="text-sm hover:bg-gray-50 align-top">
+    <td class="py-4 pr-4 text-gray-700">
       {{ booking.kode_pemesanan }}
     </td>
-    <td class="py-4 text-gray-700">
+    <td class="py-4 pr-4 text-gray-700 whitespace-nowrap">
       {{ formatDateShort(booking.tanggal_pemesanan) }}
     </td>
-    <td class="py-4 text-gray-900">
-      {{ booking.nama_pelanggan }}
+    <td class="py-4 pr-4 text-gray-700">
+      <span class="capitalize">{{ booking.nama_pelanggan }}</span>
     </td>
-    <td class="py-4 text-gray-700">{{ booking.nama_layanan }}</td>
-    <td class="py-4 font-semibold text-gray-900">
+    <td class="py-4 pr-4 text-gray-700">
+      <div class="space-y-0.5">
+        <p
+          v-for="(layanan, i) in booking.nama_layanan.split(', ')"
+          :key="i"
+          class="leading-snug"
+        >
+          {{ layanan }}
+        </p>
+      </div>
+    </td>
+    <td class="py-4 pr-4 text-gray-700 whitespace-nowrap">
       {{ toIDR(booking.total_harga) }}
     </td>
     <td class="py-4">

@@ -28,7 +28,7 @@ defineProps<Props>();
         <h3 class="font-semibold text-gray-900">Pelanggan</h3>
       </div>
       <div class="min-w-0 space-y-2">
-        <p class="text-lg font-bold text-gray-900">{{ user.nama }}</p>
+        <p class="text-lg font-bold text-gray-900"><span class="capitalize">{{ user.nama }}</span></p>
         <p class="break-words text-xs leading-snug text-gray-600 sm:text-sm">
           {{ user.email }}
         </p>

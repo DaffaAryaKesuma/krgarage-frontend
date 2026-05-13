@@ -70,27 +70,23 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div
-    class="mb-8 grid grid-cols-1 gap-6 min-[420px]:grid-cols-2 sm:mt-8 lg:grid-cols-2"
-  >
+  <div class="mb-6 grid grid-cols-2 gap-4">
     <div
       v-for="card in INSIGHT_CARDS"
       :key="card.title"
       :class="[
-        'rounded-2xl bg-gradient-to-br p-6 text-white shadow-lg',
-        `${card.gradient}`,
+        'rounded-2xl bg-gradient-to-br p-4 text-white shadow-md',
+        card.gradient,
       ]"
     >
-      <div class="flex items-start justify-between">
-        <div>
-          <p class="text-sm font-medium opacity-90">{{ card.title }}</p>
-          <h3 class="mt-2 text-2xl font-bold">{{ card.value }}</h3>
-          <p class="mt-2 text-sm opacity-90">{{ card.subtitle }}</p>
+      <div class="flex items-start justify-between gap-2">
+        <div class="min-w-0">
+          <p class="text-xs font-medium opacity-90 mb-1">{{ card.title }}</p>
+          <h3 class="text-lg font-bold leading-tight break-words">{{ card.value }}</h3>
+          <p class="mt-1 text-xs opacity-80 leading-snug">{{ card.subtitle }}</p>
         </div>
-        <div
-          class="rounded-full bg-white/20 flex items-center justify-center w-11 h-11"
-        >
-          <i :class="['mdi', card.icon, 'text-2xl']"></i>
+        <div class="rounded-full bg-white/20 flex items-center justify-center shrink-0 w-9 h-9">
+          <i :class="['mdi', card.icon, 'text-xl']"></i>
         </div>
       </div>
     </div>

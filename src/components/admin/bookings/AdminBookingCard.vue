@@ -51,7 +51,7 @@ const getServicesList = (layanan: Booking["layanan"]) =>
         </div>
         <div>
           <p class="font-bold text-gray-900">
-            {{ booking.pengguna?.nama || "N/A" }}
+            <span class="capitalize">{{ booking.pengguna?.nama || "N/A" }}</span>
           </p>
         </div>
       </div>
@@ -117,7 +117,7 @@ const getServicesList = (layanan: Booking["layanan"]) =>
           class="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded"
         >
           <i class="mdi mdi-account-wrench"></i>
-          {{ booking.mekanik.nama }}
+          <span class="capitalize">{{ booking.mekanik.nama }}</span>
         </span>
       </div>
 

@@ -4,6 +4,7 @@ import PelangganVespaSelector from "@/components/pelanggan/bookings/PelangganVes
 import PelangganSchedulePicker from "@/components/pelanggan/bookings/PelangganSchedulePicker.vue";
 import PelangganBookingSummary from "@/components/pelanggan/bookings/PelangganBookingSummary.vue";
 import AppPageHeader from "@/components/ui/AppPageHeader.vue";
+import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import { onMounted } from "vue";
 import { usePelangganBookingPage } from "@/composables/usePelangganBookingPage";
 
@@ -45,10 +46,7 @@ onMounted(() => {
     <!-- Content -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
       <!-- Loading -->
-      <div v-if="isLoading" class="text-center py-12">
-        <i class="mdi mdi-loading animate-spin text-5xl text-red-600"></i>
-        <p class="text-gray-600 mt-4">Memuat data layanan...</p>
-      </div>
+      <LoadingSpinner v-if="isLoading" message="Memuat data layanan..." />
 
       <!-- Form -->
       <form v-else @submit.prevent="submit" class="space-y-6">
