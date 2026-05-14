@@ -3,7 +3,7 @@ import { computed } from "vue";
 
 interface Stats {
   pemesanan_hari_ini: number;
-  sedang_diproses: number;
+  sedang_dikerjakan: number;
   selesai_hari_ini: number;
 }
 
@@ -34,7 +34,7 @@ const STAT_CARDS: StatCard[] = [
   },
   {
     label: "Dikerjakan",
-    key: "sedang_diproses",
+    key: "sedang_dikerjakan",
     color: "blue",
     icon: "mdi mdi-cog",
     route: "/admin/pemesanan",

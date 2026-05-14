@@ -56,7 +56,7 @@ const handleCancel = () => {
       </div>
       <div class="flex flex-col items-end gap-2">
         <span :class="getStatusBadgeClass(booking.status)">
-          {{ getStatusLabel(booking.status || "Pending") }}
+          {{ getStatusLabel(booking.status || "Menunggu") }}
         </span>
         <span :class="getPaymentStatusBadgeClass(booking.status_pembayaran)">
           {{ getPaymentStatusLabel(booking.status_pembayaran) }}

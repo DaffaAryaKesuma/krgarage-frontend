@@ -91,7 +91,7 @@ export function useMekanikDashboardActions(
       const response = await axios.put(
         `${API_URL}/mekanik/pemesanan/${completeJobTarget.value.id}/status`,
         {
-          status: "Completed",
+          status: "Selesai",
           catatan_mekanik: catatanMekanik,
         },
         { headers },
@@ -120,10 +120,10 @@ export function useMekanikDashboardActions(
     let confirmMessage = "";
     let variant: "danger" | "warning" | "info" = "info";
 
-    if (newStatus === "In Progress") {
+    if (newStatus === "Dikerjakan") {
       confirmMessage = "Apakah Anda yakin ingin memulai pekerjaan ini?";
       variant = "info";
-    } else if (newStatus === "Completed") {
+    } else if (newStatus === "Selesai") {
       completeJobTarget.value = {
         id: booking.id,
         kodePemesanan: booking.kode_pemesanan,

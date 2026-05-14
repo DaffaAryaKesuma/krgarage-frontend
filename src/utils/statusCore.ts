@@ -1,9 +1,9 @@
 export const BOOKING_STATUS = {
-  PENDING: "Pending",
-  CONFIRMED: "Confirmed",
-  IN_PROGRESS: "In Progress",
-  COMPLETED: "Completed",
-  CANCELLED: "Cancelled",
+  PENDING: "Menunggu",
+  CONFIRMED: "Dikonfirmasi",
+  IN_PROGRESS: "Dikerjakan",
+  COMPLETED: "Selesai",
+  CANCELLED: "batal",
 } as const;
 
 export const STATUS_MAP = {
@@ -33,11 +33,20 @@ export type BookingStatus = keyof typeof STATUS_MAP;
 export type BookingStatusFilter = "all" | BookingStatus;
 export type MekanikStatusFilter =
   | "all"
-  | "pending"
-  | "confirmed"
-  | "in_progress";
+  | "menunggu"
+  | "dikonfirmasi"
+  | "dikerjakan";
 
 const NORMALIZED_STATUS_TO_CANONICAL: Record<string, BookingStatus> = {
+  // Nilai Indonesia (canonical)
+  menunggu: BOOKING_STATUS.PENDING,
+  dikonfirmasi: BOOKING_STATUS.CONFIRMED,
+  dikerjakan: BOOKING_STATUS.IN_PROGRESS,
+  selesai: BOOKING_STATUS.COMPLETED,
+  batal: BOOKING_STATUS.CANCELLED,
+  // Legacy / fallback nilai lama
+  diproses: BOOKING_STATUS.IN_PROGRESS,
+  dibatalkan: BOOKING_STATUS.CANCELLED,
   pending: BOOKING_STATUS.PENDING,
   confirmed: BOOKING_STATUS.CONFIRMED,
   "in progress": BOOKING_STATUS.IN_PROGRESS,
@@ -64,9 +73,9 @@ export const MEKANIK_STATUS_FILTER_OPTIONS: Array<{
   label: string;
 }> = [
   { value: "all", label: "Semua" },
-  { value: "pending", label: "Menunggu" },
-  { value: "confirmed", label: "Dikonfirmasi" },
-  { value: "in_progress", label: "Dikerjakan" },
+  { value: "menunggu", label: "Menunggu" },
+  { value: "dikonfirmasi", label: "Dikonfirmasi" },
+  { value: "dikerjakan", label: "Dikerjakan" },
 ];
 
 export const STATUS_BADGE_BASE_CLASS =
@@ -98,13 +107,17 @@ export function matchesBookingStatusFilter(
 }
 
 export function mapMekanikFilterToBookingStatus(
-  filter: MekanikStatusFilter,
+  filter: MekanikStatusFilter | string,
 ): BookingStatus | null {
   switch (filter) {
+    case "menunggu":
     case "pending":
       return BOOKING_STATUS.PENDING;
+    case "dikonfirmasi":
     case "confirmed":
       return BOOKING_STATUS.CONFIRMED;
+    case "dikerjakan":
+    case "diproses":
     case "in_progress":
       return BOOKING_STATUS.IN_PROGRESS;
     default:

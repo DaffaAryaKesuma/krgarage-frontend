@@ -44,30 +44,28 @@ const SUMMARY_CARDS = computed(() => [
 </script>
 
 <template>
-  <div
-    class="mb-8 grid grid-cols-1 gap-6 min-[420px]:grid-cols-2 md:grid-cols-3"
-  >
+  <div class="mb-8 space-y-3 md:space-y-0 md:grid md:grid-cols-3 md:gap-6">
     <div
       v-for="card in SUMMARY_CARDS"
       :key="card.key"
       :class="[
-        'rounded-2xl p-6 text-white shadow-lg transition-transform hover:-translate-y-1',
-        `bg-gradient-to-br ${card.gradient}`,
+        'rounded-2xl px-5 py-4 text-white shadow-lg flex items-center justify-between gap-4',
+        `bg-gradient-to-r ${card.gradient}`,
       ]"
     >
-      <div class="flex items-start justify-between">
-        <div>
-          <p class="text-lg font-medium opacity-90">{{ card.title }}</p>
-          <h3 class="mt-2 text-3xl font-bold">
-            {{ summary[card.key] }}
-          </h3>
-          <p class="text-sm font-medium opacity-90">
-            {{ card.subtitle }}
-          </p>
+      <!-- Kiri: icon + label -->
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="rounded-full bg-white/20 p-2.5 shrink-0">
+          <i :class="['mdi', card.icon, 'text-2xl']"></i>
         </div>
-        <div class="rounded-full bg-white/20 p-3">
-          <i :class="['mdi', card.icon, 'text-3xl']"></i>
+        <div class="min-w-0">
+          <p class="text-sm font-medium opacity-90 leading-tight">{{ card.title }}</p>
+          <p class="text-xs opacity-75 mt-0.5">{{ card.subtitle }}</p>
         </div>
+      </div>
+      <!-- Kanan: angka -->
+      <div class="text-3xl font-bold shrink-0">
+        {{ summary[card.key] }}
       </div>
     </div>
   </div>

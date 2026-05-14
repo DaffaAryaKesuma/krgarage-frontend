@@ -48,7 +48,7 @@ export function usePelangganBookingPage() {
   );
 
   const selectedVespa = computed(() =>
-    myVespas.value.find((v) => v.id === form.value.id_vespa)
+    myVespas.value.find((v) => v.id === form.value.id_vespa),
   );
 
   const totalHarga = computed(() =>
@@ -79,7 +79,8 @@ export function usePelangganBookingPage() {
       );
       // Data dari Laravel mengembalikan jam dengan format "15:00:00" (HH:mm:ss)
       // Kita perlu mengambil "HH:mm" (5 karakter pertama) agar cocok dengan TIME_SLOTS
-      bookedSlots.value = (data as string[]).map((time) =>
+      const slots = data.data ?? data;
+      bookedSlots.value = (slots as string[]).map((time) =>
         time.substring(0, 5),
       );
     } catch (error: any) {
@@ -168,8 +169,8 @@ export function usePelangganBookingPage() {
         axios.get(`${API_URL}/layanan`),
       ]);
 
-      myVespas.value = vespas.data;
-      allServices.value = services.data;
+      myVespas.value = vespas.data.data ?? vespas.data;
+      allServices.value = services.data.data ?? services.data;
     } catch (error: any) {
       logError(error, "loadInitialData");
       toast.error(handleApiError(error));

@@ -8,16 +8,23 @@ import {
 } from "./statusCore";
 
 export function isPendingStatus(status: string | null | undefined): boolean {
-  return normalizeBookingStatus(status) === "pending";
+  const normalized = normalizeBookingStatus(status);
+  return normalized === "menunggu" || normalized === "pending";
 }
 
 export function isConfirmedStatus(status: string | null | undefined): boolean {
-  return normalizeBookingStatus(status) === "confirmed";
+  const normalized = normalizeBookingStatus(status);
+  return normalized === "dikonfirmasi" || normalized === "confirmed";
 }
 
 export function isCancelledStatus(status: string | null | undefined): boolean {
   const normalized = normalizeBookingStatus(status);
-  return normalized === "cancelled" || normalized === "canceled";
+  return (
+    normalized === "batal" ||
+    normalized === "dibatalkan" ||
+    normalized === "cancelled" ||
+    normalized === "canceled"
+  );
 }
 
 export function isPendingOrConfirmedStatus(
@@ -28,11 +35,17 @@ export function isPendingOrConfirmedStatus(
 
 export function isInProgressStatus(status: string | null | undefined): boolean {
   const normalized = normalizeBookingStatus(status);
-  return normalized === "in progress" || normalized === "in_progress";
+  return (
+    normalized === "dikerjakan" ||
+    normalized === "diproses" ||
+    normalized === "in progress" ||
+    normalized === "in_progress"
+  );
 }
 
 export function isCompletedStatus(status: string | null | undefined): boolean {
-  return normalizeBookingStatus(status) === "completed";
+  const normalized = normalizeBookingStatus(status);
+  return normalized === "selesai" || normalized === "completed";
 }
 
 export function isCompletedOrCancelledStatus(

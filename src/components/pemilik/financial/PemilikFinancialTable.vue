@@ -62,7 +62,7 @@ const getBookingPlateNumber = (booking: FinancialBooking) =>
   booking.vespa?.plat_nomor || "-";
 
 const getBookingStatus = (booking: FinancialBooking) =>
-  booking.status || "Completed";
+  booking.status || "Selesai";
 
 const calculateServiceTotal = (layanan: FinancialBookingService[]) =>
   layanan.reduce(
@@ -169,6 +169,7 @@ const TABLE_HEADERS = [
       icon="mdi mdi-calendar-search"
       title="Tidak ada data ditemukan"
       :message="`Tidak ada transaksi yang selesai dari ${formatDateShort(startDate)} sampai ${formatDateShort(endDate)}.`"
+      class="py-12"
     />
   </div>
 </template>

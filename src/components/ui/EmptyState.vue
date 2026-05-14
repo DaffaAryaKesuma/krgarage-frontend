@@ -26,7 +26,7 @@ const BUTTON_CLASS =
     </div>
 
     <!-- Title -->
-    <h3 class="text-2xl font-bold text-gray-800 mb-3">{{ title }}</h3>
+    <h3 class="text-2xl font-bold text-gray-800 mb-3 text-center">{{ title }}</h3>
 
     <!-- Message -->
     <p class="text-gray-600 text-center max-w-md mb-8">{{ message }}</p>

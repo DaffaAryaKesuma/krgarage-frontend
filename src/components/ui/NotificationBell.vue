@@ -56,13 +56,6 @@ const {
             <i class="mdi mdi-bell"></i>
             Notifikasi
           </h3>
-          <button
-            v-if="hasUnread"
-            @click="markAllAsRead"
-            class="text-xs text-white hover:text-red-100 font-medium underline"
-          >
-            Tandai Semua Dibaca
-          </button>
         </div>
 
         <div v-if="isLoading" class="p-6 text-center">

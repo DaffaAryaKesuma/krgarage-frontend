@@ -18,7 +18,7 @@ const props = defineProps<Props>();
 
 const emit = defineEmits<{
   statusChange: [booking: Booking, newStatus: string, catatan?: string];
-  paymentstatusChange: [booking: Booking, newStatus: string, catatan?: string];
+  paymentStatusChange: [booking: Booking, newStatus: string, catatan?: string];
   assignAndStart: [booking: Booking];
   "update:selectedMekaniks": [value: { [bookingId: number]: number }];
 }>();
@@ -49,6 +49,7 @@ const {
   hasBookings,
   showStatusConfirmModal,
   activeStatusConfig,
+  showPaymentConfirmModal,
   handleConfirm,
   handleComplete,
   handleCancel,
@@ -56,13 +57,15 @@ const {
   handleMekanikChange,
   closeStatusConfirmModal,
   applyStatusChange,
+  applyPaymentChange,
+  closePaymentConfirmModal,
 } = useAdminDashboardRecentBookings({
   bookings: toRef(props, "bookings"),
   selectedMekaniks: toRef(props, "selectedMekaniks"),
-  onStatusChange: (booking, newStatus) =>
-    emit("statusChange", booking, newStatus),
+  onStatusChange: (booking, newStatus, catatan) =>
+    emit("statusChange", booking, newStatus, catatan),
   onPaymentStatusChange: (booking, newStatus) =>
-    emit("paymentstatusChange", booking, newStatus),
+    emit("paymentStatusChange", booking, newStatus),
   onSelectedMekaniksChange: (value) => emit("update:selectedMekaniks", value),
 });
 </script>
@@ -134,7 +137,7 @@ const {
     </TableShell>
 
         <NoteInputModal
-      v-if="activeStatusConfig?.newStatus === 'Completed'"
+      v-if="activeStatusConfig?.newStatus === 'Selesai'"
       :show="showStatusConfirmModal"
       :title="activeStatusConfig?.title || 'Konfirmasi Aksi'"
       message="Tambahkan catatan servis (Wajib diisi):"
@@ -154,6 +157,18 @@ const {
       :variant="activeStatusConfig?.variant || 'info'"
       @confirm="applyStatusChange()"
       @cancel="closeStatusConfirmModal"
+    />
+
+    <!-- Modal konfirmasi tandai lunas -->
+    <ConfirmationModal
+      :show="showPaymentConfirmModal"
+      title="Konfirmasi Pembayaran"
+      message="Apakah Anda yakin ingin menandai pemesanan ini sebagai sudah lunas?"
+      confirm-text="Ya, Tandai Lunas"
+      cancel-text="Batal"
+      variant="success"
+      @confirm="applyPaymentChange"
+      @cancel="closePaymentConfirmModal"
     />
   </div>
 </template>

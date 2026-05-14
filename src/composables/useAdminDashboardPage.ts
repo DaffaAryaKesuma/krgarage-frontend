@@ -12,7 +12,7 @@ import type { MekanikProfile } from "@/types/user";
 
 interface DashboardStats {
   pemesanan_hari_ini: number;
-  sedang_diproses: number;
+  sedang_dikerjakan: number;
   selesai_hari_ini: number;
 }
 
@@ -22,7 +22,7 @@ export function useAdminDashboardPage() {
   const isLoading = ref(true);
   const stats = ref<DashboardStats>({
     pemesanan_hari_ini: 0,
-    sedang_diproses: 0,
+    sedang_dikerjakan: 0,
     selesai_hari_ini: 0,
   });
   const lowStockCount = ref(0);
@@ -88,11 +88,14 @@ export function useAdminDashboardPage() {
     }
   };
 
-  const changeStatus = async (booking: Booking, newStatus: string) => {
+  const changeStatus = async (booking: Booking, newStatus: string, catatan?: string) => {
     try {
+      const payload: Record<string, string> = { status: newStatus };
+      if (catatan) payload.catatan_mekanik = catatan;
+
       await axios.patch(
         `${API_URL}/admin/pemesanan/${booking.id}/status`,
-        { status: newStatus },
+        payload,
         { headers: getAuthHeaders() },
       );
 
@@ -148,8 +151,9 @@ export function useAdminDashboardPage() {
       );
 
       booking.status_pembayaran =
-        data.pemesanan?.status_pembayaran || newStatus || PAYMENT_STATUS.PAID;
+        data.data?.status_pembayaran || data.pemesanan?.status_pembayaran || newStatus || PAYMENT_STATUS.PAID;
       toast.success("Status pembayaran berhasil diperbarui menjadi lunas!");
+      await fetchDashboardStats(false);
     } catch (error: any) {
       logError(error, "changePaymentStatus");
       toast.error(handleApiError(error));

@@ -76,8 +76,8 @@ const getServiceTotal = (booking: PelangganBooking) =>
             </div>
           </div>
           <div class="flex flex-col items-end gap-2">
-            <span :class="getStatusBadgeClass(booking.status || 'Pending')">
-              {{ getStatusLabel(booking.status || "Pending") }}
+            <span :class="getStatusBadgeClass(booking.status || 'Menunggu')">
+              {{ getStatusLabel(booking.status || "Menunggu") }}
             </span>
             <span :class="getPaymentStatusBadgeClass(booking.status_pembayaran)">
               {{ getPaymentStatusLabel(booking.status_pembayaran) }}

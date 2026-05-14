@@ -224,7 +224,7 @@ onMounted(() => {
     </div>
 
         <NoteInputModal
-      v-if="actionConfirmationConfig?.value === 'Completed'"
+      v-if="actionConfirmationConfig?.value === 'Selesai'"
       :show="showActionConfirmation"
       :title="actionConfirmationConfig?.title || 'Konfirmasi Aksi'"
       message="Tambahkan catatan servis (Wajib diisi):"

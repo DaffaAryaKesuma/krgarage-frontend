@@ -36,12 +36,12 @@ ChartJS.register(
 );
 
 // --- STATE TANGGAL ---
-// Default: Awal bulan ini s/d Hari ini
+// Default: 1 bulan terakhir (hari ini - 1 bulan s/d hari ini)
 const today = new Date();
-const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+const oneMonthAgo = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
 
 // Konversi ke format YYYY-MM-DD untuk input date HTML5
-const startDate = ref(firstDay.toISOString().split("T")[0]);
+const startDate = ref(oneMonthAgo.toISOString().split("T")[0]);
 const endDate = ref(today.toISOString().split("T")[0]);
 
 const revenueData = ref<any>({ labels: [], datasets: [] });

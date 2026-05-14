@@ -22,7 +22,10 @@ export function useAdminBookingDetailPage(bookingId: string) {
   const itemToDelete = ref<number | null>(null);
 
   const isInProgress = computed(() => {
-    return booking.value?.status.toLowerCase().includes("progress") || false;
+    const status = booking.value?.status;
+    if (!status) return false;
+    const s = status.toLowerCase();
+    return s === "dikerjakan" || s === "in progress" || s === "in_progress" || s === "diproses";
   });
 
   const totalHarga = computed(() => {
@@ -58,7 +61,7 @@ export function useAdminBookingDetailPage(bookingId: string) {
           headers: getAuthHeaders(),
         },
       );
-      booking.value = data;
+      booking.value = data.data ?? data;
     } catch (err) {
       console.error("Gagal mengambil detail pemesanan:", err);
       if (!booking.value) error.value = "Gagal memload data.";

@@ -64,7 +64,7 @@ defineProps<{
       <p class="mt-3 text-sm text-gray-600">Status Pengerjaan</p>
       <div class="mt-2">
         <span :class="getStatusBadgeClass(booking.status)">
-          {{ getStatusLabel(booking.status || "Pending") }}
+          {{ getStatusLabel(booking.status || "Menunggu") }}
         </span>
       </div>
 

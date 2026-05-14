@@ -21,40 +21,38 @@ const updateEndDate = (val: string) => emit("update:endDate", val);
 </script>
 
 <template>
-  <div class="bg-white rounded-2xl shadow-lg p-4 sm:p-6 lg:p-8">
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
-      <div>
-        <h2
-          class="text-lg font-semibold text-gray-900 mb-1 flex items-center gap-2"
-        >
+  <div class="bg-white rounded-2xl shadow-lg p-4 sm:p-5">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+      <!-- Judul -->
+      <div class="shrink-0">
+        <h2 class="text-base font-semibold text-gray-900 flex items-center gap-2">
           <i class="mdi mdi-calendar-range text-red-600"></i>
           Filter Rentang Waktu
         </h2>
-        <p class="text-sm text-gray-600">
-          Tampilkan laporan berdasarkan tanggal spesifik
-        </p>
+        <p class="text-sm text-gray-500">Tampilkan laporan berdasarkan tanggal spesifik</p>
       </div>
 
-      <div class="flex flex-col sm:flex-row gap-3 items-end w-full md:w-auto">
-        <!-- Start Date Picker -->
-        <BaseDatePicker
-          :model-value="startDate"
-          @update:model-value="updateStartDate"
-          label="Dari Tanggal"
-        />
-
-        <!-- End Date Picker -->
-        <BaseDatePicker
-          :model-value="endDate"
-          @update:model-value="updateEndDate"
-          label="Sampai Tanggal"
-          :align-right="true"
-        />
+      <!-- Controls -->
+      <div class="flex flex-col sm:flex-row sm:items-end gap-2">
+        <!-- 2 kolom di mobile, sejajar di sm+ -->
+        <div class="grid grid-cols-2 gap-2 sm:flex sm:gap-2">
+          <BaseDatePicker
+            :model-value="startDate"
+            @update:model-value="updateStartDate"
+            label="Dari Tanggal"
+          />
+          <BaseDatePicker
+            :model-value="endDate"
+            @update:model-value="updateEndDate"
+            label="Sampai Tanggal"
+            :align-right="true"
+          />
+        </div>
 
         <button
-          @click="emit(`apply`)"
+          @click="emit('apply')"
           :disabled="loading"
-          class="w-full sm:w-auto px-5 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 text-sm disabled:opacity-70 disabled:cursor-not-allowed shadow-sm"
+          class="w-full sm:w-auto shrink-0 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 text-sm disabled:opacity-70 disabled:cursor-not-allowed"
         >
           <i class="mdi mdi-filter-check" v-if="!loading"></i>
           <i class="mdi mdi-loading mdi-spin" v-else></i>

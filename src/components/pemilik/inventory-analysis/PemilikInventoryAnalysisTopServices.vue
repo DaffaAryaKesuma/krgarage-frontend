@@ -16,14 +16,14 @@ const MONTH_OPTIONS = getMonthOptions();
 </script>
 
 <template>
-  <div class="rounded-2xl bg-white p-6 shadow-lg border border-gray-100">
-    <div class="mb-6 flex items-center gap-3">
-      <div class="rounded-xl bg-blue-100 p-3">
-        <i class="mdi mdi-trophy text-2xl text-blue-600"></i>
+  <div class="rounded-2xl bg-white p-4 sm:p-6 shadow-lg border border-gray-100">
+    <div class="mb-4 flex items-center gap-2 sm:gap-3">
+      <div class="rounded-xl bg-blue-100 p-2 sm:p-3 shrink-0">
+        <i class="mdi mdi-trophy text-lg sm:text-2xl text-blue-600"></i>
       </div>
-      <div>
-        <h2 class="text-xl font-bold text-gray-900">Top 5 Layanan Terlaris</h2>
-        <p class="text-sm text-gray-600">
+      <div class="min-w-0">
+        <h2 class="text-base sm:text-xl font-bold text-gray-900 leading-tight">Top 5 Layanan Terlaris</h2>
+        <p class="text-xs text-gray-600">
           Periode:
           <span class="font-semibold text-blue-600"
             >{{ MONTH_OPTIONS[selectedMonth - 1].label }}
@@ -33,48 +33,41 @@ const MONTH_OPTIONS = getMonthOptions();
       </div>
     </div>
 
-    <div v-if="loading" class="space-y-4">
+    <div v-if="loading" class="space-y-3">
       <div
         v-for="i in 5"
         :key="i"
-        class="h-20 animate-pulse rounded-lg bg-gray-200"
+        class="h-14 animate-pulse rounded-lg bg-gray-200"
       ></div>
     </div>
 
-    <div v-else-if="services.length > 0" class="space-y-3">
+    <div v-else-if="services.length > 0" class="space-y-2">
       <div
         v-for="(service, index) in services.slice(0, 5)"
         :key="service.id"
-        class="flex items-center gap-4 p-4 rounded-lg bg-gray-50 hover:bg-blue-50 transition border border-gray-100"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-blue-50 transition border border-gray-100"
       >
-        <div
-          class="w-12 h-12 rounded-lg flex items-center justify-center text-white font-bold bg-gradient-to-br from-blue-500 to-blue-600 flex-shrink-0 shadow-sm"
-        >
+        <!-- Rank badge -->
+        <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white bg-blue-500 shrink-0">
           {{ index + 1 }}
-        </div>
-        <div class="flex-1 min-w-0">
-          <div class="font-semibold text-gray-900 truncate">
-            {{ service.nama_layanan }}
-          </div>
-          <div class="text-xs text-gray-500">
-            {{ toIDR(service.harga) }}
-          </div>
-        </div>
-        <div class="text-right flex-shrink-0">
-          <div class="text-2xl font-bold text-blue-600">
-            {{ service.total_pemesanan }}
-          </div>
-          <div class="text-xs text-gray-600">pemesanan</div>
-        </div>
+        </span>
+        <!-- Nama -->
+        <span class="flex-1 text-sm font-medium text-gray-800 truncate">
+          {{ service.nama_layanan }}
+        </span>
+        <!-- Jumlah -->
+        <span class="text-sm font-bold text-blue-600 shrink-0">
+          {{ service.total_pemesanan ?? service.total }}x
+        </span>
       </div>
     </div>
 
     <div
       v-else
-      class="py-12 text-center bg-gray-50 rounded-lg border-2 border-dashed border-gray-200"
+      class="py-8 text-center bg-gray-50 rounded-lg border-2 border-dashed border-gray-200"
     >
-      <i class="mdi mdi-chart-box-outline text-5xl text-gray-300"></i>
-      <p class="mt-3 text-gray-600 font-medium">Belum ada data layanan</p>
+      <i class="mdi mdi-chart-box-outline text-4xl text-gray-300"></i>
+      <p class="mt-2 text-sm text-gray-600 font-medium">Belum ada data</p>
       <p class="text-xs text-gray-400">Pada periode ini</p>
     </div>
   </div>

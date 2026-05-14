@@ -50,20 +50,18 @@ const fetchInventoryAnalysis = async () => {
       axios.get(`${API_URL}/pemilik/stok-menipis`, { headers }), // Stok tidak pakai filter tanggal (realtime)
     ]);
 
-    topServices.value = servicesRes.data;
-    topSpareparts.value = sparepartsRes.data;
-    lowStockItems.value = lowStockRes.data;
+    topServices.value = servicesRes.data.data ?? servicesRes.data;
+    topSpareparts.value = sparepartsRes.data.data ?? sparepartsRes.data;
+    lowStockItems.value = lowStockRes.data.data ?? lowStockRes.data;
 
     summary.value = {
-      totalServices: topServices.value.reduce(
-        (sum, s) => sum + parseInt(s.total_pemesanan || 0),
-        0,
-      ),
-      totalSpareparts: topSpareparts.value.reduce(
-        (sum, s) => sum + parseInt(s.total_terjual || 0),
-        0,
-      ),
-      lowStockCount: lowStockItems.value.length,
+      totalServices: Array.isArray(topServices.value)
+        ? topServices.value.reduce((sum, s) => sum + parseInt(s.total || s.total_pemesanan || 0), 0)
+        : 0,
+      totalSpareparts: Array.isArray(topSpareparts.value)
+        ? topSpareparts.value.reduce((sum, s) => sum + parseInt(s.total_terjual || 0), 0)
+        : 0,
+      lowStockCount: Array.isArray(lowStockItems.value) ? lowStockItems.value.length : 0,
     };
   } catch (error: any) {
     logError(error, "fetchInventoryData");
@@ -102,9 +100,7 @@ onMounted(fetchInventoryAnalysis);
         :selected-year="selectedYear"
       />
 
-      <div
-        class="mb-8 grid grid-cols-1 gap-6 min-[420px]:grid-cols-2 lg:grid-cols-2"
-      >
+      <div class="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
         <PemilikInventoryAnalysisTopServices
           :services="topServices"
           :loading="loading"

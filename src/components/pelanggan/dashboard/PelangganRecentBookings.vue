@@ -75,7 +75,7 @@ const getServicePrice = (booking: PelangganBooking) =>
           <div class="flex min-w-0 items-center gap-3">
             <i
               :class="
-                booking.status === 'Completed'
+                booking.status === 'Selesai'
                   ? 'mdi mdi-check-circle text-green-500 text-3xl'
                   : 'mdi mdi-close-circle text-red-500 text-3xl'
               "
@@ -91,8 +91,8 @@ const getServicePrice = (booking: PelangganBooking) =>
             </div>
           </div>
           <div class="flex flex-col items-end gap-2">
-            <span :class="getStatusBadgeClass(booking.status || 'Pending')">
-              {{ getStatusLabel(booking.status || "Pending") }}
+            <span :class="getStatusBadgeClass(booking.status || 'Menunggu')">
+              {{ getStatusLabel(booking.status || "Menunggu") }}
             </span>
             <span
               :class="getPaymentStatusBadgeClass(booking.status_pembayaran)"

@@ -31,14 +31,15 @@ const fetchDashboardData = async () => {
     ]);
 
     stats.value = {
-      pendapatanHariIni: statsRes.data.pendapatan_hari_ini || 0,
-      pendapatanBulanIni: statsRes.data.pendapatan_bulan_ini || 0,
-      unitHariIni: statsRes.data.unit_hari_ini || 0,
-      nilaiStok: statsRes.data.nilai_stok || 0,
+      pendapatanHariIni: statsRes.data.data?.pendapatan_hari_ini ?? statsRes.data.pendapatan_hari_ini ?? 0,
+      pendapatanBulanIni: statsRes.data.data?.pendapatan_bulan_ini ?? statsRes.data.pendapatan_bulan_ini ?? 0,
+      unitHariIni: statsRes.data.data?.unit_hari_ini ?? statsRes.data.unit_hari_ini ?? 0,
+      nilaiStok: statsRes.data.data?.nilai_stok ?? statsRes.data.nilai_stok ?? 0,
       loading: false,
     };
 
-    recentBookings.value = bookingsRes.data.slice(0, 5);
+    const bookings = bookingsRes.data.data ?? bookingsRes.data;
+    recentBookings.value = Array.isArray(bookings) ? bookings.slice(0, 5) : [];
   } catch (error: any) {
     logError(error, "fetchDashboardData");
     stats.value.loading = false;

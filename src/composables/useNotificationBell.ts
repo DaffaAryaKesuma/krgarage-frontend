@@ -113,6 +113,10 @@ export function useNotificationBell() {
     isOpen.value = !isOpen.value;
     if (isOpen.value) {
       fetchNotifications(false);
+      // Auto mark all as read saat bell diklik
+      if (hasUnread.value) {
+        markAllAsRead();
+      }
     }
   };
 

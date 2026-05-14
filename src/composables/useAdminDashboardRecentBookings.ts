@@ -38,6 +38,8 @@ export function useAdminDashboardRecentBookings({
 }: UseAdminDashboardRecentBookingsOptions) {
   const showStatusConfirmModal = ref(false);
   const pendingStatusAction = ref<PendingStatusAction | null>(null);
+  const showPaymentConfirmModal = ref(false);
+  const pendingPaymentAction = ref<Booking | null>(null);
 
   const hasBookings = computed(() => bookings.value.length > 0);
 
@@ -100,7 +102,23 @@ export function useAdminDashboardRecentBookings({
   };
 
   const handleMarkPaid = (booking: Booking) => {
-    onPaymentStatusChange(booking, PAYMENT_STATUS.PAID);
+    // Tampilkan konfirmasi sebelum tandai lunas
+    pendingPaymentAction.value = booking;
+    showPaymentConfirmModal.value = true;
+  };
+
+  const applyPaymentChange = () => {
+    if (!pendingPaymentAction.value) {
+      closePaymentConfirmModal();
+      return;
+    }
+    onPaymentStatusChange(pendingPaymentAction.value, PAYMENT_STATUS.PAID);
+    closePaymentConfirmModal();
+  };
+
+  const closePaymentConfirmModal = () => {
+    showPaymentConfirmModal.value = false;
+    pendingPaymentAction.value = null;
   };
 
   const handleMekanikChange = (
@@ -123,6 +141,7 @@ export function useAdminDashboardRecentBookings({
     hasBookings,
     showStatusConfirmModal,
     activeStatusConfig,
+    showPaymentConfirmModal,
     handleConfirm,
     handleComplete,
     handleCancel,
@@ -130,6 +149,8 @@ export function useAdminDashboardRecentBookings({
     handleMekanikChange,
     closeStatusConfirmModal,
     applyStatusChange,
+    applyPaymentChange,
+    closePaymentConfirmModal,
   };
 }
 

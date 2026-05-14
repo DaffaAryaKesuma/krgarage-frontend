@@ -53,8 +53,8 @@ async function fetchDashboardData() {
       ]);
 
     bookingList.value = bookingResponse.data.data || bookingResponse.data;
-    vespaList.value = vespaResponse.data;
-    vespasDueService.value = dueServiceResponse.data;
+    vespaList.value = vespaResponse.data.data || vespaResponse.data;
+    vespasDueService.value = dueServiceResponse.data.data || dueServiceResponse.data;
   } catch (error: any) {
     logError(error, "fetchDashboardData");
     toast.error(handleApiError(error));

@@ -50,6 +50,8 @@ export function isPaidStatus(status: string | null | undefined): boolean {
 }
 
 export function isUnpaidStatus(status: string | null | undefined): boolean {
+  // Null/undefined dianggap belum lunas
+  if (!status) return true;
   return toPaymentStatus(status) === PAYMENT_STATUS.UNPAID;
 }
 

@@ -169,16 +169,29 @@ const router = createRouter({
 });
 
 router.beforeEach((to, _from, next) => {
-  const isLoggedIn = !!localStorage.getItem("token");
+  const token = localStorage.getItem("token");
   const userString = localStorage.getItem("user");
   let user: any = null;
   if (userString) {
     try {
-      user = JSON.parse(userString);
+      const parsed = JSON.parse(userString);
+      // Pastikan user valid (bukan null/undefined yang tersimpan sebagai string)
+      if (parsed && typeof parsed === "object" && parsed.role) {
+        user = parsed;
+      }
     } catch {
       user = null;
     }
   }
+
+  // Kalau ada token tapi user corrupt/tidak valid, bersihkan keduanya
+  if (token && !user) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    return next({ name: "beranda" });
+  }
+
+  const isLoggedIn = !!token && !!user;
   const normalizedRole = normalizeUserRole(user?.role);
   const roleRedirectPath = getRedirectPathForRole(normalizedRole);
 

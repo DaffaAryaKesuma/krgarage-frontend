@@ -112,11 +112,11 @@ const handleLogin = async () => {
     const response = await axios.post(`${API_URL}/masuk`, form);
 
     localStorage.setItem("token", response.data.access_token);
-    localStorage.setItem("user", JSON.stringify(response.data.user));
+    localStorage.setItem("user", JSON.stringify(response.data.data));
 
     emit("close");
 
-    const redirectPath = getRedirectPathForRole(response.data.user?.role);
+    const redirectPath = getRedirectPathForRole(response.data.data?.role);
     router.push(redirectPath);
   } catch (err: any) {
     logError(err, "handleLogin");

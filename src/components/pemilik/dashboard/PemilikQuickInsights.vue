@@ -3,7 +3,7 @@ import { ref, computed, onMounted, onUnmounted } from "vue";
 import axios from "axios";
 
 const now = ref(new Date());
-const mechanicsCount = ref(5); // Default fallback
+const mechanicsCount = ref(0); // Default 0
 let timeTimer: number | undefined;
 let pollTimer: number | undefined;
 
@@ -14,7 +14,8 @@ function updateNow() {
 async function loadMechanicsCount() {
   try {
     const response = await axios.get("/api/pemilik/mekanik-online");
-    mechanicsCount.value = response.data.count ?? 5;
+    const data = response.data.data ?? response.data;
+    mechanicsCount.value = data.online ?? 0;
   } catch (error) {
     console.error("Failed to load mechanics count:", error);
     // Keep fallback value on error
