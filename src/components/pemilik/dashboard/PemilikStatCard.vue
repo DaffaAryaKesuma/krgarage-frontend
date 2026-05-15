@@ -6,6 +6,7 @@ interface Props {
   iconBgColor?: string;
   iconColor?: string;
   trend?: number; // percentage change
+  subtitle?: string;
   loading?: boolean;
 }
 
@@ -30,7 +31,10 @@ withDefaults(defineProps<Props>(), {
         </div>
 
         <!-- Value -->
-        <h3 v-else class="mt-2 text-xl font-bold text-gray-900 break-words leading-tight">
+        <h3
+          v-else
+          class="mt-2 text-xl font-bold text-gray-900 break-words leading-tight"
+        >
           {{ value }}
         </h3>
 
@@ -54,6 +58,11 @@ withDefaults(defineProps<Props>(), {
             {{ Math.abs(trend) }}%
           </span>
           <span class="text-xs text-gray-500">vs bulan lalu</span>
+        </div>
+
+        <!-- Subtitle -->
+        <div v-else-if="subtitle" class="mt-2 text-xs text-gray-500">
+          {{ subtitle }}
         </div>
       </div>
 

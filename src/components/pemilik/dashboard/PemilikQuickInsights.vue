@@ -32,6 +32,11 @@ const isOpen = computed(() => {
   return h >= OPEN_HOUR && h < CLOSE_HOUR;
 });
 
+const props = defineProps<{
+  ringkasan: any;
+  stats: any;
+}>();
+
 const firstCard = computed(() => ({
   title: "Status Operasional",
   value: isOpen.value ? "Bengkel Buka" : "Bengkel Tutup",
@@ -50,7 +55,35 @@ const teamCard = computed(() => ({
   gradient: "from-blue-500 to-blue-600",
 }));
 
-const INSIGHT_CARDS = computed(() => [firstCard.value, teamCard.value]);
+const bestMechanicCard = computed(() => {
+  const name = props.ringkasan?.performa?.mekanik_terbaik?.nama;
+  const jobs = props.ringkasan?.performa?.mekanik_terbaik?.total_pekerjaan;
+
+  if (!name) return null;
+
+  return {
+    title: "Mekanik Terbaik",
+    value: name,
+    subtitle: `${jobs} pesanan selesai bulan ini`,
+    icon: "mdi-star-circle",
+    gradient: "from-amber-500 to-amber-600",
+  };
+});
+
+const unitCard = computed(() => ({
+  title: "Vespa Masuk Hari Ini",
+  value: `${props.stats?.unitHariIni || 0} Vespa`,
+  subtitle: "Sedang/selesai diproses",
+  icon: "mdi-motorbike",
+  gradient: "from-purple-500 to-purple-600",
+}));
+
+const INSIGHT_CARDS = computed(() => {
+  const cards = [firstCard.value, teamCard.value];
+  if (bestMechanicCard.value) cards.push(bestMechanicCard.value);
+  cards.push(unitCard.value);
+  return cards;
+});
 
 onMounted(() => {
   updateNow();
@@ -71,23 +104,32 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="mb-6 grid grid-cols-2 gap-4">
-    <div
-      v-for="card in INSIGHT_CARDS"
-      :key="card.title"
-      :class="[
-        'rounded-2xl bg-gradient-to-br p-4 text-white shadow-md',
-        card.gradient,
-      ]"
-    >
-      <div class="flex items-start justify-between gap-2">
-        <div class="min-w-0">
-          <p class="text-xs font-medium opacity-90 mb-1">{{ card.title }}</p>
-          <h3 class="text-lg font-bold leading-tight break-words">{{ card.value }}</h3>
-          <p class="mt-1 text-xs opacity-80 leading-snug">{{ card.subtitle }}</p>
-        </div>
-        <div class="rounded-full bg-white/20 flex items-center justify-center shrink-0 w-9 h-9">
-          <i :class="['mdi', card.icon, 'text-xl']"></i>
+  <div class="mb-6">
+    <h2 class="text-xl font-bold text-gray-800 mb-4">Wawasan Operasional</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 h-full">
+      <div
+        v-for="card in INSIGHT_CARDS"
+        :key="card.title"
+        :class="[
+          'rounded-2xl bg-gradient-to-br p-4 text-white shadow-md',
+          card.gradient,
+        ]"
+      >
+        <div class="flex items-start justify-between gap-2">
+          <div class="min-w-0">
+            <p class="text-xs font-medium opacity-90 mb-1">{{ card.title }}</p>
+            <h3 class="text-lg font-bold leading-tight break-words">
+              {{ card.value }}
+            </h3>
+            <p class="mt-1 text-xs opacity-80 leading-snug">
+              {{ card.subtitle }}
+            </p>
+          </div>
+          <div
+            class="rounded-full bg-white/20 flex items-center justify-center shrink-0 w-9 h-9"
+          >
+            <i :class="['mdi', card.icon, 'text-xl']"></i>
+          </div>
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ import axios from "axios";
 import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import PemilikStatsGrid from "@/components/pemilik/dashboard/PemilikStatsGrid.vue";
+import PemilikMetrikKeuanganChart from "@/components/pemilik/dashboard/PemilikMetrikKeuanganChart.vue";
 import PemilikQuickInsights from "@/components/pemilik/dashboard/PemilikQuickInsights.vue";
 import PemilikRecentActivity from "@/components/pemilik/dashboard/PemilikRecentActivity.vue";
 import { getAuthHeaders } from "@/utils/auth";
@@ -19,15 +20,20 @@ const stats = ref({
   loading: true,
 });
 
+const ringkasan = ref(null);
+const metrik = ref(null);
+
 const recentBookings = ref<any[]>([]);
 
 const fetchDashboardData = async () => {
   try {
     const headers = getAuthHeaders();
 
-    const [statsRes, bookingsRes] = await Promise.all([
+    const [statsRes, bookingsRes, ringkasanRes, metrikRes] = await Promise.all([
       axios.get(`${API_URL}/pemilik/statistik`, { headers }),
       axios.get(`${API_URL}/pemilik/pemesanan-terbaru`, { headers }),
+      axios.get(`${API_URL}/pemilik/ringkasan`, { headers }),
+      axios.get(`${API_URL}/pemilik/metrik-keuangan`, { headers }),
     ]);
 
     stats.value = {
@@ -37,6 +43,9 @@ const fetchDashboardData = async () => {
       nilaiStok: statsRes.data.data?.nilai_stok ?? statsRes.data.nilai_stok ?? 0,
       loading: false,
     };
+
+    ringkasan.value = ringkasanRes.data.data ?? ringkasanRes.data;
+    metrik.value = metrikRes.data.data ?? metrikRes.data;
 
     const bookings = bookingsRes.data.data ?? bookingsRes.data;
     recentBookings.value = Array.isArray(bookings) ? bookings.slice(0, 5) : [];
@@ -63,10 +72,10 @@ onMounted(fetchDashboardData);
 
       <template v-else>
         <!-- Big Numbers Grid -->
-        <PemilikStatsGrid :stats="stats" />
+        <PemilikStatsGrid :stats="stats" :ringkasan="ringkasan" />
 
-        <!-- Quick Insights -->
-        <PemilikQuickInsights />
+        <!-- Quick Insights / Operational -->
+        <PemilikQuickInsights :ringkasan="ringkasan" :stats="stats" />
 
         <!-- Recent Activity -->
         <PemilikRecentActivity
