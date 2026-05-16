@@ -47,8 +47,8 @@ withDefaults(defineProps<Props>(), {
           </div>
         </div>
 
-        <div v-if="$slots.actions" class="shrink-0">
-          <slot name="actions" />
+        <div v-if="$slots.aksi" class="shrink-0">
+          <slot name="aksi" />
         </div>
       </div>
     </div>

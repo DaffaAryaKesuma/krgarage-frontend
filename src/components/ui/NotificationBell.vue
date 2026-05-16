@@ -9,7 +9,6 @@ const {
   isLoading,
   hasUnread,
   toggleDropdown,
-  markAllAsRead,
   getNotificationIcon,
   getNotificationColor,
   handleNotificationClick,
@@ -96,7 +95,7 @@ const {
                 <div class="flex items-start justify-between gap-2">
                   <div class="flex-1">
                     <p
-                      class="line-clamp-1 text-sm font-semibold text-gray-900"
+                      class="line-clamp-1 text-sm font-semibold text-gray-900 capitalize"
                       :class="{ 'font-bold': !notification.sudah_dibaca }"
                     >
                       {{ notification.judul }}
@@ -131,7 +130,7 @@ const {
           <i class="mdi mdi-bell-off text-5xl text-gray-300 mb-3"></i>
           <p class="text-gray-600 font-medium">Tidak ada notifikasi</p>
           <p class="text-sm text-gray-500 mt-1">
-            Anda akan menerima notifikasi untuk booking Anda di sini
+            Anda akan menerima notifikasi untuk pemesanan Anda di sini
           </p>
         </div>
       </div>

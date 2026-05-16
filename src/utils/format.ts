@@ -24,7 +24,7 @@ export function formatWaktu(minutes: number | null | undefined): string {
 
 /**
  * Get full URL for image stored in backend storage
- * @param imagePath - Path to image (e.g., "services/image.jpg")
+ * @param imagePath - Path to image (e.g., "layanan/image.jpg")
  * @param apiUrl - API base URL (optional, defaults to VITE_API_URL)
  * @returns Full URL to image or placeholder
  */
@@ -40,4 +40,20 @@ export function getImageUrl(
   const storageUrl = baseUrl.replace(/\/api\/?$/, "");
 
   return `${storageUrl}/storage/${imagePath}`;
+}
+
+/**
+ * Format nama pengguna agar rapi (Title Case)
+ * @param nama - Nama yang akan diformat
+ * @returns Nama dengan huruf kapital di awal setiap kata
+ */
+export function formatNama(nama: string | null | undefined): string {
+  if (!nama) return "-";
+
+  return nama
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 }

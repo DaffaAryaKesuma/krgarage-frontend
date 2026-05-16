@@ -33,7 +33,7 @@ export function handleApiError(error: any): string {
 
   // Server error (500)
   if (error.response?.status === 500) {
-    return "Server error - ada masalah di backend. Hubungi administrator.";
+    return "Server error. Ada masalah di backend.";
   }
 
   // Unauthorized (401)

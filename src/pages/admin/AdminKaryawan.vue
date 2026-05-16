@@ -7,7 +7,7 @@ import { handleApiError, logError } from "@/utils/errorHandler";
 import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
-import KaryawanCard from "@/components/admin/karyawan/KaryawanCard.vue";
+import KaryawanKartu from "@/components/admin/karyawan/KaryawanKartu.vue";
 import KaryawanFormModal from "@/components/admin/karyawan/KaryawanFormModal.vue";
 
 interface Karyawan {
@@ -19,7 +19,7 @@ interface Karyawan {
   created_at: string;
 }
 
-const karyawanList = ref<Karyawan[]>([]);
+const karyawanDaftar = ref<Karyawan[]>([]);
 const isLoading = ref(true);
 const isModalOpen = ref(false);
 const isEditMode = ref(false);
@@ -34,7 +34,7 @@ const fetchKaryawan = async () => {
   isLoading.value = true;
   try {
     const response = await axios.get("/api/admin/karyawan");
-    karyawanList.value = response.data.data;
+    karyawanDaftar.value = response.data.data;
   } catch (error) {
     logError(error, "fetchKaryawan");
     toast.error("Gagal memuat data karyawan.");
@@ -131,9 +131,9 @@ onMounted(fetchKaryawan);
           >
         </button>
 
-        <!-- Karyawan Cards -->
-        <KaryawanCard
-          v-for="karyawan in karyawanList"
+        <!-- Karyawan Kartu -->
+        <KaryawanKartu
+          v-for="karyawan in karyawanDaftar"
           :key="karyawan.id"
           :karyawan="karyawan"
           :current-user-id="currentUser?.id"

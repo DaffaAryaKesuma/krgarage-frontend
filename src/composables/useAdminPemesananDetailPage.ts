@@ -1,0 +1,162 @@
+import { computed, ref } from "vue";
+import axios from "axios";
+import { useToast } from "@/utils/useToast";
+import { API_URL } from "@/utils/api";
+import { getAuthHeaders } from "@/utils/auth";
+import { toMoneyNumber } from "@/utils/money";
+import type { Pemesanan } from "@/types/pemesanan";
+import type { SukuCadangRingkasan } from "@/types/inventaris";
+
+export function useAdminPemesananDetailPage(pemesananId: string) {
+  const toast = useToast();
+
+  const pemesanan = ref<Pemesanan | null>(null);
+  const isLoading = ref(true);
+  const error = ref("");
+
+  const showAddSukuCadangModal = ref(false);
+  const availableSukuCadang = ref<SukuCadangRingkasan[]>([]);
+  const isAddingSukuCadang = ref(false);
+
+  const showDeleteConfirm = ref(false);
+  const itemToDelete = ref<number | null>(null);
+
+  const isInProgress = computed(() => {
+    const status = pemesanan.value?.status;
+    if (!status) return false;
+    const s = status.toLowerCase();
+    return s === "dikerjakan" || s === "in progress" || s === "in_progress" || s === "diproses";
+  });
+
+  const totalHarga = computed(() => {
+    return (
+      pemesanan.value?.layanan?.reduce(
+        (sum, s) =>
+          sum + toMoneyNumber(s.pivot?.harga_saat_pesan ?? s.harga ?? 0),
+        0,
+      ) || 0
+    );
+  });
+
+  const totalSukuCadang = computed(() => {
+    return (
+      pemesanan.value?.item_pemesanan?.reduce(
+        (sum, item) => sum + item.harga_saat_ini * item.jumlah,
+        0,
+      ) || 0
+    );
+  });
+
+  const grandTotal = computed(() => totalHarga.value + totalSukuCadang.value);
+
+  const totalAkhir = computed(
+    () => toMoneyNumber(pemesanan.value?.total_harga) || grandTotal.value,
+  );
+
+  const fetchPemesananData = async () => {
+    try {
+      const { data } = await axios.get(
+        `${API_URL}/admin/pemesanan/${pemesananId}`,
+        {
+          headers: getAuthHeaders(),
+        },
+      );
+      pemesanan.value = data.data ?? data;
+    } catch (err) {
+      console.error("Gagal mengambil detail pemesanan:", err);
+      if (!pemesanan.value) error.value = "Gagal memload data.";
+    }
+  };
+
+  const fetchAvailableSukuCadang = async () => {
+    try {
+      const { data } = await axios.get(`${API_URL}/admin/inventori`, {
+        headers: getAuthHeaders(),
+      });
+      availableSukuCadang.value = data.data;
+    } catch (err) {
+      console.error("Gagal mengambil suku cadang:", err);
+    }
+  };
+
+  const openAddSukuCadangModal = async () => {
+    showAddSukuCadangModal.value = true;
+    await fetchAvailableSukuCadang();
+  };
+
+  const closeAddSukuCadangModal = () => {
+    showAddSukuCadangModal.value = false;
+  };
+
+  const addSukuCadangToPemesanan = async (payload: {
+    sukucadangId: number;
+    quantity: number;
+  }) => {
+    isAddingSukuCadang.value = true;
+    try {
+      await axios.post(
+        `${API_URL}/admin/pemesanan/${pemesanan.value?.id}/tambah-suku-cadang`,
+        {
+          id_suku_cadang: payload.sukucadangId,
+          jumlah: payload.quantity,
+        },
+        { headers: getAuthHeaders() },
+      );
+
+      toast.success("Suku cadang berhasil ditambahkan!");
+      closeAddSukuCadangModal();
+      await fetchPemesananData();
+    } catch (err: any) {
+      console.error("Gagal menambahkan suku cadang:", err);
+      toast.error(
+        err.response?.data?.message || "Gagal menambahkan suku cadang",
+      );
+    } finally {
+      isAddingSukuCadang.value = false;
+    }
+  };
+
+  const promptDeleteSukuCadang = (itemId: number) => {
+    itemToDelete.value = itemId;
+    showDeleteConfirm.value = true;
+  };
+
+  const removeSukuCadangFromPemesanan = async () => {
+    if (!itemToDelete.value) return;
+
+    try {
+      await axios.delete(
+        `${API_URL}/admin/pemesanan/${pemesanan.value?.id}/item/${itemToDelete.value}`,
+        { headers: getAuthHeaders() },
+      );
+
+      toast.success("Suku cadang berhasil dihapus!");
+      showDeleteConfirm.value = false;
+      itemToDelete.value = null;
+      await fetchPemesananData();
+    } catch (err: any) {
+      console.error("Gagal menghapus suku cadang:", err);
+      toast.error(err.response?.data?.message || "Gagal menghapus suku cadang");
+    }
+  };
+
+  return {
+    pemesanan,
+    isLoading,
+    error,
+    showAddSukuCadangModal,
+    availableSukuCadang,
+    isAddingSukuCadang,
+    showDeleteConfirm,
+    isInProgress,
+    totalHarga,
+    totalSukuCadang,
+    totalAkhir,
+    fetchPemesananData,
+    openAddSukuCadangModal,
+    closeAddSukuCadangModal,
+    addSukuCadangToPemesanan,
+    promptDeleteSukuCadang,
+    removeSukuCadangFromPemesanan,
+  };
+}

@@ -54,7 +54,7 @@ export function setupAxiosInterceptors401(router: Router) {
         tryShowToast();
         setTimeout(tryShowToast, 100);
 
-        // Redirect ke home after toast has time to show (2500ms)
+        // Redirect ke beranda after toast has time to show (2500ms)
         setTimeout(() => {
           router.push("/").catch(() => {});
         }, 2500);

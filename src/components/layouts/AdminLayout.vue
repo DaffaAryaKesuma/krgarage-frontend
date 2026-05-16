@@ -13,7 +13,7 @@ const menuItems = [
 
 <template>
   <BaseAuthenticatedLayout
-    home-path="/admin/dasbor"
+    beranda-path="/admin/dasbor"
     role-label="Admin"
     app-subtitle="Panel Admin"
     :nav-items="menuItems"

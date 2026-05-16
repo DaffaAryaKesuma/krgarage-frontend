@@ -18,7 +18,7 @@ const navLinks = [
 
 <template>
   <BaseAuthenticatedLayout
-    home-path="/pemilik/dasbor"
+    beranda-path="/pemilik/dasbor"
     role-label="Pemilik"
     app-subtitle="Portal Pemilik"
     :nav-items="navLinks"

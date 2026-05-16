@@ -3,14 +3,14 @@ interface Props {
   icon: string;
   title: string;
   message: string;
-  actionText?: string;
-  actionLink?: string;
+  aksiText?: string;
+  aksiLink?: string;
 }
 
 defineProps<Props>();
 
 const emit = defineEmits<{
-  (e: "action"): void;
+  (e: "aksi"): void;
 }>();
 
 // ✅ Button class constant
@@ -31,20 +31,20 @@ const BUTTON_CLASS =
     <!-- Message -->
     <p class="text-gray-600 text-center max-w-md mb-8">{{ message }}</p>
 
-    <!-- Action Button -->
+    <!-- Aksi Button -->
     <router-link
-      v-if="actionLink && actionText"
-      :to="actionLink"
+      v-if="aksiLink && aksiText"
+      :to="aksiLink"
       :class="BUTTON_CLASS"
     >
-      {{ actionText }}
+      {{ aksiText }}
     </router-link>
     <button
-      v-else-if="actionText"
-      @click="emit('action')"
+      v-else-if="aksiText"
+      @click="emit('aksi')"
       :class="BUTTON_CLASS"
     >
-      {{ actionText }}
+      {{ aksiText }}
     </button>
   </div>
 </template>

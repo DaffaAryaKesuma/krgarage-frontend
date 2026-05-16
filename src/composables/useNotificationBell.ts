@@ -11,7 +11,7 @@ import { logError } from "@/utils/errorHandler";
 import { API_URL } from "@/utils/api";
 import { getRedirectPathForRole } from "@/utils/roleRoutes";
 import {
-  getBookingIdFromNotification,
+  getPemesananIdFromNotification,
   getNotificationColor,
   getNotificationIcon,
   normalizeRole,
@@ -93,7 +93,7 @@ export function useNotificationBell() {
 
     const target = resolveNotificationTarget(
       normalizeRole(getCurrentUser()?.role),
-      getBookingIdFromNotification(notification),
+      getPemesananIdFromNotification(notification),
       notification.tipe,
     );
 

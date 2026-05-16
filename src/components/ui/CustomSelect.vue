@@ -122,7 +122,7 @@ onUnmounted(() => {
     >
       <span
         :class="[
-          'block min-w-0 flex-1 pr-2',
+          'block min-w-0 flex-1 pr-2 capitalize',
           props.truncateSelectedLabel ? 'truncate' : 'whitespace-nowrap',
           modelValue === null ? 'text-gray-500' : 'text-gray-900',
         ]"
@@ -164,7 +164,7 @@ onUnmounted(() => {
             :key="option.value"
             @click="handleSelect(option.value)"
             :class="[
-              'px-4 py-3 cursor-pointer text-sm sm:text-base transition-colors',
+              'px-4 py-3 cursor-pointer text-sm sm:text-base transition-colors capitalize',
               modelValue === option.value
                 ? 'bg-red-500 text-white font-medium'
                 : 'text-gray-900 hover:bg-gray-100',

@@ -72,18 +72,17 @@ const goToPage = (page: number) => {
 
 <template>
   <div
-    v-if="lastPage > 1"
     class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 pt-4 border-t border-gray-200"
   >
-    <!-- Info text -->
+    <!-- Info text (Selalu Muncul) -->
     <div class="text-sm text-gray-600">
-      Menampilkan <span class="font-semibold">{{ from }}</span> -
+      Menampilkan <span class="font-semibold">{{ total === 0 ? 0 : from }}</span> -
       <span class="font-semibold">{{ to }}</span> dari
-      <span class="font-semibold">{{ total }}</span> hasil
+      <span class="font-semibold">{{ total }}</span> pemesanan
     </div>
 
-    <!-- Pagination buttons -->
-    <div class="flex items-center gap-1">
+    <!-- Pagination buttons (Hanya Muncul jika lebih dari 1 halaman) -->
+    <div v-if="lastPage > 1" class="flex items-center gap-1">
       <!-- Previous button -->
       <button
         @click="goToPage(currentPage - 1)"

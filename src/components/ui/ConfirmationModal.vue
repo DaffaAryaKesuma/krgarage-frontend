@@ -75,7 +75,7 @@ function handleCancel() {
       <div class="p-6">
         <p class="text-gray-700 mb-6">{{ message }}</p>
 
-        <!-- Action Buttons -->
+        <!-- Aksi Buttons -->
         <div class="flex gap-3">
           <button
             @click="handleCancel"

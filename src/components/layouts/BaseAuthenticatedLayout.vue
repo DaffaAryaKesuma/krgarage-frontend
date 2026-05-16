@@ -2,7 +2,10 @@
 import { useRoute } from "vue-router";
 import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
 import NotificationBell from "@/components/ui/NotificationBell.vue";
+import ProfilModal from "@/components/ui/ProfilModal.vue";
 import { useAuthenticatedLayoutShell } from "@/composables/useAuthenticatedLayoutShell";
+import { formatNama } from "@/utils/format";
+import { ref } from "vue";
 
 interface NavItem {
   label: string;
@@ -11,7 +14,7 @@ interface NavItem {
 }
 
 interface Props {
-  homePath: string;
+  berandaPath: string;
   roleLabel: string;
   navItems?: NavItem[];
   appTitle?: string;
@@ -40,6 +43,8 @@ const {
   handleLogout,
   closeMenu,
 } = useAuthenticatedLayoutShell(props.desktopBreakpoint);
+
+const showProfilModal = ref(false);
 </script>
 
 <template>
@@ -48,7 +53,7 @@ const {
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between gap-2 lg:gap-4">
           <router-link
-            :to="homePath"
+            :to="berandaPath"
             class="flex min-w-0 items-center gap-2 no-underline"
           >
             <img
@@ -95,13 +100,15 @@ const {
 
               <div class="hidden text-right xl:block">
                 <p class="text-sm font-semibold text-gray-900">
-                  <span class="capitalize">{{ user.nama }}</span>
+                  <span>{{ formatNama(user.nama) }}</span>
                 </p>
                 <p class="text-xs text-red-600 font-medium">{{ roleLabel }}</p>
               </div>
 
               <div
-                class="w-10 h-10 rounded-full bg-gradient-to-r from-red-600 to-red-700 flex items-center justify-center text-white font-bold text-sm"
+                class="w-10 h-10 rounded-full bg-gradient-to-r from-red-600 to-red-700 flex items-center justify-center text-white font-bold text-sm cursor-pointer hover:ring-4 hover:ring-red-100 transition-all shadow-md"
+                @click="showProfilModal = true"
+                title="Lihat Profil"
               >
                 {{ userInitials }}
               </div>
@@ -140,12 +147,13 @@ const {
             class="flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-lg mb-2"
           >
             <div
-              class="w-10 h-10 rounded-full bg-gradient-to-r from-red-600 to-red-700 flex items-center justify-center text-white font-bold text-sm"
+              class="w-10 h-10 rounded-full bg-gradient-to-r from-red-600 to-red-700 flex items-center justify-center text-white font-bold text-sm cursor-pointer"
+              @click="showProfilModal = true"
             >
               {{ userInitials }}
             </div>
             <div class="flex-1">
-              <p class="text-sm font-semibold text-gray-900"><span class="capitalize">{{ user.nama }}</span></p>
+              <p class="text-sm font-semibold text-gray-900"><span>{{ formatNama(user.nama) }}</span></p>
               <p class="text-xs text-gray-500">{{ roleLabel }}</p>
             </div>
             <NotificationBell />
@@ -186,6 +194,11 @@ const {
       variant="danger"
       @confirm="handleLogout"
       @cancel="showLogoutConfirm = false"
+    />
+
+    <ProfilModal
+      :show="showProfilModal"
+      @close="showProfilModal = false"
     />
   </div>
 </template>

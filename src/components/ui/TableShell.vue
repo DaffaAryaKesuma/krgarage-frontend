@@ -9,9 +9,9 @@ interface Props {
   headerRowClass?: string;
   headerCellClass?: string;
   bodyClass?: string;
-  responsiveCards?: boolean;
+  responsiveKartu?: boolean;
   desktopBreakpoint?: "md" | "lg" | "xl";
-  mobileCardsClass?: string;
+  mobileKartuClass?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -22,28 +22,28 @@ const props = withDefaults(defineProps<Props>(), {
   headerCellClass:
     "px-6 py-3 text-xs text-left font-medium text-gray-500 uppercase tracking-wider",
   bodyClass: "bg-white divide-y divide-gray-200",
-  responsiveCards: false,
+  responsiveKartu: false,
   desktopBreakpoint: "md",
-  mobileCardsClass: "space-y-4 p-4",
+  mobileKartuClass: "space-y-4 p-4",
 });
 
 const slots = useSlots();
 
 const hasMobileSlot = computed(() => Boolean(slots.mobile));
 
-const useResponsiveCards = computed(
-  () => props.responsiveCards && hasMobileSlot.value,
+const useResponsiveKartu = computed(
+  () => props.responsiveKartu && hasMobileSlot.value,
 );
 
 const desktopTableClass = computed(() => {
-  if (!useResponsiveCards.value) return "";
+  if (!useResponsiveKartu.value) return "";
   if (props.desktopBreakpoint === "xl") return "hidden xl:block";
   return props.desktopBreakpoint === "lg"
     ? "hidden lg:block"
     : "hidden md:block";
 });
 
-const mobileCardsVisibilityClass = computed(() => {
+const mobileKartuVisibilityClass = computed(() => {
   if (props.desktopBreakpoint === "xl") return "xl:hidden";
   if (props.desktopBreakpoint === "lg") return "lg:hidden";
   return "md:hidden";
@@ -53,8 +53,8 @@ const mobileCardsVisibilityClass = computed(() => {
 <template>
   <div :class="wrapperClass">
     <div
-      v-if="useResponsiveCards"
-      :class="[mobileCardsVisibilityClass, mobileCardsClass]"
+      v-if="useResponsiveKartu"
+      :class="[mobileKartuVisibilityClass, mobileKartuClass]"
     >
       <slot name="mobile" />
     </div>

@@ -1,78 +1,68 @@
-export const BOOKING_STATUS = {
+export const PEMESANAN_STATUS = {
   PENDING: "Menunggu",
   CONFIRMED: "Dikonfirmasi",
   IN_PROGRESS: "Dikerjakan",
   COMPLETED: "Selesai",
-  CANCELLED: "batal",
+  CANCELLED: "Batal",
 } as const;
 
 export const STATUS_MAP = {
-  [BOOKING_STATUS.PENDING]: {
+  [PEMESANAN_STATUS.PENDING]: {
     badge: "bg-yellow-100 text-yellow-800",
     label: "Menunggu",
   },
-  [BOOKING_STATUS.CONFIRMED]: {
+  [PEMESANAN_STATUS.CONFIRMED]: {
     badge: "bg-blue-100 text-blue-800",
     label: "Dikonfirmasi",
   },
-  [BOOKING_STATUS.IN_PROGRESS]: {
+  [PEMESANAN_STATUS.IN_PROGRESS]: {
     badge: "bg-purple-100 text-purple-800",
     label: "Dikerjakan",
   },
-  [BOOKING_STATUS.COMPLETED]: {
+  [PEMESANAN_STATUS.COMPLETED]: {
     badge: "bg-green-100 text-green-800",
     label: "Selesai",
   },
-  [BOOKING_STATUS.CANCELLED]: {
+  [PEMESANAN_STATUS.CANCELLED]: {
     badge: "bg-red-100 text-red-800",
     label: "Batal",
   },
 };
 
-export type BookingStatus = keyof typeof STATUS_MAP;
-export type BookingStatusFilter = "all" | BookingStatus;
+export type PemesananStatus = keyof typeof STATUS_MAP;
+export type PemesananStatusFilter = "semua" | PemesananStatus;
 export type MekanikStatusFilter =
-  | "all"
+  | "semua"
   | "menunggu"
   | "dikonfirmasi"
   | "dikerjakan";
 
-const NORMALIZED_STATUS_TO_CANONICAL: Record<string, BookingStatus> = {
+const NORMALIZED_STATUS_TO_CANONICAL: Record<string, PemesananStatus> = {
   // Nilai Indonesia (canonical)
-  menunggu: BOOKING_STATUS.PENDING,
-  dikonfirmasi: BOOKING_STATUS.CONFIRMED,
-  dikerjakan: BOOKING_STATUS.IN_PROGRESS,
-  selesai: BOOKING_STATUS.COMPLETED,
-  batal: BOOKING_STATUS.CANCELLED,
-  // Legacy / fallback nilai lama
-  diproses: BOOKING_STATUS.IN_PROGRESS,
-  dibatalkan: BOOKING_STATUS.CANCELLED,
-  pending: BOOKING_STATUS.PENDING,
-  confirmed: BOOKING_STATUS.CONFIRMED,
-  "in progress": BOOKING_STATUS.IN_PROGRESS,
-  in_progress: BOOKING_STATUS.IN_PROGRESS,
-  completed: BOOKING_STATUS.COMPLETED,
-  cancelled: BOOKING_STATUS.CANCELLED,
-  canceled: BOOKING_STATUS.CANCELLED,
+  menunggu: PEMESANAN_STATUS.PENDING,
+  dikonfirmasi: PEMESANAN_STATUS.CONFIRMED,
+  dikerjakan: PEMESANAN_STATUS.IN_PROGRESS,
+  selesai: PEMESANAN_STATUS.COMPLETED,
+  batal: PEMESANAN_STATUS.CANCELLED,
 };
 
-export const BOOKING_STATUS_FILTER_OPTIONS: Array<{
-  value: BookingStatusFilter;
+export const PEMESANAN_STATUS_FILTER_OPTIONS: Array<{
+  value: PemesananStatusFilter;
   label: string;
 }> = [
-  { value: "all", label: "Semua Status" },
-  { value: BOOKING_STATUS.PENDING, label: "Menunggu" },
-  { value: BOOKING_STATUS.CONFIRMED, label: "Dikonfirmasi" },
-  { value: BOOKING_STATUS.IN_PROGRESS, label: "Dikerjakan" },
-  { value: BOOKING_STATUS.COMPLETED, label: "Selesai" },
-  { value: BOOKING_STATUS.CANCELLED, label: "Batal" },
+  { value: "semua", label: "Semua Status" },
+  { value: PEMESANAN_STATUS.PENDING, label: "Menunggu" },
+  { value: PEMESANAN_STATUS.CONFIRMED, label: "Dikonfirmasi" },
+  { value: PEMESANAN_STATUS.IN_PROGRESS, label: "Dikerjakan" },
+  { value: PEMESANAN_STATUS.COMPLETED, label: "Selesai" },
+  { value: PEMESANAN_STATUS.CANCELLED, label: "Batal" },
 ];
 
 export const MEKANIK_STATUS_FILTER_OPTIONS: Array<{
   value: MekanikStatusFilter;
   label: string;
 }> = [
-  { value: "all", label: "Semua" },
+  { value: "semua", label: "Semua" },
   { value: "menunggu", label: "Menunggu" },
   { value: "dikonfirmasi", label: "Dikonfirmasi" },
   { value: "dikerjakan", label: "Dikerjakan" },
@@ -81,45 +71,35 @@ export const MEKANIK_STATUS_FILTER_OPTIONS: Array<{
 export const STATUS_BADGE_BASE_CLASS =
   "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold";
 
-export function normalizeBookingStatus(
+export function toPemesananStatus(
   status: string | null | undefined,
-): string {
-  return (status || "").trim().toLowerCase();
-}
-
-export function toBookingStatus(
-  status: string | null | undefined,
-): BookingStatus | null {
-  const normalized = normalizeBookingStatus(status);
+): PemesananStatus | null {
+  const normalized = (status || "").trim().toLowerCase();
   return NORMALIZED_STATUS_TO_CANONICAL[normalized] || null;
 }
 
-export function matchesBookingStatusFilter(
+export function matchesPemesananStatusFilter(
   status: string | null | undefined,
-  filter: BookingStatusFilter | string,
+  filter: PemesananStatusFilter | string,
 ): boolean {
-  if (filter === "all") {
+  if (filter === "semua" || filter === "all") {
     return true;
   }
 
-  const canonicalStatus = toBookingStatus(status);
+  const canonicalStatus = toPemesananStatus(status);
   return canonicalStatus === filter;
 }
 
-export function mapMekanikFilterToBookingStatus(
+export function mapMekanikFilterToPemesananStatus(
   filter: MekanikStatusFilter | string,
-): BookingStatus | null {
+): PemesananStatus | null {
   switch (filter) {
     case "menunggu":
-    case "pending":
-      return BOOKING_STATUS.PENDING;
+      return PEMESANAN_STATUS.PENDING;
     case "dikonfirmasi":
-    case "confirmed":
-      return BOOKING_STATUS.CONFIRMED;
+      return PEMESANAN_STATUS.CONFIRMED;
     case "dikerjakan":
-    case "diproses":
-    case "in_progress":
-      return BOOKING_STATUS.IN_PROGRESS;
+      return PEMESANAN_STATUS.IN_PROGRESS;
     default:
       return null;
   }

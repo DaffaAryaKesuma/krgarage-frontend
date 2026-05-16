@@ -11,7 +11,7 @@ const navItems = [
 
 <template>
   <BaseAuthenticatedLayout
-    home-path="/app/dasbor"
+    beranda-path="/app/dasbor"
     role-label="Pelanggan"
     app-subtitle="Manajemen Servis"
     :nav-items="navItems"

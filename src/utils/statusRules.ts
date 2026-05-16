@@ -1,114 +1,100 @@
 import {
-  BOOKING_STATUS,
+  PEMESANAN_STATUS,
   STATUS_BADGE_BASE_CLASS,
   STATUS_MAP,
-  normalizeBookingStatus,
-  toBookingStatus,
-  type BookingStatus,
+  toPemesananStatus,
+  type PemesananStatus,
 } from "./statusCore";
 
-export function isPendingStatus(status: string | null | undefined): boolean {
-  const normalized = normalizeBookingStatus(status);
-  return normalized === "menunggu" || normalized === "pending";
+export function isStatusMenunggu(status: string | null | undefined): boolean {
+  return status?.toLowerCase() === "menunggu";
 }
 
-export function isConfirmedStatus(status: string | null | undefined): boolean {
-  const normalized = normalizeBookingStatus(status);
-  return normalized === "dikonfirmasi" || normalized === "confirmed";
+export function isStatusDikonfirmasi(status: string | null | undefined): boolean {
+  return status?.toLowerCase() === "dikonfirmasi";
 }
 
-export function isCancelledStatus(status: string | null | undefined): boolean {
-  const normalized = normalizeBookingStatus(status);
-  return (
-    normalized === "batal" ||
-    normalized === "dibatalkan" ||
-    normalized === "cancelled" ||
-    normalized === "canceled"
-  );
+export function isStatusBatal(status: string | null | undefined): boolean {
+  const s = status?.toLowerCase();
+  return s === "batal" || s === "dibatalkan";
+}
+
+export function isStatusDikerjakan(status: string | null | undefined): boolean {
+  const s = status?.toLowerCase();
+  return s === "dikerjakan" || s === "diproses";
+}
+
+export function isStatusSelesai(status: string | null | undefined): boolean {
+  return status?.toLowerCase() === "selesai";
 }
 
 export function isPendingOrConfirmedStatus(
   status: string | null | undefined,
 ): boolean {
-  return isPendingStatus(status) || isConfirmedStatus(status);
-}
-
-export function isInProgressStatus(status: string | null | undefined): boolean {
-  const normalized = normalizeBookingStatus(status);
-  return (
-    normalized === "dikerjakan" ||
-    normalized === "diproses" ||
-    normalized === "in progress" ||
-    normalized === "in_progress"
-  );
-}
-
-export function isCompletedStatus(status: string | null | undefined): boolean {
-  const normalized = normalizeBookingStatus(status);
-  return normalized === "selesai" || normalized === "completed";
+  return isStatusMenunggu(status) || isStatusDikonfirmasi(status);
 }
 
 export function isCompletedOrCancelledStatus(
   status: string | null | undefined,
 ): boolean {
-  return isCompletedStatus(status) || isCancelledStatus(status);
+  return isStatusSelesai(status) || isStatusBatal(status);
 }
 
-export function canPelangganCancelBooking(
+export function canPelangganCancelPemesanan(
   status: string | null | undefined,
 ): boolean {
   return isPendingOrConfirmedStatus(status);
 }
 
-export function canAdminCancelBooking(
+export function canAdminCancelPemesanan(
   status: string | null | undefined,
 ): boolean {
-  return canPelangganCancelBooking(status);
+  return canPelangganCancelPemesanan(status);
 }
 
-export function canAdminConfirmBooking(
+export function canAdminConfirmPemesanan(
   status: string | null | undefined,
 ): boolean {
-  return isPendingStatus(status);
+  return isStatusMenunggu(status);
 }
 
 export function canAdminAssignAndStart(
   status: string | null | undefined,
 ): boolean {
-  return isConfirmedStatus(status);
+  return isStatusDikonfirmasi(status);
 }
 
-export function canAdminCompleteBooking(
+export function canAdminCompletePemesanan(
   status: string | null | undefined,
 ): boolean {
-  return isInProgressStatus(status);
+  return isStatusDikerjakan(status);
 }
 
 export function canMekanikUpdateStatus(
   status: string | null | undefined,
 ): boolean {
-  return isInProgressStatus(status);
+  return isStatusDikerjakan(status);
 }
 
-export function canMekanikAddSparepart(
+export function canMekanikAddSukuCadang(
   status: string | null | undefined,
 ): boolean {
-  return isInProgressStatus(status);
+  return isStatusDikerjakan(status);
 }
 
-export function getMekanikActionButtonText(
+export function getMekanikAksiButtonText(
   status: string | null | undefined,
 ): string {
-  if (isInProgressStatus(status)) {
+  if (isStatusDikerjakan(status)) {
     return "Selesaikan Pekerjaan";
   }
   return "";
 }
 
-export function getMekanikActionButtonClass(
+export function getMekanikAksiButtonClass(
   status: string | null | undefined,
 ): string {
-  if (isInProgressStatus(status)) {
+  if (isStatusDikerjakan(status)) {
     return "bg-green-600 hover:bg-green-700";
   }
   return "";
@@ -116,15 +102,15 @@ export function getMekanikActionButtonClass(
 
 export function getMekanikNextStatus(
   currentStatus: string | null | undefined,
-): BookingStatus | null {
-  if (isInProgressStatus(currentStatus)) {
-    return BOOKING_STATUS.COMPLETED;
+): PemesananStatus | null {
+  if (isStatusDikerjakan(currentStatus)) {
+    return PEMESANAN_STATUS.COMPLETED;
   }
   return null;
 }
 
 export function getStatusBadge(status: string | null): string {
-  const canonicalStatus = toBookingStatus(status);
+  const canonicalStatus = toPemesananStatus(status);
   return (
     (canonicalStatus ? STATUS_MAP[canonicalStatus]?.badge : null) ||
     "bg-gray-100 text-gray-800"
@@ -136,7 +122,7 @@ export function getStatusBadgeClass(status: string | null): string {
 }
 
 export function getStatusLabel(status: string | null): string {
-  const canonicalStatus = toBookingStatus(status);
+  const canonicalStatus = toPemesananStatus(status);
   return (
     (canonicalStatus ? STATUS_MAP[canonicalStatus]?.label : null) ||
     status ||
@@ -145,13 +131,13 @@ export function getStatusLabel(status: string | null): string {
 }
 
 export function getStatusIcon(status: string | null): string {
-  const canonicalStatus = toBookingStatus(status);
-  const iconMap: Record<BookingStatus, string> = {
-    [BOOKING_STATUS.PENDING]: "mdi-clock-outline",
-    [BOOKING_STATUS.CONFIRMED]: "mdi-check-circle",
-    [BOOKING_STATUS.IN_PROGRESS]: "mdi-cog",
-    [BOOKING_STATUS.COMPLETED]: "mdi-check-all",
-    [BOOKING_STATUS.CANCELLED]: "mdi-close-circle",
+  const canonicalStatus = toPemesananStatus(status);
+  const iconMap: Record<PemesananStatus, string> = {
+    [PEMESANAN_STATUS.PENDING]: "mdi-clock-outline",
+    [PEMESANAN_STATUS.CONFIRMED]: "mdi-check-circle",
+    [PEMESANAN_STATUS.IN_PROGRESS]: "mdi-cog",
+    [PEMESANAN_STATUS.COMPLETED]: "mdi-check-all",
+    [PEMESANAN_STATUS.CANCELLED]: "mdi-close-circle",
   };
 
   return canonicalStatus ? iconMap[canonicalStatus] : "mdi-help-circle";

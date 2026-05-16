@@ -4,7 +4,7 @@ import axios from "axios";
 import { useToast } from "@/utils/useToast";
 import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
 import PelangganVespaFormModal from "@/components/pelanggan/vespas/PelangganVespaFormModal.vue";
-import PelangganVespaList from "@/components/pelanggan/vespas/PelangganVespaList.vue";
+import PelangganVespaDaftar from "@/components/pelanggan/vespas/PelangganVespaDaftar.vue";
 import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
@@ -159,8 +159,8 @@ onMounted(fetchVespas);
         @close="isFormVisible = false"
       />
 
-      <!-- Vespa List -->
-      <PelangganVespaList
+      <!-- Vespa Daftar -->
+      <PelangganVespaDaftar
         :vespas="vespas"
         :is-loading="isLoading"
         @edit="openEditForm"
