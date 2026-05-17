@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
 import axios from "axios";
-import MekanikPilihSukuCadangModal from "@/components/mekanik/dasbor/MekanikPilihSukuCadangModal.vue";
+import TambahSukuCadangModal from "@/components/ui/TambahSukuCadangModal.vue";
 import CatatanInputModal from "@/components/ui/CatatanInputModal.vue";
 import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
 import Pagination from "@/components/ui/Pagination.vue";
 import MekanikDasborTabs from "@/components/mekanik/dasbor/MekanikDasborTabs.vue";
-import MekanikStatusFilters from "@/components/mekanik/dasbor/MekanikStatusFilters.vue";
 import MekanikRiwayatFilters from "@/components/mekanik/dasbor/MekanikRiwayatFilters.vue";
 import MekanikPekerjaanGrid from "@/components/mekanik/dasbor/MekanikPekerjaanGrid.vue";
 import { useMekanikPemesanan } from "@/composables/useMekanikPemesanan";
@@ -19,7 +18,6 @@ const {
   riwayatPemesanan,
   filteredPemesanan,
   loading,
-  statusFilter,
   selectedYear,
   selectedMonth,
   riwayatPagination,
@@ -33,6 +31,9 @@ const {
 const {
   showAddSukuCadangModal,
   selectedPemesananId,
+  sukuCadangList,
+  isLoadingSukuCadang,
+  isAddingSukuCadang,
   showCompleteJobModal,
   isCompletingJob,
   completeJobTarget,
@@ -42,11 +43,11 @@ const {
   closeCompleteJobModal,
   submitCompleteJob,
   handleAddSukuCadang,
+  submitSukuCadangItems,
   handleDeleteSukuCadang,
   handleConfirm,
   handleCancel,
   closeSukuCadangModal,
-  onSukuCadangAdded,
 } = useMekanikDasborAksi({
   activePemesanan,
   fetchData,
@@ -122,7 +123,7 @@ onUnmounted(() => {
 
         <!-- Pagination -->
         <Pagination
-          v-if="!loading && riwayatPemesanan.length > 0"
+          v-if="!loading && riwayatPemesanan.length > 10"
           :current-page="riwayatPagination.current_page"
           :last-page="riwayatPagination.last_page"
           :total="riwayatPagination.total"
@@ -134,13 +135,15 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <!-- Pilih Suku Cadang Modal -->
-    <MekanikPilihSukuCadangModal
+    <!-- Shared Suku Cadang Modal -->
+    <TambahSukuCadangModal
       v-if="showAddSukuCadangModal && selectedPemesananId"
-      :pemesanan-id="selectedPemesananId"
       :show="showAddSukuCadangModal"
+      :suku-cadang="sukuCadangList"
+      :is-loading="isLoadingSukuCadang"
+      :is-submitting="isAddingSukuCadang"
+      @submit="submitSukuCadangItems"
       @close="closeSukuCadangModal"
-      @success="onSukuCadangAdded"
     />
 
     <CatatanInputModal

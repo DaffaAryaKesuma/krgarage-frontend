@@ -88,22 +88,23 @@ export function useAdminPemesananDetailPage(pemesananId: string) {
     showAddSukuCadangModal.value = false;
   };
 
-  const addSukuCadangToPemesanan = async (payload: {
-    sukucadangId: number;
-    quantity: number;
-  }) => {
+  const addSukuCadangToPemesanan = async (
+    items: { sukucadangId: number; quantity: number }[],
+  ) => {
+    if (!items.length) return;
     isAddingSukuCadang.value = true;
     try {
-      await axios.post(
-        `${API_URL}/admin/pemesanan/${pemesanan.value?.id}/tambah-suku-cadang`,
-        {
-          id_suku_cadang: payload.sukucadangId,
-          jumlah: payload.quantity,
-        },
-        { headers: getAuthHeaders() },
+      await Promise.all(
+        items.map((item) =>
+          axios.post(
+            `${API_URL}/admin/pemesanan/${pemesanan.value?.id}/tambah-suku-cadang`,
+            { id_suku_cadang: item.sukucadangId, jumlah: item.quantity },
+            { headers: getAuthHeaders() },
+          ),
+        ),
       );
 
-      toast.success("Suku cadang berhasil ditambahkan!");
+      toast.success(`${items.length} suku cadang berhasil ditambahkan!`);
       closeAddSukuCadangModal();
       await fetchPemesananData();
     } catch (err: any) {

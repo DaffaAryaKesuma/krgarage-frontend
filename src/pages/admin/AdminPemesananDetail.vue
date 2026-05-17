@@ -9,7 +9,7 @@ import AdminPemesananPanelKontrol from "@/components/admin/pemesanan-detail/Admi
 import AdminPemesananLayananDaftar from "@/components/admin/pemesanan-detail/AdminPemesananLayananDaftar.vue";
 import AdminPemesananSukuCadangDaftar from "@/components/admin/pemesanan-detail/AdminPemesananSukuCadangDaftar.vue";
 import AdminPemesananTotalRingkasan from "@/components/admin/pemesanan-detail/AdminPemesananTotalRingkasan.vue";
-import AdminTambahSukuCadangModal from "@/components/admin/pemesanan-detail/AdminTambahSukuCadangModal.vue";
+import TambahSukuCadangModal from "@/components/ui/TambahSukuCadangModal.vue";
 import { useAdminPemesananDetailPage } from "@/composables/useAdminPemesananDetailPage";
 
 const route = useRoute();
@@ -138,10 +138,10 @@ onMounted(async () => {
             :grand-total="totalAkhir"
           />
 
-          <AdminTambahSukuCadangModal
+          <TambahSukuCadangModal
             :show="showAddSukuCadangModal"
-            :available-suku-cadang="availableSukuCadang"
-            :is-adding="isAddingSukuCadang"
+            :suku-cadang="availableSukuCadang"
+            :is-submitting="isAddingSukuCadang"
             @submit="addSukuCadangToPemesanan"
             @close="closeAddSukuCadangModal"
           />

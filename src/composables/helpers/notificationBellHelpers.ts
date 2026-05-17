@@ -18,23 +18,27 @@ export interface AppNotification {
 type AppRole = CanonicalUserRole;
 
 const NOTIFICATION_ICONS: Record<string, string> = {
-  pemesanan_confirmed: "mdi-check-circle",
-  pemesanan_in_progress: "mdi-progress-clock",
-  pemesanan_completed: "mdi-check-all",
-  pemesanan_cancelled: "mdi-close-circle",
-  pemesanan_assigned: "mdi-account-check",
-  low_stock: "mdi-alert",
-  pembayaran_received: "mdi-cash-check",
+  pemesanan_dikonfirmasi: "mdi-check-circle",
+  pemesanan_diproses:     "mdi-progress-clock",
+  pemesanan_selesai:      "mdi-check-all",
+  pemesanan_dibatalkan:   "mdi-close-circle",
+  pemesanan_ditugaskan:   "mdi-account-check",
+  pemesanan_dihapus:      "mdi-delete-circle",
+  pemesanan_diperbarui:   "mdi-pencil-circle",
+  stok_menipis:           "mdi-alert",
+  pembayaran_diterima:    "mdi-cash-check",
 };
 
 const NOTIFICATION_COLORS: Record<string, string> = {
-  pemesanan_confirmed: "text-green-600 bg-green-50",
-  pemesanan_in_progress: "text-blue-600 bg-blue-50",
-  pemesanan_completed: "text-purple-600 bg-purple-50",
-  pemesanan_cancelled: "text-red-600 bg-red-50",
-  pemesanan_assigned: "text-orange-600 bg-orange-50",
-  low_stock: "text-yellow-600 bg-yellow-50",
-  pembayaran_received: "text-emerald-700 bg-emerald-50",
+  pemesanan_dikonfirmasi: "text-green-600 bg-green-50",
+  pemesanan_diproses:     "text-blue-600 bg-blue-50",
+  pemesanan_selesai:      "text-purple-600 bg-purple-50",
+  pemesanan_dibatalkan:   "text-red-600 bg-red-50",
+  pemesanan_ditugaskan:   "text-orange-600 bg-orange-50",
+  pemesanan_dihapus:      "text-red-700 bg-red-50",
+  pemesanan_diperbarui:   "text-gray-600 bg-gray-50",
+  stok_menipis:           "text-yellow-600 bg-yellow-50",
+  pembayaran_diterima:    "text-emerald-700 bg-emerald-50",
 };
 
 export function normalizeRole(role?: string | null): AppRole {
@@ -85,11 +89,11 @@ export function resolveNotificationTarget(
   }
 
   if (role === "pemilik") {
-    if (notificationType === "low_stock") {
+    if (notificationType === "stok_menipis") {
       return { name: "pemilik-analisa-inventaris" };
     }
 
-    if (notificationType === "pembayaran_received") {
+    if (notificationType === "pembayaran_diterima") {
       return { name: "pemilik-laporan-keuangan" };
     }
 

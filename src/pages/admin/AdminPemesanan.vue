@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { onMounted } from "vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
@@ -9,6 +9,7 @@ import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import AdminPemesananFilters from "@/components/admin/pemesanan/AdminPemesananFilters.vue";
 import AdminPemesananKartu from "@/components/admin/pemesanan/AdminPemesananKartu.vue";
 import { useAdminPemesananPage } from "@/composables/useAdminPemesananPage";
+import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
 
 const {
   pemesanan,
@@ -34,6 +35,9 @@ const {
   isCompleteModalOpen,
   handleCompleteClick,
   handleCompleteConfirm,
+  isPaidConfirmOpen,
+  handleMarkPaidClick,
+  handleMarkPaidConfirm,
 } = useAdminPemesananPage();
 
 onMounted(() => {
@@ -105,7 +109,7 @@ onMounted(() => {
               @confirm="confirmPemesanan"
               @cancel="cancelPemesanan"
               @complete="handleCompleteClick"
-              @mark-paid="markPemesananAsPaid"
+              @mark-paid="handleMarkPaidClick"
               @assign-and-start="assignMekanikAndStart"
             />
           </div>
@@ -134,5 +138,16 @@ onMounted(() => {
     required
     @confirm="handleCompleteConfirm"
     @cancel="isCompleteModalOpen = false"
+  />
+
+  <ConfirmationModal
+    :show="isPaidConfirmOpen"
+    title="Konfirmasi Pembayaran"
+    message="Apakah Anda yakin ingin menandai pemesanan ini sebagai Lunas? Tindakan ini tidak dapat dibatalkan."
+    confirm-text="Ya, Tandai Lunas"
+    cancel-text="Batal"
+    variant="success"
+    @confirm="handleMarkPaidConfirm"
+    @cancel="isPaidConfirmOpen = false"
   />
 </template>

@@ -43,7 +43,7 @@ export function usePelangganPemesananPage() {
 
   const selectedLayanan = computed(() =>
     allLayanan.value.filter((layanan) =>
-      form.value.layanan_ids.includes(layanan.id),
+      form.value.id_layanan.includes(layanan.id),
     ),
   );
 
@@ -90,9 +90,9 @@ export function usePelangganPemesananPage() {
   };
 
   const handleLayananChange = (layananIds: number[]) => {
-    form.value.layanan_ids = layananIds;
-    touched.value.layanan_ids = true;
-    validateField("layanan_ids");
+    form.value.id_layanan = layananIds;
+    touched.value.id_layanan = true;
+    validateField("id_layanan");
   };
 
   const handleVespaChange = (vespaId: number) => {
@@ -117,7 +117,7 @@ export function usePelangganPemesananPage() {
 
     const fieldsToValidate: PemesananFormField[] = [
       "id_vespa",
-      "layanan_ids",
+      "id_layanan",
       "tanggal_pemesanan",
       "jam_pemesanan",
     ];

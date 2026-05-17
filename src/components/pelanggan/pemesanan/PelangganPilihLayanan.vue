@@ -130,7 +130,7 @@ const toggleLayanan = (id: number) => {
 
     <p
       v-if="error && touched"
-      class="text-red-600 text-sm mt-4 flex items-center gap-2 bg-red-50 p-3 rounded border border-red-200"
+      class="text-red-600 text-sm mt-4 flex items-center gap-2"
     >
       <i class="mdi mdi-alert-circle"></i>{{ error }}
     </p>

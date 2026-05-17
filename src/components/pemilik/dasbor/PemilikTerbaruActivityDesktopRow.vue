@@ -4,6 +4,7 @@ import { formatDateShort } from "@/utils/date";
 import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
 import { formatNama } from "@/utils/format";
 import type { PemilikTerbaruPemesananActivity } from "@/types/pemesanan";
+import { getPembayaranStatusBadgeClass, getPembayaranStatusLabel } from "@/utils/pembayaranStatus";
 
 interface Props {
   pemesanan: PemilikTerbaruPemesananActivity;
@@ -40,6 +41,11 @@ defineProps<Props>();
     <td class="py-4">
       <span :class="getStatusBadgeClass(pemesanan.status)">
         {{ getStatusLabel(pemesanan.status) }}
+      </span>
+    </td>
+    <td class="py-4">
+      <span :class="getPembayaranStatusBadgeClass(pemesanan.status_pembayaran)">
+        {{ getPembayaranStatusLabel(pemesanan.status_pembayaran) }}
       </span>
     </td>
   </tr>

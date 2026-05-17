@@ -129,7 +129,7 @@ withDefaults(defineProps<Props>(), {
 
       <!-- Disclaimer Info Box -->
       <div
-        v-if="selectedLayanan.length > 0 "
+        v-if="selectedLayanan.length > 0"
         class="flex items-start gap-3 p-3.5 bg-yellow-50/80 border border-yellow-100 rounded-xl mb-6"
       >
         <i

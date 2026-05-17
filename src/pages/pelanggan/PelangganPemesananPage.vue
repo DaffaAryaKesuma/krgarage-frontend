@@ -53,9 +53,9 @@ onMounted(() => {
         <!-- STEP 1: Layanan -->
         <PelangganPilihLayanan
           :layanan="allLayanan"
-          v-model="form.layanan_ids"
-          :error="errors.layanan_ids"
-          :touched="touched.layanan_ids"
+          v-model="form.id_layanan"
+          :error="errors.id_layanan"
+          :touched="touched.id_layanan"
           @update:model-value="handleLayananChange"
         />
 

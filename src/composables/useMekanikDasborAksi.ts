@@ -7,6 +7,7 @@ import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
 import { getMekanikNextStatus } from "@/utils/statusBadge";
 import type { MekanikPemesanan } from "@/types/pemesanan";
+import type { SukuCadangRingkasan } from "@/types/inventaris";
 
 interface ConfirmModalData {
   title: string;
@@ -28,6 +29,9 @@ export function useMekanikDasborAksi(
 
   const showAddSukuCadangModal = ref(false);
   const selectedPemesananId = ref<number | null>(null);
+  const sukuCadangList = ref<SukuCadangRingkasan[]>([]);
+  const isLoadingSukuCadang = ref(false);
+  const isAddingSukuCadang = ref(false);
   const showCompleteJobModal = ref(false);
   const isCompletingJob = ref(false);
   const completeJobTarget = ref<{ id: number; kodePemesanan: string } | null>(
@@ -164,9 +168,51 @@ export function useMekanikDasborAksi(
     );
   };
 
-  const handleAddSukuCadang = (pemesananId: number) => {
+  const handleAddSukuCadang = async (pemesananId: number) => {
     selectedPemesananId.value = pemesananId;
     showAddSukuCadangModal.value = true;
+    // Fetch daftar suku cadang saat modal dibuka
+    isLoadingSukuCadang.value = true;
+    try {
+      const headers = getValidAuthHeaders();
+      if (!headers) return;
+      const res = await axios.get(`${API_URL}/mekanik/suku-cadang`, { headers });
+      const data = res.data.data || res.data;
+      sukuCadangList.value = Array.isArray(data) ? data : [];
+    } catch (error: any) {
+      logError(error, "fetchSukuCadang");
+      toast.error(handleApiError(error));
+    } finally {
+      isLoadingSukuCadang.value = false;
+    }
+  };
+
+  const submitSukuCadangItems = async (
+    items: { sukucadangId: number; quantity: number }[],
+  ) => {
+    if (!selectedPemesananId.value || !items.length) return;
+    isAddingSukuCadang.value = true;
+    try {
+      const headers = getValidAuthHeaders();
+      if (!headers) return;
+      await Promise.all(
+        items.map((item) =>
+          axios.post(
+            `${API_URL}/mekanik/pemesanan/${selectedPemesananId.value}/tambah-suku-cadang`,
+            { id_suku_cadang: item.sukucadangId, jumlah: item.quantity },
+            { headers },
+          ),
+        ),
+      );
+      toast.success(`${items.length} suku cadang berhasil ditambahkan!`);
+      closeSukuCadangModal();
+      await options.fetchData();
+    } catch (error: any) {
+      logError(error, "submitSukuCadangItems");
+      toast.error(handleApiError(error));
+    } finally {
+      isAddingSukuCadang.value = false;
+    }
   };
 
   const handleDeleteSukuCadang = async (pemesananId: number, itemId: number) => {
@@ -198,6 +244,7 @@ export function useMekanikDasborAksi(
   const closeSukuCadangModal = () => {
     showAddSukuCadangModal.value = false;
     selectedPemesananId.value = null;
+    sukuCadangList.value = [];
   };
 
   const onSukuCadangAdded = async () => {
@@ -208,6 +255,9 @@ export function useMekanikDasborAksi(
   return {
     showAddSukuCadangModal,
     selectedPemesananId,
+    sukuCadangList,
+    isLoadingSukuCadang,
+    isAddingSukuCadang,
     showCompleteJobModal,
     isCompletingJob,
     completeJobTarget,
@@ -217,6 +267,7 @@ export function useMekanikDasborAksi(
     closeCompleteJobModal,
     submitCompleteJob,
     handleAddSukuCadang,
+    submitSukuCadangItems,
     handleDeleteSukuCadang,
     handleConfirm,
     handleCancel,

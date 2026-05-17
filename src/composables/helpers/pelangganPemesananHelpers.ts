@@ -2,13 +2,13 @@ import dayjs from "dayjs";
 
 export type PemesananFormField =
   | "id_vespa"
-  | "layanan_ids"
+  | "id_layanan"
   | "tanggal_pemesanan"
   | "jam_pemesanan";
 
 export interface PelangganPemesananFormState {
   id_vespa: number | null;
-  layanan_ids: number[];
+  id_layanan: number[];
   tanggal_pemesanan: string;
   jam_pemesanan: string;
   catatan_pelanggan: string;
@@ -16,14 +16,14 @@ export interface PelangganPemesananFormState {
 
 export interface PelangganPemesananErrors {
   id_vespa: string;
-  layanan_ids: string;
+  id_layanan: string;
   tanggal_pemesanan: string;
   jam_pemesanan: string;
 }
 
 export interface PelangganPemesananTouched {
   id_vespa: boolean;
-  layanan_ids: boolean;
+  id_layanan: boolean;
   tanggal_pemesanan: boolean;
   jam_pemesanan: boolean;
 }
@@ -31,7 +31,7 @@ export interface PelangganPemesananTouched {
 export function createPelangganPemesananFormState(): PelangganPemesananFormState {
   return {
     id_vespa: null,
-    layanan_ids: [],
+    id_layanan: [],
     tanggal_pemesanan: "",
     jam_pemesanan: "",
     catatan_pelanggan: "",
@@ -41,7 +41,7 @@ export function createPelangganPemesananFormState(): PelangganPemesananFormState
 export function createPelangganPemesananErrors(): PelangganPemesananErrors {
   return {
     id_vespa: "",
-    layanan_ids: "",
+    id_layanan: "",
     tanggal_pemesanan: "",
     jam_pemesanan: "",
   };
@@ -50,7 +50,7 @@ export function createPelangganPemesananErrors(): PelangganPemesananErrors {
 export function createPelangganPemesananTouched(): PelangganPemesananTouched {
   return {
     id_vespa: false,
-    layanan_ids: false,
+    id_layanan: false,
     tanggal_pemesanan: false,
     jam_pemesanan: false,
   };
@@ -70,8 +70,8 @@ export function validatePelangganPemesananField(
     return;
   }
 
-  if (field === "layanan_ids") {
-    errors.layanan_ids = form.layanan_ids.length
+  if (field === "id_layanan") {
+    errors.id_layanan = form.id_layanan.length
       ? ""
       : "Pilih minimal 1 layanan";
     return;
@@ -110,7 +110,7 @@ export function hasPelangganPemesananErrors(
 export function buildPelangganPemesananPayload(form: PelangganPemesananFormState) {
   return {
     id_vespa: Number(form.id_vespa),
-    layanan_ids: form.layanan_ids.map((id) => Number(id)),
+    id_layanan: form.id_layanan.map((id) => Number(id)),
     tanggal_pemesanan: form.tanggal_pemesanan,
     jam_pemesanan: form.jam_pemesanan,
     catatan_pelanggan: form.catatan_pelanggan || null,

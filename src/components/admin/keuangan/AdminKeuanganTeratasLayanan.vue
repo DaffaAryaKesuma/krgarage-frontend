@@ -12,53 +12,56 @@ interface Props {
 }
 
 defineProps<Props>();
-
-const LAYANAN_BADGE_COLORS = [
-  "bg-gradient-to-br from-yellow-400 to-yellow-500",
-  "bg-gradient-to-br from-gray-400 to-gray-500",
-  "bg-gradient-to-br from-orange-600 to-orange-700",
-  "bg-gradient-to-br from-blue-500 to-blue-600",
-  "bg-gradient-to-br from-green-500 to-green-600",
-];
-
-const getLayananBadgeColor = (index: number) =>
-  LAYANAN_BADGE_COLORS[index] || "bg-gradient-to-br from-gray-500 to-gray-600";
 </script>
 
 <template>
-  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-    <h2 class="text-lg font-semibold text-gray-900 mb-4">
-      Layanan Paling Laris
-    </h2>
-    <div class="space-y-4">
+  <div class="rounded-2xl bg-white p-4 sm:p-6 shadow-lg border border-gray-100 mb-8">
+    <!-- Header -->
+    <div class="mb-4 flex items-center gap-2 sm:gap-3">
+      <div class="rounded-xl bg-blue-100 p-2 sm:p-3 shrink-0">
+        <i class="mdi mdi-trophy text-lg sm:text-2xl text-blue-600"></i>
+      </div>
+      <div>
+        <h2 class="text-base sm:text-xl font-bold text-gray-900 leading-tight">Layanan Paling Laris</h2>
+        <p class="text-xs text-gray-500">Berdasarkan jumlah pemesanan</p>
+      </div>
+    </div>
+
+    <!-- List -->
+    <div v-if="topLayanan.length > 0" class="space-y-2">
       <div
         v-for="(layanan, index) in topLayanan"
         :key="index"
-        class="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-blue-50 transition border border-gray-100"
       >
-        <div class="flex items-center gap-4">
-          <div
-            class="flex items-center justify-center w-10 h-10 rounded-full font-bold text-white"
-            :class="getLayananBadgeColor(index)"
-          >
-            {{ index + 1 }}
-          </div>
-          <div>
-            <p class="font-medium text-gray-900">
-              {{ layanan.nama_layanan }}
-            </p>
-            <p class="text-sm text-gray-600">
-              {{ layanan.total_pesanan }} pesanan
-            </p>
-          </div>
-        </div>
-        <div class="text-right">
-          <p class="font-semibold text-gray-900">
-            {{ toIDR(layanan.total_pendapatan) }}
-          </p>
-          <p class="text-sm text-gray-600">Total Pendapatan</p>
+        <!-- Rank badge -->
+        <span
+          class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white bg-blue-500 shrink-0"
+        >
+          {{ index + 1 }}
+        </span>
+
+        <!-- Nama Layanan -->
+        <span class="flex-1 text-sm font-medium text-gray-800 truncate">
+          {{ layanan.nama_layanan }}
+        </span>
+
+        <!-- Stats -->
+        <div class="text-right shrink-0">
+          <p class="text-sm font-bold text-blue-600">{{ layanan.total_pesanan }}x</p>
+          <p class="text-xs text-gray-500">{{ toIDR(layanan.total_pendapatan) }}</p>
         </div>
       </div>
+    </div>
+
+    <!-- Empty state -->
+    <div
+      v-else
+      class="py-8 text-center bg-gray-50 rounded-lg border-2 border-dashed border-gray-200"
+    >
+      <i class="mdi mdi-chart-box-outline text-4xl text-gray-300"></i>
+      <p class="mt-2 text-sm text-gray-600 font-medium">Belum ada data layanan</p>
+      <p class="text-xs text-gray-400">Pada periode ini</p>
     </div>
   </div>
 </template>

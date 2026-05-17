@@ -35,17 +35,8 @@ const handleYearChange = (value: string | number | null) => {
 
 <template>
   <div :class="wrapperClass">
-    <h2
-      v-if="title"
-      class="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4"
-    >
-      {{ title }}
-    </h2>
     <div class="grid grid-cols-2 gap-4">
       <div class="flex-1">
-        <label class="block text-sm font-medium text-gray-700 mb-2">
-          Bulan
-        </label>
         <CustomSelect
           :model-value="selectedMonth"
           :options="monthOptions"
@@ -53,9 +44,6 @@ const handleYearChange = (value: string | number | null) => {
         />
       </div>
       <div class="flex-1">
-        <label class="block text-sm font-medium text-gray-700 mb-2">
-          Tahun
-        </label>
         <CustomSelect
           :model-value="selectedYear"
           :options="yearOptions"

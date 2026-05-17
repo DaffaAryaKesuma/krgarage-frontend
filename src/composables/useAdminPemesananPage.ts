@@ -139,6 +139,21 @@ export function useAdminPemesananPage() {
     handleCompleteClick(pemesanan);
   };
 
+  const isPaidConfirmOpen = ref(false);
+  const pemesananToMarkPaid = ref<Pemesanan | null>(null);
+
+  const handleMarkPaidClick = (pemesanan: Pemesanan) => {
+    pemesananToMarkPaid.value = pemesanan;
+    isPaidConfirmOpen.value = true;
+  };
+
+  const handleMarkPaidConfirm = async () => {
+    if (!pemesananToMarkPaid.value) return;
+    await markPemesananAsPaid(pemesananToMarkPaid.value);
+    isPaidConfirmOpen.value = false;
+    pemesananToMarkPaid.value = null;
+  };
+
   const markPemesananAsPaid = async (pemesanan: Pemesanan) => {
     try {
       const { data } = await axios.patch(
@@ -212,5 +227,8 @@ export function useAdminPemesananPage() {
     isCompleteModalOpen,
     handleCompleteClick,
     handleCompleteConfirm,
+    isPaidConfirmOpen,
+    handleMarkPaidClick,
+    handleMarkPaidConfirm,
   };
 }

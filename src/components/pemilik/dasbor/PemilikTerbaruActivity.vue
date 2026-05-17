@@ -19,6 +19,7 @@ const TABLE_HEADERS = [
   "Layanan",
   "Total",
   "Status",
+  "Pembayaran",
 ];
 </script>
 
