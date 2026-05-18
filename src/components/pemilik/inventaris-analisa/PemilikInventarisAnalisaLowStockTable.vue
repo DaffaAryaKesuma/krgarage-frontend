@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import TableShell from "@/components/ui/TableShell.vue";
-import PemilikInventarisAnalisaLowStockMobileKartu from "@/components/pemilik/inventaris-analisa/PemilikInventarisAnalisaLowStockMobileKartu.vue";
-import PemilikInventarisAnalisaLowStockDesktopRow from "@/components/pemilik/inventaris-analisa/PemilikInventarisAnalisaLowStockDesktopRow.vue";
+import { toIDR } from "@/utils/money";
 
 interface LowStockItem {
   id: number;
@@ -29,7 +28,13 @@ const getStockStatus = (stock: number, _minStock: number) => {
   return STOCK_STATUS.kritis;
 };
 
-const TABLE_HEADERS = ["Nama Barang", "Stok Saat Ini", "Stok Minimal", "Harga Beli", "Status"];
+const TABLE_HEADERS = [
+  "Nama Barang",
+  "Stok Saat Ini",
+  "Stok Minimal",
+  "Harga Beli",
+  "Status",
+];
 </script>
 
 <template>
@@ -70,32 +75,96 @@ const TABLE_HEADERS = ["Nama Barang", "Stok Saat Ini", "Stok Minimal", "Harga Be
       body-class="divide-y"
     >
       <template #mobile>
-        <PemilikInventarisAnalisaLowStockMobileKartu
+        <div
           v-for="item in items"
           :key="`mobile-${item.id}`"
-          :item="item"
-          :stock-status-label="
-            getStockStatus(item.jumlah_stok, item.minimum_stok).label
-          "
-          :stock-status-class="
-            getStockStatus(item.jumlah_stok, item.minimum_stok).class
-          "
-          :out-of-stock="item.jumlah_stok === 0"
-        />
+          class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm"
+        >
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <p class="font-semibold text-gray-900">{{ item.nama_barang }}</p>
+              <p class="text-xs text-gray-500">{{ item.kategori }}</p>
+            </div>
+            <span
+              :class="[
+                'inline-flex rounded-full px-3 py-1 text-xs font-semibold',
+                getStockStatus(item.jumlah_stok, item.minimum_stok).class,
+              ]"
+            >
+              {{ getStockStatus(item.jumlah_stok, item.minimum_stok).label }}
+            </span>
+          </div>
+
+          <div class="mt-3 grid grid-cols-2 gap-3 text-sm">
+            <div>
+              <p
+                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+              >
+                Stok Saat Ini
+              </p>
+              <p
+                :class="[
+                  'font-medium',
+                  item.jumlah_stok === 0 ? 'text-red-600' : 'text-orange-600',
+                ]"
+              >
+                {{ item.jumlah_stok }}
+              </p>
+            </div>
+            <div>
+              <p
+                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+              >
+                Minimum
+              </p>
+              <p class="font-medium text-gray-900">{{ item.minimum_stok }}</p>
+            </div>
+            <div>
+              <p
+                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+              >
+                Harga Beli
+              </p>
+              <p class="font-medium text-gray-900">
+                {{ toIDR(item.harga_beli) }}
+              </p>
+            </div>
+          </div>
+        </div>
       </template>
 
-      <PemilikInventarisAnalisaLowStockDesktopRow
+      <tr
         v-for="item in items"
         :key="item.id"
-        :item="item"
-        :stock-status-label="
-          getStockStatus(item.jumlah_stok, item.minimum_stok).label
-        "
-        :stock-status-class="
-          getStockStatus(item.jumlah_stok, item.minimum_stok).class
-        "
-        :out-of-stock="item.jumlah_stok === 0"
-      />
+        class="hover:bg-red-50 transition-colors"
+      >
+        <td class="py-3 pl-2">
+          <div class="font-bold text-gray-900">{{ item.nama_barang }}</div>
+          <div class="text-xs text-gray-600">{{ item.kategori }}</div>
+        </td>
+        <td class="py-3 px-8">
+          <span
+            :class="[
+              'font-bold',
+              item.jumlah_stok === 0 ? 'text-red-600' : 'text-orange-600',
+            ]"
+          >
+            {{ item.jumlah_stok }}
+          </span>
+        </td>
+        <td class="py-3 px-8 font-bold">{{ item.minimum_stok }}</td>
+        <td class="py-3 font-semibold">{{ toIDR(item.harga_beli) }}</td>
+        <td class="py-3">
+          <span
+            :class="[
+              'inline-flex rounded-full px-3 py-1 text-xs font-semibold',
+              getStockStatus(item.jumlah_stok, item.minimum_stok).class,
+            ]"
+          >
+            {{ getStockStatus(item.jumlah_stok, item.minimum_stok).label }}
+          </span>
+        </td>
+      </tr>
     </TableShell>
 
     <div

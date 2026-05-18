@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
 import { formatDateShort } from "@/utils/date";
-import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
 import {
   getPembayaranStatusBadgeClass,
   getPembayaranStatusLabel,
@@ -19,19 +18,6 @@ interface Props {
 withDefaults(defineProps<Props>(), {
   isLoading: false,
 });
-
-const getMekanikCatatanPreview = (catatan: string | undefined): string => {
-  if (!catatan) {
-    return "";
-  }
-
-  const cleaned = catatan.trim();
-  if (cleaned.length <= 140) {
-    return cleaned;
-  }
-
-  return `${cleaned.slice(0, 140)}...`;
-};
 
 const getLayananPrice = (pemesanan: PelangganPemesanan) =>
   pemesanan.layanan.reduce(
@@ -90,7 +76,9 @@ const getLayananPrice = (pemesanan: PelangganPemesanan) =>
             </div>
           </div>
           <div class="flex flex-col items-end gap-2">
-            <span :class="getPembayaranStatusBadgeClass(item.status_pembayaran)">
+            <span
+              :class="getPembayaranStatusBadgeClass(item.status_pembayaran)"
+            >
               {{ getPembayaranStatusLabel(item.status_pembayaran) }}
             </span>
           </div>
@@ -127,7 +115,9 @@ const getLayananPrice = (pemesanan: PelangganPemesanan) =>
           v-if="item.catatan_mekanik"
           class="mb-4 rounded border border-green-100 bg-green-50 px-3 py-2 w-full"
         >
-          <p class="text-[10px] font-bold uppercase text-green-600">Catatan Mekanik:</p>
+          <p class="text-[10px] font-bold uppercase text-green-600">
+            Catatan Mekanik:
+          </p>
           <p class="text-xs text-green-800">{{ item.catatan_mekanik }}</p>
         </div>
         <div

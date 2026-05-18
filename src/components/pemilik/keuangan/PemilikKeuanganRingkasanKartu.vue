@@ -23,7 +23,7 @@ const RINGKASAN_KARTU = computed(() => [
     color: "text-green-600",
   },
   {
-    title: "Total Pemesanan",
+    title: "Total Pemesanan Lunas",
     value: props.ringkasan.totalPemesanan.toString(),
     icon: "mdi-receipt-text",
     bg: "bg-blue-100",

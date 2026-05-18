@@ -4,9 +4,13 @@ import { formatDateShort } from "@/utils/date";
 import Pagination from "@/components/ui/Pagination.vue";
 import TableShell from "@/components/ui/TableShell.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
-import PemilikKeuanganMobileKartu from "@/components/pemilik/keuangan/PemilikKeuanganMobileKartu.vue";
-import PemilikKeuanganDesktopRow from "@/components/pemilik/keuangan/PemilikKeuanganDesktopRow.vue";
-import { toMoneyNumber } from "@/utils/money";
+import { toMoneyNumber, toIDR } from "@/utils/money";
+import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
+import {
+  getPembayaranStatusBadgeClass,
+  getPembayaranStatusLabel,
+} from "@/utils/pembayaranStatus";
+import { formatNama } from "@/utils/format";
 import type {
   KeuanganPemesanan,
   KeuanganPemesananLayanan,
@@ -94,7 +98,6 @@ const TABLE_HEADERS = [
           Rincian Pemesanan
         </h2>
       </div>
-
     </div>
 
     <div v-if="loading" class="space-y-4">
@@ -119,26 +122,121 @@ const TABLE_HEADERS = [
       body-class="divide-y divide-gray-200 bg-white"
     >
       <template #mobile>
-        <PemilikKeuanganMobileKartu
+        <div
           v-for="pemesanan in paginatedPemesanan"
           :key="`mobile-${pemesanan.id}`"
-          :pemesanan="pemesanan"
-          :pemesanan-date="getPemesananDate(pemesanan)"
-          :plate-number="getPemesananPlateNumber(pemesanan)"
-          :pemesanan-status="getPemesananStatus(pemesanan)"
-          :pemesanan-total="getPemesananTotal(pemesanan)"
-        />
+          class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm"
+        >
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <p
+                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+              >
+                Kode Pemesanan
+              </p>
+              <p class="text-sm font-semibold text-gray-900">
+                {{ pemesanan.kode_pemesanan }}
+              </p>
+            </div>
+            <span :class="getStatusBadgeClass(getPemesananStatus(pemesanan))">
+              {{ getStatusLabel(getPemesananStatus(pemesanan)) }}
+            </span>
+          </div>
+
+          <div
+            class="mt-3 grid grid-cols-1 gap-2 text-sm min-[380px]:grid-cols-2"
+          >
+            <div>
+              <p
+                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+              >
+                Pembayaran
+              </p>
+              <span
+                :class="
+                  getPembayaranStatusBadgeClass(pemesanan.status_pembayaran)
+                "
+              >
+                {{ getPembayaranStatusLabel(pemesanan.status_pembayaran) }}
+              </span>
+            </div>
+            <div>
+              <p
+                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+              >
+                Tanggal
+              </p>
+              <p class="font-medium text-gray-900">
+                {{ formatDateShort(getPemesananDate(pemesanan)) }}
+              </p>
+            </div>
+            <div>
+              <p
+                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+              >
+                Pelanggan
+              </p>
+              <p class="font-medium text-gray-900">
+                {{ formatNama(pemesanan.pengguna?.nama || "-") }}
+              </p>
+            </div>
+            <div>
+              <p
+                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+              >
+                Plat Nomor
+              </p>
+              <p class="font-medium text-gray-900">
+                {{ getPemesananPlateNumber(pemesanan) }}
+              </p>
+            </div>
+            <div>
+              <p
+                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
+              >
+                Total Biaya
+              </p>
+              <p class="font-semibold text-gray-900">
+                {{ toIDR(getPemesananTotal(pemesanan)) }}
+              </p>
+            </div>
+          </div>
+        </div>
       </template>
 
-      <PemilikKeuanganDesktopRow
+      <tr
         v-for="pemesanan in paginatedPemesanan"
         :key="pemesanan.id"
-        :pemesanan="pemesanan"
-        :pemesanan-date="getPemesananDate(pemesanan)"
-        :plate-number="getPemesananPlateNumber(pemesanan)"
-        :pemesanan-status="getPemesananStatus(pemesanan)"
-        :pemesanan-total="getPemesananTotal(pemesanan)"
-      />
+        class="hover:bg-gray-50 transition-colors"
+      >
+        <td class="px-6 py-4 text-sm text-gray-900">
+          {{ pemesanan.kode_pemesanan }}
+        </td>
+        <td class="px-6 py-4 text-sm text-gray-900">
+          {{ formatDateShort(getPemesananDate(pemesanan)) }}
+        </td>
+        <td class="px-6 py-4 text-sm text-gray-900">
+          {{ formatNama(pemesanan.pengguna?.nama || "-") }}
+        </td>
+        <td class="px-6 py-4 text-sm text-gray-900">
+          {{ getPemesananPlateNumber(pemesanan) }}
+        </td>
+        <td class="px-6 py-4 text-sm text-gray-900">
+          {{ toIDR(getPemesananTotal(pemesanan)) }}
+        </td>
+        <td class="px-6 py-4">
+          <span :class="getStatusBadgeClass(getPemesananStatus(pemesanan))">
+            {{ getStatusLabel(getPemesananStatus(pemesanan)) }}
+          </span>
+        </td>
+        <td class="px-6 py-4">
+          <span
+            :class="getPembayaranStatusBadgeClass(pemesanan.status_pembayaran)"
+          >
+            {{ getPembayaranStatusLabel(pemesanan.status_pembayaran) }}
+          </span>
+        </td>
+      </tr>
 
       <template #footer>
         <div class="px-4 pb-3 sm:px-6">
