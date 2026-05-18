@@ -81,7 +81,7 @@ const fetchPemesanan = async (page = 1) => {
     );
 
     list.value = data.data;
-    updateFromApi(data);
+    updateFromApi(data.meta || data);
   } catch (error) {
     logError(error, "fetchPemesanan");
     toast.error("Gagal memuat riwayat pemesanan.");

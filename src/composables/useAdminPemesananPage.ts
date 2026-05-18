@@ -29,7 +29,7 @@ export function useAdminPemesananPage() {
   const searchQuery = ref("");
   const monthFilter = ref("");
   const yearFilter = ref(new Date().getFullYear().toString());
-  const statusFilter = ref<PemesananStatusFilter>("all");
+  const statusFilter = ref<PemesananStatusFilter>("semua");
   const pembayaranFilter = ref<PembayaranStatusFilter>("all");
 
   const filteredPemesanan = computed(() => {
@@ -64,7 +64,7 @@ export function useAdminPemesananPage() {
       );
 
       pemesanan.value = data.data || [];
-      updateFromApi(data);
+      updateFromApi(data.meta || data);
     } catch (err: any) {
       console.error("Gagal mengambil data pemesanan:", err);
       error.value =

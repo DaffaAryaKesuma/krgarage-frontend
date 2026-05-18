@@ -146,6 +146,7 @@ const TABLE_HEADERS = [
             :current-page="currentPage"
             :last-page="totalPages"
             :total="pemesanan.length"
+            :per-page="itemsPerPage"
             :from="from"
             :to="to"
             @page-change="handlePageChange"

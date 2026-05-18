@@ -41,91 +41,105 @@ const getLayananDaftar = (layanan: Pemesanan["layanan"]) =>
   >
     <!-- Header -->
     <div
-      class="mb-4 flex flex-wrap items-start justify-between gap-2 border-b border-gray-100 pb-4"
+      class="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-4"
     >
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-4">
         <div
-          class="w-12 h-12 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white font-bold text-lg"
+          class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-red-500 to-red-600 text-lg font-bold text-white shadow-md ring-2 ring-red-50"
         >
           {{ getUserInitial(pemesanan.pengguna?.nama) }}
         </div>
         <div>
-          <p class="font-bold text-gray-900">
-            <span class="capitalize">{{ pemesanan.pengguna?.nama || "N/A" }}</span>
+          <p class="text-base font-bold text-gray-900 capitalize">
+            {{ pemesanan.pengguna?.nama || "N/A" }}
+          </p>
+          <p class="text-xs text-gray-500 font-mono mt-0.5 tracking-wide">
+            {{ pemesanan.kode_pemesanan }}
           </p>
         </div>
       </div>
-      <span
-        class="shrink-0 rounded bg-gray-100 px-2 py-1 font-mono text-xs text-gray-500"
-      >
-        {{ pemesanan.kode_pemesanan }}
-      </span>
     </div>
 
-    <!-- Vespa & Date Info -->
-    <div class="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <div class="flex items-start gap-2">
-        <i class="mdi mdi-motorbike text-2xl text-gray-600 flex-shrink-0"></i>
-        <div>
-          <p class="text-xs text-gray-500">Vespa</p>
-          <p class="text-sm font-semibold text-gray-900">
-            {{ pemesanan.vespa?.model || "N/A" }}
-          </p>
-          <p class="text-xs text-gray-600">
-            {{ pemesanan.vespa?.plat_nomor || "N/A" }}
-          </p>
+    <!-- Info Grid -->
+    <div class="mb-5 grid grid-cols-2 gap-3 sm:gap-4">
+      <!-- Vespa -->
+      <div class="rounded-xl bg-gray-50/80 p-3 sm:p-4 border border-gray-100 shadow-sm transition hover:bg-gray-100">
+        <div class="flex items-center gap-2 mb-2">
+          <i class="mdi mdi-motorbike text-lg text-gray-500"></i>
+          <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Vespa</p>
         </div>
+        <p class="text-sm font-bold text-gray-900 truncate">
+          {{ pemesanan.vespa?.model || "N/A" }}
+        </p>
+        <p class="text-xs text-gray-600 mt-1 font-semibold bg-white inline-block px-1.5 py-0.5 rounded border border-gray-200">
+          {{ pemesanan.vespa?.plat_nomor || "N/A" }}
+        </p>
       </div>
-      <div class="flex items-start gap-2">
-        <i class="mdi mdi-calendar text-2xl text-gray-600 flex-shrink-0"></i>
-        <div>
-          <p class="text-xs text-gray-500">Tanggal Pemesanan</p>
-          <p class="text-sm font-semibold text-gray-900">
-            {{ formatDateShort(pemesanan.tanggal_pemesanan) }}
-          </p>
-          <p class="text-xs text-gray-600 mt-0.5">
-            <i class="mdi mdi-clock-outline mr-1"></i
-            >{{ pemesanan.jam_pemesanan || "-" }}
-          </p>
+
+      <!-- Jadwal -->
+      <div class="rounded-xl bg-gray-50/80 p-3 sm:p-4 border border-gray-100 shadow-sm transition hover:bg-gray-100">
+        <div class="flex items-center gap-2 mb-2">
+          <i class="mdi mdi-calendar-clock text-lg text-gray-500"></i>
+          <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Jadwal</p>
         </div>
+        <p class="text-sm font-bold text-gray-900">
+          {{ formatDateShort(pemesanan.tanggal_pemesanan) }}
+        </p>
+        <p class="text-xs text-gray-600 mt-1 flex items-center font-medium">
+          <i class="mdi mdi-clock-outline mr-1 text-gray-400"></i>
+          {{ pemesanan.jam_pemesanan || "-" }}
+        </p>
       </div>
     </div>
 
     <!-- Layanan -->
-    <div class="mb-4 p-3 bg-gray-50 rounded-lg">
-      <div class="flex items-start gap-2">
-        <i class="mdi mdi-wrench text-xl text-gray-600 flex-shrink-0"></i>
-        <div class="flex-1">
-          <p class="text-xs text-gray-500 mb-1">Layanan</p>
-          <p class="text-sm font-medium text-gray-900">
-            {{ getLayananDaftar(pemesanan.layanan) }}
-          </p>
-        </div>
+    <div class="mb-5">
+      <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+        <i class="mdi mdi-wrench text-gray-400 text-sm"></i> Layanan
+      </p>
+      <div class="flex flex-wrap gap-1.5">
+        <span 
+          v-for="(layanan, idx) in pemesanan.layanan" 
+          :key="idx"
+          class="inline-flex items-center rounded-md bg-gray-50 px-2.5 py-1 text-xs font-semibold text-gray-700 border border-gray-200"
+        >
+          {{ layanan.nama_layanan }}
+        </span>
       </div>
     </div>
 
     <!-- Status Display -->
-    <div class="mb-4">
-      <p class="text-xs text-gray-500 mb-2">Status Pemesanan:</p>
-      <div class="flex flex-wrap items-center gap-2">
-        <span :class="getStatusBadgeClass(pemesanan.status)">
-          <i :class="['mdi mr-1', getStatusIcon(pemesanan.status)]"></i>
-          {{ getStatusLabel(pemesanan.status) }}
-        </span>
-        <span
-          v-if="pemesanan.mekanik"
-          class="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded"
-        >
-          <i class="mdi mdi-account-wrench"></i>
-          <span class="capitalize">{{ pemesanan.mekanik.nama }}</span>
-        </span>
+    <div class="mb-5 rounded-xl border border-gray-100 bg-slate-50 p-4 shadow-inner">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <!-- Status Servis -->
+        <div>
+          <p class="text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Status Servis</p>
+          <div class="flex items-center gap-2">
+            <span :class="getStatusBadgeClass(pemesanan.status)">
+              <i :class="['mdi mr-1', getStatusIcon(pemesanan.status)]"></i>
+              {{ getStatusLabel(pemesanan.status) }}
+            </span>
+          </div>
+        </div>
+
+        <div class="hidden sm:block w-px h-8 bg-slate-200"></div>
+
+        <!-- Status Pembayaran -->
+        <div>
+          <p class="text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Pembayaran</p>
+          <span :class="getPembayaranStatusBadgeClass(pemesanan.status_pembayaran)">
+            <i class="mdi mdi-cash-check mr-1"></i>
+            {{ getPembayaranStatusLabel(pemesanan.status_pembayaran) }}
+          </span>
+        </div>
       </div>
 
-      <div class="mt-3 flex items-center justify-between gap-3">
-        <p class="text-xs text-gray-500">Status Pembayaran:</p>
-        <span :class="getPembayaranStatusBadgeClass(pemesanan.status_pembayaran)">
-          <i class="mdi mdi-cash-check mr-1"></i>
-          {{ getPembayaranStatusLabel(pemesanan.status_pembayaran) }}
+      <!-- Mekanik Info -->
+      <div v-if="pemesanan.mekanik" class="mt-4 pt-3 border-t border-slate-200 flex items-center gap-2">
+        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Mekanik:</p>
+        <span class="inline-flex items-center gap-1.5 text-sm font-bold text-gray-700 bg-white px-2.5 py-1 rounded-md border border-gray-200">
+          <i class="mdi mdi-account-wrench text-gray-400"></i>
+          <span class="capitalize">{{ pemesanan.mekanik.nama }}</span>
         </span>
       </div>
     </div>

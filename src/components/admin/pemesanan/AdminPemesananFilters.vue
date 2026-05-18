@@ -62,12 +62,16 @@ const handlePembayaranChange = (value: string | number | null) => {
     <div class="relative mb-3">
       <input
         :value="searchQuery"
-        @input="emit('update:searchQuery', ($event.target as HTMLInputElement).value)"
+        @input="
+          emit('update:searchQuery', ($event.target as HTMLInputElement).value)
+        "
         type="text"
         placeholder="Cari pelanggan, vespa, atau plat nomor..."
         class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
       />
-      <i class="mdi mdi-magnify absolute left-3 top-1/2 -translate-y-1/2 text-xl text-gray-400"></i>
+      <i
+        class="mdi mdi-magnify absolute left-3 top-1/2 -translate-y-1/2 text-xl text-gray-400"
+      ></i>
     </div>
 
     <!-- Filter Grid: 2 kolom di mobile, 4 kolom di desktop -->
@@ -104,16 +108,16 @@ const handlePembayaranChange = (value: string | number | null) => {
         <input
           type="checkbox"
           :checked="showTodayOnly"
-          @change="emit('update:showTodayOnly', ($event.target as HTMLInputElement).checked)"
+          @change="
+            emit(
+              'update:showTodayOnly',
+              ($event.target as HTMLInputElement).checked,
+            )
+          "
           class="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
         />
         <span class="text-sm text-gray-700">Tampilkan Pemesanan Hari Ini</span>
       </label>
-    </div>
-
-    <!-- Results count -->
-    <div class="mb-4 text-sm text-gray-600">
-      Menampilkan {{ filteredCount }} dari {{ totalPemesanan }} pemesanan
     </div>
   </div>
 </template>

@@ -6,8 +6,7 @@ import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import AdminPemesananInfoKartu from "@/components/admin/pemesanan-detail/AdminPemesananInfoKartu.vue";
 import AdminPemesananPanelKontrol from "@/components/admin/pemesanan-detail/AdminPemesananPanelKontrol.vue";
-import AdminPemesananLayananDaftar from "@/components/admin/pemesanan-detail/AdminPemesananLayananDaftar.vue";
-import AdminPemesananSukuCadangDaftar from "@/components/admin/pemesanan-detail/AdminPemesananSukuCadangDaftar.vue";
+import AdminPemesananRincianDaftar from "@/components/admin/pemesanan-detail/AdminPemesananRincianDaftar.vue";
 import AdminPemesananTotalRingkasan from "@/components/admin/pemesanan-detail/AdminPemesananTotalRingkasan.vue";
 import AdminPemesananCatatan from "@/components/admin/pemesanan-detail/AdminPemesananCatatan.vue";
 import TambahSukuCadangModal from "@/components/ui/TambahSukuCadangModal.vue";
@@ -100,20 +99,13 @@ onMounted(async () => {
           :catatan-mekanik="pemesanan.catatan_mekanik"
         />
 
-        <section class="grid grid-cols-1 gap-4 xl:grid-cols-2">
-          <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
-            <AdminPemesananLayananDaftar :layanan="pemesanan.layanan" />
-          </div>
-
-          <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
-            <AdminPemesananSukuCadangDaftar
-              :pemesanan-items="pemesanan.item_pemesanan"
-              :is-in-progress="isInProgress"
-              @add-suku-cadang="openAddSukuCadangModal"
-              @delete-item="promptDeleteSukuCadang"
-            />
-          </div>
-        </section>
+        <AdminPemesananRincianDaftar
+          :layanan="pemesanan.layanan"
+          :pemesanan-items="pemesanan.item_pemesanan"
+          :is-in-progress="isInProgress"
+          @add-suku-cadang="openAddSukuCadangModal"
+          @delete-item="promptDeleteSukuCadang"
+        />
 
         <section class="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
           <AdminPemesananTotalRingkasan

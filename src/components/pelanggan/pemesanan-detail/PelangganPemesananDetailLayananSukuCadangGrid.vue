@@ -57,7 +57,7 @@ const getLayananPrice = (layanan: Pemesanan["layanan"][number]) =>
         </div>
       </div>
       <p v-else class="text-sm text-gray-500">
-        Belum ada sukucadang yang digunakan untuk pemesanan ini.
+        Belum ada suku cadang yang digunakan untuk pemesanan ini.
       </p>
     </div>
   </section>

@@ -22,7 +22,7 @@ export function useMekanikPemesanan(activeTab: Ref<MekanikTab>) {
   const activePemesanan = ref<MekanikPemesanan[]>([]);
   const riwayatPemesanan = ref<MekanikPemesanan[]>([]);
   const loading = ref(false);
-  const statusFilter = ref<MekanikStatusFilter>("all");
+  const statusFilter = ref<MekanikStatusFilter>("semua");
 
   const selectedYear = ref(0);
   const selectedMonth = ref(0);
@@ -97,7 +97,7 @@ export function useMekanikPemesanan(activeTab: Ref<MekanikTab>) {
         (pemesanan: MekanikPemesanan) =>
           isCompletedOrCancelledStatus(pemesanan.status),
       );
-      updateRiwayatPagination(response.data);
+      updateRiwayatPagination(response.data.meta || response.data);
     } catch (error: any) {
       logError(error, "fetchRiwayat");
       toast.error(handleApiError(error));
@@ -120,7 +120,7 @@ export function useMekanikPemesanan(activeTab: Ref<MekanikTab>) {
       return riwayatPemesanan.value;
     }
 
-    if (statusFilter.value === "all") {
+    if (statusFilter.value === "semua") {
       return activePemesanan.value;
     }
 

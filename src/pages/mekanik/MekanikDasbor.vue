@@ -123,7 +123,7 @@ onUnmounted(() => {
 
         <!-- Pagination -->
         <Pagination
-          v-if="!loading && riwayatPemesanan.length > 10"
+          v-if="!loading && riwayatPemesanan.length > 0"
           :current-page="riwayatPagination.current_page"
           :last-page="riwayatPagination.last_page"
           :total="riwayatPagination.total"

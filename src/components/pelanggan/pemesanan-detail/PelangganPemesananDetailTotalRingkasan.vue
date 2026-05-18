@@ -20,19 +20,19 @@ const emit = defineEmits<{
   <section class="rounded-xl border border-gray-200 bg-white p-4 sm:p-5">
     <div class="space-y-3">
       <div class="flex justify-between text-gray-700">
-        <span>Subtotal Layanan:</span>
+        <span>Subtotal Layanan</span>
         <span class="font-semibold">{{ toIDR(totalLayanan) }}</span>
       </div>
 
       <div v-if="totalSukuCadang > 0" class="flex justify-between text-gray-700">
-        <span>Subtotal Suku Cadang:</span>
+        <span>Subtotal Suku Cadang</span>
         <span class="font-semibold">{{ toIDR(totalSukuCadang) }}</span>
       </div>
 
       <div
         class="flex justify-between border-t border-gray-200 pt-3 text-2xl font-bold text-gray-900"
       >
-        <span>Total:</span>
+        <span>Total</span>
         <span class="text-green-600">{{ toIDR(totalBiaya) }}</span>
       </div>
 

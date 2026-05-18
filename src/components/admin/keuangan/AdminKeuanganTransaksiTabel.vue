@@ -133,6 +133,7 @@ const TABLE_MOBILE_KARTU_CLASS = "space-y-4 bg-gray-50 p-4";
             :current-page="currentPage"
             :last-page="totalPages"
             :total="pemesanan.length"
+            :per-page="ITEMS_PER_PAGE"
             :from="from"
             :to="to"
             @page-change="handlePageChange"

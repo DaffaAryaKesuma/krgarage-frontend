@@ -7,6 +7,7 @@ interface Props {
   total: number;
   from: number;
   to: number;
+  perPage?: number;
 }
 
 const props = defineProps<Props>();
@@ -72,6 +73,7 @@ const goToPage = (page: number) => {
 
 <template>
   <div
+    v-if="total > (perPage || 10)"
     class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 pt-4 border-t border-gray-200"
   >
     <!-- Info text (Selalu Muncul) -->
