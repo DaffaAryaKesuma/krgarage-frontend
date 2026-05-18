@@ -15,9 +15,9 @@ export function formatDateShort(
   }
 
   return dateObj.toLocaleDateString("id-ID", {
-    weekday: "short",
+    weekday: "long",
     year: "numeric",
-    month: "short",
+    month: "long",
     day: "numeric",
   });
 }

@@ -29,7 +29,7 @@ const emit = defineEmits<{
         <p class="text-xs text-gray-500">{{ sukucadang.deskripsi }}</p>
       </div>
       <span
-        class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700"
+        class="shrink-0 inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700"
       >
         {{ sukucadang.kategori }}
       </span>

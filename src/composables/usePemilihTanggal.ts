@@ -33,7 +33,7 @@ const getDaysInMonth = (month: number, year: number) => {
   return days;
 };
 
-export function useBaseDatePemilih(
+export function usePemilihTanggal(
   modelValueRef: Ref<string>,
   updateModelValue: (value: string) => void,
 ) {

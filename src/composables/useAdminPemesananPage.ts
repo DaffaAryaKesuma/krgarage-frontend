@@ -112,11 +112,11 @@ export function useAdminPemesananPage() {
   };
 
   const confirmPemesanan = async (pemesanan: Pemesanan) => {
-    await changeStatus(pemesanan, PEMESANAN_STATUS.CONFIRMED);
+    await changeStatus(pemesanan, PEMESANAN_STATUS.DIKONFIRMASI);
   };
 
   const cancelPemesanan = async (pemesanan: Pemesanan) => {
-    await changeStatus(pemesanan, PEMESANAN_STATUS.CANCELLED);
+    await changeStatus(pemesanan, PEMESANAN_STATUS.BATAL);
   };
 
   const isCompleteModalOpen = ref(false);
@@ -129,7 +129,7 @@ export function useAdminPemesananPage() {
 
   const handleCompleteConfirm = async (catatan: string) => {
     if (pemesananToComplete.value) {
-      await changeStatus(pemesananToComplete.value, PEMESANAN_STATUS.COMPLETED, catatan);
+      await changeStatus(pemesananToComplete.value, PEMESANAN_STATUS.SELESAI, catatan);
       isCompleteModalOpen.value = false;
       pemesananToComplete.value = null;
     }
@@ -191,7 +191,7 @@ export function useAdminPemesananPage() {
 
       await axios.patch(
         `${API_URL}/admin/pemesanan/${pemesanan.id}/status`,
-        { status: PEMESANAN_STATUS.IN_PROGRESS },
+        { status: PEMESANAN_STATUS.DIKERJAKAN },
         { headers: getAuthHeaders() },
       );
 

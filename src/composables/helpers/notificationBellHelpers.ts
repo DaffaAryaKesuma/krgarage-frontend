@@ -46,14 +46,14 @@ export function normalizeRole(role?: string | null): AppRole {
 }
 
 export function getPemesananIdFromNotification(
-  notification: AppNotification,
+  notifikasi: AppNotification,
 ): number | null {
-  const directPemesananId = Number(notification.id_pemesanan);
+  const directPemesananId = Number(notifikasi.id_pemesanan);
   if (Number.isFinite(directPemesananId) && directPemesananId > 0) {
     return directPemesananId;
   }
 
-  const relationPemesananId = Number(notification.pemesanan?.id);
+  const relationPemesananId = Number(notifikasi.pemesanan?.id);
   if (Number.isFinite(relationPemesananId) && relationPemesananId > 0) {
     return relationPemesananId;
   }
@@ -63,14 +63,14 @@ export function getPemesananIdFromNotification(
 
 export function resolveNotificationTarget(
   role: AppRole,
-  pemesananId: number | null,
-  notificationType?: string,
+  idPemesanan: number | null,
+  notifikasiType?: string,
 ): RouteLocationRaw {
   if (role === "admin") {
-    if (pemesananId) {
+    if (idPemesanan) {
       return {
         name: "admin-pemesanan-detail",
-        params: { id: String(pemesananId) },
+        params: { id: String(idPemesanan) },
       };
     }
 
@@ -78,10 +78,10 @@ export function resolveNotificationTarget(
   }
 
   if (role === "mekanik") {
-    if (pemesananId) {
+    if (idPemesanan) {
       return {
         name: "mekanik-dasbor",
-        query: { pemesanan: String(pemesananId) },
+        query: { pemesanan: String(idPemesanan) },
       };
     }
 
@@ -89,25 +89,25 @@ export function resolveNotificationTarget(
   }
 
   if (role === "pemilik") {
-    if (notificationType === "stok_menipis") {
+    if (notifikasiType === "stok_menipis") {
       return { name: "pemilik-analisa-inventaris" };
     }
 
-    if (notificationType === "pembayaran_diterima") {
+    if (notifikasiType === "pembayaran_diterima") {
       return { name: "pemilik-laporan-keuangan" };
     }
 
-    if (pemesananId) {
+    if (idPemesanan) {
       return { name: "pemilik-laporan-keuangan" };
     }
 
     return { name: "pemilik-dasbor" };
   }
 
-  if (pemesananId) {
+  if (idPemesanan) {
     return {
       name: "pelanggan-riwayat-detail",
-      params: { id: String(pemesananId) },
+      params: { id: String(idPemesanan) },
     };
   }
 

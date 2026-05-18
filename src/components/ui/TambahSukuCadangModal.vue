@@ -44,16 +44,16 @@ watch(
 );
 
 const idSudahDiKeranjang = computed(
-  () => new Set(keranjang.value.map((k) => k.sukucadang.id)),
+  () => new Set(keranjang.value.map((item) => item.sukucadang.id)),
 );
 
 const filteredSukuCadang = computed(() => {
-  const q = searchQuery.value.toLowerCase().trim();
+  const query = searchQuery.value.toLowerCase().trim();
   return props.sukuCadang.filter(
-    (sc) =>
-      !idSudahDiKeranjang.value.has(sc.id) &&
-      (sc.nama_suku_cadang.toLowerCase().includes(q) ||
-        (sc.kategori || "").toLowerCase().includes(q)),
+    (sukuCadang) =>
+      !idSudahDiKeranjang.value.has(sukuCadang.id) &&
+      (sukuCadang.nama_suku_cadang.toLowerCase().includes(query) ||
+        (sukuCadang.kategori || "").toLowerCase().includes(query)),
   );
 });
 
@@ -64,26 +64,26 @@ const grandTotal = computed(() =>
   ),
 );
 
-const getStokBadge = (sc: SukuCadangRingkasan) => {
-  if (sc.jumlah_stok === 0)
+const getStokBadge = (sukuCadang: SukuCadangRingkasan) => {
+  if (sukuCadang.jumlah_stok === 0)
     return { label: "Habis", class: "bg-red-100 text-red-700" };
-  if (sc.stok_menipis)
+  if (sukuCadang.stok_menipis)
     return {
-      label: `Kritis: ${sc.jumlah_stok}`,
+      label: `Kritis: ${sukuCadang.jumlah_stok}`,
       class: "bg-orange-100 text-orange-700",
     };
   return {
-    label: `Stok: ${sc.jumlah_stok}`,
+    label: `Stok: ${sukuCadang.jumlah_stok}`,
     class: "bg-green-100 text-green-700",
   };
 };
 
-const selectCard = (sc: SukuCadangRingkasan) => {
-  if (activeCardId.value === sc.id) {
+const selectCard = (sukuCadang: SukuCadangRingkasan) => {
+  if (activeCardId.value === sukuCadang.id) {
     activeCardId.value = null;
     activeQuantity.value = 1;
   } else {
-    activeCardId.value = sc.id;
+    activeCardId.value = sukuCadang.id;
     activeQuantity.value = 1;
   }
 };
@@ -96,8 +96,8 @@ const incrementQty = (max: number) => {
   if (activeQuantity.value < max) activeQuantity.value++;
 };
 
-const tambahKeKeranjang = (sc: SukuCadangRingkasan) => {
-  keranjang.value.push({ sukucadang: sc, quantity: activeQuantity.value });
+const tambahKeKeranjang = (sukuCadang: SukuCadangRingkasan) => {
+  keranjang.value.push({ sukucadang: sukuCadang, quantity: activeQuantity.value });
   activeCardId.value = null;
   activeQuantity.value = 1;
 };
@@ -110,9 +110,9 @@ const handleSubmit = () => {
   if (!keranjang.value.length) return;
   emit(
     "submit",
-    keranjang.value.map((k) => ({
-      sukucadangId: k.sukucadang.id,
-      quantity: k.quantity,
+    keranjang.value.map((item) => ({
+      sukucadangId: item.sukucadang.id,
+      quantity: item.quantity,
     })),
   );
 };
@@ -196,42 +196,42 @@ const handleClose = () => {
           <!-- Grid -->
           <div v-else class="grid grid-cols-2 gap-3 py-1">
             <div
-              v-for="sc in filteredSukuCadang"
-              :key="sc.id"
-              @click="sc.jumlah_stok > 0 && selectCard(sc)"
+              v-for="sukuCadang in filteredSukuCadang"
+              :key="sukuCadang.id"
+              @click="sukuCadang.jumlah_stok > 0 && selectCard(sukuCadang)"
               :class="[
                 'rounded-xl border-2 p-3 transition-all cursor-pointer select-none',
-                sc.jumlah_stok === 0
+                sukuCadang.jumlah_stok === 0
                   ? 'opacity-50 cursor-not-allowed border-gray-200 bg-gray-50'
-                  : activeCardId === sc.id
+                  : activeCardId === sukuCadang.id
                     ? 'border-red-500 bg-red-50 shadow-md'
                     : 'border-gray-200 bg-white hover:border-red-300 hover:shadow-sm',
               ]"
             >
               <div class="mb-2">
                 <p class="font-bold text-gray-900 text-sm leading-tight line-clamp-2">
-                  {{ sc.nama_suku_cadang }}
+                  {{ sukuCadang.nama_suku_cadang }}
                 </p>
-                <p class="text-xs text-gray-500 mt-0.5">{{ sc.kategori }}</p>
+                <p class="text-xs text-gray-500 mt-0.5">{{ sukuCadang.kategori }}</p>
               </div>
 
               <span
                 :class="[
                   'inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full mb-2',
-                  getStokBadge(sc).class,
+                  getStokBadge(sukuCadang).class,
                 ]"
               >
                 <i class="mdi mdi-package text-[10px]"></i>
-                {{ getStokBadge(sc).label }}
+                {{ getStokBadge(sukuCadang).label }}
               </span>
 
               <p class="text-sm font-black text-red-600">
-                {{ toIDR(sc.harga_jual) }}
+                {{ toIDR(sukuCadang.harga_jual) }}
               </p>
 
               <!-- Quantity Stepper (muncul saat dipilih) -->
               <div
-                v-if="activeCardId === sc.id"
+                v-if="activeCardId === sukuCadang.id"
                 class="mt-3 space-y-2"
                 @click.stop
               >
@@ -247,22 +247,22 @@ const handleClose = () => {
                       v-model.number="activeQuantity"
                       type="number"
                       min="1"
-                      :max="sc.jumlah_stok"
+                      :max="sukuCadang.jumlah_stok"
                       class="w-10 text-center text-sm font-bold border-x border-gray-300 py-1 focus:outline-none"
                     />
                     <button
-                      @click="incrementQty(sc.jumlah_stok)"
+                      @click="incrementQty(sukuCadang.jumlah_stok)"
                       class="px-2.5 py-1 text-gray-600 hover:bg-gray-100 transition font-bold text-base"
                     >
                       +
                     </button>
                   </div>
                   <span class="text-xs font-bold text-red-600">
-                    {{ toIDR(sc.harga_jual * activeQuantity) }}
+                    {{ toIDR(sukuCadang.harga_jual * activeQuantity) }}
                   </span>
                 </div>
                 <button
-                  @click="tambahKeKeranjang(sc)"
+                  @click="tambahKeKeranjang(sukuCadang)"
                   class="w-full py-1.5 bg-red-600 text-white text-xs font-bold rounded-lg hover:bg-red-700 transition flex items-center justify-center gap-1"
                 >
                   <i class="mdi mdi-cart-plus text-sm"></i>

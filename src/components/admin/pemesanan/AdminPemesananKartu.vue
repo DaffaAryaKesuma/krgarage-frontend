@@ -30,9 +30,6 @@ const emit = defineEmits<{
 }>();
 
 const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
-
-const getLayananDaftar = (layanan: Pemesanan["layanan"]) =>
-  layanan.map((s) => s.nama_layanan).join(", ");
 </script>
 
 <template>
@@ -45,7 +42,7 @@ const getLayananDaftar = (layanan: Pemesanan["layanan"]) =>
     >
       <div class="flex items-center gap-4">
         <div
-          class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-red-500 to-red-600 text-lg font-bold text-white shadow-md ring-2 ring-red-50"
+          class="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-red-600 text-lg font-bold text-white shadow-md ring-2 ring-red-50"
         >
           {{ getUserInitial(pemesanan.pengguna?.nama) }}
         </div>

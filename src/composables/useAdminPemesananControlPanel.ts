@@ -30,7 +30,7 @@ import {
 
 export { CANCEL_BUTTON_CLASS };
 
-export interface AdminPemesananControlPanelProps {
+export interface PropertiAdminPemesananControlPanel {
   pemesananId: number;
   currentStatus: string;
   currentPembayaranStatus?: string | null;
@@ -39,70 +39,70 @@ export interface AdminPemesananControlPanelProps {
 }
 
 export function useAdminPemesananControlPanel(
-  props: AdminPemesananControlPanelProps,
+  properti: PropertiAdminPemesananControlPanel,
   onRefresh: () => void,
 ) {
   const toast = useToast();
 
   const availableMekaniks = ref<Mekanik[]>([]);
   const isProcessing = ref(false);
-  const selectedMekanikId = ref<number | null>(props.currentMekanikId);
+  const selectedMekanikId = ref<number | null>(properti.currentMekanikId);
   const showAksiConfirmation = ref(false);
   const pendingAksi = ref<PemesananAksiType | null>(null);
 
   watch(
-    () => props.currentMekanikId,
-    (nextMekanikId) => {
-      selectedMekanikId.value = nextMekanikId;
+    () => properti.currentMekanikId,
+    (idMekanikBerikutnya) => {
+      selectedMekanikId.value = idMekanikBerikutnya;
     },
   );
 
   const mekanikOptionsDaftar = computed(() =>
-    availableMekaniks.value.map((mech) => ({
-      value: mech.id,
-      label: mech.nama,
+    availableMekaniks.value.map((mekanik) => ({
+      value: mekanik.id,
+      label: mekanik.nama,
     })),
   );
 
   const canConfirm = computed(() =>
-    canAdminConfirmPemesanan(props.currentStatus),
+    canAdminConfirmPemesanan(properti.currentStatus),
   );
   const canAssignAndStart = computed(() =>
-    canAdminAssignAndStart(props.currentStatus),
+    canAdminAssignAndStart(properti.currentStatus),
   );
   const canComplete = computed(() =>
-    canAdminCompletePemesanan(props.currentStatus),
+    canAdminCompletePemesanan(properti.currentStatus),
   );
-  const canCancel = computed(() => canAdminCancelPemesanan(props.currentStatus));
-  const isCompleted = computed(() => isStatusSelesai(props.currentStatus));
-  const isCancelled = computed(() => isStatusBatal(props.currentStatus));
-  const isPaid = computed(() => isPaidStatus(props.currentPembayaranStatus));
+  const canCancel = computed(() => canAdminCancelPemesanan(properti.currentStatus));
+  const isCompleted = computed(() => isStatusSelesai(properti.currentStatus));
+  const isCancelled = computed(() => isStatusBatal(properti.currentStatus));
+  const isPaid = computed(() => isPaidStatus(properti.currentPembayaranStatus));
   const canMarkAsPaid = computed(
     () => isCompleted.value && !isCancelled.value && !isPaid.value,
   );
 
   const pembayaranStatusLabel = computed(() =>
-    getPembayaranStatusLabel(props.currentPembayaranStatus),
+    getPembayaranStatusLabel(properti.currentPembayaranStatus),
   );
   const pembayaranStatusBadgeClass = computed(() =>
-    getPembayaranStatusBadgeClass(props.currentPembayaranStatus),
+    getPembayaranStatusBadgeClass(properti.currentPembayaranStatus),
   );
 
   const assignedMekanikName = computed(() => {
-    const explicitName = props.currentMekanikName?.trim();
-    if (explicitName) {
-      return explicitName;
+    const namaEksplisit = properti.currentMekanikName?.trim();
+    if (namaEksplisit) {
+      return namaEksplisit;
     }
 
-    if (!props.currentMekanikId) {
+    if (!properti.currentMekanikId) {
       return null;
     }
 
-    const matchedMekanik = availableMekaniks.value.find(
-      (mech) => mech.id === props.currentMekanikId,
+    const mekanikCocok = availableMekaniks.value.find(
+      (mekanik) => mekanik.id === properti.currentMekanikId,
     );
 
-    return matchedMekanik?.nama || null;
+    return mekanikCocok?.nama || null;
   });
 
   const aksiConfirmationConfig = computed<AksiConfirmationConfig | null>(
@@ -119,36 +119,36 @@ export function useAdminPemesananControlPanel(
     pendingAksi.value = null;
   };
 
-  async function updateStatus(newStatus: string, successMessage: string, catatan?: string) {
+  async function updateStatus(statusBaru: string, pesanSukses: string, catatan?: string) {
     isProcessing.value = true;
     try {
-      await patchAdminPemesananStatus(props.pemesananId, newStatus, catatan);
-      toast.success(successMessage);
+      await patchAdminPemesananStatus(properti.pemesananId, statusBaru, catatan);
+      toast.success(pesanSukses);
       onRefresh();
-    } catch (err: any) {
-      console.error(`Gagal memperbarui status ke ${newStatus}:`, err);
-      toast.error(err.response?.data?.message || "Gagal memperbarui status");
+    } catch (error: any) {
+      console.error(`Gagal memperbarui status ke ${statusBaru}:`, error);
+      toast.error(error.response?.data?.message || "Gagal memperbarui status");
     } finally {
       isProcessing.value = false;
     }
   }
 
   async function updatePembayaranStatus(
-    newPembayaranStatus: string,
-    successMessage: string,
+    statusPembayaranBaru: string,
+    pesanSukses: string,
   ) {
     isProcessing.value = true;
     try {
-      await patchAdminPembayaranStatus(props.pemesananId, newPembayaranStatus);
-      toast.success(successMessage);
+      await patchAdminPembayaranStatus(properti.pemesananId, statusPembayaranBaru);
+      toast.success(pesanSukses);
       onRefresh();
-    } catch (err: any) {
+    } catch (error: any) {
       console.error(
-        `Gagal memperbarui status pembayaran ke ${newPembayaranStatus}:`,
-        err,
+        `Gagal memperbarui status pembayaran ke ${statusPembayaranBaru}:`,
+        error,
       );
       toast.error(
-        err.response?.data?.message || "Gagal memperbarui status pembayaran",
+        error.response?.data?.message || "Gagal memperbarui status pembayaran",
       );
     } finally {
       isProcessing.value = false;
@@ -174,8 +174,8 @@ export function useAdminPemesananControlPanel(
   async function fetchMekaniks() {
     try {
       availableMekaniks.value = await fetchAdminMekaniks();
-    } catch (err) {
-      console.error("Gagal mengambil daftar mekanik:", err);
+    } catch (error) {
+      console.error("Gagal mengambil daftar mekanik:", error);
     }
   }
 
@@ -187,17 +187,17 @@ export function useAdminPemesananControlPanel(
 
     isProcessing.value = true;
     try {
-      await assignMekanikToPemesanan(props.pemesananId, selectedMekanikId.value);
+      await assignMekanikToPemesanan(properti.pemesananId, selectedMekanikId.value);
       await patchAdminPemesananStatus(
-        props.pemesananId,
-        PEMESANAN_STATUS.IN_PROGRESS,
+        properti.pemesananId,
+        PEMESANAN_STATUS.DIKERJAKAN,
       );
 
       toast.success("Mekanik ditugaskan dan servis dimulai!");
       onRefresh();
-    } catch (err: any) {
-      console.error("Gagal menugaskan mekanik dan memulai servis:", err);
-      toast.error(err.response?.data?.message || "Gagal memulai servis");
+    } catch (error: any) {
+      console.error("Gagal menugaskan mekanik dan memulai servis:", error);
+      toast.error(error.response?.data?.message || "Gagal memulai servis");
     } finally {
       isProcessing.value = false;
     }

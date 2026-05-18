@@ -5,18 +5,18 @@ import type {
 } from "@/types/inventaris";
 
 export function mapInventarisCategoriesToOptions(
-  categories: InventarisCategory[],
+  daftarKategori: InventarisCategory[],
 ) {
-  const kategoriOptions = categories.map((cat) => ({
-    value: cat.id,
-    label: cat.nama,
+  const kategoriOptions = daftarKategori.map((kategori) => ({
+    value: kategori.id,
+    label: kategori.nama,
   }));
 
   return {
     kategoriOptions,
     kategoriFilterOptions: [
       { value: "", label: "Semua Kategori" },
-      ...categories.map((cat) => ({ value: String(cat.id), label: cat.nama })),
+      ...daftarKategori.map((kategori) => ({ value: String(kategori.id), label: kategori.nama })),
     ],
   };
 }
@@ -71,7 +71,7 @@ export function validateInventarisForm(
 }
 
 export function matchesInventarisFilters(
-  sukucadang: InventarisSukuCadang,
+  sukuCadang: InventarisSukuCadang,
   query: string,
   selectedCategory: string,
   lowStockOnly: boolean,
@@ -80,12 +80,12 @@ export function matchesInventarisFilters(
 
   const matchesSearch =
     !normalizedQuery ||
-    sukucadang.nama_suku_cadang.toLowerCase().includes(normalizedQuery);
+    sukuCadang.nama_suku_cadang.toLowerCase().includes(normalizedQuery);
 
   const matchesCategory =
-    !selectedCategory || String(sukucadang.id_kategori) === selectedCategory;
+    !selectedCategory || String(sukuCadang.id_kategori) === selectedCategory;
 
-  const matchesLowStock = !lowStockOnly || sukucadang.stok_menipis;
+  const matchesLowStock = !lowStockOnly || sukuCadang.stok_menipis;
 
   return matchesSearch && matchesCategory && matchesLowStock;
 }

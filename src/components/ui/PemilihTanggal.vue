@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { toRef } from "vue";
-import { useBaseDatePemilih } from "@/composables/useBaseDatePemilih";
+import { usePemilihTanggal } from "@/composables/usePemilihTanggal";
 
 interface Props {
   modelValue: string;
@@ -31,7 +31,7 @@ const {
   isToday,
   handleBlur,
   setToday,
-} = useBaseDatePemilih(toRef(props, "modelValue"), (value) => {
+} = usePemilihTanggal(toRef(props, "modelValue"), (value) => {
   emit("update:modelValue", value);
 });
 </script>

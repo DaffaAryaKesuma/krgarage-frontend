@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BaseDatePemilih from "../../ui/BaseDatePemilih.vue";
+import PemilihTanggal from "../../ui/PemilihTanggal.vue";
 
 interface Props {
   startDate: string;
@@ -36,12 +36,12 @@ const updateEndDate = (val: string) => emit("update:endDate", val);
       <div class="flex flex-col sm:flex-row sm:items-end gap-2">
         <!-- 2 kolom di mobile, sejajar di sm+ -->
         <div class="grid grid-cols-2 gap-2 sm:flex sm:gap-2">
-          <BaseDatePemilih
+          <PemilihTanggal
             :model-value="startDate"
             @update:model-value="updateStartDate"
             label="Dari Tanggal"
           />
-          <BaseDatePemilih
+          <PemilihTanggal
             :model-value="endDate"
             @update:model-value="updateEndDate"
             label="Sampai Tanggal"

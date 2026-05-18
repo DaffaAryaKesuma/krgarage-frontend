@@ -15,10 +15,10 @@ export async function fetchAdminInventarisCategories() {
   return (data.data || []) as InventarisCategory[];
 }
 
-export function createAdminInventarisCategory(name: string) {
+export function createAdminInventarisCategory(namaKategori: string) {
   return axios.post(
     `${API_URL}/admin/inventori/kategori`,
-    { nama: name },
+    { nama: namaKategori },
     { headers: getAuthHeaders() },
   );
 }
@@ -31,34 +31,34 @@ export async function fetchAdminInventarisSukuCadang() {
   return (data.data || []) as InventarisSukuCadang[];
 }
 
-export function createAdminInventarisSukuCadang(payload: InventarisSukuCadangForm) {
-  return axios.post(`${API_URL}/admin/inventori`, payload, {
+export function createAdminInventarisSukuCadang(dataSukuCadang: InventarisSukuCadangForm) {
+  return axios.post(`${API_URL}/admin/inventori`, dataSukuCadang, {
     headers: getAuthHeaders(),
   });
 }
 
 export function updateAdminInventarisSukuCadang(
-  sukucadangId: number,
-  payload: InventarisSukuCadangForm,
+  idSukuCadang: number,
+  dataSukuCadang: InventarisSukuCadangForm,
 ) {
-  return axios.put(`${API_URL}/admin/inventori/${sukucadangId}`, payload, {
+  return axios.put(`${API_URL}/admin/inventori/${idSukuCadang}`, dataSukuCadang, {
     headers: getAuthHeaders(),
   });
 }
 
 export function restockAdminInventarisSukuCadang(
-  sukucadangId: number,
-  quantity: number,
+  idSukuCadang: number,
+  jumlahStok: number,
 ) {
   return axios.post(
-    `${API_URL}/admin/inventori/${sukucadangId}/tambah-stok`,
-    { jumlah: quantity },
+    `${API_URL}/admin/inventori/${idSukuCadang}/tambah-stok`,
+    { jumlah: jumlahStok },
     { headers: getAuthHeaders() },
   );
 }
 
-export function deleteAdminInventarisSukuCadang(sukucadangId: number) {
-  return axios.delete(`${API_URL}/admin/inventori/${sukucadangId}`, {
+export function deleteAdminInventarisSukuCadang(idSukuCadang: number) {
+  return axios.delete(`${API_URL}/admin/inventori/${idSukuCadang}`, {
     headers: getAuthHeaders(),
   });
 }

@@ -1,29 +1,29 @@
 export const PEMESANAN_STATUS = {
-  PENDING: "Menunggu",
-  CONFIRMED: "Dikonfirmasi",
-  IN_PROGRESS: "Dikerjakan",
-  COMPLETED: "Selesai",
-  CANCELLED: "Batal",
+  MENUNGGU: "Menunggu",
+  DIKONFIRMASI: "Dikonfirmasi",
+  DIKERJAKAN: "Dikerjakan",
+  SELESAI: "Selesai",
+  BATAL: "Batal",
 } as const;
 
 export const STATUS_MAP = {
-  [PEMESANAN_STATUS.PENDING]: {
+  [PEMESANAN_STATUS.MENUNGGU]: {
     badge: "bg-yellow-100 text-yellow-800",
     label: "Menunggu",
   },
-  [PEMESANAN_STATUS.CONFIRMED]: {
+  [PEMESANAN_STATUS.DIKONFIRMASI]: {
     badge: "bg-blue-100 text-blue-800",
     label: "Dikonfirmasi",
   },
-  [PEMESANAN_STATUS.IN_PROGRESS]: {
+  [PEMESANAN_STATUS.DIKERJAKAN]: {
     badge: "bg-purple-100 text-purple-800",
     label: "Dikerjakan",
   },
-  [PEMESANAN_STATUS.COMPLETED]: {
+  [PEMESANAN_STATUS.SELESAI]: {
     badge: "bg-green-100 text-green-800",
     label: "Selesai",
   },
-  [PEMESANAN_STATUS.CANCELLED]: {
+  [PEMESANAN_STATUS.BATAL]: {
     badge: "bg-red-100 text-red-800",
     label: "Batal",
   },
@@ -39,11 +39,11 @@ export type MekanikStatusFilter =
 
 const NORMALIZED_STATUS_TO_CANONICAL: Record<string, PemesananStatus> = {
   // Nilai Indonesia (canonical)
-  menunggu: PEMESANAN_STATUS.PENDING,
-  dikonfirmasi: PEMESANAN_STATUS.CONFIRMED,
-  dikerjakan: PEMESANAN_STATUS.IN_PROGRESS,
-  selesai: PEMESANAN_STATUS.COMPLETED,
-  batal: PEMESANAN_STATUS.CANCELLED,
+  menunggu: PEMESANAN_STATUS.MENUNGGU,
+  dikonfirmasi: PEMESANAN_STATUS.DIKONFIRMASI,
+  dikerjakan: PEMESANAN_STATUS.DIKERJAKAN,
+  selesai: PEMESANAN_STATUS.SELESAI,
+  batal: PEMESANAN_STATUS.BATAL,
 };
 
 export const PEMESANAN_STATUS_FILTER_OPTIONS: Array<{
@@ -51,11 +51,11 @@ export const PEMESANAN_STATUS_FILTER_OPTIONS: Array<{
   label: string;
 }> = [
   { value: "semua", label: "Semua Status" },
-  { value: PEMESANAN_STATUS.PENDING, label: "Menunggu" },
-  { value: PEMESANAN_STATUS.CONFIRMED, label: "Dikonfirmasi" },
-  { value: PEMESANAN_STATUS.IN_PROGRESS, label: "Dikerjakan" },
-  { value: PEMESANAN_STATUS.COMPLETED, label: "Selesai" },
-  { value: PEMESANAN_STATUS.CANCELLED, label: "Batal" },
+  { value: PEMESANAN_STATUS.MENUNGGU, label: "Menunggu" },
+  { value: PEMESANAN_STATUS.DIKONFIRMASI, label: "Dikonfirmasi" },
+  { value: PEMESANAN_STATUS.DIKERJAKAN, label: "Dikerjakan" },
+  { value: PEMESANAN_STATUS.SELESAI, label: "Selesai" },
+  { value: PEMESANAN_STATUS.BATAL, label: "Batal" },
 ];
 
 export const MEKANIK_STATUS_FILTER_OPTIONS: Array<{
@@ -95,11 +95,11 @@ export function mapMekanikFilterToPemesananStatus(
 ): PemesananStatus | null {
   switch (filter) {
     case "menunggu":
-      return PEMESANAN_STATUS.PENDING;
+      return PEMESANAN_STATUS.MENUNGGU;
     case "dikonfirmasi":
-      return PEMESANAN_STATUS.CONFIRMED;
+      return PEMESANAN_STATUS.DIKONFIRMASI;
     case "dikerjakan":
-      return PEMESANAN_STATUS.IN_PROGRESS;
+      return PEMESANAN_STATUS.DIKERJAKAN;
     default:
       return null;
   }

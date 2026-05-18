@@ -50,9 +50,9 @@ export function useAdminInventarisPage() {
   );
 
   const filteredSukuCadang = computed(() => {
-    return sukucadang.value.filter((sp) =>
+    return sukucadang.value.filter((item) =>
       matchesInventarisFilters(
-        sp,
+        item,
         searchQuery.value,
         selectedKategori.value,
         showLowStock.value,
@@ -61,11 +61,11 @@ export function useAdminInventarisPage() {
   });
 
   const lowStockCount = computed(
-    () => sukucadang.value.filter((sp) => sp.stok_menipis).length,
+    () => sukucadang.value.filter((item) => item.stok_menipis).length,
   );
 
   const goodStockCount = computed(
-    () => sukucadang.value.filter((sp) => !sp.stok_menipis).length,
+    () => sukucadang.value.filter((item) => !item.stok_menipis).length,
   );
 
   const statistik = computed(() => ({
@@ -93,16 +93,16 @@ export function useAdminInventarisPage() {
     showModal.value = true;
   };
 
-  const openEditModal = (sukucadang: InventarisSukuCadang) => {
-    selectedSukuCadang.value = sukucadang;
+  const openEditModal = (itemSukuCadang: InventarisSukuCadang) => {
+    selectedSukuCadang.value = itemSukuCadang;
     form.value = {
-      nama_suku_cadang: sukucadang.nama_suku_cadang,
-      id_kategori: sukucadang.id_kategori,
-      jumlah_stok: sukucadang.jumlah_stok,
-      harga_beli: Math.trunc(toMoneyNumber(sukucadang.harga_beli)),
-      harga_jual: Math.trunc(toMoneyNumber(sukucadang.harga_jual)),
-      batas_minimal_stok: sukucadang.batas_minimal_stok,
-      deskripsi: sukucadang.deskripsi,
+      nama_suku_cadang: itemSukuCadang.nama_suku_cadang,
+      id_kategori: itemSukuCadang.id_kategori,
+      jumlah_stok: itemSukuCadang.jumlah_stok,
+      harga_beli: Math.trunc(toMoneyNumber(itemSukuCadang.harga_beli)),
+      harga_jual: Math.trunc(toMoneyNumber(itemSukuCadang.harga_jual)),
+      batas_minimal_stok: itemSukuCadang.batas_minimal_stok,
+      deskripsi: itemSukuCadang.deskripsi,
     };
     showModal.value = true;
   };
@@ -113,8 +113,8 @@ export function useAdminInventarisPage() {
     categoryName.value = "";
   };
 
-  const openRestockModal = (sukucadang: InventarisSukuCadang) => {
-    selectedSukuCadang.value = sukucadang;
+  const openRestockModal = (itemSukuCadang: InventarisSukuCadang) => {
+    selectedSukuCadang.value = itemSukuCadang;
     restockQuantity.value = 0;
     showRestockModal.value = true;
   };

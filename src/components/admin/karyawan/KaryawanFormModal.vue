@@ -195,7 +195,7 @@ const inputClass =
 
             <!-- Footer Buttons -->
             <div
-              class="flex flex-col-reverse gap-3 pt-5 mt-2 sm:flex-row sm:justify-end border-t border-gray-100"
+              class="grid grid-cols-2 gap-3 pt-5 mt-2 sm:flex-row sm:justify-end border-t border-gray-100"
             >
               <button
                 type="button"

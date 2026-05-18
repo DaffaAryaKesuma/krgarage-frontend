@@ -18,14 +18,14 @@ type StatusAksiConfig = Pick<
   AksiConfirmationConfig,
   "title" | "message" | "confirmText" | "variant"
 > & {
-  newStatus: string;
+  statusBaru: string;
 };
 
 interface UseAdminDasborTerbaruPemesananOptions {
   pemesanan: Ref<Pemesanan[]>;
   selectedMekaniks: Ref<Record<number, number>>;
-  onStatusChange: (pemesanan: Pemesanan, newStatus: string, catatan?: string) => void;
-  onPembayaranStatusChange: (pemesanan: Pemesanan, newStatus: string) => void;
+  onStatusChange: (pemesanan: Pemesanan, statusBaru: string, catatan?: string) => void;
+  onPembayaranStatusChange: (pemesanan: Pemesanan, statusBaru: string) => void;
   onSelectedMekaniksChange: (value: Record<number, number>) => void;
 }
 
@@ -59,7 +59,7 @@ export function useAdminDasborTerbaruPemesanan({
       message: config.message,
       confirmText: config.confirmText,
       variant: config.variant,
-      newStatus: config.value,
+      statusBaru: config.value,
     };
   });
 
@@ -85,7 +85,7 @@ export function useAdminDasborTerbaruPemesanan({
       return;
     }
 
-    onStatusChange(aksi.pemesanan, config.newStatus, catatan);
+    onStatusChange(aksi.pemesanan, config.statusBaru, catatan);
     closeStatusConfirmModal();
   };
 
@@ -122,7 +122,7 @@ export function useAdminDasborTerbaruPemesanan({
   };
 
   const handleMekanikChange = (
-    pemesananId: number,
+    idPemesanan: number,
     value: string | number | null,
   ) => {
     if (typeof value !== "number") {
@@ -131,7 +131,7 @@ export function useAdminDasborTerbaruPemesanan({
 
     const updatedSelection = {
       ...selectedMekaniks.value,
-      [pemesananId]: value,
+      [idPemesanan]: value,
     };
 
     onSelectedMekaniksChange(updatedSelection);

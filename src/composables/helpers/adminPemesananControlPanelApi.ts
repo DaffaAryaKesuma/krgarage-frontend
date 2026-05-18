@@ -4,7 +4,7 @@ import { getAuthHeaders } from "@/utils/auth";
 import type { Mekanik } from "@/composables/helpers/adminPemesananControlPanelHelpers";
 
 export async function patchAdminPemesananStatus(
-  pemesananId: number,
+  idPemesanan: number,
   status: string,
   catatan?: string,
 ) {
@@ -14,18 +14,18 @@ export async function patchAdminPemesananStatus(
   }
 
   return axios.patch(
-    `${API_URL}/admin/pemesanan/${pemesananId}/status`,
+    `${API_URL}/admin/pemesanan/${idPemesanan}/status`,
     payload,
     { headers: getAuthHeaders() },
   );
 }
 
 export async function patchAdminPembayaranStatus(
-  pemesananId: number,
+  idPemesanan: number,
   statusPembayaran: string,
 ) {
   return axios.patch(
-    `${API_URL}/admin/pemesanan/${pemesananId}/status-pembayaran`,
+    `${API_URL}/admin/pemesanan/${idPemesanan}/status-pembayaran`,
     { status_pembayaran: statusPembayaran },
     { headers: getAuthHeaders() },
   );
@@ -40,12 +40,12 @@ export async function fetchAdminMekaniks() {
 }
 
 export async function assignMekanikToPemesanan(
-  pemesananId: number,
-  mekanikId: number,
+  idPemesanan: number,
+  idMekanik: number,
 ) {
   return axios.patch(
-    `${API_URL}/admin/pemesanan/${pemesananId}/tugaskan-mekanik`,
-    { id_mekanik: mekanikId },
+    `${API_URL}/admin/pemesanan/${idPemesanan}/tugaskan-mekanik`,
+    { id_mekanik: idMekanik },
     { headers: getAuthHeaders() },
   );
 }

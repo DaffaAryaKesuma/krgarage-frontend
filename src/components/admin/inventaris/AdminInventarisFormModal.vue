@@ -59,15 +59,22 @@ const buttonSecondaryClass = `${buttonBaseClass} border border-slate-300 text-sl
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
     @click.self="emit('close')"
   >
-    <div class="w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-black/5">
-
+    <div
+      class="w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-black/5"
+    >
       <!-- Header -->
       <div class="border-b border-slate-200 px-6 py-5">
         <div class="flex items-center gap-3">
-          <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-red-600">
+          <div
+            class="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-red-600"
+          >
             <i
               class="mdi text-xl"
-              :class="selectedSukuCadang ? 'mdi-pencil-outline' : 'mdi-package-variant-closed'"
+              :class="
+                selectedSukuCadang
+                  ? 'mdi-pencil-outline'
+                  : 'mdi-package-variant-closed'
+              "
             ></i>
           </div>
           <h2 class="text-xl font-bold">
@@ -104,7 +111,9 @@ const buttonSecondaryClass = `${buttonBaseClass} border border-slate-300 text-sl
             </label>
             <CustomSelect
               :model-value="form.id_kategori"
-              @update:model-value="updateField('id_kategori', Number($event) || null)"
+              @update:model-value="
+                updateField('id_kategori', Number($event) || null)
+              "
               :options="kategoriOptions"
               placeholder="Pilih kategori"
             />
@@ -139,7 +148,12 @@ const buttonSecondaryClass = `${buttonBaseClass} border border-slate-300 text-sl
               required
               :disabled="!!selectedSukuCadang"
               placeholder="0"
-              :class="[inputClass, selectedSukuCadang ? 'cursor-not-allowed bg-slate-100 text-slate-500' : '']"
+              :class="[
+                inputClass,
+                selectedSukuCadang
+                  ? 'cursor-not-allowed bg-slate-100 text-slate-500'
+                  : '',
+              ]"
             />
           </div>
         </div>
@@ -188,7 +202,12 @@ const buttonSecondaryClass = `${buttonBaseClass} border border-slate-300 text-sl
           </label>
           <input
             :value="form.batas_minimal_stok"
-            @input="updateField('batas_minimal_stok', toStr($event) === '' ? null : toNum($event))"
+            @input="
+              updateField(
+                'batas_minimal_stok',
+                toStr($event) === '' ? null : toNum($event),
+              )
+            "
             type="number"
             min="0"
             required
@@ -202,7 +221,9 @@ const buttonSecondaryClass = `${buttonBaseClass} border border-slate-300 text-sl
 
         <!-- Deskripsi -->
         <div :class="formKartuClass">
-          <label class="mb-2 block text-sm font-semibold text-slate-700">Deskripsi</label>
+          <label class="mb-2 block text-sm font-semibold text-slate-700"
+            >Deskripsi</label
+          >
           <textarea
             :value="form.deskripsi"
             @input="updateField('deskripsi', toStr($event))"
@@ -213,8 +234,14 @@ const buttonSecondaryClass = `${buttonBaseClass} border border-slate-300 text-sl
         </div>
 
         <!-- Footer -->
-        <div class="flex flex-col-reverse gap-3 border-t border-slate-200 pt-5 sm:flex-row sm:justify-end">
-          <button type="button" @click="emit('close')" :class="buttonSecondaryClass">
+        <div
+          class="grid grid-cols-2 gap-3 border-t border-slate-200 pt-5 sm:flex-row sm:justify-end"
+        >
+          <button
+            type="button"
+            @click="emit('close')"
+            :class="buttonSecondaryClass"
+          >
             Batal
           </button>
           <button type="submit" :class="buttonPrimaryClass" :disabled="loading">

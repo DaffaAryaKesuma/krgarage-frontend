@@ -88,9 +88,9 @@ export function useAdminDasborPage() {
     }
   };
 
-  const changeStatus = async (pemesanan: Pemesanan, newStatus: string, catatan?: string) => {
+  const changeStatus = async (pemesanan: Pemesanan, statusBaru: string, catatan?: string) => {
     try {
-      const payload: Record<string, string> = { status: newStatus };
+      const payload: Record<string, string> = { status: statusBaru };
       if (catatan) payload.catatan_mekanik = catatan;
 
       await axios.patch(
@@ -99,7 +99,7 @@ export function useAdminDasborPage() {
         { headers: getAuthHeaders() },
       );
 
-      pemesanan.status = newStatus;
+      pemesanan.status = statusBaru;
       toast.success("Status pemesanan berhasil diubah!");
       await fetchDasborStatistik(false);
     } catch (error: any) {
@@ -125,11 +125,11 @@ export function useAdminDasborPage() {
 
       await axios.patch(
         `${API_URL}/admin/pemesanan/${pemesanan.id}/status`,
-        { status: PEMESANAN_STATUS.IN_PROGRESS },
+        { status: PEMESANAN_STATUS.DIKERJAKAN },
         { headers: getAuthHeaders() },
       );
 
-      pemesanan.status = PEMESANAN_STATUS.IN_PROGRESS;
+      pemesanan.status = PEMESANAN_STATUS.DIKERJAKAN;
       pemesanan.id_mekanik = mekanikId;
       pemesanan.mekanik =
         mekaniks.value.find((mekanik) => mekanik.id === mekanikId) || null;
@@ -142,16 +142,16 @@ export function useAdminDasborPage() {
     }
   };
 
-  const changePembayaranStatus = async (pemesanan: Pemesanan, newStatus: string) => {
+  const changePembayaranStatus = async (pemesanan: Pemesanan, statusBaru: string) => {
     try {
       const { data } = await axios.patch(
         `${API_URL}/admin/pemesanan/${pemesanan.id}/status-pembayaran`,
-        { status_pembayaran: newStatus },
+        { status_pembayaran: statusBaru },
         { headers: getAuthHeaders() },
       );
 
       pemesanan.status_pembayaran =
-        data.data?.status_pembayaran || data.pemesanan?.status_pembayaran || newStatus || PEMBAYARAN_STATUS.PAID;
+        data.data?.status_pembayaran || data.pemesanan?.status_pembayaran || statusBaru || PEMBAYARAN_STATUS.PAID;
       toast.success("Status pembayaran berhasil diperbarui menjadi lunas!");
       await fetchDasborStatistik(false);
     } catch (error: any) {

@@ -137,7 +137,7 @@ const {
     </TableShell>
 
         <CatatanInputModal
-      v-if="activeStatusConfig?.newStatus === 'Selesai'"
+      v-if="activeStatusConfig?.statusBaru === 'Selesai'"
       :show="showStatusConfirmModal"
       :title="activeStatusConfig?.title || 'Konfirmasi Aksi'"
       message="Tambahkan catatan servis (Wajib diisi):"

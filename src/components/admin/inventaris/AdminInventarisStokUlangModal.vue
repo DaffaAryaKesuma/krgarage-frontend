@@ -62,10 +62,10 @@ const buttonSecondaryClass = `${buttonBaseClass} border border-slate-300 text-sl
             </div>
             <span
               :class="[
-                'rounded-full px-3 py-1 text-sm font-bold',
+                'rounded-lg px-3 py-1 text-sm font-bold',
                 selectedSukuCadang?.stok_menipis
-                  ? 'bg-red-50 text-red-600'
-                  : 'bg-emerald-50 text-emerald-600',
+                  ? 'bg-red-100 text-red-600'
+                  : 'bg-emerald-100 text-emerald-600',
               ]"
             >
               {{ selectedSukuCadang?.jumlah_stok }}
@@ -106,7 +106,7 @@ const buttonSecondaryClass = `${buttonBaseClass} border border-slate-300 text-sl
         </div>
 
         <div
-          class="flex flex-col-reverse gap-3 border-t border-slate-200 pt-5 sm:flex-row sm:justify-end"
+          class="grid grid-cols-2 gap-3 border-t border-slate-200 pt-5 sm:flex-row sm:justify-end"
         >
           <button
             type="button"
