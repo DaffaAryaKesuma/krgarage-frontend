@@ -9,6 +9,7 @@ import AdminPemesananPanelKontrol from "@/components/admin/pemesanan-detail/Admi
 import AdminPemesananLayananDaftar from "@/components/admin/pemesanan-detail/AdminPemesananLayananDaftar.vue";
 import AdminPemesananSukuCadangDaftar from "@/components/admin/pemesanan-detail/AdminPemesananSukuCadangDaftar.vue";
 import AdminPemesananTotalRingkasan from "@/components/admin/pemesanan-detail/AdminPemesananTotalRingkasan.vue";
+import AdminPemesananCatatan from "@/components/admin/pemesanan-detail/AdminPemesananCatatan.vue";
 import TambahSukuCadangModal from "@/components/ui/TambahSukuCadangModal.vue";
 import { useAdminPemesananDetailPage } from "@/composables/useAdminPemesananDetailPage";
 
@@ -94,27 +95,10 @@ onMounted(async () => {
           </AdminPemesananInfoKartu>
         </section>
 
-        <section class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-5">
-            <div class="mb-2 flex items-center gap-2">
-              <i class="mdi mdi-note-outline text-amber-600"></i>
-              <h2 class="font-semibold text-gray-900">Catatan Pelanggan</h2>
-            </div>
-            <p class="text-sm text-gray-700 whitespace-pre-line">
-              {{ pemesanan.catatan_pelanggan || "Tidak ada catatan pelanggan." }}
-            </p>
-          </div>
-
-          <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-5">
-            <div class="mb-2 flex items-center gap-2">
-              <i class="mdi mdi-note-text text-green-600"></i>
-              <h2 class="font-semibold text-gray-900">Catatan Mekanik</h2>
-            </div>
-            <p class="text-sm text-gray-700 whitespace-pre-line">
-              {{ pemesanan.catatan_mekanik || "Belum ada catatan dari mekanik." }}
-            </p>
-          </div>
-        </section>
+        <AdminPemesananCatatan 
+          :catatan-pelanggan="pemesanan.catatan_pelanggan"
+          :catatan-mekanik="pemesanan.catatan_mekanik"
+        />
 
         <section class="grid grid-cols-1 gap-4 xl:grid-cols-2">
           <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">

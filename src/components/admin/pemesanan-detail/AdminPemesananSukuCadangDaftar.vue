@@ -40,7 +40,7 @@ const emit = defineEmits<{
         class="group flex items-center justify-between rounded-lg bg-gray-100 px-4 py-3"
       >
         <div class="flex-1">
-          <span class="font-medium text-gray-900">{{
+          <span class="font-medium text-sm text-gray-900">{{
             item.suku_cadang.nama_suku_cadang
           }}</span>
           <span class="text-sm text-gray-600 mx-3">x</span>

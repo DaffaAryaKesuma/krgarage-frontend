@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { watch } from "vue";
 import { useRegisterModal } from "@/composables/useRegisterModal";
 
-defineProps<{
+const props = defineProps<{
   open: boolean;
 }>();
 
@@ -22,7 +23,19 @@ const {
   handleBlur,
   getInputClass,
   handleRegister,
+  resetFormState,
 } = useRegisterModal(() => emit("close"));
+
+watch(
+  () => props.open,
+  (newVal) => {
+    if (!newVal) {
+      resetFormState();
+      error.value = "";
+      successMessage.value = "";
+    }
+  },
+);
 </script>
 
 <template>

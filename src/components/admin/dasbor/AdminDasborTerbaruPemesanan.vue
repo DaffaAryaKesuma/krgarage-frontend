@@ -106,7 +106,7 @@ const {
       :body-class="TABLE_BODY_CLASS"
     >
       <template #mobile>
-        <AdminDasborPemesananMobileKartu
+        <AdminDasborPemesananKartuMobile
           v-for="item in pemesanan"
           :key="`mobile-${item.id}`"
           :pemesanan="item"

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed, watch } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
 import { handleApiError, logError } from "@/utils/errorHandler";
 import { API_URL } from "@/utils/api";
 import { getRedirectPathForRole } from "@/utils/roleRoutes";
 
-defineProps<{
+const props = defineProps<{
   open: boolean;
 }>();
 
@@ -40,7 +40,7 @@ const VALIDATION_RULES = {
   ],
   password: [
     { test: (val: string) => val !== "", msg: "Password wajib diisi" },
-    { test: (val: string) => val.length >= 6, msg: "Minimal 6 karakter" },
+    { test: (val: string) => val.length >= 6, msg: "Minimal  karakter" },
   ],
 };
 
@@ -62,6 +62,21 @@ const touched = reactive({
 const error = ref("");
 const isLoading = ref(false);
 const router = useRouter();
+
+watch(
+  () => props.open,
+  (newVal) => {
+    if (!newVal) {
+      form.email = "";
+      form.password = "";
+      errors.email = "";
+      errors.password = "";
+      touched.email = false;
+      touched.password = false;
+      error.value = "";
+    }
+  },
+);
 
 const validate = (fieldKey: keyof typeof form) => {
   const rules = VALIDATION_RULES[fieldKey] || [];

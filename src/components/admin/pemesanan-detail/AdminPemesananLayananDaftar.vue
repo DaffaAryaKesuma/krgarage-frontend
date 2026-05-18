@@ -22,11 +22,11 @@ defineProps<Props>();
         class="flex items-center justify-between py-3 px-4 bg-gray-100 rounded-lg"
       >
         <div class="flex items-center gap-3">
-          <span class="font-medium text-gray-900">{{
+          <span class="font-medium text-sm text-gray-900">{{
             item.nama_layanan
           }}</span>
         </div>
-        <span class="font-medium text-gray-900">{{
+        <span class="font-medium text-sm text-gray-900">{{
           toIDR(item.harga ?? 0)
         }}</span>
       </div>

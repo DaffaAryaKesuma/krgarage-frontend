@@ -1,20 +1,34 @@
 <script setup lang="ts">
 interface Props {
-  catatan?: string;
+  catatanPelanggan?: string;
+  catatanMekanik?: string;
 }
 
 defineProps<Props>();
 </script>
 
 <template>
-  <div
-    v-if="catatan"
-    class="bg-amber-50 border border-amber-200 rounded-xl p-5 flex gap-3"
-  >
-    <i class="mdi mdi-message-text text-xl text-amber-600 flex-shrink-0"></i>
-    <div>
-      <p class="font-medium text-amber-900 mb-1">Catatan Pelanggan:</p>
-      <p class="text-amber-800 italic">"{{ catatan }}"</p>
+  <section class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <!-- Catatan Pelanggan -->
+    <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-5">
+      <div class="mb-2 flex items-center gap-2">
+        <i class="mdi mdi-note-outline text-amber-600"></i>
+        <h2 class="font-semibold text-gray-900">Catatan Pelanggan</h2>
+      </div>
+      <p class="text-sm text-gray-700 whitespace-pre-line">
+        {{ catatanPelanggan || "Tidak ada catatan pelanggan." }}
+      </p>
     </div>
-  </div>
+
+    <!-- Catatan Mekanik -->
+    <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-5">
+      <div class="mb-2 flex items-center gap-2">
+        <i class="mdi mdi-note-text text-green-600"></i>
+        <h2 class="font-semibold text-gray-900">Catatan Mekanik</h2>
+      </div>
+      <p class="text-sm text-gray-700 whitespace-pre-line">
+        {{ catatanMekanik || "Belum ada catatan dari mekanik." }}
+      </p>
+    </div>
+  </section>
 </template>

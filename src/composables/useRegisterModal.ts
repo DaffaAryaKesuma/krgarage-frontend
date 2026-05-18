@@ -203,5 +203,6 @@ export function useRegisterModal(onClose: () => void) {
     handleBlur,
     getInputClass,
     handleRegister,
+    resetFormState, // export resetFormState
   };
 }

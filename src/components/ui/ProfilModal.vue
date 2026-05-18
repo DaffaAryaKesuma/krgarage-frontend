@@ -276,7 +276,7 @@ const labelClass =
                   type="password"
                   :class="inputClass"
                   required
-                  placeholder="Min. 8 karakter"
+                  placeholder="Min. 8 karakter, 1 huruf besar, dan 1 angka"
                 />
               </div>
               <div>

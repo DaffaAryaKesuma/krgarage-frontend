@@ -13,7 +13,7 @@ const emit = defineEmits<{
   <main
     id="beranda"
     class="relative flex min-h-screen items-center justify-center bg-gray-900 bg-cover bg-center px-4 pt-24 pb-16 md:px-8 text-center text-white overflow-hidden"
-    style="background-image: url(&quot;/src/assets/beranda.png&quot;)"
+    style="background-image: url('/src/assets/homepage.png')"
   >
     <div
       class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80"
