@@ -50,19 +50,19 @@ export function useNotificationBell() {
     }
   };
 
-  const markAsRead = async (notificationId: number) => {
+  const markAsRead = async (idNotifikasi: number) => {
     try {
       await axios.post(
-        `${API_URL}/notifikasi/${notificationId}/tandai-dibaca`,
+        `${API_URL}/notifikasi/${idNotifikasi}/tandai-dibaca`,
         {},
         { headers: getAuthHeaders() },
       );
 
-      const notification = notifications.value.find(
-        (n) => n.id === notificationId,
+      const itemNotifikasi = notifications.value.find(
+        (notifikasi) => notifikasi.id === idNotifikasi,
       );
-      if (notification && !notification.sudah_dibaca) {
-        notification.sudah_dibaca = true;
+      if (itemNotifikasi && !itemNotifikasi.sudah_dibaca) {
+        itemNotifikasi.sudah_dibaca = true;
         unreadCount.value = Math.max(0, unreadCount.value - 1);
       }
     } catch (error: any) {
@@ -77,24 +77,24 @@ export function useNotificationBell() {
         {},
         { headers: getAuthHeaders() },
       );
-      notifications.value.forEach((n) => (n.sudah_dibaca = true));
+      notifications.value.forEach((notifikasi) => (notifikasi.sudah_dibaca = true));
       unreadCount.value = 0;
     } catch (error: any) {
       logError(error, "NotificationBell.markAllAsRead");
     }
   };
 
-  const handleNotificationClick = async (notification: AppNotification) => {
-    if (!notification.sudah_dibaca) {
-      await markAsRead(notification.id);
+  const handleNotificationClick = async (itemNotifikasi: AppNotification) => {
+    if (!itemNotifikasi.sudah_dibaca) {
+      await markAsRead(itemNotifikasi.id);
     }
 
     isOpen.value = false;
 
     const target = resolveNotificationTarget(
       normalizeRole(getCurrentUser()?.role),
-      getPemesananIdFromNotification(notification),
-      notification.tipe,
+      getPemesananIdFromNotification(itemNotifikasi),
+      itemNotifikasi.tipe,
     );
 
     try {

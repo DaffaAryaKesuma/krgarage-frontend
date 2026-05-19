@@ -114,9 +114,9 @@ export function useMekanikDasborAksi(
     }
   };
 
-  const handleUpdateStatus = async (pemesananId: number) => {
+  const handleUpdateStatus = async (idPemesanan: number) => {
     const pemesanan = options.activePemesanan.value.find(
-      (b) => b.id === pemesananId,
+      (pesanan) => pesanan.id === idPemesanan,
     );
     if (!pemesanan) return;
 
@@ -151,7 +151,7 @@ export function useMekanikDasborAksi(
           }
 
           const response = await axios.put(
-            `${API_URL}/mekanik/pemesanan/${pemesananId}/status`,
+            `${API_URL}/mekanik/pemesanan/${idPemesanan}/status`,
             { status: newStatus },
             { headers },
           );
@@ -168,8 +168,8 @@ export function useMekanikDasborAksi(
     );
   };
 
-  const handleAddSukuCadang = async (pemesananId: number) => {
-    selectedPemesananId.value = pemesananId;
+  const handleAddSukuCadang = async (idPemesanan: number) => {
+    selectedPemesananId.value = idPemesanan;
     showAddSukuCadangModal.value = true;
     // Fetch daftar suku cadang saat modal dibuka
     isLoadingSukuCadang.value = true;
@@ -215,7 +215,7 @@ export function useMekanikDasborAksi(
     }
   };
 
-  const handleDeleteSukuCadang = async (pemesananId: number, itemId: number) => {
+  const handleDeleteSukuCadang = async (idPemesanan: number, idItem: number) => {
     showConfirm(
       "Hapus SukuCadang",
       "Apakah Anda yakin ingin menghapus sukucadang ini?",
@@ -228,7 +228,7 @@ export function useMekanikDasborAksi(
           }
 
           await axios.delete(
-            `${API_URL}/mekanik/pemesanan/${pemesananId}/item/${itemId}`,
+            `${API_URL}/mekanik/pemesanan/${idPemesanan}/item/${idItem}`,
             { headers },
           );
           toast.success("SukuCadang berhasil dihapus");

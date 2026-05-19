@@ -31,41 +31,41 @@ export function usePelangganPemesananPage() {
   const router = useRouter();
   const toast = useToast();
 
-  const myVespas = ref<VespaBasic[]>([]);
-  const allLayanan = ref<LayananCatalogItem[]>([]);
-  const isLoading = ref(true);
-  const isSubmitting = ref(false);
-  const bookedSlots = ref<string[]>([]);
+  const vespaSaya = ref<VespaBasic[]>([]);
+  const semuaLayanan = ref<LayananCatalogItem[]>([]);
+  const sedangMemuat = ref(true);
+  const sedangMengirim = ref(false);
+  const slotTerpakai = ref<string[]>([]);
 
   const form = ref(createPelangganPemesananFormState());
   const errors = ref(createPelangganPemesananErrors());
   const touched = ref(createPelangganPemesananTouched());
 
-  const selectedLayanan = computed(() =>
-    allLayanan.value.filter((layanan) =>
+  const layananTerpilih = computed(() =>
+    semuaLayanan.value.filter((layanan) =>
       form.value.id_layanan.includes(layanan.id),
     ),
   );
 
-  const selectedVespa = computed(() =>
-    myVespas.value.find((v) => v.id === form.value.id_vespa),
+  const vespaTerpilih = computed(() =>
+    vespaSaya.value.find((vespa) => vespa.id === form.value.id_vespa),
   );
 
   const totalHarga = computed(() =>
-    selectedLayanan.value.reduce((sum, layanan) => sum + layanan.harga, 0),
+    layananTerpilih.value.reduce((sum, layanan) => sum + layanan.harga, 0),
   );
 
-  const validateField = (field: PemesananFormField) => {
+  const validasiBidang = (field: PemesananFormField) => {
     validatePelangganPemesananField(
       field,
       form.value,
       touched.value,
       errors.value,
-      bookedSlots.value,
+      slotTerpakai.value,
     );
   };
 
-  const checkAvailability = async () => {
+  const cekKetersediaan = async () => {
     if (!form.value.tanggal_pemesanan) return;
 
     const headers = getAuthHeaders();
@@ -80,40 +80,40 @@ export function usePelangganPemesananPage() {
       // Data dari Laravel mengembalikan jam dengan format "15:00:00" (HH:mm:ss)
       // Kita perlu mengambil "HH:mm" (5 karakter pertama) agar cocok dengan TIME_SLOTS
       const slots = data.data ?? data;
-      bookedSlots.value = (slots as string[]).map((time) =>
+      slotTerpakai.value = (slots as string[]).map((time) =>
         time.substring(0, 5),
       );
     } catch (error: any) {
-      logError(error, "checkAvailability");
+      logError(error, "cekKetersediaan");
       toast.error(handleApiError(error));
     }
   };
 
-  const handleLayananChange = (layananIds: number[]) => {
+  const tanganiPerubahanLayanan = (layananIds: number[]) => {
     form.value.id_layanan = layananIds;
     touched.value.id_layanan = true;
-    validateField("id_layanan");
+    validasiBidang("id_layanan");
   };
 
-  const handleVespaChange = (vespaId: number) => {
+  const tanganiPerubahanVespa = (vespaId: number) => {
     form.value.id_vespa = vespaId;
     touched.value.id_vespa = true;
-    validateField("id_vespa");
+    validasiBidang("id_vespa");
   };
 
-  const handleDateChange = async () => {
-    await checkAvailability();
+  const tanganiPerubahanTanggal = async () => {
+    await cekKetersediaan();
     touched.value.tanggal_pemesanan = true;
-    validateField("tanggal_pemesanan");
+    validasiBidang("tanggal_pemesanan");
   };
 
-  const handleTimeSelect = () => {
+  const tanganiPilihWaktu = () => {
     touched.value.jam_pemesanan = true;
-    validateField("jam_pemesanan");
+    validasiBidang("jam_pemesanan");
   };
 
-  const submit = async () => {
-    if (isSubmitting.value) return;
+  const kirimData = async () => {
+    if (sedangMengirim.value) return;
 
     const fieldsToValidate: PemesananFormField[] = [
       "id_vespa",
@@ -124,7 +124,7 @@ export function usePelangganPemesananPage() {
 
     fieldsToValidate.forEach((field) => {
       touched.value[field] = true;
-      validateField(field);
+      validasiBidang(field);
     });
 
     if (hasPelangganPemesananErrors(errors.value)) {
@@ -132,7 +132,7 @@ export function usePelangganPemesananPage() {
       return;
     }
 
-    isSubmitting.value = true;
+    sedangMengirim.value = true;
 
     try {
       const headers = getAuthHeaders();
@@ -149,17 +149,17 @@ export function usePelangganPemesananPage() {
         router.push("/app/riwayat");
       }, 1500);
     } catch (error: any) {
-      logError(error, "submit");
+      logError(error, "kirimData");
       toast.error(handleApiError(error));
     } finally {
-      isSubmitting.value = false;
+      sedangMengirim.value = false;
     }
   };
 
-  const loadInitialData = async () => {
+  const muatDataAwal = async () => {
     const headers = getAuthHeaders();
     if (!Object.keys(headers).length) {
-      isLoading.value = false;
+      sedangMemuat.value = false;
       return;
     }
 
@@ -169,34 +169,34 @@ export function usePelangganPemesananPage() {
         axios.get(`${API_URL}/layanan`),
       ]);
 
-      myVespas.value = vespas.data.data ?? vespas.data;
-      allLayanan.value = layanan.data.data ?? layanan.data;
+      vespaSaya.value = vespas.data.data ?? vespas.data;
+      semuaLayanan.value = layanan.data.data ?? layanan.data;
     } catch (error: any) {
-      logError(error, "loadInitialData");
+      logError(error, "muatDataAwal");
       toast.error(handleApiError(error));
     } finally {
-      isLoading.value = false;
+      sedangMemuat.value = false;
     }
   };
 
   return {
     TIME_SLOTS,
-    myVespas,
-    allLayanan,
-    isLoading,
-    isSubmitting,
-    bookedSlots,
+    myVespas: vespaSaya,
+    allLayanan: semuaLayanan,
+    isLoading: sedangMemuat,
+    isSubmitting: sedangMengirim,
+    bookedSlots: slotTerpakai,
     form,
     errors,
     touched,
-    selectedLayanan,
-    selectedVespa,
+    selectedLayanan: layananTerpilih,
+    selectedVespa: vespaTerpilih,
     totalHarga,
-    handleLayananChange,
-    handleVespaChange,
-    handleDateChange,
-    handleTimeSelect,
-    submit,
-    loadInitialData,
+    handleLayananChange: tanganiPerubahanLayanan,
+    handleVespaChange: tanganiPerubahanVespa,
+    handleDateChange: tanganiPerubahanTanggal,
+    handleTimeSelect: tanganiPilihWaktu,
+    submit: kirimData,
+    loadInitialData: muatDataAwal,
   };
 }

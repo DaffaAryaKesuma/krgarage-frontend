@@ -97,7 +97,10 @@ const incrementQty = (max: number) => {
 };
 
 const tambahKeKeranjang = (sukuCadang: SukuCadangRingkasan) => {
-  keranjang.value.push({ sukucadang: sukuCadang, quantity: activeQuantity.value });
+  keranjang.value.push({
+    sukucadang: sukuCadang,
+    quantity: activeQuantity.value,
+  });
   activeCardId.value = null;
   activeQuantity.value = 1;
 };
@@ -209,15 +212,19 @@ const handleClose = () => {
               ]"
             >
               <div class="mb-2">
-                <p class="font-bold text-gray-900 text-sm leading-tight line-clamp-2">
+                <p
+                  class="font-bold text-gray-900 text-sm leading-tight line-clamp-2"
+                >
                   {{ sukuCadang.nama_suku_cadang }}
                 </p>
-                <p class="text-xs text-gray-500 mt-0.5">{{ sukuCadang.kategori }}</p>
+                <p class="text-xs text-gray-500 mt-0.5">
+                  {{ sukuCadang.kategori }}
+                </p>
               </div>
 
               <span
                 :class="[
-                  'inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full mb-2',
+                  'inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full mb-2',
                   getStokBadge(sukuCadang).class,
                 ]"
               >
@@ -225,7 +232,7 @@ const handleClose = () => {
                 {{ getStokBadge(sukuCadang).label }}
               </span>
 
-              <p class="text-sm font-black text-red-600">
+              <p class="text-sm font-bold text-red-600">
                 {{ toIDR(sukuCadang.harga_jual) }}
               </p>
 
@@ -236,7 +243,9 @@ const handleClose = () => {
                 @click.stop
               >
                 <div class="flex items-center justify-between gap-2">
-                  <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+                  <div
+                    class="flex items-center border border-gray-300 rounded-lg overflow-hidden"
+                  >
                     <button
                       @click="decrementQty"
                       class="px-2.5 py-1 text-gray-600 hover:bg-gray-100 transition font-bold text-base"
@@ -248,7 +257,8 @@ const handleClose = () => {
                       type="number"
                       min="1"
                       :max="sukuCadang.jumlah_stok"
-                      class="w-10 text-center text-sm font-bold border-x border-gray-300 py-1 focus:outline-none"
+                      readonly
+                      class="w-10 text-center text-sm font-bold border-x border-gray-300 py-1 focus:outline-none no-spinners cursor-default"
                     />
                     <button
                       @click="incrementQty(sukuCadang.jumlah_stok)"
@@ -257,9 +267,6 @@ const handleClose = () => {
                       +
                     </button>
                   </div>
-                  <span class="text-xs font-bold text-red-600">
-                    {{ toIDR(sukuCadang.harga_jual * activeQuantity) }}
-                  </span>
                 </div>
                 <button
                   @click="tambahKeKeranjang(sukuCadang)"
@@ -276,7 +283,9 @@ const handleClose = () => {
         <!-- Keranjang -->
         <div class="shrink-0 border-t border-gray-100 px-4 pt-3 pb-1">
           <div v-if="keranjang.length > 0">
-            <p class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">
+            <p
+              class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2"
+            >
               Keranjang ({{ keranjang.length }} item)
             </p>
             <div class="space-y-1.5 max-h-28 overflow-y-auto pr-1">
@@ -290,7 +299,8 @@ const handleClose = () => {
                     {{ item.sukucadang.nama_suku_cadang }}
                   </p>
                   <p class="text-[10px] text-gray-500">
-                    x{{ item.quantity }} × {{ toIDR(item.sukucadang.harga_jual) }}
+                    x{{ item.quantity }} ×
+                    {{ toIDR(item.sukucadang.harga_jual) }}
                   </p>
                 </div>
                 <div class="flex items-center gap-2 ml-2 shrink-0">
@@ -306,9 +316,13 @@ const handleClose = () => {
                 </div>
               </div>
             </div>
-            <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-200">
+            <div
+              class="flex justify-between items-center mt-2 pt-2 border-t border-gray-200"
+            >
               <span class="text-xs font-bold text-gray-700">Total</span>
-              <span class="text-base font-black text-red-600">{{ toIDR(grandTotal) }}</span>
+              <span class="text-base font-black text-red-600">{{
+                toIDR(grandTotal)
+              }}</span>
             </div>
           </div>
           <div v-else class="text-center py-2 text-gray-400">
@@ -333,9 +347,23 @@ const handleClose = () => {
         >
           <i v-if="isSubmitting" class="mdi mdi-loading mdi-spin"></i>
           <i v-else class="mdi mdi-check-circle"></i>
-          {{ isSubmitting ? "Menyimpan..." : `Tambahkan ${keranjang.length} Item` }}
+          {{
+            isSubmitting ? "Menyimpan..." : `Tambahkan ${keranjang.length} Item`
+          }}
         </button>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.no-spinners {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.no-spinners::-webkit-inner-spin-button,
+.no-spinners::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+</style>
