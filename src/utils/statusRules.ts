@@ -10,7 +10,9 @@ export function isStatusMenunggu(status: string | null | undefined): boolean {
   return status?.toLowerCase() === "menunggu";
 }
 
-export function isStatusDikonfirmasi(status: string | null | undefined): boolean {
+export function isStatusDikonfirmasi(
+  status: string | null | undefined,
+): boolean {
   return status?.toLowerCase() === "dikonfirmasi";
 }
 
@@ -104,7 +106,7 @@ export function getMekanikNextStatus(
   currentStatus: string | null | undefined,
 ): PemesananStatus | null {
   if (isStatusDikerjakan(currentStatus)) {
-    return PEMESANAN_STATUS.COMPLETED;
+    return PEMESANAN_STATUS.SELESAI;
   }
   return null;
 }
@@ -133,11 +135,11 @@ export function getStatusLabel(status: string | null): string {
 export function getStatusIcon(status: string | null): string {
   const canonicalStatus = toPemesananStatus(status);
   const iconMap: Record<PemesananStatus, string> = {
-    [PEMESANAN_STATUS.PENDING]: "mdi-clock-outline",
-    [PEMESANAN_STATUS.CONFIRMED]: "mdi-check-circle",
-    [PEMESANAN_STATUS.IN_PROGRESS]: "mdi-cog",
-    [PEMESANAN_STATUS.COMPLETED]: "mdi-check-all",
-    [PEMESANAN_STATUS.CANCELLED]: "mdi-close-circle",
+    [PEMESANAN_STATUS.MENUNGGU]: "mdi-clock-outline",
+    [PEMESANAN_STATUS.DIKONFIRMASI]: "mdi-check-circle",
+    [PEMESANAN_STATUS.DIKERJAKAN]: "mdi-cog",
+    [PEMESANAN_STATUS.SELESAI]: "mdi-check-all",
+    [PEMESANAN_STATUS.BATAL]: "mdi-close-circle",
   };
 
   return canonicalStatus ? iconMap[canonicalStatus] : "mdi-help-circle";

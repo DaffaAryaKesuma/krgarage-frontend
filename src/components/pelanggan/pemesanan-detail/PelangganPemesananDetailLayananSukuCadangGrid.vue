@@ -26,7 +26,11 @@ const getLayananPrice = (layanan: Pemesanan["layanan"][number]) =>
           class="flex items-center justify-between rounded-lg bg-purple-50 px-3 py-2"
         >
           <span class="text-sm font-medium text-gray-800">
-            {{ layanan.nama_layanan }}
+            {{
+              layanan.pivot?.nama_layanan_saat_ini ||
+              layanan.nama_layanan ||
+              "Layanan Dihapus"
+            }}
           </span>
           <span class="text-sm font-semibold text-gray-900">
             {{ toIDR(getLayananPrice(layanan)) }}
@@ -48,7 +52,11 @@ const getLayananPrice = (layanan: Pemesanan["layanan"][number]) =>
           class="flex items-center justify-between rounded-lg bg-orange-50 px-3 py-2"
         >
           <span class="text-sm text-gray-800">
-            {{ item.suku_cadang.nama_suku_cadang }}
+            {{
+              item.nama_suku_cadang_saat_ini ||
+              item.suku_cadang?.nama_suku_cadang ||
+              "Suku Cadang Tidak Ditemukan"
+            }}
             <span class="text-xs text-gray-500">(x{{ item.jumlah }})</span>
           </span>
           <span class="text-sm font-semibold text-gray-900">

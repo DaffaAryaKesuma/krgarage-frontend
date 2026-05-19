@@ -3,7 +3,7 @@ export const PEMESANAN_STATUS = {
   DIKONFIRMASI: "Dikonfirmasi",
   DIKERJAKAN: "Dikerjakan",
   SELESAI: "Selesai",
-  BATAL: "Batal",
+  BATAL: "batal",
 } as const;
 
 export const STATUS_MAP = {
@@ -37,15 +37,6 @@ export type MekanikStatusFilter =
   | "dikonfirmasi"
   | "dikerjakan";
 
-const NORMALIZED_STATUS_TO_CANONICAL: Record<string, PemesananStatus> = {
-  // Nilai Indonesia (canonical)
-  menunggu: PEMESANAN_STATUS.MENUNGGU,
-  dikonfirmasi: PEMESANAN_STATUS.DIKONFIRMASI,
-  dikerjakan: PEMESANAN_STATUS.DIKERJAKAN,
-  selesai: PEMESANAN_STATUS.SELESAI,
-  batal: PEMESANAN_STATUS.BATAL,
-};
-
 export const PEMESANAN_STATUS_FILTER_OPTIONS: Array<{
   value: PemesananStatusFilter;
   label: string;
@@ -74,8 +65,11 @@ export const STATUS_BADGE_BASE_CLASS =
 export function toPemesananStatus(
   status: string | null | undefined,
 ): PemesananStatus | null {
-  const normalized = (status || "").trim().toLowerCase();
-  return NORMALIZED_STATUS_TO_CANONICAL[normalized] || null;
+  const validStatuses = Object.values(PEMESANAN_STATUS) as string[];
+  if (status && validStatuses.includes(status)) {
+    return status as PemesananStatus;
+  }
+  return null;
 }
 
 export function matchesPemesananStatusFilter(

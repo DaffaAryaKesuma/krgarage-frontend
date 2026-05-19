@@ -58,7 +58,9 @@ const handleCancel = () => {
         <span :class="getStatusBadgeClass(pemesanan.status)">
           {{ getStatusLabel(pemesanan.status || "Menunggu") }}
         </span>
-        <span :class="getPembayaranStatusBadgeClass(pemesanan.status_pembayaran)">
+        <span
+          :class="getPembayaranStatusBadgeClass(pemesanan.status_pembayaran)"
+        >
           {{ getPembayaranStatusLabel(pemesanan.status_pembayaran) }}
         </span>
       </div>
@@ -89,7 +91,11 @@ const handleCancel = () => {
             :key="i"
             class="text-sm font-medium text-gray-900 leading-snug"
           >
-            {{ layanan.nama_layanan }}
+            {{
+              layanan.pivot?.nama_layanan_saat_ini ||
+              layanan.nama_layanan ||
+              "Layanan Dihapus"
+            }}
           </p>
         </div>
       </div>

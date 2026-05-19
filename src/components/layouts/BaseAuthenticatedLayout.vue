@@ -81,7 +81,7 @@ const showProfilModal = ref(false);
               v-for="item in navItems"
               :key="item.to"
               :to="item.to"
-              class="inline-flex items-center gap-2 whitespace-nowrap rounded-lg px-2 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-red-50 hover:text-red-600 no-underline lg:px-3 xl:px-4"
+              class="inline-flex items-center gap-2 whitespace-nowrap rounded-lg px-2 py-2 text-sm font-medium text-gray-700 transition-colors  hover:text-red-600 no-underline lg:px-3 xl:px-4"
             >
               <i :class="['mdi shrink-0', item.icon]"></i>
               <span>{{ item.label }}</span>

@@ -9,19 +9,23 @@ export interface PemesananVespa {
 
 export interface PemesananItem {
   id: number;
-  suku_cadang: Pick<SukuCadangRingkasan, "nama_suku_cadang" | "kategori"> & {
-    id?: number;
-  };
+  nama_suku_cadang_saat_ini?: string;
+  suku_cadang:
+    | (Pick<SukuCadangRingkasan, "nama_suku_cadang" | "kategori"> & {
+        id?: number;
+      })
+    | null;
   jumlah: number;
   harga_saat_ini: number;
 }
 
 export interface PemesananLayananLine {
   id?: number;
-  nama_layanan: string;
+  nama_layanan?: string;
   harga?: number;
   pivot?: {
     harga_saat_pesan?: number;
+    nama_layanan_saat_ini?: string;
   };
 }
 

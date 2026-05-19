@@ -20,7 +20,9 @@ const emit = defineEmits<{
   <section class="grid grid-cols-1 gap-4 xl:grid-cols-2">
     <!-- Layanan -->
     <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
-      <h3 class="font-semibold text-gray-900 tracking-wide mb-3 flex items-center gap-2">
+      <h3
+        class="font-semibold text-gray-900 tracking-wide mb-3 flex items-center gap-2"
+      >
         <i class="mdi mdi-wrench text-purple-600 text-xl"></i>
         Layanan
       </h3>
@@ -45,7 +47,9 @@ const emit = defineEmits<{
     <!-- Suku Cadang -->
     <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
       <div class="flex justify-between items-center mb-3">
-        <h3 class="font-semibold text-gray-900 tracking-wide flex items-center gap-2">
+        <h3
+          class="font-semibold text-gray-900 tracking-wide flex items-center gap-2"
+        >
           <i class="mdi mdi-cog text-orange-600 text-xl"></i>
           Suku Cadang
         </h3>
@@ -68,7 +72,9 @@ const emit = defineEmits<{
         >
           <div class="flex-1">
             <span class="font-medium text-sm text-gray-900">{{
-              item.suku_cadang.nama_suku_cadang
+              item.nama_suku_cadang_saat_ini ||
+              item.suku_cadang?.nama_suku_cadang ||
+              "Suku Cadang Tidak Ditemukan"
             }}</span>
             <span class="text-sm text-gray-600 mx-3">x</span>
             <span class="text-sm text-gray-600">{{ item.jumlah }}</span>

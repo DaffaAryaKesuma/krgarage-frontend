@@ -71,7 +71,10 @@ const getPemesananLayanan = (layanan: KeuanganPemesananLayanan[]) =>
 
 const getPemesananItems = (items?: KeuanganPemesanan["item_pemesanan"]) =>
   items?.length
-    ? items.map((item) => `${item.suku_cadang.nama_suku_cadang} (x${item.jumlah})`)
+    ? items.map(
+        (item) =>
+          `${item.nama_suku_cadang_saat_ini || item.suku_cadang?.nama_suku_cadang || "Suku Cadang"} (x${item.jumlah})`,
+      )
     : [];
 
 const getPemesananTotal = (pemesanan: KeuanganPemesanan) =>

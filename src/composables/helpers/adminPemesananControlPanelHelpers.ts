@@ -19,17 +19,14 @@ export interface AksiConfirmationConfig {
   successMessage: string;
 }
 
-export const AKSI_CONFIG: Record<
-  PemesananAksiType,
-  AksiConfirmationConfig
-> = {
+export const AKSI_CONFIG: Record<PemesananAksiType, AksiConfirmationConfig> = {
   confirm: {
     title: "Konfirmasi Pemesanan",
     message: "Apakah Anda yakin ingin mengonfirmasi pemesanan ini?",
     confirmText: "Ya, Konfirmasi",
     variant: "info",
     requestType: "status",
-    value: PEMESANAN_STATUS.CONFIRMED,
+    value: PEMESANAN_STATUS.DIKONFIRMASI,
     successMessage: "Pemesanan berhasil dikonfirmasi!",
   },
   complete: {
@@ -38,7 +35,7 @@ export const AKSI_CONFIG: Record<
     confirmText: "Ya, Selesaikan",
     variant: "success",
     requestType: "status",
-    value: PEMESANAN_STATUS.COMPLETED,
+    value: PEMESANAN_STATUS.SELESAI,
     successMessage: "Pemesanan berhasil diselesaikan!",
   },
   cancel: {
@@ -47,7 +44,7 @@ export const AKSI_CONFIG: Record<
     confirmText: "Ya, Batalkan",
     variant: "danger",
     requestType: "status",
-    value: PEMESANAN_STATUS.CANCELLED,
+    value: PEMESANAN_STATUS.BATAL,
     successMessage: "Pemesanan berhasil dibatalkan!",
   },
   markPaid: {

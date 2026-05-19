@@ -105,7 +105,11 @@ const getLayananPrice = (pemesanan: PelangganPemesanan) =>
                   :key="i"
                   class="font-semibold text-gray-900 text-sm leading-snug"
                 >
-                  {{ layanan.nama_layanan }}
+                  {{
+                    layanan.pivot?.nama_layanan_saat_ini ||
+                    layanan.nama_layanan ||
+                    "Layanan Dihapus"
+                  }}
                 </p>
               </div>
             </div>

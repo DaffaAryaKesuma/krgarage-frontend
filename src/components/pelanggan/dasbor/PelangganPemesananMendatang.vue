@@ -79,12 +79,16 @@ const getLayananTotal = (pemesanan: PelangganPemesanan) =>
             <span :class="getStatusBadgeClass(item.status || 'Menunggu')">
               {{ getStatusLabel(item.status || "Menunggu") }}
             </span>
-            <span :class="getPembayaranStatusBadgeClass(item.status_pembayaran)">
+            <span
+              :class="getPembayaranStatusBadgeClass(item.status_pembayaran)"
+            >
               {{ getPembayaranStatusLabel(item.status_pembayaran) }}
             </span>
           </div>
         </div>
-        <div class="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-2">
+        <div
+          class="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-2"
+        >
           <div class="flex items-start gap-2">
             <i class="mdi mdi-motorbike text-xl text-gray-600"></i>
             <div>
@@ -104,13 +108,19 @@ const getLayananTotal = (pemesanan: PelangganPemesanan) =>
                   :key="i"
                   class="font-semibold text-gray-900 text-sm leading-snug"
                 >
-                  {{ layanan.nama_layanan }}
+                  {{
+                    layanan.pivot?.nama_layanan_saat_ini ||
+                    layanan.nama_layanan ||
+                    "Layanan Dihapus"
+                  }}
                 </p>
               </div>
             </div>
           </div>
         </div>
-        <div class="flex items-center justify-between pt-4 border-t border-gray-200 mt-auto">
+        <div
+          class="flex items-center justify-between pt-4 border-t border-gray-200 mt-auto"
+        >
           <div>
             <p class="text-xs text-gray-500">Total Biaya</p>
             <p class="text-lg font-bold text-red-600 sm:text-xl">
