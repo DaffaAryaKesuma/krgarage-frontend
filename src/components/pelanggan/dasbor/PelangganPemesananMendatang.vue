@@ -66,7 +66,6 @@ const getLayananTotal = (pemesanan: PelangganPemesanan) =>
           <div class="flex min-w-0 items-center gap-3">
             <i class="mdi mdi-calendar-month text-3xl text-red-600"></i>
             <div>
-              <p class="text-xs text-gray-500 mb-1">Kode Pemesanan</p>
               <p class="text-base font-bold text-gray-900 sm:text-lg">
                 {{ item.kode_pemesanan }}
               </p>

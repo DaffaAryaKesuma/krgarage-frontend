@@ -186,7 +186,7 @@ const labelClass =
             </div>
             <div class="text-center">
               <span
-                class="inline-block px-3 py-1 rounded-full bg-red-100 text-[10px] font-bold text-red-700 uppercase tracking-widest"
+                class="inline-block px-3 py-1 rounded-full bg-red-100 text-xs font-bold text-red-700 capitalize tracking-widest"
               >
                 {{ user.role }}
               </span>

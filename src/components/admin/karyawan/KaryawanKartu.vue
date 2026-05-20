@@ -36,11 +36,11 @@ const emit = defineEmits<{
         </p>
       </div>
       <span
-        class="inline-flex px-2.5 py-0.5 text-xs font-semibold leading-5 rounded-full"
+        class="capitalize inline-flex px-2.5 py-0.5 text-xs font-semibold leading-5 rounded-full"
         :class="
           karyawan.role === 'admin'
-            ? 'bg-purple-100 text-purple-800'
-            : 'bg-green-100 text-green-800'
+            ? 'bg-red-100 text-red-700'
+            : 'bg-blue-100 text-blue-700'
         "
       >
         {{ karyawan.role }}

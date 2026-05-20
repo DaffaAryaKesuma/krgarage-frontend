@@ -34,7 +34,7 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
 
 <template>
   <div
-    class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all duration-200"
+    class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all duration-200 flex flex-col"
   >
     <!-- Header -->
     <div
@@ -130,7 +130,7 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
       class="mb-5 rounded-xl border border-gray-100 bg-slate-50 p-4 shadow-inner"
     >
       <div
-        class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+        class="flex flex-row items-center justify-between gap-3 sm:justify-between"
       >
         <!-- Status Servis -->
         <div>
@@ -147,7 +147,7 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
           </div>
         </div>
 
-        <div class="hidden sm:block w-px h-8 bg-slate-200"></div>
+        <div class="w-px h-8 bg-slate-200"></div>
 
         <!-- Status Pembayaran -->
         <div>
@@ -183,6 +183,7 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
     </div>
 
     <AdminPemesananAksiPanel
+      class="mt-auto"
       :pemesanan="pemesanan"
       :mekanik-options="mekanikOptions"
       :selected-mekanik-id="selectedMekanikId ?? null"

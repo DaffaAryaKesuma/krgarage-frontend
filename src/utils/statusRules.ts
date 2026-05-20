@@ -7,27 +7,27 @@ import {
 } from "./statusCore";
 
 export function isStatusMenunggu(status: string | null | undefined): boolean {
-  return status?.toLowerCase() === "menunggu";
+  return status?.toLowerCase() === "Menunggu";
 }
 
 export function isStatusDikonfirmasi(
   status: string | null | undefined,
 ): boolean {
-  return status?.toLowerCase() === "dikonfirmasi";
+  return status?.toLowerCase() === "Dikonfirmasi";
 }
 
 export function isStatusBatal(status: string | null | undefined): boolean {
   const s = status?.toLowerCase();
-  return s === "batal" || s === "dibatalkan";
+  return s === "Batal";
 }
 
 export function isStatusDikerjakan(status: string | null | undefined): boolean {
   const s = status?.toLowerCase();
-  return s === "dikerjakan" || s === "diproses";
+  return s === "Dikerjakan";
 }
 
 export function isStatusSelesai(status: string | null | undefined): boolean {
-  return status?.toLowerCase() === "selesai";
+  return status?.toLowerCase() === "Selesai";
 }
 
 export function isPendingOrConfirmedStatus(

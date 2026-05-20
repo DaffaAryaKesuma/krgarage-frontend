@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { formatDateShort } from "@/utils/date";
+import { formatDateShort, formatTimeShort } from "@/utils/date";
 import {
   canPelangganCancelPemesanan,
   getStatusBadgeClass,
@@ -44,13 +44,12 @@ const handleCancel = () => {
           <i class="mdi mdi-calendar text-2xl text-red-600"></i>
         </div>
         <div>
-          <p class="text-xs text-gray-500">Kode Pemesanan</p>
           <p class="font-bold text-gray-900 text-lg">
             {{ pemesanan.kode_pemesanan }}
           </p>
           <p class="text-xs text-gray-600 mt-1">
             {{ formatDateShort(pemesanan.tanggal_pemesanan) }} -
-            {{ pemesanan.jam_pemesanan }}
+            {{ formatTimeShort(pemesanan.jam_pemesanan) }}
           </p>
         </div>
       </div>

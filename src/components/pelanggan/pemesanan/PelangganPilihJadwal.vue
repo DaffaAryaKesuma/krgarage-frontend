@@ -107,6 +107,16 @@ const selectTime = (slot: string) => {
         <p class="text-xs text-gray-500 mt-2">
           <i class="mdi mdi-information-outline"></i> Merah = Sudah dipesan
         </p>
+        <!-- Pesan khusus jika semua slot penuh karena mekanik sibuk -->
+        <div
+          v-if="bookedSlots.length === timeSlots.length"
+          class="mt-3 flex items-start gap-2 bg-orange-50 border border-orange-200 rounded-lg px-3 py-2"
+        >
+          <i class="mdi mdi-wrench-clock text-orange-500 mt-0.5 flex-shrink-0"></i>
+          <p class="text-xs text-orange-700 font-medium">
+            Semua mekanik sedang sibuk di tanggal ini
+          </p>
+        </div>
         <p
           v-if="timeError && timeTouched"
           class="text-red-600 text-sm mt-2 flex items-center gap-1"

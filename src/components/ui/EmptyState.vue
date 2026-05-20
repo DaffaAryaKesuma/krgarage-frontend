@@ -5,6 +5,7 @@ interface Props {
   message: string;
   aksiText?: string;
   aksiLink?: string;
+  aksiIcon?: string;
 }
 
 defineProps<Props>();
@@ -37,14 +38,14 @@ const BUTTON_CLASS =
       :to="aksiLink"
       :class="BUTTON_CLASS"
     >
-      {{ aksiText }}
+      {{ aksiText }}<i v-if="aksiIcon" :class="aksiIcon + ' ml-1'"></i>
     </router-link>
     <button
       v-else-if="aksiText"
       @click="emit('aksi')"
       :class="BUTTON_CLASS"
     >
-      {{ aksiText }}
+      {{ aksiText }}<i v-if="aksiIcon" :class="aksiIcon + ' ml-1'"></i>
     </button>
   </div>
 </template>

@@ -2,6 +2,7 @@ export interface VespaBasic {
   id: number;
   model: string;
   plat_nomor: string;
+  pemesanan_aktif?: boolean;
 }
 
 export interface VespaDetail extends VespaBasic {
