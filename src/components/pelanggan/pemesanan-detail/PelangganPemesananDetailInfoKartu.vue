@@ -16,7 +16,7 @@ defineProps<{
   <section class="grid grid-cols-1 gap-4 md:grid-cols-3">
     <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-5">
       <div class="mb-3 flex items-center gap-2">
-        <i class="mdi mdi-clipboard-text text-xl text-indigo-600"></i>
+        <i class="mdi mdi-clipboard-text text-xl text-red-600"></i>
         <h2 class="font-semibold text-gray-900">Pemesanan</h2>
       </div>
       <p class="text-sm text-gray-600">Kode Pemesanan</p>
@@ -54,7 +54,7 @@ defineProps<{
 
     <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-5">
       <div class="mb-3 flex items-center gap-2">
-        <i class="mdi mdi-account-wrench text-xl text-blue-600"></i>
+        <i class="mdi mdi-account-wrench text-xl text-red-600"></i>
         <h2 class="font-semibold text-gray-900">Mekanik</h2>
       </div>
       <p class="text-sm text-gray-600">Nama Mekanik</p>
@@ -63,16 +63,12 @@ defineProps<{
       </p>
       <p class="mt-3 text-sm text-gray-600">Status Pengerjaan</p>
       <div class="mt-2">
-        <span :class="getStatusBadgeClass(pemesanan.status)">
-          {{ getStatusLabel(pemesanan.status || "Menunggu") }}
-        </span>
+        <span :class="[getStatusBadgeClass(pemesanan.status), 'whitespace-nowrap']">{{ getStatusLabel(pemesanan.status || "Menunggu") }}</span>
       </div>
 
       <p class="mt-3 text-sm text-gray-600">Status Pembayaran</p>
       <div class="mt-2">
-        <span :class="getPembayaranStatusBadgeClass(pemesanan.status_pembayaran)">
-          {{ getPembayaranStatusLabel(pemesanan.status_pembayaran) }}
-        </span>
+        <span :class="[getPembayaranStatusBadgeClass(pemesanan.status_pembayaran), 'whitespace-nowrap']">{{ getPembayaranStatusLabel(pemesanan.status_pembayaran) }}</span>
       </div>
     </div>
   </section>

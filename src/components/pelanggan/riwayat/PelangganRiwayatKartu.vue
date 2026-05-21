@@ -35,66 +35,90 @@ const handleCancel = () => {
   >
     <!-- Header -->
     <div
-      class="flex items-start justify-between mb-4 pb-4 border-b border-gray-100"
+      class="flex items-center justify-between gap-3 mb-4 pb-4 border-b border-gray-100"
     >
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-3 min-w-0">
         <div
-          class="flex items-center justify-center w-12 h-12 rounded-full bg-red-100"
+          class="flex items-center justify-center w-12 h-12 rounded-full bg-red-100 shrink-0"
         >
           <i class="mdi mdi-calendar text-2xl text-red-600"></i>
         </div>
-        <div>
-          <p class="font-bold text-gray-900 text-lg">
+        <div class="min-w-0">
+          <p class="text-xs text-gray-500 font-semibold">Kode Pemesanan</p>
+          <p class="font-bold text-gray-900 text-base sm:text-base">
             {{ pemesanan.kode_pemesanan }}
-          </p>
-          <p class="text-xs text-gray-600 mt-1">
-            {{ formatDateShort(pemesanan.tanggal_pemesanan) }} -
-            {{ formatTimeShort(pemesanan.jam_pemesanan) }}
           </p>
         </div>
       </div>
-      <div class="flex flex-col items-end gap-2">
-        <span :class="getStatusBadgeClass(pemesanan.status)">
-          {{ getStatusLabel(pemesanan.status || "Menunggu") }}
-        </span>
-        <span
-          :class="getPembayaranStatusBadgeClass(pemesanan.status_pembayaran)"
-        >
-          {{ getPembayaranStatusLabel(pemesanan.status_pembayaran) }}
-        </span>
+      <div class="flex flex-col items-end gap-1.5 shrink-0">
+        <span :class="[getStatusBadgeClass(pemesanan.status)]">{{ getStatusLabel(pemesanan.status || "Menunggu") }}</span>
+        <span :class="[getPembayaranStatusBadgeClass(pemesanan.status_pembayaran)]">{{ getPembayaranStatusLabel(pemesanan.status_pembayaran) }}</span>
       </div>
     </div>
 
-    <!-- Vespa Info -->
-    <div class="mb-4 p-3 bg-red-50 rounded-lg flex items-start gap-3">
-      <i class="mdi mdi-motorbike text-2xl text-red-600"></i>
-      <div class="flex-1">
-        <p class="text-xs text-gray-500 mb-1">Vespa</p>
-        <p class="font-semibold text-gray-900">
-          {{ pemesanan.vespa?.model || "N/A" }}
-        </p>
-        <p class="text-xs text-gray-600">
-          {{ pemesanan.vespa?.plat_nomor || "N/A" }}
-        </p>
+    <!-- Info Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+      <!-- Vespa Info -->
+      <div class="p-3 bg-gray-50 border border-gray-100 rounded-xl flex items-center gap-3">
+        <div class="flex items-center justify-center w-10 h-10 rounded-lg text-red-600 shrink-0">
+          <i class="mdi mdi-motorbike text-xl"></i>
+        </div>
+        <div class="min-w-0">
+          <p class="text-[10px] uppercase tracking-wider font-semibold text-gray-400">Vespa</p>
+          <p class="font-semibold text-gray-900 text-sm truncate">
+            {{ pemesanan.vespa?.model || "N/A" }}
+          </p>
+          <p class="text-xs text-gray-500 font-medium truncate">
+            {{ pemesanan.vespa?.plat_nomor || "N/A" }}
+          </p>
+        </div>
       </div>
-    </div>
 
-    <!-- Layanan -->
-    <div class="mb-4 p-3 bg-purple-50 rounded-lg flex items-start gap-3">
-      <i class="mdi mdi-wrench text-2xl text-purple-600 flex-shrink-0"></i>
-      <div class="flex-1">
-        <p class="text-xs text-gray-500 mb-1">Layanan</p>
-        <div class="space-y-0.5">
-          <p
-            v-for="(layanan, i) in pemesanan.layanan"
-            :key="i"
-            class="text-sm font-medium text-gray-900 leading-snug"
-          >
-            {{
-              layanan.pivot?.nama_layanan_saat_ini ||
-              layanan.nama_layanan ||
-              "Layanan Dihapus"
-            }}
+      <!-- Layanan -->
+      <div class="p-3 bg-gray-50 border border-gray-100 rounded-xl flex items-center gap-3">
+        <div class="flex items-center justify-center w-10 h-10 rounded-lg text-red-600 shrink-0">
+          <i class="mdi mdi-wrench text-xl"></i>
+        </div>
+        <div class="min-w-0 flex-1">
+          <p class="text-[10px] uppercase tracking-wider font-semibold text-gray-400">Layanan</p>
+          <div class="space-y-0.5">
+            <p
+              v-for="(layanan, i) in pemesanan.layanan"
+              :key="i"
+              class="text-sm font-semibold text-gray-900 truncate"
+            >
+              {{
+                layanan.pivot?.nama_layanan_saat_ini ||
+                layanan.nama_layanan ||
+                "Layanan Dihapus"
+              }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tanggal Pemesanan -->
+      <div class="p-3 bg-gray-50 border border-gray-100 rounded-xl flex items-center gap-3">
+        <div class="flex items-center justify-center w-10 h-10 rounded-lg text-red-600 shrink-0">
+          <i class="mdi mdi-calendar-clock text-xl"></i>
+        </div>
+        <div class="min-w-0">
+          <p class="text-[10px] uppercase tracking-wider font-semibold text-gray-400">Tanggal</p>
+          <p class="font-semibold text-gray-900 text-sm">
+            {{ formatDateShort(pemesanan.tanggal_pemesanan) }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Jam Pemesanan -->
+      <div class="p-3 bg-gray-50 border border-gray-100 rounded-xl flex items-center gap-3">
+        <div class="flex items-center justify-center w-10 h-10 rounded-lg text-red-600 shrink-0">
+          <i class="mdi mdi-clock-outline text-xl"></i>
+        </div>
+        <div class="min-w-0">
+          <p class="text-[10px] uppercase tracking-wider font-semibold text-gray-400">Jam</p>
+          <p class="font-semibold text-gray-900 text-sm">
+            {{ formatTimeShort(pemesanan.jam_pemesanan) }}
           </p>
         </div>
       </div>

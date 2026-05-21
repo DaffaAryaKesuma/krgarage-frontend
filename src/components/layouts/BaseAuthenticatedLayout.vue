@@ -34,6 +34,12 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const route = useRoute();
+
+const isActive = (path: string) => {
+  return path === "/"
+    ? route.path === "/"
+    : route.path === path || route.path.startsWith(path + "/");
+};
 const {
   isMobileMenuOpen,
   showLogoutConfirm,
@@ -81,9 +87,14 @@ const showProfilModal = ref(false);
               v-for="item in navItems"
               :key="item.to"
               :to="item.to"
-              class="inline-flex items-center gap-2 whitespace-nowrap rounded-lg px-2 py-2 text-sm font-medium text-gray-700 transition-colors  hover:text-red-600 no-underline lg:px-3 xl:px-4"
+              :class="[
+                'group inline-flex items-center gap-2 whitespace-nowrap rounded-lg px-3 py-2 text-sm transition-all duration-200 no-underline lg:px-3 xl:px-4',
+                isActive(item.to)
+                  ? 'bg-red-50 text-red-600 font-semibold shadow-sm shadow-red-100/50'
+                  : 'text-gray-700 font-medium hover:text-red-600 hover:bg-gray-50'
+              ]"
             >
-              <i :class="['mdi shrink-0', item.icon]"></i>
+              <i :class="['mdi shrink-0 text-base transition-colors duration-200', item.icon, isActive(item.to) ? 'text-red-600' : 'text-gray-500 group-hover:text-red-600']"></i>
               <span>{{ item.label }}</span>
             </router-link>
 
@@ -164,9 +175,14 @@ const showProfilModal = ref(false);
             :key="item.to"
             :to="item.to"
             @click="closeMenu"
-            class="flex items-center gap-2 px-4 py-3 rounded-lg text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors font-medium no-underline w-full"
+            :class="[
+              'group flex items-center gap-2 px-4 py-3 rounded-lg transition-all duration-200 font-medium no-underline w-full',
+              isActive(item.to)
+                ? 'bg-red-50 text-red-600 font-semibold border-l-4 border-red-600 rounded-l-none'
+                : 'text-gray-700 hover:bg-gray-50 hover:text-red-600'
+            ]"
           >
-            <i :class="['mdi', item.icon]"></i>
+            <i :class="['mdi text-lg transition-colors duration-200', item.icon, isActive(item.to) ? 'text-red-600' : 'text-gray-500 group-hover:text-red-600']"></i>
             <span>{{ item.label }}</span>
           </router-link>
 

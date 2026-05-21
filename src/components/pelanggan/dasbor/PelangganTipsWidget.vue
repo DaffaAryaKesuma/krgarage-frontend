@@ -25,7 +25,7 @@ const currentTip = computed(
           <i
             class="mdi mdi-wrench text-gray-600 text-lg mt-0.5 flex-shrink-0"
           ></i>
-          <p class="text-gray-700">{{ currentTip }}</p>
+          <p class="text-gray-700 text-sm">{{ currentTip }}</p>
         </div>
       </div>
     </div>

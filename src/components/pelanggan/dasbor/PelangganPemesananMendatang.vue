@@ -74,15 +74,9 @@ const getLayananTotal = (pemesanan: PelangganPemesanan) =>
               </p>
             </div>
           </div>
-          <div class="flex flex-col items-end gap-2">
-            <span :class="getStatusBadgeClass(item.status || 'Menunggu')">
-              {{ getStatusLabel(item.status || "Menunggu") }}
-            </span>
-            <span
-              :class="getPembayaranStatusBadgeClass(item.status_pembayaran)"
-            >
-              {{ getPembayaranStatusLabel(item.status_pembayaran) }}
-            </span>
+          <div class="flex flex-col items-end gap-2 shrink-0">
+            <span :class="[getStatusBadgeClass(item.status || 'Menunggu'), 'whitespace-nowrap']">{{ getStatusLabel(item.status || "Menunggu") }}</span>
+            <span :class="[getPembayaranStatusBadgeClass(item.status_pembayaran), 'whitespace-nowrap']">{{ getPembayaranStatusLabel(item.status_pembayaran) }}</span>
           </div>
         </div>
         <div

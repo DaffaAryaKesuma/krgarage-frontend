@@ -36,7 +36,7 @@ const STAT_KARTU: StatKartu[] = [
     label: "Dikerjakan",
     key: "sedang_dikerjakan",
     color: "blue",
-    icon: "mdi mdi-cog",
+    icon: "mdi mdi-wrench-cog",
     route: "/admin/pemesanan",
     suffix: () => "vespa",
   },
@@ -49,7 +49,7 @@ const STAT_KARTU: StatKartu[] = [
     suffix: () => "pemesanan",
   },
   {
-    label: "Peringatan Stok Kritis/Habis",
+    label: "Stok Kritis/Habis",
     key: "lowStock",
     color: "red",
     icon: "mdi mdi-alert-circle",

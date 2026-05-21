@@ -23,7 +23,7 @@ const handleImageError = (e: Event) => {
 
 <template>
   <div
-    class="group bg-white rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-red-300"
+    class="group bg-white rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-red-300 h-full flex flex-col"
   >
     <!-- Gambar -->
     <div
@@ -41,7 +41,7 @@ const handleImageError = (e: Event) => {
     </div>
 
     <!-- Content -->
-    <div class="p-6">
+    <div class="p-6 flex flex-col flex-1">
       <div class="flex items-start gap-2 mb-3">
         <i class="mdi mdi-wrench text-2xl text-gray-600 flex-shrink-0"></i>
         <h3 class="text-lg font-bold text-gray-900 leading-tight">
@@ -55,7 +55,7 @@ const handleImageError = (e: Event) => {
 
       <!-- Info Box -->
       <div
-        class="bg-gray-100 p-3 rounded-lg mb-4 grid grid-cols-2 gap-2 text-sm"
+        class="bg-gray-100 p-3 rounded-lg mb-4 grid grid-cols-2 gap-2 text-sm mt-auto"
       >
         <div>
           <p class="text-gray-600 text-xs">Estimasi Harga</p>

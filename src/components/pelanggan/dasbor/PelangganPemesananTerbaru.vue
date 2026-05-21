@@ -78,11 +78,7 @@ const getLayananPrice = (pemesanan: PelangganPemesanan) =>
             </div>
           </div>
           <div class="flex flex-col items-end gap-2">
-            <span
-              :class="getPembayaranStatusBadgeClass(item.status_pembayaran)"
-            >
-              {{ getPembayaranStatusLabel(item.status_pembayaran) }}
-            </span>
+            <span :class="[getPembayaranStatusBadgeClass(item.status_pembayaran), 'whitespace-nowrap']">{{ getPembayaranStatusLabel(item.status_pembayaran) }}</span>
           </div>
         </div>
         <div
