@@ -4,6 +4,8 @@ import { getCurrentUser } from "@/utils/auth";
 import axios from "axios";
 import { useToast } from "@/utils/useToast";
 import { handleApiError, logError } from "@/utils/errorHandler";
+import { API_URL } from "@/utils/api";
+import { getAuthHeaders } from "@/utils/auth";
 import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
@@ -33,7 +35,9 @@ const toast = useToast();
 const fetchKaryawan = async () => {
   isLoading.value = true;
   try {
-    const response = await axios.get("/api/admin/karyawan");
+    const response = await axios.get(`${API_URL}/admin/karyawan`, {
+      headers: getAuthHeaders(),
+    });
     karyawanDaftar.value = response.data.data;
   } catch (error) {
     logError(error, "fetchKaryawan");
@@ -58,8 +62,8 @@ const openEditModal = (karyawan: Karyawan) => {
 const handleFormSubmit = async (formData: any) => {
   try {
     const url = isEditMode.value
-      ? `/api/admin/karyawan/${formData.id}`
-      : "/api/admin/karyawan";
+      ? `${API_URL}/admin/karyawan/${formData.id}`
+      : `${API_URL}/admin/karyawan`;
 
     const bodyData = { ...formData };
     if (isEditMode.value && !bodyData.password) {
@@ -67,8 +71,8 @@ const handleFormSubmit = async (formData: any) => {
     }
 
     const response = isEditMode.value
-      ? await axios.put(url, bodyData)
-      : await axios.post(url, bodyData);
+      ? await axios.put(url, bodyData, { headers: getAuthHeaders() })
+      : await axios.post(url, bodyData, { headers: getAuthHeaders() });
 
     toast.success(response.data.message);
     isModalOpen.value = false;
@@ -88,7 +92,8 @@ const hapusKaryawan = async () => {
   if (!karyawanToDelete.value) return;
   try {
     const response = await axios.delete(
-      `/api/admin/karyawan/${karyawanToDelete.value}`,
+      `${API_URL}/admin/karyawan/${karyawanToDelete.value}`,
+      { headers: getAuthHeaders() }
     );
     toast.success(response.data.message);
     fetchKaryawan();

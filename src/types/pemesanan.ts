@@ -108,9 +108,10 @@ export interface KeuanganPemesanan {
   layanan: KeuanganPemesananLayanan[];
   item_pemesanan?: Array<{
     jumlah: number;
+    nama_suku_cadang_saat_ini?: string;
     suku_cadang: {
       nama_suku_cadang: string;
-    };
+    } | null;
   }>;
 }
 

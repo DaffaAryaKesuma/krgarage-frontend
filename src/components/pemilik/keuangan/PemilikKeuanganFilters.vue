@@ -29,7 +29,6 @@ const updateEndDate = (val: string) => emit("update:endDate", val);
           <i class="mdi mdi-calendar-range text-red-600"></i>
           Filter Rentang Waktu
         </h2>
-        <p class="text-sm text-gray-500">Tampilkan laporan berdasarkan tanggal spesifik</p>
       </div>
 
       <!-- Controls -->

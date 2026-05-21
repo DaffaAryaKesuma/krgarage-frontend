@@ -39,7 +39,7 @@ const TABLE_WRAPPER_CLASS =
 const TABLE_CLASS = "w-full table-fixed divide-y divide-gray-200";
 
 const TABLE_HEADER_CELL_CLASS =
-  "px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-gray-900 sm:px-6 [&:nth-child(1)]:w-[14%] [&:nth-child(2)]:w-[13%] [&:nth-child(3)]:w-[12%] [&:nth-child(4)]:w-[11%] [&:nth-child(5)]:w-[12%] [&:nth-child(6)]:w-[22%] [&:nth-child(7)]:w-[16%]";
+  "px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-gray-900 sm:px-6 [&:nth-child(1)]:w-[15%] [&:nth-child(2)]:w-[15%] [&:nth-child(3)]:w-[13%] [&:nth-child(4)]:w-[12%] [&:nth-child(5)]:w-[13%] [&:nth-child(6)]:w-[15%] [&:nth-child(7)]:w-[17%]";
 
 const TABLE_BODY_CLASS = "divide-y divide-gray-100 bg-white";
 

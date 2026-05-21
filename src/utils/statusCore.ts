@@ -3,7 +3,7 @@ export const PEMESANAN_STATUS = {
   DIKONFIRMASI: "Dikonfirmasi",
   DIKERJAKAN: "Dikerjakan",
   SELESAI: "Selesai",
-  BATAL: "Batal",
+  BATAL: "batal",
 } as const;
 
 export const STATUS_MAP = {

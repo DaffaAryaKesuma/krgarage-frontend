@@ -169,11 +169,11 @@ const TABLE_HEADERS = [
 
     <div
       v-else
-      class="rounded-xl bg-green-50 py-8 text-center border border-green-100"
+      class="rounded-xl py-8 text-center"
     >
       <i class="mdi mdi-check-circle text-5xl text-green-500"></i>
-      <p class="mt-3 text-lg font-bold text-green-700">Semua Stok Aman! 🎉</p>
-      <p class="mt-1 text-sm text-green-600">
+      <p class="mt-1 text-lg font-bold text-green-700">Semua Stok Aman</p>
+      <p class="text-sm text-green-600">
         Tidak ada barang yang perlu dibelanjakan ulang saat ini
       </p>
     </div>

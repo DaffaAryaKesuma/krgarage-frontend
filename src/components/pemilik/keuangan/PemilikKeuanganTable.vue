@@ -150,15 +150,11 @@ const TABLE_HEADERS = [
               <p
                 class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
               >
-                Pembayaran
+                Pelanggan
               </p>
-              <span
-                :class="
-                  getPembayaranStatusBadgeClass(pemesanan.status_pembayaran)
-                "
-              >
-                {{ getPembayaranStatusLabel(pemesanan.status_pembayaran) }}
-              </span>
+              <p class="font-medium text-gray-900">
+                {{ formatNama(pemesanan.pengguna?.nama || "-") }}
+              </p>
             </div>
             <div>
               <p
@@ -174,21 +170,25 @@ const TABLE_HEADERS = [
               <p
                 class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
               >
-                Pelanggan
+                Plat Nomor
               </p>
               <p class="font-medium text-gray-900">
-                {{ formatNama(pemesanan.pengguna?.nama || "-") }}
+                {{ getPemesananPlateNumber(pemesanan) }}
               </p>
             </div>
             <div>
               <p
                 class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
               >
-                Plat Nomor
+                Pembayaran
               </p>
-              <p class="font-medium text-gray-900">
-                {{ getPemesananPlateNumber(pemesanan) }}
-              </p>
+              <span
+                :class="
+                  getPembayaranStatusBadgeClass(pemesanan.status_pembayaran)
+                "
+              >
+                {{ getPembayaranStatusLabel(pemesanan.status_pembayaran) }}
+              </span>
             </div>
             <div>
               <p

@@ -57,3 +57,15 @@ export function formatNama(nama: string | null | undefined): string {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 }
+
+/**
+ * Format tanggal menjadi format lokal YYYY-MM-DD
+ * @param date - Objek Date yang akan diformat
+ * @returns String format tanggal YYYY-MM-DD
+ */
+export function toLocalISOString(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
