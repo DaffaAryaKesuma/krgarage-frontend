@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, onUnmounted } from "vue";
 import axios from "axios";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
@@ -48,11 +48,32 @@ const loadUserData = () => {
 
 onMounted(loadUserData);
 
+let hasLocked = false;
+
+const lockScroll = () => {
+  if (!hasLocked) {
+    (window as any).__activeModalsCount = ((window as any).__activeModalsCount || 0) + 1;
+    document.body.style.overflow = "hidden";
+    hasLocked = true;
+  }
+};
+
+const unlockScroll = () => {
+  if (hasLocked) {
+    (window as any).__activeModalsCount = Math.max(0, ((window as any).__activeModalsCount || 0) - 1);
+    if (((window as any).__activeModalsCount) === 0) {
+      document.body.style.overflow = "";
+    }
+    hasLocked = false;
+  }
+};
+
 watch(
   () => props.show,
   (newVal) => {
     if (newVal) {
       loadUserData();
+      lockScroll();
     } else {
       // Reset form password saat modal ditutup
       passwordForm.value = {
@@ -60,9 +81,15 @@ watch(
         password_baru: "",
         password_baru_confirmation: "",
       };
+      unlockScroll();
     }
   },
+  { immediate: true }
 );
+
+onUnmounted(() => {
+  unlockScroll();
+});
 
 const handleUpdateProfil = async () => {
   loading.value = true;

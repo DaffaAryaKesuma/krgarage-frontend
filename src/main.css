@@ -47,3 +47,8 @@ i.mdi:before {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Prevent body scrolling when a full-screen overlay/modal is open */
+body:has(.fixed.inset-0) {
+  overflow: hidden;
+}

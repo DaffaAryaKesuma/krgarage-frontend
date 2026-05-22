@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onUnmounted } from "vue";
 import { toIDR } from "@/utils/money";
 import type { SukuCadangRingkasan } from "@/types/inventaris";
 
@@ -30,6 +30,26 @@ const keranjang = ref<KeranjangItem[]>([]);
 const activeCardId = ref<number | null>(null);
 const activeQuantity = ref(1);
 
+let hasLocked = false;
+
+const lockScroll = () => {
+  if (!hasLocked) {
+    (window as any).__activeModalsCount = ((window as any).__activeModalsCount || 0) + 1;
+    document.body.style.overflow = "hidden";
+    hasLocked = true;
+  }
+};
+
+const unlockScroll = () => {
+  if (hasLocked) {
+    (window as any).__activeModalsCount = Math.max(0, ((window as any).__activeModalsCount || 0) - 1);
+    if (((window as any).__activeModalsCount) === 0) {
+      document.body.style.overflow = "";
+    }
+    hasLocked = false;
+  }
+};
+
 // Reset saat modal dibuka/ditutup
 watch(
   () => props.show,
@@ -39,9 +59,17 @@ watch(
       keranjang.value = [];
       activeCardId.value = null;
       activeQuantity.value = 1;
+      lockScroll();
+    } else {
+      unlockScroll();
     }
   },
+  { immediate: true }
 );
+
+onUnmounted(() => {
+  unlockScroll();
+});
 
 const idSudahDiKeranjang = computed(
   () => new Set(keranjang.value.map((item) => item.sukucadang.id)),
