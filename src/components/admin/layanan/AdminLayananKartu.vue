@@ -23,7 +23,7 @@ const handleImageError = (e: Event) => {
 
 <template>
   <div
-    class="group bg-white rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-red-300 h-full flex flex-col"
+    class="group bg-white rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 h-full flex flex-col"
   >
     <!-- Gambar -->
     <div
@@ -59,13 +59,13 @@ const handleImageError = (e: Event) => {
       >
         <div>
           <p class="text-gray-600 text-xs">Estimasi Harga</p>
-          <p class="font-bold text-red-600">
+          <p class="font-bold text-gray-900">
             {{ toIDR(layanan.harga) }}
           </p>
         </div>
         <div>
           <p class="text-gray-600 text-xs">Estimasi Durasi</p>
-          <p class="font-bold text-blue-600">
+          <p class="font-bold text-gray-900">
             {{ formatWaktu(layanan.durasi_pengerjaan) }}
           </p>
         </div>
@@ -75,14 +75,14 @@ const handleImageError = (e: Event) => {
       <div class="flex gap-3">
         <button
           @click="emit('edit', layanan)"
-          class="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-red-600 to-red-700 rounded-lg hover:from-red-700 hover:to-red-800 transition shadow-md"
+          class="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 transition shadow-md rounded-lg"
         >
           <i class="mdi mdi-pencil"></i>
           <span>Edit</span>
         </button>
         <button
           @click="emit('delete', layanan)"
-          class="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-red-600 to-red-700 rounded-lg hover:from-red-700 hover:to-red-800 transition shadow-md"
+          class="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 transition shadow-md rounded-lg"
         >
           <i class="mdi mdi-delete"></i>
           <span>Hapus</span>

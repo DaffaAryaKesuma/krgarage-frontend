@@ -78,15 +78,14 @@ onMounted(() => {
         <button
           @click="handleConfirm"
           :disabled="isProcessing"
-          class="w-full py-3 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2 disabled:opacity-50"
+          class="w-full py-3 bg-white border border-blue-700 text-blue-700 text-sm font-semibold rounded-lg hover:bg-blue-50 transition flex items-center justify-center gap-2 disabled:opacity-50"
         >
           <span v-if="isProcessing"
             ><i class="mdi mdi-loading mdi-spin"></i
           ></span>
           <span v-else
             ><i class="mdi mdi-check-circle text-lg"></i> Konfirmasi
-            Pemesanan</span
-          >
+          </span>
         </button>
         <button
           v-if="canCancel"
@@ -94,14 +93,14 @@ onMounted(() => {
           :disabled="isProcessing"
           :class="CANCEL_BUTTON_CLASS"
         >
-          Batalkan
+          <i class="mdi mdi-close-circle text-lg"></i> Batalkan
         </button>
       </div>
 
       <div v-else-if="canAssignAndStart" class="space-y-4">
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div class="border border-blue-200 rounded-lg p-4">
           <p
-            class="text-sm text-blue-800 mb-3 font-medium flex items-center gap-2"
+            class="text-sm text-blue-700 mb-3 font-medium flex items-center gap-2"
           >
             <i class="mdi mdi-information text-lg"></i>
             Pilih mekanik untuk mulai servis
@@ -109,13 +108,13 @@ onMounted(() => {
           <CustomSelect
             v-model="selectedMekanikId"
             :options="mekanikOptionsDaftar"
-            placeholder="-- Pilih Mekanik --"
+            placeholder="Pilih Mekanik"
             class="mb-3"
           />
           <button
             @click="assignMekanikAndStart"
             :disabled="!selectedMekanikId || isProcessing"
-            class="w-full py-3 bg-purple-600 text-white text-sm font-semibold rounded-lg hover:bg-purple-700 transition flex items-center justify-center gap-2 disabled:bg-gray-300 disabled:cursor-not-allowed"
+            class="w-full py-3 bg-white border border-blue-700 text-blue-700 text-sm font-semibold rounded-lg hover:bg-blue-50 transition flex items-center justify-center gap-2 disabled:border-gray-300 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
           >
             <span v-if="isProcessing"
               ><i class="mdi mdi-loading mdi-spin"></i
@@ -136,19 +135,19 @@ onMounted(() => {
       </div>
 
       <div v-else-if="canComplete" class="space-y-3">
-        <div class="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-3">
-          <p class="text-sm text-purple-800 flex items-center gap-2">
-            <i class="mdi mdi-cog animate-spin text-lg"></i>
+        <div class="bg-amber-100 border border-amber-200 rounded-lg p-4 mb-3">
+          <p class="text-sm text-amber-700 flex items-center gap-2">
+            <i class="mdi mdi-wrench-cog text-lg"></i>
             <span>
-              Sedang dikerjakan oleh:
-              <strong>{{ assignedMekanikName || "Mekanik" }}</strong>
+              Sedang dikerjakan oleh
+              <strong class="capitalize">{{ assignedMekanikName || "Mekanik" }}</strong>
             </span>
           </p>
         </div>
         <button
           @click="handleComplete"
           :disabled="isProcessing"
-          class="w-full py-3 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition flex items-center justify-center gap-2 disabled:opacity-50"
+          class="w-full py-3 bg-white border border-green-600 text-green-600 text-sm font-semibold rounded-lg hover:bg-green-50 transition flex items-center justify-center gap-2 disabled:opacity-50"
         >
           <span v-if="isProcessing"
             ><i class="mdi mdi-loading mdi-spin"></i
@@ -193,7 +192,7 @@ onMounted(() => {
                 v-if="canMarkAsPaid"
                 @click="handleMarkAsPaid"
                 :disabled="isProcessing"
-                class="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+                class="inline-flex items-center gap-1 rounded-lg bg-green-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <i class="mdi mdi-cash-check"></i>
                 Tandai Lunas
@@ -227,7 +226,7 @@ onMounted(() => {
       v-if="aksiConfirmationConfig?.value === 'Selesai'"
       :show="showAksiConfirmation"
       :title="aksiConfirmationConfig?.title || 'Konfirmasi Aksi'"
-      message="Tambahkan catatan servis (Wajib diisi):"
+      message="Tuliskan catatan servis untuk pelanggan"
       :confirm-text="aksiConfirmationConfig?.confirmText || 'Ya, Lanjutkan'"
       cancel-text="Batal"
       required

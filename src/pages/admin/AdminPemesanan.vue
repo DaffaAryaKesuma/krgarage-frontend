@@ -133,7 +133,7 @@ onMounted(() => {
   <CatatanInputModal
     :show="isCompleteModalOpen"
     title="Tandai Selesai"
-    message="Tuliskan catatan servis untuk pelanggan. Catatan ini akan disimpan saat pekerjaan selesai"
+    message="Tuliskan catatan servis untuk pelanggan"
     confirm-text="Tandai Selesai"
     required
     @confirm="handleCompleteConfirm"

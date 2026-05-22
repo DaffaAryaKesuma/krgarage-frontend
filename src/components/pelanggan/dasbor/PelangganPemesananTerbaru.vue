@@ -72,7 +72,7 @@ const getLayananPrice = (pemesanan: PelangganPemesanan) =>
               <p class="text-base font-bold text-gray-900 sm:text-lg">
                 {{ item.kode_pemesanan }}
               </p>
-              <p class="text-xs text-gray-600 mt-1">
+              <p class="text-xs text-gray-600">
                 {{ formatDateShort(item.tanggal_pemesanan) }}
               </p>
             </div>

@@ -9,8 +9,8 @@ export type PembayaranStatus =
 export type PembayaranStatusFilter = "all" | PembayaranStatus;
 
 const PEMBAYARAN_STATUS_BADGE_MAP: Record<PembayaranStatus, string> = {
-  [PEMBAYARAN_STATUS.UNPAID]: "bg-amber-100 text-amber-800",
-  [PEMBAYARAN_STATUS.PAID]: "bg-emerald-100 text-emerald-800",
+  [PEMBAYARAN_STATUS.UNPAID]: "bg-gray-100 text-gray-700",
+  [PEMBAYARAN_STATUS.PAID]: "bg-emerald-100 text-emerald-700",
 };
 
 export const PEMBAYARAN_STATUS_FILTER_OPTIONS: Array<{
@@ -23,7 +23,7 @@ export const PEMBAYARAN_STATUS_FILTER_OPTIONS: Array<{
 ];
 
 export const PEMBAYARAN_STATUS_BADGE_BASE_CLASS =
-  "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold";
+  "inline-flex items-center rounded-lg px-3 py-1 text-xs font-semibold";
 
 export function isPaidStatus(status: string | null | undefined): boolean {
   return status === PEMBAYARAN_STATUS.PAID;

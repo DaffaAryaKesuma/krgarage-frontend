@@ -58,9 +58,9 @@ function handleCancel() {
     @click.self="handleCancel"
   >
     <div class="w-full max-w-md transform transition-all duration-300 scale-100 bg-white rounded-xl shadow-2xl">
-      <div class="px-6 py-4 rounded-t-xl bg-gradient-to-r from-green-500 to-green-600">
+      <div class="px-6 py-4 rounded-t-xl bg-green-600">
         <h3 class="text-xl font-bold text-white flex items-center gap-2">
-          <i class="mdi mdi-pencil-box-outline text-2xl"></i>
+          <i class="mdi mdi-check-all text-2xl"></i>
           {{ title }}
         </h3>
         <p v-if="subtitle" class="text-green-50 text-sm mt-1">
@@ -74,7 +74,7 @@ function handleCancel() {
             v-model="inputValue"
             :placeholder="placeholder"
             class="w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2"
-            :class="errorMsg ? 'border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-green-500 focus:ring-green-200'"
+            :class="errorMsg ? 'border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-gray-200 focus:ring-gray-200'"
             rows="4"
             maxlength="1000"
           ></textarea>
@@ -93,7 +93,7 @@ function handleCancel() {
           <button
             @click="handleConfirm"
             :disabled="loading"
-            class="flex-1 px-4 py-3 text-white font-semibold rounded-lg transition-all flex justify-center items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-lg hover:shadow-xl disabled:opacity-60 disabled:cursor-not-allowed"
+            class="flex-1 px-4 py-3 text-white font-semibold rounded-lg transition-all flex justify-center items-center gap-2 bg-green-600 shadow-lg hover:shadow-xl disabled:opacity-60 disabled:cursor-not-allowed"
           >
             <span v-if="loading"><i class="mdi mdi-loading mdi-spin mr-1"></i> Menyimpan...</span>
             <span v-else>{{ confirmText }}</span>

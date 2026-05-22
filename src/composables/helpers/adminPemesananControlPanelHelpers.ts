@@ -30,7 +30,7 @@ export const AKSI_CONFIG: Record<PemesananAksiType, AksiConfirmationConfig> = {
     successMessage: "Pemesanan berhasil dikonfirmasi!",
   },
   complete: {
-    title: "Selesaikan Pemesanan",
+    title: "Tandai Selesai",
     message: "Apakah Anda yakin ingin menandai servis ini telah selesai?",
     confirmText: "Ya, Selesaikan",
     variant: "success",
@@ -59,4 +59,4 @@ export const AKSI_CONFIG: Record<PemesananAksiType, AksiConfirmationConfig> = {
 };
 
 export const CANCEL_BUTTON_CLASS =
-  "w-full py-2.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition font-semibold";
+  "w-full py-2.5 bg-white border border-red-700 text-red-700 text-sm font-medium rounded-lg hover:bg-red-50 transition font-semibold";

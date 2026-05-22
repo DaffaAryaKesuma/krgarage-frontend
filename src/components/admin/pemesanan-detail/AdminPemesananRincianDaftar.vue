@@ -23,7 +23,7 @@ const emit = defineEmits<{
       <h3
         class="font-semibold text-gray-900 tracking-wide mb-3 flex items-center gap-2"
       >
-        <i class="mdi mdi-wrench text-purple-600 text-xl"></i>
+        <i class="mdi mdi-wrench text-gray-600 text-xl"></i>
         Layanan
       </h3>
       <div class="space-y-2">
@@ -50,13 +50,13 @@ const emit = defineEmits<{
         <h3
           class="font-semibold text-gray-900 tracking-wide flex items-center gap-2"
         >
-          <i class="mdi mdi-cog text-orange-600 text-xl"></i>
+          <i class="mdi mdi-cog text-gray-600 text-xl"></i>
           Suku Cadang
         </h3>
         <button
           v-if="isInProgress"
           @click="emit('addSukuCadang')"
-          class="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-green-600 text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-green-700 transition shadow-sm"
+          class="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-red-600 text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-red-700 transition shadow-sm"
         >
           <i class="mdi mdi-plus"></i>
           <span>Tambah</span>

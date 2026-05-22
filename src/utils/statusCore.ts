@@ -8,23 +8,23 @@ export const PEMESANAN_STATUS = {
 
 export const STATUS_MAP = {
   [PEMESANAN_STATUS.MENUNGGU]: {
-    badge: "bg-yellow-100 text-yellow-800",
+    badge: "bg-gray-100 text-gray-700",
     label: "Menunggu",
   },
   [PEMESANAN_STATUS.DIKONFIRMASI]: {
-    badge: "bg-blue-100 text-blue-800",
+    badge: "bg-blue-100 text-blue-700",
     label: "Dikonfirmasi",
   },
   [PEMESANAN_STATUS.DIKERJAKAN]: {
-    badge: "bg-purple-100 text-purple-800",
+    badge: "bg-amber-100 text-amber-700",
     label: "Dikerjakan",
   },
   [PEMESANAN_STATUS.SELESAI]: {
-    badge: "bg-green-100 text-green-800",
+    badge: "bg-emerald-100 text-emerald-700",
     label: "Selesai",
   },
   [PEMESANAN_STATUS.BATAL]: {
-    badge: "bg-red-100 text-red-800",
+    badge: "bg-red-100 text-red-700",
     label: "Batal",
   },
 };
@@ -60,7 +60,7 @@ export const MEKANIK_STATUS_FILTER_OPTIONS: Array<{
 ];
 
 export const STATUS_BADGE_BASE_CLASS =
-  "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold";
+  "inline-flex items-center rounded-lg px-3 py-1 text-xs font-semibold";
 
 export function toPemesananStatus(
   status: string | null | undefined,

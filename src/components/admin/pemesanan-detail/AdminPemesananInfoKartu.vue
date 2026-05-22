@@ -21,9 +21,9 @@ defineProps<Props>();
     >
       <div class="mb-3 flex items-center gap-3">
         <div
-          class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center"
+          class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center"
         >
-          <i class="mdi mdi-account text-xl text-blue-600"></i>
+          <i class="mdi mdi-account text-xl text-gray-600"></i>
         </div>
         <h3 class="font-semibold text-gray-900">Pelanggan</h3>
       </div>
@@ -33,10 +33,10 @@ defineProps<Props>();
           {{ user.email }}
         </p>
         <div v-if="user.no_telepon" class="mt-2 flex min-w-0 items-start gap-2">
-          <i class="mdi mdi-phone mt-0.5 shrink-0 text-green-600"></i>
+          <i class="mdi mdi-phone mt-0.5 shrink-0 text-gray-600"></i>
           <a
             :href="`tel:${user.no_telepon}`"
-            class="text-xs leading-snug font-medium text-green-600 transition hover:text-green-700 sm:text-sm"
+            class="text-xs leading-snug font-medium text-gray-600 transition hover:text-gray-700 sm:text-sm"
           >
             {{ user.no_telepon }}
           </a>
@@ -50,9 +50,9 @@ defineProps<Props>();
     >
       <div class="mb-3 flex items-center gap-3">
         <div
-          class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center"
+          class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center"
         >
-          <i class="mdi mdi-motorbike text-xl text-red-600"></i>
+          <i class="mdi mdi-motorbike text-xl text-gray-600"></i>
         </div>
         <h3 class="font-semibold text-gray-900">Vespa</h3>
       </div>
@@ -75,9 +75,9 @@ defineProps<Props>();
     >
       <div class="mb-3 flex items-center gap-3">
         <div
-          class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"
+          class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center"
         >
-          <i class="mdi mdi-calendar text-xl text-green-600"></i>
+          <i class="mdi mdi-calendar text-xl text-gray-600"></i>
         </div>
         <h3 class="font-semibold text-gray-900">Tanggal & Waktu</h3>
       </div>
@@ -87,7 +87,7 @@ defineProps<Props>();
           {{ formatDateShort(tanggalPemesanan) }}
         </p>
         <p class="text-xs text-gray-500">Jam Servis</p>
-        <div class="flex items-center gap-2 text-sm text-gray-600">
+        <div class="flex items-center gap-2 font-medium text-sm text-gray-900">
           <i class="mdi mdi-clock-outline"></i>
           <span>{{ formatTimeShort(jamPemesanan) }}</span>
         </div>

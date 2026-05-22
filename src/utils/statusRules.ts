@@ -137,7 +137,7 @@ export function getStatusIcon(status: string | null): string {
   const iconMap: Record<PemesananStatus, string> = {
     [PEMESANAN_STATUS.MENUNGGU]: "mdi-clock-outline",
     [PEMESANAN_STATUS.DIKONFIRMASI]: "mdi-check-circle",
-    [PEMESANAN_STATUS.DIKERJAKAN]: "mdi-cog",
+    [PEMESANAN_STATUS.DIKERJAKAN]: "mdi-wrench-cog",
     [PEMESANAN_STATUS.SELESAI]: "mdi-check-all",
     [PEMESANAN_STATUS.BATAL]: "mdi-close-circle",
   };

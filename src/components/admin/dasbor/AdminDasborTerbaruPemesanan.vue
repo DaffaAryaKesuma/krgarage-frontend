@@ -140,7 +140,7 @@ const {
       v-if="activeStatusConfig?.statusBaru === 'Selesai'"
       :show="showStatusConfirmModal"
       :title="activeStatusConfig?.title || 'Konfirmasi Aksi'"
-      message="Tambahkan catatan servis (Wajib diisi):"
+      message="Tuliskan catatan servis untuk pelanggan"
       :confirm-text="activeStatusConfig?.confirmText || 'Ya, Lanjutkan'"
       cancel-text="Batal"
       required

@@ -34,7 +34,7 @@ const handleKategoriChange = (value: string | number | null) => {
         "
         type="text"
         placeholder="Cari suku cadang..."
-        class="rounded-lg border border-gray-300 px-4 py-2 outline-none focus:border-red-600 md:col-span-2"
+        class="rounded-lg border border-gray-300 px-4 py-2 outline-none focus:border-gray-400 md:col-span-2"
       />
       <CustomSelect
         :model-value="selectedKategori"

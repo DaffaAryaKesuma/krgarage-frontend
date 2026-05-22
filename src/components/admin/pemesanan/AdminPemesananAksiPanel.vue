@@ -37,7 +37,7 @@ const handleMekanikChange = (value: string | number | null) => {
 };
 
 const BTN_DETAIL =
-  "inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-gray-300 bg-white py-2 text-xs font-semibold text-gray-700 transition hover:bg-gray-50";
+  "inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-gray-700 bg-white py-2 text-xs font-semibold text-gray-700 transition hover:bg-gray-50";
 const BTN_CANCEL =
   "w-full flex items-center justify-center gap-1.5 rounded-lg border border-red-400 bg-white py-2 text-xs font-semibold text-red-600 transition hover:bg-red-50";
 </script>
@@ -48,7 +48,7 @@ const BTN_CANCEL =
     <div v-if="canAdminConfirmPemesanan(props.pemesanan.status)" class="space-y-2">
       <button
         @click="emit('confirm', props.pemesanan)"
-        class="w-full flex items-center justify-center gap-2 rounded-lg bg-blue-600 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
+        class="w-full flex items-center justify-center gap-2 rounded-lg bg-white py-2 text-sm font-semibold text-blue-700 border border-blue-700 transition hover:bg-blue-50"
       >
         <i class="mdi mdi-check-circle"></i> Konfirmasi
       </button>
@@ -64,8 +64,8 @@ const BTN_CANCEL =
 
     <!-- Assign Mekanik -->
     <div v-else-if="canAdminAssignAndStart(props.pemesanan.status)" class="space-y-2">
-      <div class="rounded-lg border border-blue-200 bg-blue-50 p-3">
-        <p class="mb-2 text-xs font-medium text-blue-800">
+      <div class="rounded-lg border border-blue-200  p-3">
+        <p class="mb-2 text-xs font-medium text-blue-700">
           <i class="mdi mdi-information"></i> Pilih mekanik untuk mulai servis
         </p>
         <CustomSelect
@@ -78,7 +78,7 @@ const BTN_CANCEL =
         <button
           @click="emit('assignAndStart', props.pemesanan)"
           :disabled="!props.selectedMekanikId"
-          class="w-full flex items-center justify-center gap-2 rounded-lg bg-blue-600 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300"
+          class="w-full flex items-center justify-center gap-2 rounded-lg bg-white py-2 text-sm font-semibold text-blue-700 border border-blue-700 transition hover:bg-blue-50 disabled:border-gray-300 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
         >
           <i class="mdi mdi-play-circle"></i> Mulai Servis
         </button>
@@ -95,16 +95,16 @@ const BTN_CANCEL =
 
     <!-- Tandai Selesai -->
     <div v-else-if="canAdminCompletePemesanan(props.pemesanan.status)" class="space-y-2">
-      <div class="rounded-lg border border-purple-200 bg-purple-50 p-2">
-        <p class="text-xs text-purple-800">
-          <i class="mdi mdi-cog animate-spin"></i>
-          Dikerjakan: <strong>{{ props.pemesanan.mekanik?.nama || "Belum ditentukan" }}</strong>
+      <div class="rounded-lg border border-amber-100 bg-amber-50 p-2">
+        <p class="text-xs text-amber-700">
+          <i class="mdi mdi-wrench-cog"></i>
+          Dikerjakan: <strong class="capitalize">{{ props.pemesanan.mekanik?.nama || "Belum ditentukan" }}</strong>
         </p>
       </div>
       <div class="grid grid-cols-2 gap-2">
         <button
           @click="emit('complete', props.pemesanan)"
-          class="w-full flex items-center justify-center gap-1.5 rounded-lg border border-green-600 bg-white py-2 text-xs font-semibold text-green-700 transition hover:bg-green-50"
+          class="w-full flex items-center justify-center gap-1.5 rounded-lg border border-green-600 bg-white py-2 text-xs font-semibold text-green-600 transition hover:bg-green-50"
         >
           <i class="mdi mdi-check-all"></i> Selesai
         </button>
@@ -118,7 +118,7 @@ const BTN_CANCEL =
     <div v-else-if="canShowMarkPaidAksi(props.pemesanan)" class="grid grid-cols-2 gap-2">
       <button
         @click="emit('markPaid', props.pemesanan)"
-        class="w-full flex items-center justify-center gap-1.5 rounded-lg border border-emerald-600 bg-white py-2 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-50"
+        class="w-full flex items-center justify-center gap-1.5 rounded-lg border border-green-600 bg-white py-2 text-xs font-semibold text-green-600 transition hover:bg-green-50"
       >
         <i class="mdi mdi-cash-check"></i> Tandai Lunas
       </button>
@@ -131,7 +131,7 @@ const BTN_CANCEL =
     <div v-else>
       <router-link
         :to="`/admin/pemesanan/${props.pemesanan.id}`"
-        class="block w-full rounded-lg border border-gray-300 bg-white py-2 text-center text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
+        class="block w-full rounded-lg border border-gray-700 bg-white py-2 text-center text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
       >
         <i class="mdi mdi-eye mr-1"></i> Lihat Detail
       </router-link>

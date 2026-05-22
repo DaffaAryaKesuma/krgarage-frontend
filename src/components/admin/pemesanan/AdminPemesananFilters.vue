@@ -67,7 +67,7 @@ const handlePembayaranChange = (value: string | number | null) => {
         "
         type="text"
         placeholder="Cari pelanggan, vespa, atau plat nomor..."
-        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:border-gray-400 outline-none "
       />
       <i
         class="mdi mdi-magnify absolute left-3 top-1/2 -translate-y-1/2 text-xl text-gray-400"
