@@ -10,7 +10,7 @@ interface Statistik {
 interface StatKartu {
   label: string;
   key: keyof Statistik | "lowStock";
-  color: "yellow" | "blue" | "green" | "red";
+  color: "blue" | "yellow" | "green" | "red";
   icon: string;
   route: string;
   suffix?: (value: number) => string;
@@ -23,11 +23,11 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const STAT_KARTU: StatKartu[] = [
+const STAT_KARTU = computed<StatKartu[]>(() => [
   {
     label: "Pemesanan Hari Ini",
     key: "pemesanan_hari_ini",
-    color: "yellow",
+    color: "blue",
     icon: "mdi mdi-calendar-today",
     route: "/admin/pemesanan",
     suffix: () => "pemesanan",
@@ -35,7 +35,7 @@ const STAT_KARTU: StatKartu[] = [
   {
     label: "Dikerjakan",
     key: "sedang_dikerjakan",
-    color: "blue",
+    color: "yellow",
     icon: "mdi mdi-wrench-cog",
     route: "/admin/pemesanan",
     suffix: () => "vespa",
@@ -51,20 +51,20 @@ const STAT_KARTU: StatKartu[] = [
   {
     label: "Stok Kritis/Habis",
     key: "lowStock",
-    color: "red",
-    icon: "mdi mdi-alert-circle",
+    color: props.lowStockCount > 0 ? "red" : "green",
+    icon: props.lowStockCount > 0 ? "mdi mdi-alert-circle" : "mdi mdi-check-circle",
     route: "/admin/inventaris",
     suffix: (value) => (value > 0 ? "item perlu stok ulang" : "semua aman"),
   },
-];
+]);
 
 const colorClasses = computed(() => ({
+  blue: { bg: "bg-blue-100", text: "text-blue-600", border: "border-blue-500" },
   yellow: {
     bg: "bg-yellow-100",
     text: "text-yellow-600",
     border: "border-yellow-500",
   },
-  blue: { bg: "bg-blue-100", text: "text-blue-600", border: "border-blue-500" },
   green: {
     bg: "bg-green-100",
     text: "text-green-600",
@@ -102,8 +102,10 @@ const getKartuColorClasses = (color: string) => {
           <p
             class="mt-1 text-[11px] sm:text-xs"
             :class="
-              card.color === 'red'
-                ? 'text-red-600 font-medium'
+              card.key === 'lowStock'
+                ? getStatValue(card.key) > 0
+                  ? 'text-red-600 font-medium'
+                  : 'text-green-600 font-medium'
                 : 'text-gray-500'
             "
           >

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { scrollLock } from "@/composables/scrollLock";
 
 const NAV_LINKS = [
   { label: "Beranda", href: "#beranda" },
@@ -14,6 +15,8 @@ const emit = defineEmits<{
 }>();
 
 const isMobileMenuOpen = ref(false);
+
+scrollLock(() => isMobileMenuOpen.value);
 
 const closeMobileMenu = () => {
   isMobileMenuOpen.value = false;
@@ -62,7 +65,7 @@ const closeMobileMenu = () => {
     <button
       v-if="!isMobileMenuOpen"
       @click="isMobileMenuOpen = true"
-      class="md:hidden p-2"
+      class="md:hidden p-2 -mr-2 text-gray-700 hover:text-red-700 transition"
     >
       <i class="mdi mdi-menu text-2xl"></i>
     </button>
@@ -86,18 +89,28 @@ const closeMobileMenu = () => {
 
   <!-- Mobile Menu -->
   <transition
-    enter-from-class="-translate-x-full"
+    enter-from-class="translate-x-full"
     enter-active-class="transition-transform duration-300 ease-out"
     enter-to-class="translate-x-0"
     leave-from-class="translate-x-0"
     leave-active-class="transition-transform duration-300 ease-in"
-    leave-to-class="-translate-x-full"
+    leave-to-class="translate-x-full"
   >
     <div
       v-if="isMobileMenuOpen"
-      class="fixed inset-y-0 left-0 z-50 w-3/4 max-w-sm bg-white p-6 md:hidden"
+      class="fixed inset-y-0 right-0 z-50 w-3/4 max-w-sm bg-white p-6 md:hidden shadow-2xl flex flex-col border-l border-gray-100"
     >
-      <h2 class="mb-6 text-xl font-bold">Menu</h2>
+      <!-- Mobile Menu Header with Close Icon -->
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold">Menu</h2>
+        <button
+          @click="closeMobileMenu"
+          class="p-2 text-gray-500 hover:text-red-700 transition"
+        >
+          <i class="mdi mdi-close text-2xl"></i>
+        </button>
+      </div>
+
       <nav class="flex flex-col gap-4 mb-8 border-b pb-6">
         <a
           v-for="link in NAV_LINKS"

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { InventarisSukuCadang } from "@/types/inventaris";
+import { scrollLock } from "@/composables/scrollLock";
 
 interface Props {
   show: boolean;
@@ -8,7 +9,9 @@ interface Props {
   loading: boolean;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
+
+scrollLock(() => props.show);
 
 const emit = defineEmits<{
   close: [];

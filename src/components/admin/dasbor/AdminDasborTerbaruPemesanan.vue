@@ -36,10 +36,10 @@ const TABLE_HEADERS = [
 const TABLE_WRAPPER_CLASS =
   "overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm";
 
-const TABLE_CLASS = "w-full table-fixed divide-y divide-gray-200";
+const TABLE_CLASS = "min-w-[1200px] w-full table-fixed divide-y divide-gray-200";
 
 const TABLE_HEADER_CELL_CLASS =
-  "px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-gray-900 sm:px-6 [&:nth-child(1)]:w-[15%] [&:nth-child(2)]:w-[15%] [&:nth-child(3)]:w-[13%] [&:nth-child(4)]:w-[12%] [&:nth-child(5)]:w-[13%] [&:nth-child(6)]:w-[15%] [&:nth-child(7)]:w-[17%]";
+  "px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-gray-900 sm:px-4 [&:nth-child(1)]:w-[10%] [&:nth-child(2)]:w-[14%] [&:nth-child(3)]:w-[10%] [&:nth-child(4)]:w-[10%] [&:nth-child(5)]:w-[12%] [&:nth-child(6)]:w-[24%] [&:nth-child(7)]:w-[20%]";
 
 const TABLE_BODY_CLASS = "divide-y divide-gray-100 bg-white";
 
@@ -136,7 +136,7 @@ const {
       />
     </TableShell>
 
-        <CatatanInputModal
+    <CatatanInputModal
       v-if="activeStatusConfig?.statusBaru === 'Selesai'"
       :show="showStatusConfirmModal"
       :title="activeStatusConfig?.title || 'Konfirmasi Aksi'"
@@ -147,6 +147,7 @@ const {
       @confirm="applyStatusChange"
       @cancel="closeStatusConfirmModal"
     />
+    
     <ConfirmationModal
       v-else
       :show="showStatusConfirmModal"

@@ -5,6 +5,7 @@ import {
   type VespaFormInitialData,
   type VespaFormPayload,
 } from "@/composables/usePelangganVespaFormModal";
+import { scrollLock } from "@/composables/scrollLock";
 
 interface Props {
   show: boolean;
@@ -18,6 +19,8 @@ const props = withDefaults(defineProps<Props>(), {
   mode: "add",
   error: "",
 });
+
+scrollLock(() => props.show);
 
 const emit = defineEmits<{
   submit: [data: VespaFormPayload];

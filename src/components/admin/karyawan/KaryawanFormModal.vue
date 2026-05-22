@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import CustomSelect from "@/components/ui/CustomSelect.vue";
+import { scrollLock } from "@/composables/scrollLock";
 
 interface FormData {
   id: string | number;
@@ -18,6 +19,8 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+scrollLock(() => props.show);
 
 const emit = defineEmits<{
   close: [];

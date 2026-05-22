@@ -33,32 +33,32 @@ const emit = defineEmits<{
 
 <template>
   <tr :class="props.rowClass">
-    <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-700 sm:px-6">
+    <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-700 sm:px-4">
       <span class="text-gray-700">{{
         props.pemesanan.kode_pemesanan
       }}</span>
     </td>
-    <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-700 sm:px-6">
+    <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-700 sm:px-4">
       {{ formatDateShort(props.pemesanan.tanggal_pemesanan) }}
     </td>
-    <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-700 sm:px-6">
+    <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-700 sm:px-4">
       <span class="block truncate" :title="props.pemesanan.pengguna.nama">
         <span class="capitalize">{{ props.pemesanan.pengguna.nama }}</span>
       </span>
     </td>
-    <td class="whitespace-nowrap px-4 py-4 sm:px-6">
+    <td class="whitespace-nowrap px-4 py-4 sm:px-4">
       <span :class="getStatusBadgeClass(props.pemesanan.status)">
         {{ getStatusLabel(props.pemesanan.status) }}
       </span>
     </td>
-    <td class="whitespace-nowrap px-4 py-4 sm:px-6">
+    <td class="whitespace-nowrap px-4 py-4 sm:px-4">
       <span
         :class="getPembayaranStatusBadgeClass(props.pemesanan.status_pembayaran)"
       >
         {{ getPembayaranStatusLabel(props.pemesanan.status_pembayaran) }}
       </span>
     </td>
-    <td class="px-4 py-4 sm:px-6">
+    <td class="px-4 py-4 sm:px-4">
       <AdminDasborPemesananMekanikCell
         :pemesanan="props.pemesanan"
         :mekanik-options="props.mekanikOptions"
@@ -68,7 +68,7 @@ const emit = defineEmits<{
         @assign-and-start="emit('assignAndStart', props.pemesanan)"
       />
     </td>
-    <td class="px-4 py-4 text-sm font-medium sm:px-6">
+    <td class="px-4 py-4 text-sm font-medium sm:px-4">
       <AdminDasborPemesananAksi
         :pemesanan="props.pemesanan"
         variant="desktop"

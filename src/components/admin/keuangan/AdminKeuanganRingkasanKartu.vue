@@ -10,7 +10,7 @@ interface Ringkasan {
 interface RingkasanKartu {
   title: string;
   key: keyof Ringkasan;
-  color: "blue" | "green";
+  color: "green" | "blue";
   icon: string;
   format: (value: number) => string;
 }
@@ -22,13 +22,13 @@ interface Props {
 defineProps<Props>();
 
 const KARTU_COLOR_CLASSES = {
-  blue: {
-    gradient: "from-blue-500 to-blue-600",
-    text: "text-blue-100",
-  },
   green: {
-    gradient: "from-green-500 to-green-600",
-    text: "text-green-100",
+    bgIcon: "bg-green-50",
+    textIcon: "text-green-600",
+  },
+  blue: {
+    bgIcon: "bg-blue-50",
+    textIcon: "text-blue-600",
   },
 } as const;
 
@@ -36,14 +36,14 @@ const RINGKASAN_KARTU: RingkasanKartu[] = [
   {
     title: "Total Pendapatan",
     key: "total_pendapatan",
-    color: "blue",
+    color: "green",
     icon: "mdi-cash-multiple",
     format: (value) => toIDR(value),
   },
   {
     title: "Total Transaksi",
     key: "total_pemesanan",
-    color: "green",
+    color: "blue",
     icon: "mdi-receipt-text",
     format: (value) => value.toString(),
   },
@@ -51,28 +51,27 @@ const RINGKASAN_KARTU: RingkasanKartu[] = [
 </script>
 
 <template>
-  <div class="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
-    <div
-      v-for="card in RINGKASAN_KARTU"
-      :key="card.key"
-      class="rounded-2xl bg-gradient-to-br p-5 text-white shadow-lg sm:p-8"
-      :class="KARTU_COLOR_CLASSES[card.color].gradient"
+  <div class="grid grid-cols-1 md:grid-cols-2 sm:gap-6 gap-4 mb-6">
+    <div 
+      v-for="kartu in RINGKASAN_KARTU" 
+      :key="kartu.key"
+      class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex items-center justify-between"
     >
-      <div class="flex items-center justify-between">
-        <div>
-          <p
-            class="text-sm font-medium mb-1"
-            :class="KARTU_COLOR_CLASSES[card.color].text"
-          >
-            {{ card.title }}
-          </p>
-          <p class="mt-2 text-3xl font-bold leading-tight sm:text-4xl">
-            {{ card.format(ringkasan[card.key]) }}
-          </p>
-        </div>
-        <div class="rounded-full bg-white/20 p-3 sm:p-4">
-          <i :class="`mdi ${card.icon} text-3xl sm:text-4xl`"></i>
-        </div>
+      <div>
+        <p class="text-slate-500 text-sm font-medium">{{ kartu.title }}</p>
+        <h3 class="text-3xl font-bold text-slate-800 mt-1">
+          {{ kartu.format(ringkasan[kartu.key]) }}
+        </h3>
+      </div>
+      
+      <div 
+        :class="[
+          'h-14 w-14 rounded-full flex items-center justify-center', 
+          KARTU_COLOR_CLASSES[kartu.color].bgIcon, 
+          KARTU_COLOR_CLASSES[kartu.color].textIcon
+        ]"
+      >
+        <i :class="['mdi text-3xl', kartu.icon]"></i>
       </div>
     </div>
   </div>

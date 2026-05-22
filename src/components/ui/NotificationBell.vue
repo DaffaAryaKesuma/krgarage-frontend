@@ -19,12 +19,12 @@ const {
   <div class="notification-bell-container relative">
     <button
       @click="toggleDropdown"
-      class="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
-      :class="{ 'bg-red-50': isOpen || hasUnread }"
+      class="relative p-2"
+      :class="{ '': isOpen || hasUnread }"
       title="Notifikasi"
     >
       <i
-        class="mdi mdi-bell text-2xl"
+        class="mdi mdi-bell text-2xl hover:text-red-600"
         :class="hasUnread ? 'text-red-600' : 'text-gray-700'"
       ></i>
 
@@ -46,7 +46,7 @@ const {
     >
       <div
         v-if="isOpen"
-        class="absolute right-0 mt-2 w-96 max-w-[calc(100vw-2rem)] bg-white rounded-xl shadow-2xl border border-gray-200 z-50"
+        class="absolute -right-6 sm:right-0 mt-2 w-[calc(100vw-2rem)] max-w-sm sm:w-96 bg-white rounded-xl shadow-2xl border border-gray-200 z-50"
       >
         <div
           class="px-4 py-3 border-b border-gray-200 flex items-center justify-between bg-gradient-to-r from-red-600 to-red-700 rounded-t-xl"
@@ -66,7 +66,7 @@ const {
 
         <div
           v-else-if="notifications.length > 0"
-          class="max-h-96 overflow-y-auto"
+          class="max-h-96 overflow-y-auto custom-scrollbar"
         >
           <button
             v-for="notification in notifications"

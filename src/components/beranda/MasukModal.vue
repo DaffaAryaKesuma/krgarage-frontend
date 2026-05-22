@@ -5,6 +5,7 @@ import { useRouter } from "vue-router";
 import { handleApiError, logError } from "@/utils/errorHandler";
 import { API_URL } from "@/utils/api";
 import { getRedirectPathForRole } from "@/utils/roleRoutes";
+import { scrollLock } from "@/composables/scrollLock";
 
 const props = defineProps<{
   open: boolean;
@@ -14,6 +15,8 @@ const emit = defineEmits<{
   (e: "close"): void;
   (e: "openRegister"): void;
 }>();
+
+scrollLock(() => props.open);
 
 const FORM_FIELDS = [
   {

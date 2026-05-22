@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import CustomSelect from "@/components/ui/CustomSelect.vue";
 import { watch } from "vue";
+import { scrollLock } from "@/composables/scrollLock";
 import type {
   InventarisSukuCadang,
   InventarisSukuCadangForm,
@@ -17,6 +18,8 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+scrollLock(() => props.show);
 
 const emit = defineEmits<{
   close: [];
@@ -86,7 +89,7 @@ const buttonSecondaryClass = `${buttonBaseClass} border border-slate-300 text-sl
       <!-- Form -->
       <form
         @submit.prevent="emit('submit')"
-        class="max-h-[calc(90vh-5.5rem)] space-y-4 overflow-y-auto p-6"
+        class="max-h-[calc(90vh-5.5rem)] space-y-4 overflow-y-auto p-6 custom-scrollbar"
       >
         <!-- Nama Suku Cadang -->
         <div :class="formKartuClass">

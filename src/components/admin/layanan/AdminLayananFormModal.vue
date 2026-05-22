@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { watch, computed } from "vue";
+import { scrollLock } from "@/composables/scrollLock";
 
 interface FormData {
   id: number | null;
@@ -18,6 +19,8 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+scrollLock(() => props.show);
 
 const emit = defineEmits<{
   close: [];
@@ -67,15 +70,16 @@ watch(
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
   >
     <div
-      class="bg-white w-full max-w-lg rounded-xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
+      class="bg-white w-full max-w-lg rounded-xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
     >
       <!-- Modal Header -->
       <div
-        class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50"
+        class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 flex-shrink-0"
       >
         <h2 class="text-xl font-bold text-gray-800">{{ formTitle }}</h2>
         <button
           @click="emit('close')"
+          type="button"
           class="text-gray-400 hover:text-gray-600 transition"
         >
           <i class="mdi mdi-close text-2xl"></i>
@@ -83,7 +87,7 @@ watch(
       </div>
 
       <!-- Modal Form -->
-      <form @submit.prevent="emit('submit')" class="p-6 space-y-4">
+      <form @submit.prevent="emit('submit')" class="p-6 space-y-4 overflow-y-auto flex-1 custom-scrollbar">
         <!-- Image Upload -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onUnmounted } from 'vue';
+import { ref, watch } from 'vue';
 
 interface Props {
   show: boolean;
@@ -28,42 +28,19 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
+import { scrollLock } from "@/composables/scrollLock";
+
 const inputValue = ref('');
 const errorMsg = ref('');
 
-let hasLocked = false;
-
-const lockScroll = () => {
-  if (!hasLocked) {
-    (window as any).__activeModalsCount = ((window as any).__activeModalsCount || 0) + 1;
-    document.body.style.overflow = "hidden";
-    hasLocked = true;
-  }
-};
-
-const unlockScroll = () => {
-  if (hasLocked) {
-    (window as any).__activeModalsCount = Math.max(0, ((window as any).__activeModalsCount || 0) - 1);
-    if (((window as any).__activeModalsCount) === 0) {
-      document.body.style.overflow = "";
-    }
-    hasLocked = false;
-  }
-};
+scrollLock(() => props.show);
 
 watch(() => props.show, (newVal) => {
   if (newVal) {
     inputValue.value = '';
     errorMsg.value = '';
-    lockScroll();
-  } else {
-    unlockScroll();
   }
 }, { immediate: true });
-
-onUnmounted(() => {
-  unlockScroll();
-});
 
 function handleConfirm() {
   if (props.required && !inputValue.value.trim()) {

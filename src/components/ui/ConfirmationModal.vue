@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { watch, onUnmounted } from "vue";
+import { scrollLock } from "@/composables/scrollLock";
 
 interface Props {
   show: boolean;
@@ -18,37 +18,7 @@ interface Emits {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-let hasLocked = false;
-
-const lockScroll = () => {
-  if (!hasLocked) {
-    (window as any).__activeModalsCount = ((window as any).__activeModalsCount || 0) + 1;
-    document.body.style.overflow = "hidden";
-    hasLocked = true;
-  }
-};
-
-const unlockScroll = () => {
-  if (hasLocked) {
-    (window as any).__activeModalsCount = Math.max(0, ((window as any).__activeModalsCount || 0) - 1);
-    if (((window as any).__activeModalsCount) === 0) {
-      document.body.style.overflow = "";
-    }
-    hasLocked = false;
-  }
-};
-
-watch(() => props.show, (val) => {
-  if (val) {
-    lockScroll();
-  } else {
-    unlockScroll();
-  }
-}, { immediate: true });
-
-onUnmounted(() => {
-  unlockScroll();
-});
+scrollLock(() => props.show);
 
 const variantClasses = {
   danger: "from-red-500 to-red-600",

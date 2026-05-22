@@ -30,7 +30,7 @@ interface MonthlyData {
 
 // State
 const selectedYear = ref(new Date().getFullYear());
-const selectedMonth = ref<number | string>("");
+const selectedMonth = ref<number | string>(new Date().getMonth() + 1);
 const isLoading = ref(true);
 
 const ringkasan = ref<Ringkasan>({

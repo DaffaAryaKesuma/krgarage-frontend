@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { watch } from "vue";
 import { useRegisterModal } from "@/composables/useRegisterModal";
+import { scrollLock } from "@/composables/scrollLock";
 
 const props = defineProps<{
   open: boolean;
@@ -9,6 +10,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "close"): void;
 }>();
+
+scrollLock(() => props.open);
 
 const {
   FORM_FIELDS,

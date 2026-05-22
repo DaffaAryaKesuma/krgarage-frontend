@@ -18,8 +18,8 @@ defineProps<Props>();
   <div class="rounded-2xl bg-white p-4 sm:p-6 shadow-lg border border-gray-100 mb-8">
     <!-- Header -->
     <div class="mb-4 flex items-center gap-2 sm:gap-3">
-      <div class="rounded-xl bg-blue-100 p-2 sm:p-3 shrink-0">
-        <i class="mdi mdi-trophy text-lg sm:text-2xl text-blue-600"></i>
+      <div class=" p-2 sm:p-3 shrink-0">
+        <i class="mdi mdi-trophy text-xl sm:text-2xl text-blue-600"></i>
       </div>
       <div>
         <h2 class="text-base sm:text-xl font-bold text-gray-900 leading-tight">Layanan Paling Laris</h2>
@@ -32,7 +32,7 @@ defineProps<Props>();
       <div
         v-for="(layanan, index) in topLayanan"
         :key="index"
-        class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-blue-50 transition border border-gray-100"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-lg"
       >
         <!-- Rank badge -->
         <span
@@ -42,13 +42,13 @@ defineProps<Props>();
         </span>
 
         <!-- Nama Layanan -->
-        <span class="flex-1 text-sm font-medium text-gray-800 truncate">
+        <span class="flex-1 text-sm font-medium text-gray-900 truncate">
           {{ layanan.nama_layanan }}
         </span>
 
         <!-- Stats -->
         <div class="text-right shrink-0">
-          <p class="text-sm font-bold text-blue-600">{{ layanan.total_pesanan }}x</p>
+          <p class="text-sm font-medium text-gray-900">{{ layanan.total_pesanan }}x</p>
           <p class="text-xs text-gray-500">{{ toIDR(layanan.total_pendapatan) }}</p>
         </div>
       </div>

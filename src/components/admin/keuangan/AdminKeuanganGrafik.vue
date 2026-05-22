@@ -33,10 +33,10 @@ const renderChart = () => {
       labels: MONTH_NAMES,
       datasets: [
         {
-          label: "Pendapatan (Rp)",
+          label: "Pendapatan",
           data: getChartData(),
-          backgroundColor: "rgba(220, 38, 38, 0.8)",
-          borderColor: "rgb(220, 38, 38)",
+          backgroundColor: "#ef4444",
+          borderColor: "#dc2626",
           borderWidth: 2,
           borderRadius: 8,
         },
@@ -49,15 +49,31 @@ const renderChart = () => {
         legend: { display: false },
         tooltip: {
           callbacks: {
-            label: (context) => `Rp ${toIDR(context.parsed.y || 0)}`,
+            label: (context) => toIDR(context.parsed.y || 0),
           },
         },
       },
       scales: {
         y: {
           beginAtZero: true,
+          grid: {
+            color: "#f3f4f6",
+          },
           ticks: {
-            callback: (value) => `Rp ${(value as number) / 1000}k`,
+            font: {
+              size: window.innerWidth < 640 ? 10 : 12,
+            },
+            callback: (value) => toIDR(value as number),
+          },
+        },
+        x: {
+          grid: {
+            display: false,
+          },
+          ticks: {
+            font: {
+              size: window.innerWidth < 640 ? 10 : 12,
+            },
           },
         },
       },

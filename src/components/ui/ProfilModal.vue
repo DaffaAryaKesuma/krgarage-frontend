@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted, watch, onUnmounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import axios from "axios";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
 import { useToast } from "@/utils/useToast";
 import { logError, handleApiError } from "@/utils/errorHandler";
 import { formatNama } from "@/utils/format";
+import { scrollLock } from "@/composables/scrollLock";
 
 interface Props {
   show: boolean;
@@ -48,32 +49,13 @@ const loadUserData = () => {
 
 onMounted(loadUserData);
 
-let hasLocked = false;
-
-const lockScroll = () => {
-  if (!hasLocked) {
-    (window as any).__activeModalsCount = ((window as any).__activeModalsCount || 0) + 1;
-    document.body.style.overflow = "hidden";
-    hasLocked = true;
-  }
-};
-
-const unlockScroll = () => {
-  if (hasLocked) {
-    (window as any).__activeModalsCount = Math.max(0, ((window as any).__activeModalsCount || 0) - 1);
-    if (((window as any).__activeModalsCount) === 0) {
-      document.body.style.overflow = "";
-    }
-    hasLocked = false;
-  }
-};
+scrollLock(() => props.show);
 
 watch(
   () => props.show,
   (newVal) => {
     if (newVal) {
       loadUserData();
-      lockScroll();
     } else {
       // Reset form password saat modal ditutup
       passwordForm.value = {
@@ -81,15 +63,10 @@ watch(
         password_baru: "",
         password_baru_confirmation: "",
       };
-      unlockScroll();
     }
   },
   { immediate: true }
 );
-
-onUnmounted(() => {
-  unlockScroll();
-});
 
 const handleUpdateProfil = async () => {
   loading.value = true;
@@ -174,7 +151,7 @@ const labelClass =
     @click.self="emit('close')"
   >
     <div
-      class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white shadow-2xl animate-in fade-in zoom-in duration-200"
+      class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white shadow-2xl animate-in fade-in zoom-in duration-200 custom-scrollbar"
     >
       <!-- Header -->
       <div

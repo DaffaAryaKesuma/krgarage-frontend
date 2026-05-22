@@ -51,9 +51,9 @@ const handleMekanikChange = (value: string | number | null) => {
       <button
         @click="emit('assignAndStart', props.pemesanan)"
         :disabled="!props.selectedMekanikId"
-        class="w-full rounded-lg bg-purple-600 py-2.5 text-sm font-medium text-white transition hover:bg-purple-700 disabled:cursor-not-allowed disabled:bg-gray-300"
+        class="w-full rounded-lg bg-blue-100 py-2.5 text-sm font-medium text-blue-700 border border-blue-50 transition disabled:cursor-not-allowed disabled:bg-white disabled:border-blue-100"
       >
-        Tugaskan & Mulai Servis
+        Mulai Servis
       </button>
     </template>
 
@@ -71,7 +71,7 @@ const handleMekanikChange = (value: string | number | null) => {
       <button
         @click="emit('assignAndStart', props.pemesanan)"
         :disabled="!props.selectedMekanikId"
-        class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-purple-100 text-purple-700 transition hover:bg-purple-200 disabled:cursor-not-allowed disabled:opacity-50"
+        class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-700 transition hover:bg-blue-200 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-white"
         title="Mulai Servis"
       >
         <i class="mdi mdi-play-circle text-xl"></i>

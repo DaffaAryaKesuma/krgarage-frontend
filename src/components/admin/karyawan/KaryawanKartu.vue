@@ -36,7 +36,7 @@ const emit = defineEmits<{
         </p>
       </div>
       <span
-        class="capitalize inline-flex px-2.5 py-0.5 text-xs font-semibold leading-5 rounded-full"
+        class="capitalize inline-flex px-2.5 py-0.5 text-xs font-semibold leading-5 rounded-lg"
         :class="
           karyawan.role === 'admin'
             ? 'bg-red-100 text-red-700'
@@ -65,14 +65,14 @@ const emit = defineEmits<{
     >
       <button
         @click="emit('edit', karyawan)"
-        class="flex items-center px-4 py-1.5 text-sm font-medium text-indigo-600 bg-indigo-50 border border-transparent rounded-md hover:bg-indigo-100"
+        class="flex items-center px-4 py-1.5 text-sm font-medium text-gray-700 border border-transparent rounded-md hover:bg-blue-100 hover:text-blue-600"
       >
         Edit
       </button>
       <button
         v-if="currentUserId !== karyawan.id"
         @click="emit('delete', karyawan.id)"
-        class="flex items-center px-4 py-1.5 text-sm font-medium text-red-600 bg-red-50 border border-transparent rounded-md hover:bg-red-100"
+        class="flex items-center px-4 py-1.5 text-sm font-medium text-gray-700 border border-transparent rounded-md hover:bg-red-100 hover:text-red-600"
       >
         Hapus
       </button>

@@ -2,6 +2,10 @@
 import { ref, computed, watch, onUnmounted } from "vue";
 import { toIDR } from "@/utils/money";
 import type { SukuCadangRingkasan } from "@/types/inventaris";
+import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
+import EmptyState from "@/components/ui/EmptyState.vue";
+
+import { scrollLock } from "@/composables/scrollLock";
 
 interface KeranjangItem {
   sukucadang: SukuCadangRingkasan;
@@ -30,25 +34,7 @@ const keranjang = ref<KeranjangItem[]>([]);
 const activeCardId = ref<number | null>(null);
 const activeQuantity = ref(1);
 
-let hasLocked = false;
-
-const lockScroll = () => {
-  if (!hasLocked) {
-    (window as any).__activeModalsCount = ((window as any).__activeModalsCount || 0) + 1;
-    document.body.style.overflow = "hidden";
-    hasLocked = true;
-  }
-};
-
-const unlockScroll = () => {
-  if (hasLocked) {
-    (window as any).__activeModalsCount = Math.max(0, ((window as any).__activeModalsCount || 0) - 1);
-    if (((window as any).__activeModalsCount) === 0) {
-      document.body.style.overflow = "";
-    }
-    hasLocked = false;
-  }
-};
+scrollLock(() => props.show);
 
 // Reset saat modal dibuka/ditutup
 watch(
@@ -59,17 +45,9 @@ watch(
       keranjang.value = [];
       activeCardId.value = null;
       activeQuantity.value = 1;
-      lockScroll();
-    } else {
-      unlockScroll();
     }
-  },
-  { immediate: true }
+  }
 );
-
-onUnmounted(() => {
-  unlockScroll();
-});
 
 const idSudahDiKeranjang = computed(
   () => new Set(keranjang.value.map((item) => item.sukucadang.id)),
@@ -165,11 +143,11 @@ const handleClose = () => {
     >
       <!-- Header -->
       <div
-        class="bg-gradient-to-r from-red-600 to-red-700 px-5 py-4 rounded-t-2xl flex items-center justify-between shrink-0"
+        class="bg-red-600 px-5 py-4 rounded-t-2xl flex items-center justify-between shrink-0"
       >
         <div>
-          <h3 class="text-lg font-bold text-white">Tambah Suku Cadang</h3>
-          <p class="text-red-200 text-xs mt-0.5">
+          <h3 class="text-xl font-bold text-white">Tambah Suku Cadang</h3>
+          <p class="text-red-200 font-medium text-sm mt-0.5">
             Pilih item lalu tentukan jumlah
           </p>
         </div>
@@ -193,39 +171,33 @@ const handleClose = () => {
               v-model="searchQuery"
               type="text"
               placeholder="Cari nama atau kategori suku cadang..."
-              class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-50 transition"
+              class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm outline-gray-300"
             />
           </div>
         </div>
 
         <!-- Product Grid -->
-        <div class="flex-1 overflow-y-auto px-4 pb-2">
+        <div class="flex-1 overflow-y-auto px-4 pb-2 custom-scrollbar">
           <!-- Loading -->
-          <div
+          <LoadingSpinner
             v-if="isLoading"
-            class="flex items-center justify-center py-12 gap-2 text-gray-400"
-          >
-            <i class="mdi mdi-loading mdi-spin text-2xl text-red-500"></i>
-            <span class="text-sm">Memuat suku cadang...</span>
-          </div>
+            message="Memuat suku cadang..."
+          />
 
           <!-- Empty -->
-          <div
+          <EmptyState
             v-else-if="filteredSukuCadang.length === 0"
-            class="text-center py-10 text-gray-400"
-          >
-            <i class="mdi mdi-package-variant text-4xl"></i>
-            <p class="text-sm mt-1">
-              {{
-                searchQuery
-                  ? "Tidak ada hasil untuk pencarian ini"
-                  : "Semua suku cadang sudah di keranjang"
-              }}
-            </p>
-          </div>
+            icon="mdi mdi-package-variant"
+            :title="searchQuery ? 'Tidak Ada Hasil' : 'Suku Cadang Kosong'"
+            :message="
+              searchQuery
+                ? 'Tidak ada suku cadang yang cocok dengan kata kunci pencarian Anda.'
+                : 'Semua suku cadang sudah dimasukkan ke keranjang.'
+            "
+          />
 
           <!-- Grid -->
-          <div v-else class="grid grid-cols-2 gap-3 py-1">
+          <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-3 py-1">
             <div
               v-for="sukuCadang in filteredSukuCadang"
               :key="sukuCadang.id"
@@ -235,32 +207,32 @@ const handleClose = () => {
                 sukuCadang.jumlah_stok === 0
                   ? 'opacity-50 cursor-not-allowed border-gray-200 bg-gray-50'
                   : activeCardId === sukuCadang.id
-                    ? 'border-red-500 bg-red-50 shadow-md'
-                    : 'border-gray-200 bg-white hover:border-red-300 hover:shadow-sm',
+                    ? 'border-gray-300 bg-gray-50 shadow-md'
+                    : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm',
               ]"
             >
               <div class="mb-2">
                 <p
-                  class="font-bold text-gray-900 text-sm leading-tight line-clamp-2"
+                  class="font-bold text-gray-900 text-base leading-tight line-clamp-2"
                 >
                   {{ sukuCadang.nama_suku_cadang }}
                 </p>
-                <p class="text-xs text-gray-500 mt-0.5">
+                <p class="text-sm text-gray-500 mt-1">
                   {{ sukuCadang.kategori }}
                 </p>
               </div>
 
               <span
                 :class="[
-                  'inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full mb-2',
+                  'inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full mb-2',
                   getStokBadge(sukuCadang).class,
                 ]"
               >
-                <i class="mdi mdi-package text-[10px]"></i>
+                <i class="mdi mdi-package text-xs"></i>
                 {{ getStokBadge(sukuCadang).label }}
               </span>
 
-              <p class="text-sm font-bold text-red-600">
+              <p class="text-base font-bold">
                 {{ toIDR(sukuCadang.harga_jual) }}
               </p>
 
@@ -276,7 +248,7 @@ const handleClose = () => {
                   >
                     <button
                       @click="decrementQty"
-                      class="px-2.5 py-1 text-gray-600 hover:bg-gray-100 transition font-bold text-base"
+                      class="px-3 py-1.5 text-gray-600 hover:bg-gray-100 transition font-bold text-base"
                     >
                       −
                     </button>
@@ -286,11 +258,11 @@ const handleClose = () => {
                       min="1"
                       :max="sukuCadang.jumlah_stok"
                       readonly
-                      class="w-10 text-center text-sm font-bold border-x border-gray-300 py-1 focus:outline-none no-spinners cursor-default"
+                      class="w-12 text-center text-base font-bold border-x border-gray-300 py-1.5 focus:outline-none no-spinners cursor-default"
                     />
                     <button
                       @click="incrementQty(sukuCadang.jumlah_stok)"
-                      class="px-2.5 py-1 text-gray-600 hover:bg-gray-100 transition font-bold text-base"
+                      class="px-3 py-1.5 text-gray-600 hover:bg-gray-100 transition font-bold text-base"
                     >
                       +
                     </button>
@@ -298,9 +270,9 @@ const handleClose = () => {
                 </div>
                 <button
                   @click="tambahKeKeranjang(sukuCadang)"
-                  class="w-full py-1.5 bg-red-600 text-white text-xs font-bold rounded-lg hover:bg-red-700 transition flex items-center justify-center gap-1"
+                  class="w-full py-2 bg-red-600 text-white text-sm font-bold rounded-lg hover:bg-red-700 transition flex items-center justify-center gap-1"
                 >
-                  <i class="mdi mdi-cart-plus text-sm"></i>
+                  <i class="mdi mdi-cart-plus text-base"></i>
                   Tambah ke Daftar
                 </button>
               </div>
@@ -316,7 +288,7 @@ const handleClose = () => {
             >
               Keranjang ({{ keranjang.length }} item)
             </p>
-            <div class="space-y-1.5 max-h-28 overflow-y-auto pr-1">
+            <div class="space-y-1.5 max-h-28 overflow-y-auto pr-1 custom-scrollbar">
               <div
                 v-for="(item, index) in keranjang"
                 :key="item.sukucadang.id"
@@ -326,13 +298,13 @@ const handleClose = () => {
                   <p class="text-xs font-semibold text-gray-900 truncate">
                     {{ item.sukucadang.nama_suku_cadang }}
                   </p>
-                  <p class="text-[10px] text-gray-500">
+                  <p class="text-xs text-gray-500">
                     x{{ item.quantity }} ×
                     {{ toIDR(item.sukucadang.harga_jual) }}
                   </p>
                 </div>
                 <div class="flex items-center gap-2 ml-2 shrink-0">
-                  <span class="text-xs font-bold text-red-600">
+                  <span class="text-xs font-bold">
                     {{ toIDR(item.sukucadang.harga_jual * item.quantity) }}
                   </span>
                   <button
@@ -347,8 +319,8 @@ const handleClose = () => {
             <div
               class="flex justify-between items-center mt-2 pt-2 border-t border-gray-200"
             >
-              <span class="text-xs font-bold text-gray-700">Total</span>
-              <span class="text-base font-black text-red-600">{{
+              <span class="font-bold">Total</span>
+              <span class="font-bold">{{
                 toIDR(grandTotal)
               }}</span>
             </div>
@@ -374,13 +346,13 @@ const handleClose = () => {
           class="flex-1 py-2.5 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition disabled:opacity-40 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2"
         >
           <i v-if="isSubmitting" class="mdi mdi-loading mdi-spin"></i>
-          <i v-else class="mdi mdi-check-circle"></i>
           {{
             isSubmitting ? "Menyimpan..." : `Tambahkan ${keranjang.length} Item`
           }}
         </button>
       </div>
     </div>
+    
   </div>
 </template>
 

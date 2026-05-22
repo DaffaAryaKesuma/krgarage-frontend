@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { formatDateShort } from "@/utils/date";
+import { formatDateShort, formatTimeShort } from "@/utils/date";
 import {
   getStatusBadgeClass,
   getStatusIcon,
@@ -37,28 +37,26 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
     class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all duration-200 flex flex-col"
   >
     <!-- Header -->
-    <div
-      class="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-4"
-    >
-      <div class="flex items-center gap-4">
-        <div
-          class="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-red-600 text-lg font-bold text-white shadow-md ring-2 ring-red-50"
-        >
-          {{ getUserInitial(pemesanan.pengguna?.nama) }}
-        </div>
-        <div>
-          <p class="text-base font-bold text-gray-900 capitalize">
-            {{ pemesanan.pengguna?.nama || "N/A" }}
-          </p>
-          <p class="text-xs text-gray-500 font-mono mt-0.5 tracking-wide">
-            {{ pemesanan.kode_pemesanan }}
-          </p>
-        </div>
+
+    <div class="mb-4 flex items-center gap-4">
+      <div
+        class="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-red-600 text-lg font-bold text-white shadow-md ring-2 ring-red-50"
+      >
+        {{ getUserInitial(pemesanan.pengguna?.nama) }}
+      </div>
+      <div>
+        <p class="text-base font-bold text-gray-900 capitalize">
+          {{ pemesanan.pengguna?.nama || "N/A" }}
+        </p>
+        <p class="text-xs text-gray-500 mt-0.5 tracking-wide">
+          {{ pemesanan.kode_pemesanan }}
+        </p>
       </div>
     </div>
 
+
     <!-- Info Grid -->
-    <div class="mb-5 grid grid-cols-2 gap-3 sm:gap-4">
+    <div class="mb-4 grid grid-cols-2 gap-3 sm:gap-4">
       <!-- Vespa -->
       <div
         class="rounded-xl bg-gray-50/80 p-3 sm:p-4 border border-gray-100 shadow-sm transition hover:bg-gray-100"
@@ -98,13 +96,13 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
         </p>
         <p class="text-xs text-gray-600 mt-1 flex items-center font-medium">
           <i class="mdi mdi-clock-outline mr-1 text-gray-400"></i>
-          {{ pemesanan.jam_pemesanan || "-" }}
+          {{ formatTimeShort(pemesanan.jam_pemesanan) }}
         </p>
       </div>
     </div>
 
     <!-- Layanan -->
-    <div class="mb-5">
+    <div class="mb-4">
       <p
         class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-1.5"
       >
@@ -127,7 +125,7 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
 
     <!-- Status Display -->
     <div
-      class="mb-5 rounded-xl border border-gray-100 bg-slate-50 p-4 shadow-inner"
+      class="mb-4 rounded-xl border border-gray-100 bg-slate-50 p-4 shadow-inner"
     >
       <div
         class="flex flex-row items-center justify-between gap-3 sm:justify-between"
@@ -171,7 +169,7 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
         class="mt-4 pt-3 border-t border-slate-200 flex items-center gap-2"
       >
         <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-          Mekanik:
+          Mekanik
         </p>
         <span
           class="inline-flex items-center gap-1.5 text-sm font-bold text-gray-700 bg-white px-2.5 py-1 rounded-md border border-gray-200"
