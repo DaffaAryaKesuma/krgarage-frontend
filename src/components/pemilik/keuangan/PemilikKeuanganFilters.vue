@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import PemilihTanggal from "../../ui/PemilihTanggal.vue";
+import PemilihTanggal from "@/components/ui/PemilihTanggal/PemilihTanggal.vue";
 
 interface Props {
   startDate: string;

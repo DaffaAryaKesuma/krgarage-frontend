@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BaseAuthenticatedLayout from "@/components/layouts/BaseAuthenticatedLayout.vue";
+import BaseAuthenticatedLayout from "@/components/layouts/BaseAuthenticatedLayout/BaseAuthenticatedLayout.vue";
 
 
 </script>

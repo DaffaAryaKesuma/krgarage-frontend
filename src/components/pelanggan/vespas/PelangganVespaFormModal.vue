@@ -4,7 +4,7 @@ import {
   usePelangganVespaFormModal,
   type VespaFormInitialData,
   type VespaFormPayload,
-} from "@/composables/usePelangganVespaFormModal";
+} from "./usePelangganVespaFormModal";
 import { scrollLock } from "@/composables/scrollLock";
 
 interface Props {

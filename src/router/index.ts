@@ -12,28 +12,28 @@ import { getRedirectPathForRole, normalizeUserRole } from "@/utils/roleRoutes";
 import Beranda from "../pages/Beranda.vue";
 
 // Halaman Pelanggan
-import PelangganDasbor from "../pages/pelanggan/PelangganDasbor.vue";
-import PelangganVespasPage from "../pages/pelanggan/PelangganVespasPage.vue";
-import PelangganPemesananPage from "../pages/pelanggan/PelangganPemesananPage.vue";
-import PelangganRiwayatPage from "../pages/pelanggan/PelangganRiwayatPage.vue";
-import PelangganPemesananDetail from "../pages/pelanggan/PelangganPemesananDetail.vue";
+import PelangganDasbor from "../pages/pelanggan/PelangganDasbor/PelangganDasbor.vue";
+import PelangganVespasPage from "../pages/pelanggan/PelangganVespasPage/PelangganVespasPage.vue";
+import PelangganPemesananPage from "../pages/pelanggan/PelangganPemesananPage/PelangganPemesananPage.vue";
+import PelangganRiwayatPage from "../pages/pelanggan/PelangganRiwayatPage/PelangganRiwayatPage.vue";
+import PelangganPemesananDetail from "../pages/pelanggan/PelangganPemesananDetail/PelangganPemesananDetail.vue";
 
 // Halaman admin
-import AdminDasbor from "../pages/admin/AdminDasbor.vue";
-import AdminPemesanan from "../pages/admin/AdminPemesanan.vue";
-import AdminLayanan from "../pages/admin/AdminLayanan.vue";
-import AdminPemesananDetail from "../pages/admin/AdminPemesananDetail.vue";
-import AdminKeuanganLaporan from "../pages/admin/AdminKeuanganLaporan.vue";
-import AdminInventaris from "../pages/admin/AdminInventaris.vue";
-import AdminKaryawan from "../pages/admin/AdminKaryawan.vue";
+import AdminDasbor from "../pages/admin/AdminDasbor/AdminDasbor.vue";
+import AdminPemesanan from "../pages/admin/AdminPemesanan/AdminPemesanan.vue";
+import AdminLayanan from "../pages/admin/AdminLayanan/AdminLayanan.vue";
+import AdminPemesananDetail from "../pages/admin/AdminPemesananDetail/AdminPemesananDetail.vue";
+import AdminKeuanganLaporan from "../pages/admin/AdminKeuanganLaporan/AdminKeuanganLaporan.vue";
+import AdminInventaris from "../pages/admin/AdminInventaris/AdminInventaris.vue";
+import AdminKaryawan from "../pages/admin/AdminKaryawan/AdminKaryawan.vue";
 
 // Halaman mekanik
-import MekanikDasbor from "../pages/mekanik/MekanikDasbor.vue";
+import MekanikDasbor from "../pages/mekanik/MekanikDasbor/MekanikDasbor.vue";
 
 // Halaman pemilik
-import PemilikDasbor from "../pages/pemilik/PemilikDasbor.vue";
-import PemilikKeuangan from "../pages/pemilik/PemilikKeuangan.vue";
-import PemilikInventarisAnalisa from "../pages/pemilik/PemilikInventarisAnalisa.vue";
+import PemilikDasbor from "../pages/pemilik/PemilikDasbor/PemilikDasbor.vue";
+import PemilikKeuangan from "../pages/pemilik/PemilikKeuangan/PemilikKeuangan.vue";
+import PemilikInventarisAnalisa from "../pages/pemilik/PemilikInventarisAnalisa/PemilikInventarisAnalisa.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

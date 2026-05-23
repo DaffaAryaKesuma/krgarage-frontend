@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BaseAuthenticatedLayout from "@/components/layouts/BaseAuthenticatedLayout.vue";
+import BaseAuthenticatedLayout from "@/components/layouts/BaseAuthenticatedLayout/BaseAuthenticatedLayout.vue";
 
 const navItems = [
   { label: "Dasbor", to: "/app/dasbor", icon: "mdi-view-dashboard" },

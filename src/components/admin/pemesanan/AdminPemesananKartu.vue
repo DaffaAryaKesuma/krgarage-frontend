@@ -9,7 +9,7 @@ import {
   getPembayaranStatusBadgeClass,
   getPembayaranStatusLabel,
 } from "@/utils/pembayaranStatus";
-import AdminPemesananAksiPanel from "@/components/admin/pemesanan/AdminPemesananAksiPanel.vue";
+import AdminPemesananAksiPanel from "./AdminPemesananAksiPanel.vue";
 import type { Pemesanan, MekanikOption } from "@/types/pemesanan";
 
 interface Props {

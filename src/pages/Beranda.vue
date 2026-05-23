@@ -3,14 +3,14 @@ import { ref } from "vue";
 
 import BerandaNavigasi from "@/components/beranda/BerandaNavigasi.vue";
 import BerandaUtama from "@/components/beranda/BerandaUtama.vue";
-import BerandaStatistik from "@/components/beranda/BerandaStatistik.vue";
+import BerandaStatistik from "@/components/beranda/BerandaStatistik/BerandaStatistik.vue";
 import BerandaKeunggulan from "@/components/beranda/BerandaKeunggulan.vue";
-import BerandaLayanan from "@/components/beranda/BerandaLayanan.vue";
+import BerandaLayanan from "@/components/beranda/BerandaLayanan/BerandaLayanan.vue";
 import BerandaTanyaJawab from "@/components/beranda/BerandaTanyaJawab.vue";
 import BerandaTentang from "@/components/beranda/BerandaTentang.vue";
 
-import MasukModal from "@/components/beranda/MasukModal.vue";
-import DaftarModal from "@/components/beranda/DaftarModal.vue";
+import MasukModal from "@/components/beranda/MasukModal/MasukModal.vue";
+import DaftarModal from "@/components/beranda/DaftarModal/DaftarModal.vue";
 import BerandaFooter from "@/components/beranda/BerandaFooter.vue";
 
 const isLoginModalOpen = ref(false);
