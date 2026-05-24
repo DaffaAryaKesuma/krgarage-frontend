@@ -1,92 +1,39 @@
 <script setup lang="ts">
-import { computed } from "vue";
 import { formatDateShort } from "@/utils/date";
 import Pagination from "@/components/ui/Pagination.vue";
 import TableShell from "@/components/ui/TableShell.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
-import { toMoneyNumber, toIDR } from "@/utils/money";
+import { toIDR } from "@/utils/money";
 import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
 import {
   getPembayaranStatusBadgeClass,
   getPembayaranStatusLabel,
 } from "@/utils/pembayaranStatus";
 import { formatNama } from "@/utils/format";
-import type {
-  KeuanganPemesanan,
-  KeuanganPemesananLayanan,
-} from "@/types/pemesanan";
-
-interface Props {
-  pemesanan: KeuanganPemesanan[];
-  loading: boolean;
-  startDate: string;
-  endDate: string;
-  currentPage: number;
-  itemsPerPage: number;
-}
+import {
+  TABLE_HEADERS,
+  usePemilikKeuanganTable,
+  type PemilikKeuanganTableProps,
+} from "./usePemilikKeuanganTable";
 
 interface Emits {
   (e: "update:currentPage", value: number): void;
 }
 
-const props = defineProps<Props>();
+const props = defineProps<PemilikKeuanganTableProps>();
 const emit = defineEmits<Emits>();
 
-const totalPages = computed(() => {
-  return Math.ceil(props.pemesanan.length / props.itemsPerPage);
-});
-
-const from = computed(() => {
-  if (props.pemesanan.length === 0) return 0;
-  return (props.currentPage - 1) * props.itemsPerPage + 1;
-});
-
-const to = computed(() => {
-  if (props.pemesanan.length === 0) return 0;
-  return Math.min(
-    props.currentPage * props.itemsPerPage,
-    props.pemesanan.length,
-  );
-});
-
-const paginatedPemesanan = computed(() => {
-  const start = (props.currentPage - 1) * props.itemsPerPage;
-  const end = start + props.itemsPerPage;
-  return props.pemesanan.slice(start, end);
-});
-
-const handlePageChange = (page: number) => {
-  emit("update:currentPage", page);
-};
-
-const getPemesananDate = (pemesanan: KeuanganPemesanan) =>
-  pemesanan.updated_at || pemesanan.tanggal_pemesanan || "";
-
-const getPemesananPlateNumber = (pemesanan: KeuanganPemesanan) =>
-  pemesanan.vespa?.plat_nomor || "-";
-
-const getPemesananStatus = (pemesanan: KeuanganPemesanan) =>
-  pemesanan.status || "Selesai";
-
-const calculateLayananTotal = (layanan: KeuanganPemesananLayanan[]) =>
-  layanan.reduce(
-    (total, itemLayanan) =>
-      total + toMoneyNumber(itemLayanan.pivot.harga_saat_pesan || 0),
-    0,
-  );
-
-const getPemesananTotal = (pemesanan: KeuanganPemesanan) =>
-  pemesanan.total_harga || calculateLayananTotal(pemesanan.layanan);
-
-const TABLE_HEADERS = [
-  "Kode Pemesanan",
-  "Tanggal",
-  "Pelanggan",
-  "Plat Nomor",
-  "Total Biaya",
-  "Status",
-  "Pembayaran",
-];
+const {
+  totalPages,
+  from,
+  to,
+  paginatedPemesanan,
+  handlePageChange,
+  getPemesananDate,
+  getPemesananPlateNumber,
+  getPemesananStatus,
+  getPemesananTotal,
+} = usePemilikKeuanganTable(props, emit);
 </script>
 
 <template>

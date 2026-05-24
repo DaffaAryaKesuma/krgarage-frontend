@@ -53,6 +53,18 @@ body:has(.fixed.inset-0) {
   overflow: hidden;
 }
 
+/* Hide native number input spinners across browsers */
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 /* Custom Scrollbar Utility */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
@@ -68,4 +80,3 @@ body:has(.fixed.inset-0) {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: rgba(107, 114, 128, 0.6);
 }
-

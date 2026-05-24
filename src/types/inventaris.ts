@@ -45,3 +45,22 @@ export interface TeratasSukuCadangMetric {
   total_terjual: number;
   total_pendapatan?: number;
 }
+
+export interface RiwayatRestokSukuCadang {
+  id: number;
+  jumlah: number;
+  harga_beli_satuan: number;
+  total_pengeluaran: number;
+  stok_sebelum: number;
+  stok_sesudah: number;
+  catatan?: string | null;
+  created_at: string;
+  suku_cadang?: {
+    id: number;
+    nama_suku_cadang: string;
+  } | null;
+  admin?: {
+    id: number;
+    nama: string;
+  } | null;
+}

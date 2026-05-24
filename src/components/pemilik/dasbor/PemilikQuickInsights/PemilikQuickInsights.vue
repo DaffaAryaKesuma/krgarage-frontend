@@ -7,30 +7,32 @@ const { INSIGHT_KARTU } = usePemilikQuickInsights(props);
 </script>
 
 <template>
-  <div class="mb-6">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 h-full">
+  <div class="mb-4 sm:mb-6">
+    <div class="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4 h-full">
       <div
         v-for="card in INSIGHT_KARTU"
         :key="card.title"
         :class="[
-          'rounded-2xl bg-gradient-to-br p-4 text-white shadow-md',
+          'rounded-xl bg-gradient-to-br p-3 text-white shadow-md sm:rounded-2xl sm:p-4',
           card.gradient,
         ]"
       >
-        <div class="flex items-start justify-between gap-2">
+        <div class="flex min-h-20 items-start justify-between gap-2 sm:min-h-0">
           <div class="min-w-0">
-            <p class="text-xs font-medium opacity-90 mb-1">{{ card.title }}</p>
-            <h3 class="text-lg font-bold leading-tight break-words">
+            <p class="mb-1 text-[11px] font-medium leading-tight opacity-90 sm:text-xs">
+              {{ card.title }}
+            </p>
+            <h3 class="text-sm font-bold leading-tight break-words sm:text-lg">
               {{ card.value }}
             </h3>
-            <p class="mt-1 text-xs opacity-80 leading-snug">
+            <p class="mt-1 line-clamp-2 text-[10px] leading-snug opacity-80 sm:text-xs">
               {{ card.subtitle }}
             </p>
           </div>
           <div
-            class="rounded-full bg-white/20 flex items-center justify-center shrink-0 w-9 h-9"
+            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/20 sm:h-9 sm:w-9"
           >
-            <i :class="['mdi', card.icon, 'text-xl']"></i>
+            <i :class="['mdi', card.icon, 'text-lg sm:text-xl']"></i>
           </div>
         </div>
       </div>

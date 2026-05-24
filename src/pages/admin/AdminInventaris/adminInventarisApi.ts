@@ -48,11 +48,16 @@ export function updateAdminInventarisSukuCadang(
 
 export function restockAdminInventarisSukuCadang(
   idSukuCadang: number,
-  jumlahStok: number,
+  dataRestok: {
+    jumlah: number;
+    harga_beli_satuan: number;
+    update_harga_beli: boolean;
+    catatan?: string;
+  },
 ) {
   return axios.post(
     `${API_URL}/admin/inventori/${idSukuCadang}/tambah-stok`,
-    { jumlah: jumlahStok },
+    dataRestok,
     { headers: getAuthHeaders() },
   );
 }

@@ -13,9 +13,17 @@ export interface LayananFormData {
 const FILE_INPUT_ID = "file_input";
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 
+export interface AdminLayananFormModalEmit {
+  (e: "close"): void;
+  (e: "submit"): void;
+  (e: "update:form", value: LayananFormData): void;
+  (e: "update:previewImage", value: string | null): void;
+  (e: "fileChange", file: File): void;
+}
+
 export function useAdminLayananFormModal(
   props: { show: boolean; mode: "add" | "edit"; form: LayananFormData; previewImage: string | null },
-  emit: (e: string, ...args: any[]) => void,
+  emit: AdminLayananFormModalEmit,
 ) {
   scrollLock(() => props.show);
 

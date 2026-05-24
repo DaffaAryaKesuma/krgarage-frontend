@@ -121,5 +121,6 @@ export function useAuthenticatedLayoutShell(
     handleLogout,
     closeMenu,
     isActive,
+    route,
   };
 }

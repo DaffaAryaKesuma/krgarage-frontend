@@ -45,7 +45,7 @@ const shouldPairDetailOnMobile = computed(
 const wrapperClass = computed(() =>
   isMobileVariant.value
     ? "mt-4 grid grid-cols-2 gap-2 border-t border-gray-100 pt-3"
-    : "flex flex-wrap items-center gap-1.5",
+    : "flex flex-col items-start gap-2",
 );
 
 const aksiButtonClass = computed(() =>

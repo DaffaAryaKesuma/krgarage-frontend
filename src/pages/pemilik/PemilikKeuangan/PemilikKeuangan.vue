@@ -3,8 +3,10 @@ import { onMounted } from "vue";
 import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import PemilikKeuanganFilters from "@/components/pemilik/keuangan/PemilikKeuanganFilters.vue";
 import PemilikKeuanganRingkasanKartu from "@/components/pemilik/keuangan/PemilikKeuanganRingkasanKartu.vue";
-import PemilikKeuanganChart from "@/components/pemilik/keuangan/PemilikKeuanganChart.vue";
-import PemilikKeuanganTable from "@/components/pemilik/keuangan/PemilikKeuanganTable.vue";
+import PemilikKeuanganChart from "@/components/pemilik/keuangan/PemilikKeuanganChart/PemilikKeuanganChart.vue";
+import PemilikKeuanganTable from "@/components/pemilik/keuangan/PemilikKeuanganTable/PemilikKeuanganTable.vue";
+import PemilikKeuanganPengeluaranRestokTable from "@/components/pemilik/keuangan/PemilikKeuanganPengeluaranRestokTable/PemilikKeuanganPengeluaranRestokTable.vue";
+import PemilikKeuanganTabs from "@/components/pemilik/keuangan/PemilikKeuanganTabs/PemilikKeuanganTabs.vue";
 import { usePemilikKeuanganPage } from "./usePemilikKeuanganPage";
 import {
   Chart as ChartJS,
@@ -37,10 +39,13 @@ const {
   endDate,
   revenueData,
   pemesanan,
+  pengeluaranRestok,
   loading,
   ringkasan,
   currentPage,
+  expenseCurrentPage,
   itemsPerPage,
+  activeTab,
   fetchKeuanganData
 } = usePemilikKeuanganPage();
 
@@ -68,21 +73,36 @@ onMounted(() => {
         @apply="fetchKeuanganData"
       />
 
-      <PemilikKeuanganRingkasanKartu :ringkasan="ringkasan" />
+      <PemilikKeuanganTabs v-model:active-tab="activeTab" />
 
-      <PemilikKeuanganChart
-        :revenue-data="revenueData"
-        :loading="loading"
-        :start-date="startDate"
-        :end-date="endDate"
-      />
+      <template v-if="activeTab === 'ringkasan'">
+        <PemilikKeuanganRingkasanKartu :ringkasan="ringkasan" />
+
+        <PemilikKeuanganChart
+          :revenue-data="revenueData"
+          :loading="loading"
+          :start-date="startDate"
+          :end-date="endDate"
+        />
+      </template>
 
       <PemilikKeuanganTable
+        v-else-if="activeTab === 'pemasukan'"
         :pemesanan="pemesanan"
         :loading="loading"
         :start-date="startDate"
         :end-date="endDate"
         v-model:currentPage="currentPage"
+        :items-per-page="itemsPerPage"
+      />
+
+      <PemilikKeuanganPengeluaranRestokTable
+        v-else
+        :pengeluaran="pengeluaranRestok"
+        :loading="loading"
+        :start-date="startDate"
+        :end-date="endDate"
+        v-model:currentPage="expenseCurrentPage"
         :items-per-page="itemsPerPage"
       />
     </div>

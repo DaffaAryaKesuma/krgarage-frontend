@@ -36,6 +36,9 @@ export function useAdminInventarisPage() {
   const selectedSukuCadang = ref<InventarisSukuCadang | null>(null);
   const itemToDelete = ref<number | null>(null);
   const restockQuantity = ref(0);
+  const restockUnitPrice = ref(0);
+  const restockUpdateMasterPrice = ref(false);
+  const restockNote = ref("");
   const categoryName = ref("");
 
   const form = ref(createEmptyInventarisForm());
@@ -116,12 +119,18 @@ export function useAdminInventarisPage() {
   const openRestockModal = (itemSukuCadang: InventarisSukuCadang) => {
     selectedSukuCadang.value = itemSukuCadang;
     restockQuantity.value = 0;
+    restockUnitPrice.value = Math.trunc(toMoneyNumber(itemSukuCadang.harga_beli));
+    restockUpdateMasterPrice.value = false;
+    restockNote.value = "";
     showRestockModal.value = true;
   };
 
   const closeRestockModal = () => {
     showRestockModal.value = false;
     restockQuantity.value = 0;
+    restockUnitPrice.value = 0;
+    restockUpdateMasterPrice.value = false;
+    restockNote.value = "";
   };
 
   const showDeleteConfirmModal = (id: number) => {
@@ -214,11 +223,21 @@ export function useAdminInventarisPage() {
       return;
     }
 
+    if (restockUnitPrice.value < 0) {
+      toast.error("Harga beli per unit tidak boleh negatif");
+      return;
+    }
+
     loading.value = true;
     try {
       await restockAdminInventarisSukuCadang(
         selectedSukuCadang.value.id,
-        restockQuantity.value,
+        {
+          jumlah: restockQuantity.value,
+          harga_beli_satuan: restockUnitPrice.value,
+          update_harga_beli: restockUpdateMasterPrice.value,
+          catatan: restockNote.value.trim() || undefined,
+        },
       );
       toast.success("Stok berhasil ditambahkan!");
       closeRestockModal();
@@ -270,6 +289,9 @@ export function useAdminInventarisPage() {
     selectedSukuCadang,
     itemToDelete,
     restockQuantity,
+    restockUnitPrice,
+    restockUpdateMasterPrice,
+    restockNote,
     categoryName,
     form,
     filteredSukuCadang,

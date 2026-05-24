@@ -21,6 +21,9 @@ const {
   showDeleteConfirm,
   selectedSukuCadang,
   restockQuantity,
+  restockUnitPrice,
+  restockUpdateMasterPrice,
+  restockNote,
   categoryName,
   categoryLoading,
   form,
@@ -87,6 +90,9 @@ const {
       :show="showRestockModal"
       :selected-suku-cadang="selectedSukuCadang"
       v-model:restock-quantity="restockQuantity"
+      v-model:restock-unit-price="restockUnitPrice"
+      v-model:restock-update-master-price="restockUpdateMasterPrice"
+      v-model:restock-note="restockNote"
       :loading="loading"
       @close="closeRestockModal"
       @submit="restock"

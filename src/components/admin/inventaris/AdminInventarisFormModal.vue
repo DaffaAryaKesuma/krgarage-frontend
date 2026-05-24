@@ -30,9 +30,9 @@ const emit = defineEmits<{
 }>();
 
 // Generic field updater — replaces repetitive @input inline handlers
-const updateField = <K extends keyof InventarisSukuCadangForm>(
-  key: K,
-  value: InventarisSukuCadangForm[K],
+const updateField = <FieldKey extends keyof InventarisSukuCadangForm>(
+  key: FieldKey,
+  value: InventarisSukuCadangForm[FieldKey],
 ) => {
   emit("update:form", { ...props.form, [key]: value });
 };
@@ -149,14 +149,8 @@ const buttonSecondaryClass = `${buttonBaseClass} border border-slate-300 text-sl
               type="number"
               min="0"
               required
-              :disabled="!!selectedSukuCadang"
               placeholder="0"
-              :class="[
-                inputClass,
-                selectedSukuCadang
-                  ? 'cursor-not-allowed bg-slate-100 text-slate-500'
-                  : '',
-              ]"
+              :class="inputClass"
             />
           </div>
         </div>

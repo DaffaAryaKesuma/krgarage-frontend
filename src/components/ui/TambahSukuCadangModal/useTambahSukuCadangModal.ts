@@ -7,6 +7,11 @@ export interface KeranjangItem {
   quantity: number;
 }
 
+export interface TambahSukuCadangModalEmit {
+  (e: "close"): void;
+  (e: "submit", items: { sukucadangId: number; quantity: number }[]): void;
+}
+
 export function useTambahSukuCadangModal(
   props: {
     show: boolean;
@@ -14,7 +19,7 @@ export function useTambahSukuCadangModal(
     isLoading?: boolean;
     isSubmitting?: boolean;
   },
-  emit: (e: "close" | "submit", ...args: any[]) => void,
+  emit: TambahSukuCadangModalEmit,
 ) {
   scrollLock(() => props.show);
 

@@ -66,7 +66,7 @@ onMounted(() => {
     >
       <p class="text-xs text-gray-500">Mekanik Ditugaskan</p>
       <p
-        class="text-sm font-semibold"
+        class="text-sm font-semibold capitalize"
         :class="assignedMekanikName ? 'text-blue-800' : 'text-gray-600'"
       >
         {{ assignedMekanikName || "Belum ditugaskan" }}

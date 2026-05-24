@@ -42,6 +42,7 @@ const {
   handleLogout,
   closeMenu,
   isActive,
+  route,
 } = useAuthenticatedLayoutShell(props.desktopBreakpoint);
 
 scrollLock(() => isMobileMenuOpen.value);

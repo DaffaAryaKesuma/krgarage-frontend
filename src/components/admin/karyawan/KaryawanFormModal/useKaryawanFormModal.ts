@@ -13,9 +13,14 @@ export interface FormData {
 export const INPUT_CLASS =
   "block w-full py-2.5 pl-10 pr-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 sm:text-sm text-gray-900 placeholder-gray-400 transition-all bg-gray-50 focus:bg-white";
 
+export interface KaryawanFormModalEmit {
+  (e: "close"): void;
+  (e: "submit", data: FormData): void;
+}
+
 export function useKaryawanFormModal(
   props: { show: boolean; isEditMode: boolean; initialData?: Partial<FormData> },
-  emit: (e: "close" | "submit", ...args: any[]) => void,
+  emit: KaryawanFormModalEmit,
 ) {
   scrollLock(() => props.show);
 

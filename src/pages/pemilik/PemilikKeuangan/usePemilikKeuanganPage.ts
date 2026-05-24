@@ -5,7 +5,8 @@ import { API_URL } from "@/utils/api";
 import { logError } from "@/utils/errorHandler";
 import { toLocalISOString } from "@/utils/format";
 import type { KeuanganPemesanan } from "@/types/pemesanan";
-
+import type { RiwayatRestokSukuCadang } from "@/types/inventaris";
+import type { PemilikKeuanganTabKey } from "@/components/pemilik/keuangan/PemilikKeuanganTabs/usePemilikKeuanganTabs";
 
 
 export function usePemilikKeuanganPage() {
@@ -18,20 +19,27 @@ export function usePemilikKeuanganPage() {
   
   const revenueData = ref<any>({ labels: [], datasets: [] });
   const pemesanan = ref<KeuanganPemesanan[]>([]);
+  const pengeluaranRestok = ref<RiwayatRestokSukuCadang[]>([]);
   const loading = ref(true);
   const ringkasan = ref({
     totalRevenue: 0,
+    totalExpense: 0,
+    netProfit: 0,
     totalPemesanan: 0,
+    totalRestok: 0,
     avgPemesanan: 0,
   });
   
   const currentPage = ref(1);
+  const expenseCurrentPage = ref(1);
   const itemsPerPage = ref(10);
+  const activeTab = ref<PemilikKeuanganTabKey>("ringkasan");
   
   // 2. Pindahkan fungsi fetchKeuanganData ke sini
   const fetchKeuanganData = async () => {
     loading.value = true;
     currentPage.value = 1; 
+    expenseCurrentPage.value = 1;
     try {
       const headers = getAuthHeaders();
       const params = {
@@ -39,9 +47,10 @@ export function usePemilikKeuanganPage() {
         end_date: endDate.value,
       };
       
-      const [trendRes, pemesananRes] = await Promise.all([
+      const [trendRes, pemesananRes, restokRes] = await Promise.all([
         axios.get(`${API_URL}/pemilik/tren-pendapatan`, { headers, params }),
         axios.get(`${API_URL}/pemilik/transaksi`, { headers, params }),
+        axios.get(`${API_URL}/pemilik/pengeluaran-restok`, { headers, params }),
       ]);
       
       const trendData = trendRes.data.data || trendRes.data;
@@ -63,18 +72,36 @@ export function usePemilikKeuanganPage() {
 
       const pemesananData = pemesananRes.data.data || pemesananRes.data;
       pemesanan.value = Array.isArray(pemesananData) ? pemesananData : [];
+      const restokData = restokRes.data.data || restokRes.data;
+      pengeluaranRestok.value = Array.isArray(restokData) ? restokData : [];
+
       const total = pemesanan.value.reduce((sum, b) => sum + Number(b.total_harga || 0), 0);
+      const totalExpense = pengeluaranRestok.value.reduce(
+        (sum, item) => sum + Number(item.total_pengeluaran || 0),
+        0,
+      );
 
       ringkasan.value = {
         totalRevenue: total,
+        totalExpense,
+        netProfit: total - totalExpense,
         totalPemesanan: pemesanan.value.length,
+        totalRestok: pengeluaranRestok.value.length,
         avgPemesanan: pemesanan.value.length > 0 ? total / pemesanan.value.length : 0,
       };
     } catch (error: any) {
       logError(error, "fetchKeuanganData");
       pemesanan.value = [];
+      pengeluaranRestok.value = [];
       revenueData.value = { labels: [], datasets: [] };
-      ringkasan.value = { totalRevenue: 0, totalPemesanan: 0, avgPemesanan: 0 };
+      ringkasan.value = {
+        totalRevenue: 0,
+        totalExpense: 0,
+        netProfit: 0,
+        totalPemesanan: 0,
+        totalRestok: 0,
+        avgPemesanan: 0,
+      };
     } finally {
       loading.value = false;
     }
@@ -86,10 +113,13 @@ export function usePemilikKeuanganPage() {
     endDate,
     revenueData,
     pemesanan,
+    pengeluaranRestok,
     loading,
     ringkasan,
     currentPage,
+    expenseCurrentPage,
     itemsPerPage,
+    activeTab,
     fetchKeuanganData
   };
 }

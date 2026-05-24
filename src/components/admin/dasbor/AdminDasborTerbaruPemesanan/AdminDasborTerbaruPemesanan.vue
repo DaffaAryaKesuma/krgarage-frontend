@@ -18,7 +18,11 @@ const props = defineProps<Props>();
 
 const emit = defineEmits<{
   statusChange: [pemesanan: Pemesanan, newStatus: string, catatan?: string];
-  pembayaranStatusChange: [pemesanan: Pemesanan, newStatus: string, catatan?: string];
+  pembayaranStatusChange: [
+    pemesanan: Pemesanan,
+    newStatus: string,
+    catatan?: string,
+  ];
   assignAndStart: [pemesanan: Pemesanan];
   "update:selectedMekaniks": [value: { [pemesananId: number]: number }];
 }>();
@@ -36,10 +40,11 @@ const TABLE_HEADERS = [
 const TABLE_WRAPPER_CLASS =
   "overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm";
 
-const TABLE_CLASS = "min-w-[1200px] w-full table-fixed divide-y divide-gray-200";
+const TABLE_CLASS =
+  "min-w-[1200px] w-full table-fixed divide-y divide-gray-200";
 
 const TABLE_HEADER_CELL_CLASS =
-  "px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-gray-900 sm:px-4 [&:nth-child(1)]:w-[10%] [&:nth-child(2)]:w-[14%] [&:nth-child(3)]:w-[10%] [&:nth-child(4)]:w-[10%] [&:nth-child(5)]:w-[12%] [&:nth-child(6)]:w-[24%] [&:nth-child(7)]:w-[20%]";
+  "px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-gray-900 sm:px-4 [&:nth-child(1)]:w-[10%] [&:nth-child(2)]:w-[14%] [&:nth-child(3)]:w-[10%] [&:nth-child(4)]:w-[10%] [&:nth-child(5)]:w-[12%] [&:nth-child(6)]:w-[22%] [&:nth-child(7)]:w-[22%]";
 
 const TABLE_BODY_CLASS = "divide-y divide-gray-100 bg-white";
 
@@ -147,7 +152,7 @@ const {
       @confirm="applyStatusChange"
       @cancel="closeStatusConfirmModal"
     />
-    
+
     <ConfirmationModal
       v-else
       :show="showStatusConfirmModal"
@@ -173,4 +178,3 @@ const {
     />
   </div>
 </template>
-

@@ -14,8 +14,8 @@ interface Props {
 }
 
 interface Emits {
-  (e: "confirm", value: string): void;
-  (e: "cancel"): void;
+  (event: "confirm", value: string): void;
+  (event: "cancel"): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
