@@ -39,9 +39,9 @@ const handleCancel = () => {
     >
       <div class="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
         <div
-          class="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red-100 shrink-0"
+          class="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-100 shrink-0"
         >
-          <i class="mdi mdi-calendar text-xl sm:text-2xl text-red-600"></i>
+          <i class="mdi mdi-calendar text-xl sm:text-2xl text-gray-600"></i>
         </div>
         <div class="min-w-0">
           <p
@@ -75,7 +75,7 @@ const handleCancel = () => {
         class="p-2.5 sm:p-3 bg-gray-50 border border-gray-100 rounded-lg flex gap-2"
       >
         <div
-          class="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg text-red-600 shrink-0"
+          class="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg text-gray-600 shrink-0"
         >
           <i class="mdi mdi-motorbike text-lg sm:text-xl"></i>
         </div>
@@ -99,7 +99,7 @@ const handleCancel = () => {
         class="p-2.5 sm:p-3 bg-gray-50 border border-gray-100 rounded-lg flex gap-2"
       >
         <div
-          class="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg text-red-600 shrink-0"
+          class="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg text-gray-600 shrink-0"
         >
           <i class="mdi mdi-wrench text-lg sm:text-xl"></i>
         </div>
@@ -130,7 +130,7 @@ const handleCancel = () => {
         class="p-2.5 sm:p-3 bg-gray-50 border border-gray-100 rounded-lg flex gap-2"
       >
         <div
-          class="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg text-red-600 shrink-0"
+          class="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg text-gray-600 shrink-0"
         >
           <i class="mdi mdi-calendar-clock text-lg sm:text-xl"></i>
         </div>
@@ -151,7 +151,7 @@ const handleCancel = () => {
         class="p-2.5 sm:p-3 bg-gray-50 border border-gray-100 rounded-lg flex gap-2"
       >
         <div
-          class="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg text-red-600 shrink-0"
+          class="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg text-gray-600 shrink-0"
         >
           <i class="mdi mdi-clock-outline text-lg sm:text-xl"></i>
         </div>

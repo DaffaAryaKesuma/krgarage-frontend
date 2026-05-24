@@ -103,7 +103,7 @@ onMounted(() => {
             class="text-sm text-blue-700 mb-3 font-medium flex items-center gap-2"
           >
             <i class="mdi mdi-information text-lg"></i>
-            Pilih mekanik untuk mulai servis
+            Pilih mekanik
           </p>
           <CustomSelect
             v-model="selectedMekanikId"

@@ -20,7 +20,7 @@ export interface MekanikPekerjaanGridProps {
 }
 
 export const MEKANIK_PEKERJAAN_GRID_DEFAULTS = {
-  emptyIcon: "mdi mdi-clipboard-list",
+  emptyIcon: "mdi mdi-clipboard-text-off",
   emptyTitle: "Tidak ada pekerjaan",
   emptyMessage: "Tidak ada pekerjaan saat ini.",
   loadingMessage: "Memuat data...",

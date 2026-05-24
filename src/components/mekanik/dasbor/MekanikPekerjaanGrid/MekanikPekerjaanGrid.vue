@@ -195,7 +195,7 @@ const {
         <details
           v-if="item.item_pemesanan?.length"
           class="group bg-gray-50/60 border border-gray-100 rounded-xl"
-          :open="item.item_pemesanan.length <= 3"
+          :open="item.item_pemesanan.length <= 0"
         >
           <summary
             class="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 text-[10px] font-semibold text-gray-700 marker:hidden"
