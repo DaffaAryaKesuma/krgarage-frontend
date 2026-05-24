@@ -16,7 +16,7 @@ defineProps<{
   <section class="grid grid-cols-1 gap-4 md:grid-cols-3">
     <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-5">
       <div class="mb-3 flex items-center gap-2">
-        <i class="mdi mdi-clipboard-text text-xl text-red-600"></i>
+        <i class="mdi mdi-clipboard-text text-xl text-gray-600"></i>
         <h2 class="font-semibold text-gray-900">Pemesanan</h2>
       </div>
       <p class="text-sm text-gray-600">Kode Pemesanan</p>
@@ -37,7 +37,7 @@ defineProps<{
 
     <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-5">
       <div class="mb-3 flex items-center gap-2">
-        <i class="mdi mdi-motorbike text-xl text-red-600"></i>
+        <i class="mdi mdi-motorbike text-xl text-gray-600"></i>
         <h2 class="font-semibold text-gray-900">Informasi Vespa</h2>
       </div>
       <p class="text-sm text-gray-600">Model</p>
@@ -54,11 +54,11 @@ defineProps<{
 
     <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-5">
       <div class="mb-3 flex items-center gap-2">
-        <i class="mdi mdi-account-wrench text-xl text-red-600"></i>
+        <i class="mdi mdi-account-wrench text-xl text-gray-600"></i>
         <h2 class="font-semibold text-gray-900">Mekanik</h2>
       </div>
       <p class="text-sm text-gray-600">Nama Mekanik</p>
-      <p class="font-medium text-gray-900">
+      <p class="font-medium text-gray-900 capitalize">
         {{ pemesanan.mekanik?.nama || "Belum ditugaskan" }}
       </p>
       <p class="mt-3 text-sm text-gray-600">Status Pengerjaan</p>

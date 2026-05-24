@@ -15,7 +15,7 @@ const getLayananPrice = (layanan: Pemesanan["layanan"][number]) =>
   <section class="grid grid-cols-1 gap-4 md:grid-cols-2">
     <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
       <div class="mb-4 flex items-center gap-2">
-        <i class="mdi mdi-wrench text-xl text-red-600"></i>
+        <i class="mdi mdi-wrench text-xl text-gray-600"></i>
         <h2 class="font-semibold text-gray-900">Rincian Layanan</h2>
       </div>
 
@@ -23,7 +23,7 @@ const getLayananPrice = (layanan: Pemesanan["layanan"][number]) =>
         <div
           v-for="layanan in pemesanan.layanan"
           :key="layanan.id"
-          class="flex items-center justify-between rounded-lg bg-red-50 px-3 py-2"
+          class="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2"
         >
           <span class="text-sm font-medium text-gray-800">
             {{
@@ -41,7 +41,7 @@ const getLayananPrice = (layanan: Pemesanan["layanan"][number]) =>
 
     <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
       <div class="mb-4 flex items-center gap-2">
-        <i class="mdi mdi-cog text-xl text-red-600"></i>
+        <i class="mdi mdi-cog text-xl text-gray-600"></i>
         <h2 class="font-semibold text-gray-900">Rincian Suku Cadang</h2>
       </div>
 
@@ -49,9 +49,9 @@ const getLayananPrice = (layanan: Pemesanan["layanan"][number]) =>
         <div
           v-for="item in pemesanan.item_pemesanan"
           :key="item.id"
-          class="flex items-center justify-between rounded-lg bg-red-50 px-3 py-2"
+          class="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2"
         >
-          <span class="text-sm text-gray-800">
+          <span class="text-sm font-semibold text-gray-900">
             {{
               item.nama_suku_cadang_saat_ini ||
               item.suku_cadang?.nama_suku_cadang ||

@@ -19,7 +19,7 @@ type AppRole = CanonicalUserRole;
 
 const NOTIFICATION_ICONS: Record<string, string> = {
   pemesanan_dikonfirmasi: "mdi-check-circle",
-  pemesanan_diproses:     "mdi-progress-clock",
+  pemesanan_diproses:     "mdi-wrench-cog",
   pemesanan_selesai:      "mdi-check-all",
   pemesanan_dibatalkan:   "mdi-close-circle",
   pemesanan_ditugaskan:   "mdi-account-check",
@@ -30,15 +30,15 @@ const NOTIFICATION_ICONS: Record<string, string> = {
 };
 
 const NOTIFICATION_COLORS: Record<string, string> = {
-  pemesanan_dikonfirmasi: "text-green-600 bg-green-50",
-  pemesanan_diproses:     "text-blue-600 bg-blue-50",
-  pemesanan_selesai:      "text-purple-600 bg-purple-50",
+  pemesanan_dikonfirmasi: "text-blue-600 bg-blue-50",
+  pemesanan_diproses:     "text-orange-600 bg-orange-50",
+  pemesanan_selesai:      "text-green-600 bg-green-50",
   pemesanan_dibatalkan:   "text-red-600 bg-red-50",
   pemesanan_ditugaskan:   "text-orange-600 bg-orange-50",
   pemesanan_dihapus:      "text-red-700 bg-red-50",
   pemesanan_diperbarui:   "text-gray-600 bg-gray-50",
   stok_menipis:           "text-yellow-600 bg-yellow-50",
-  pembayaran_diterima:    "text-emerald-700 bg-emerald-50",
+  pembayaran_diterima:    "text-green-700 bg-green-50",
 };
 
 export function normalizeRole(role?: string | null): AppRole {

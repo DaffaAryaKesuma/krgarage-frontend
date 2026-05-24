@@ -30,7 +30,7 @@ const emit = defineEmits<{
         <div
           v-for="item in layanan"
           :key="item.id"
-          class="flex items-center justify-between py-3 px-4 bg-gray-100 rounded-lg"
+          class="flex items-center justify-between py-3 px-4 bg-gray-50 rounded-lg"
         >
           <div class="flex items-center gap-3">
             <span class="font-medium text-sm text-gray-900">{{
@@ -68,7 +68,7 @@ const emit = defineEmits<{
         <div
           v-for="item in pemesananItems"
           :key="item.id"
-          class="group flex items-center justify-between rounded-lg bg-gray-100 px-4 py-3"
+          class="group flex items-center justify-between rounded-lg bg-gray-50 px-4 py-3"
         >
           <div class="flex-1">
             <span class="font-medium text-sm text-gray-900">{{
