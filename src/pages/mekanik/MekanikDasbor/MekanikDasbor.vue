@@ -6,7 +6,7 @@ import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
 import Pagination from "@/components/ui/Pagination.vue";
 import MekanikDasborTabs from "@/components/mekanik/dasbor/MekanikDasborTabs.vue";
 import MekanikRiwayatFilters from "@/components/mekanik/dasbor/MekanikRiwayatFilters.vue";
-import MekanikPekerjaanGrid from "@/components/mekanik/dasbor/MekanikPekerjaanGrid.vue";
+import MekanikPekerjaanGrid from "@/components/mekanik/dasbor/MekanikPekerjaanGrid/MekanikPekerjaanGrid.vue";
 import { useMekanikPemesanan } from "./useMekanikPemesanan";
 import { useMekanikDasborAksi } from "./useMekanikDasborAksi";
 import { usePing } from "./usePing";

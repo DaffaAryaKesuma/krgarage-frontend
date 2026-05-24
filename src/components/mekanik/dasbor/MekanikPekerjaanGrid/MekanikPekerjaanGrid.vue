@@ -1,6 +1,26 @@
 <script setup lang="ts">
-import { formatDateShort, formatTimeShort } from "@/utils/date";
+import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
+import EmptyState from "@/components/ui/EmptyState.vue";
 import {
+  MEKANIK_PEKERJAAN_GRID_DEFAULTS,
+  useMekanikPekerjaanGrid,
+  type MekanikPekerjaanGridProps,
+} from "./useMekanikPekerjaanGrid";
+
+withDefaults(
+  defineProps<MekanikPekerjaanGridProps>(),
+  MEKANIK_PEKERJAAN_GRID_DEFAULTS,
+);
+
+const emit = defineEmits<{
+  updateStatus: [pemesananId: number];
+  addSukuCadang: [pemesananId: number];
+  deleteSukuCadang: [pemesananId: number, itemId: number];
+}>();
+
+const {
+  formatDateShort,
+  formatTimeShort,
   canMekanikAddSukuCadang,
   canMekanikUpdateStatus,
   getMekanikAksiButtonClass,
@@ -8,32 +28,7 @@ import {
   getStatusBadgeClass,
   getStatusLabel,
   isStatusSelesai,
-} from "@/utils/statusBadge";
-import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
-import EmptyState from "@/components/ui/EmptyState.vue";
-import type { MekanikPemesanan } from "@/types/pemesanan";
-
-interface Props {
-  pemesanan: MekanikPemesanan[];
-  loading: boolean;
-  emptyIcon?: string;
-  emptyTitle?: string;
-  emptyMessage?: string;
-  loadingMessage?: string;
-}
-
-withDefaults(defineProps<Props>(), {
-  emptyIcon: "mdi mdi-clipboard-list",
-  emptyTitle: "Tidak ada pekerjaan",
-  emptyMessage: "Tidak ada pekerjaan saat ini.",
-  loadingMessage: "Memuat data...",
-});
-
-const emit = defineEmits<{
-  updateStatus: [pemesananId: number];
-  addSukuCadang: [pemesananId: number];
-  deleteSukuCadang: [pemesananId: number, itemId: number];
-}>();
+} = useMekanikPekerjaanGrid();
 </script>
 
 <template>
@@ -197,17 +192,27 @@ const emit = defineEmits<{
         </div>
 
         <!-- Suku Cadang -->
-        <div
+        <details
           v-if="item.item_pemesanan?.length"
-          class="bg-gray-50/60 border border-gray-100 rounded-xl p-3"
+          class="group bg-gray-50/60 border border-gray-100 rounded-xl"
+          :open="item.item_pemesanan.length <= 3"
         >
-          <p
-            class="text-[10px] font-semibold text-gray-700 mb-2 flex items-center gap-1.5"
+          <summary
+            class="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 text-[10px] font-semibold text-gray-700 marker:hidden"
           >
-            <i class="mdi mdi-cog text-gray-600"></i>
-            Suku Cadang Digunakan
-          </p>
-          <div class="space-y-1.5">
+            <span class="flex min-w-0 items-center gap-1.5">
+              <i class="mdi mdi-cog text-gray-600"></i>
+              Suku Cadang Digunakan
+              <span class="rounded-full bg-white px-2 py-0.5 text-[10px] font-bold text-gray-600">
+                {{ item.item_pemesanan.length }}
+              </span>
+            </span>
+            <i
+              class="mdi mdi-chevron-down text-base text-gray-500 transition-transform group-open:rotate-180"
+            ></i>
+          </summary>
+
+          <div class="space-y-1.5 border-t border-gray-100 px-3 pb-3 pt-2">
             <div
               v-for="subItem in item.item_pemesanan"
               :key="subItem.id"
@@ -234,7 +239,7 @@ const emit = defineEmits<{
               </div>
             </div>
           </div>
-        </div>
+        </details>
 
         <!-- Catatan Mekanik -->
         <div
