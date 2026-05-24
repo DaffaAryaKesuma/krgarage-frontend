@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
-import PelangganVespaFormModal from "@/components/pelanggan/vespas/PelangganVespaFormModal.vue";
+import PelangganVespaFormModal from "@/components/pelanggan/vespas/PelangganVespaFormModal/PelangganVespaFormModal.vue";
 import PelangganVespaDaftar from "@/components/pelanggan/vespas/PelangganVespaDaftar.vue";
 import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import { usePelangganVespasPage } from "./usePelangganVespasPage";

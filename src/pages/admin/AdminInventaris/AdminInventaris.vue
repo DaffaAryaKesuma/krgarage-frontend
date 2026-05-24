@@ -5,8 +5,8 @@ import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import AdminInventarisStatistikKartu from "@/components/admin/inventaris/AdminInventarisStatistikKartu.vue";
 import AdminInventarisFilters from "@/components/admin/inventaris/AdminInventarisFilters.vue";
 import AdminInventarisTabel from "@/components/admin/inventaris/AdminInventarisTabel.vue";
-import AdminInventarisFormModal from "@/components/admin/inventaris/AdminInventarisFormModal.vue";
-import AdminInventarisStokUlangModal from "@/components/admin/inventaris/AdminInventarisStokUlangModal.vue";
+import AdminInventarisFormModal from "@/components/admin/inventaris/AdminInventarisFormModal/AdminInventarisFormModal.vue";
+import AdminInventarisStokUlangModal from "@/components/admin/inventaris/AdminInventarisStokUlangModal/AdminInventarisStokUlangModal.vue";
 import { useAdminInventarisPage } from "./useAdminInventarisPage";
 
 const {

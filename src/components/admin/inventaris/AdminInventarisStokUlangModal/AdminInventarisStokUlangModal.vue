@@ -1,43 +1,19 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import type { InventarisSukuCadang } from "@/types/inventaris";
-import { scrollLock } from "@/composables/scrollLock";
 import { toIDR } from "@/utils/money";
+import {
+  buttonPrimaryClass,
+  buttonSecondaryClass,
+  inputClass,
+  modalKartuClass,
+  useAdminInventarisStokUlangModal,
+  type AdminInventarisStokUlangModalEmit,
+  type AdminInventarisStokUlangModalProps,
+} from "./useAdminInventarisStokUlangModal";
 
-interface Props {
-  show: boolean;
-  selectedSukuCadang: InventarisSukuCadang | null;
-  restockQuantity: number;
-  restockUnitPrice: number;
-  restockUpdateMasterPrice: boolean;
-  restockNote: string;
-  loading: boolean;
-}
+const props = defineProps<AdminInventarisStokUlangModalProps>();
+const emit = defineEmits<AdminInventarisStokUlangModalEmit>();
 
-const props = defineProps<Props>();
-
-scrollLock(() => props.show);
-
-const emit = defineEmits<{
-  close: [];
-  submit: [];
-  "update:restockQuantity": [value: number];
-  "update:restockUnitPrice": [value: number];
-  "update:restockUpdateMasterPrice": [value: boolean];
-  "update:restockNote": [value: string];
-}>();
-
-const totalPengeluaran = computed(
-  () => props.restockQuantity * props.restockUnitPrice,
-);
-
-const modalKartuClass = "rounded-2xl border border-gray-200 bg-gray-50 p-4";
-const inputClass =
-  "w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-gray-500 ";
-const buttonBaseClass =
-  "inline-flex items-center justify-center rounded-xl px-5 py-3 font-semibold transition disabled:cursor-not-allowed disabled:opacity-50";
-const buttonPrimaryClass = `${buttonBaseClass} bg-green-600 text-white hover:bg-green-700`;
-const buttonSecondaryClass = `${buttonBaseClass} border border-gray-300 text-gray-700 hover:bg-gray-100`;
+const { totalPengeluaran } = useAdminInventarisStokUlangModal(props);
 </script>
 
 <template>

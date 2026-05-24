@@ -1,59 +1,20 @@
 <script setup lang="ts">
 import CustomSelect from "@/components/ui/CustomSelect.vue";
-import { watch } from "vue";
-import { scrollLock } from "@/composables/scrollLock";
-import type {
-  InventarisSukuCadang,
-  InventarisSukuCadangForm,
-} from "@/types/inventaris";
+import {
+  buttonPrimaryClass,
+  buttonSecondaryClass,
+  formKartuClass,
+  inputClass,
+  useAdminInventarisFormModal,
+  type AdminInventarisFormModalEmit,
+  type AdminInventarisFormModalProps,
+} from "./useAdminInventarisFormModal";
 
-interface Props {
-  show: boolean;
-  form: InventarisSukuCadangForm;
-  selectedSukuCadang: InventarisSukuCadang | null;
-  loading: boolean;
-  kategoriOptions: Array<{ value: number; label: string }>;
-  categoryName: string;
-  categoryLoading: boolean;
-}
-
-const props = defineProps<Props>();
-
-scrollLock(() => props.show);
-
-const emit = defineEmits<{
-  close: [];
-  submit: [];
-  "update:form": [value: InventarisSukuCadangForm];
-  "update:categoryName": [value: string];
-  "create-category": [];
-}>();
+const props = defineProps<AdminInventarisFormModalProps>();
+const emit = defineEmits<AdminInventarisFormModalEmit>();
 
 // Generic field updater — replaces repetitive @input inline handlers
-const updateField = <FieldKey extends keyof InventarisSukuCadangForm>(
-  key: FieldKey,
-  value: InventarisSukuCadangForm[FieldKey],
-) => {
-  emit("update:form", { ...props.form, [key]: value });
-};
-
-const toNum = (e: Event) => Number((e.target as HTMLInputElement).value);
-const toStr = (e: Event) => (e.target as HTMLInputElement).value;
-
-watch(
-  () => props.show,
-  (isVisible) => {
-    if (!isVisible) return;
-  },
-);
-
-const formKartuClass = "rounded-2xl border border-slate-200 bg-slate-50 p-4";
-const inputClass =
-  "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-red-500 focus:ring-4 focus:ring-red-100";
-const buttonBaseClass =
-  "inline-flex items-center justify-center rounded-xl px-5 py-3 font-semibold transition disabled:cursor-not-allowed disabled:opacity-50";
-const buttonPrimaryClass = `${buttonBaseClass} bg-red-600 text-white hover:bg-red-700`;
-const buttonSecondaryClass = `${buttonBaseClass} border border-slate-300 text-slate-700 hover:bg-slate-100`;
+const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
 </script>
 
 <template>
