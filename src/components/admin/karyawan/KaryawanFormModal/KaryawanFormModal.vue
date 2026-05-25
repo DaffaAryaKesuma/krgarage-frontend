@@ -5,6 +5,7 @@ import {
   INPUT_CLASS,
   type FormData,
 } from "@/components/admin/karyawan/KaryawanFormModal/useKaryawanFormModal";
+import { getButtonClass } from "@/utils/buttonVariants";
 
 const props = defineProps<{
   show: boolean;
@@ -160,22 +161,21 @@ const { formData, handleSubmit } = useKaryawanFormModal(props, emit);
               </div>
             </div>
 
-            <!-- Footer Buttons -->
             <div
               class="grid grid-cols-2 gap-3 pt-5 mt-2 sm:flex-row sm:justify-end border-t border-gray-100"
             >
               <button
                 type="button"
                 @click="emit('close')"
-                class="inline-flex justify-center w-full px-5 py-2.5 text-sm font-medium text-gray-700 transition-all bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-200 sm:w-auto"
+                :class="getButtonClass('secondary', 'md', 'w-full')"
               >
                 Batal
               </button>
               <button
                 type="submit"
-                class="inline-flex items-center justify-center w-full px-5 py-2.5 text-sm font-medium text-white transition-all bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto"
+                :class="getButtonClass('primary', 'md', 'w-full')"
               >
-                <i class="mr-2 mdi mdi-content-save text-lg leading-none"></i>
+                <i class="mdi mdi-content-save text-lg leading-none"></i>
                 Simpan
               </button>
             </div>

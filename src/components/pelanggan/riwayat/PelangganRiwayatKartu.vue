@@ -14,6 +14,7 @@ import {
   getAlertBoxClass,
   getIconToneClass,
 } from "@/utils/badgeVariants";
+import { getButtonClass } from "@/utils/buttonVariants";
 import type { PelangganPemesanan } from "@/types/pemesanan";
 
 interface Props {
@@ -179,12 +180,9 @@ const handleCancel = () => {
           <button
             @click="handleCancel"
             :disabled="isCancelling"
-            class="w-full px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
+            :class="getButtonClass('dangerOutline', 'sm', 'w-full disabled:opacity-50 disabled:cursor-not-allowed')"
           >
-            <i
-              v-if="isCancelling"
-              class="mdi mdi-loading mdi-spin text-base"
-            ></i>
+            <i v-if="isCancelling" class="mdi mdi-loading mdi-spin text-base"></i>
             <i v-else class="mdi mdi-close-circle text-base"></i>
             <span>{{ isCancelling ? "Membatalkan..." : "Batalkan" }}</span>
           </button>
@@ -192,7 +190,7 @@ const handleCancel = () => {
 
         <router-link
           :to="`/app/riwayat/${pemesanan.id}`"
-          class="w-full px-3 sm:px-4 py-2 border border-gray-600 text-gray-600 rounded-lg hover:bg-gray-50 transition flex items-center justify-center gap-2 text-sm"
+          :class="getButtonClass('neutralOutline', 'sm', 'w-full')"
         >
           <i class="mdi mdi-text-box-search-outline text-base"></i>
           <span>Lihat Detail</span>

@@ -2,6 +2,7 @@
 import { toIDR } from "@/utils/money";
 import type { Pemesanan, PemesananItem } from "@/types/pemesanan";
 import { getAlertBoxClass, getAlertIconClass } from "@/utils/badgeVariants";
+import { getButtonClass, getIconButtonClass } from "@/utils/buttonVariants";
 
 interface Props {
   layanan?: Pemesanan["layanan"];
@@ -57,7 +58,7 @@ const emit = defineEmits<{
         <button
           v-if="isInProgress"
           @click="emit('addSukuCadang')"
-          class="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-red-600 text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-red-700 transition shadow-sm"
+          :class="getButtonClass('primary', 'xs', 'inline-flex items-center gap-2')"
         >
           <i class="mdi mdi-plus"></i>
           <span>Tambah</span>
@@ -87,7 +88,7 @@ const emit = defineEmits<{
             <button
               v-if="isInProgress"
               @click="emit('deleteItem', item.id)"
-              class="rounded-lg p-2 text-red-600 transition hover:bg-red-100 opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+              :class="getIconButtonClass('danger', 'sm', 'opacity-100 sm:opacity-0 sm:group-hover:opacity-100')"
               title="Hapus"
             >
               <i class="mdi mdi-delete"></i>

@@ -5,6 +5,7 @@ import {
   getAlertIconClass,
   getToneTextClass,
 } from "@/utils/badgeVariants";
+import { getButtonClass } from "@/utils/buttonVariants";
 
 interface Props {
   totalLayanan: number;
@@ -56,7 +57,7 @@ const emit = defineEmits<{
       <button
         @click="emit('cancel')"
         :disabled="isCancelling"
-        class="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+        :class="getButtonClass('dangerOutline', 'md', 'disabled:cursor-not-allowed disabled:opacity-60')"
       >
         <i v-if="isCancelling" class="mdi mdi-loading mdi-spin"></i>
         <i v-else class="mdi mdi-close-circle"></i>

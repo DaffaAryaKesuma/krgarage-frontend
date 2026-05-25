@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PemilihTanggal from "@/components/ui/PemilihTanggal/PemilihTanggal.vue";
+import { getButtonClass } from "@/utils/buttonVariants";
 
 interface Props {
   startDate: string;
@@ -52,7 +53,7 @@ const updateEndDate = (val: string) => emit("update:endDate", val);
         <button
           @click="emit('apply')"
           :disabled="loading"
-          class="w-full sm:w-auto shrink-0 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 text-sm disabled:opacity-70 disabled:cursor-not-allowed"
+          :class="getButtonClass('primary', 'md', 'w-full sm:w-auto shrink-0 disabled:opacity-70 disabled:cursor-not-allowed')"
         >
           <i class="mdi mdi-filter-check" v-if="!loading"></i>
           <i class="mdi mdi-loading mdi-spin" v-else></i>

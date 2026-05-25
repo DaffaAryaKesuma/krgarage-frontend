@@ -2,6 +2,7 @@ import { computed, reactive, ref } from "vue";
 import axios from "axios";
 import { handleApiError, logError } from "@/utils/errorHandler";
 import { API_URL } from "@/utils/api";
+import { getFormInputClass } from "@/utils/formVariants";
 
 type RegisterFieldKey = "name" | "email" | "no_telepon" | "password";
 
@@ -142,13 +143,10 @@ export function useRegisterModal(onClose: () => void) {
 
   const getInputClass = (key: string) => {
     const fieldKey = key as RegisterFieldKey;
-
-    return [
-      "mt-1 w-full rounded-md border px-3 py-2 transition-colors outline-none",
-      errors[fieldKey] && touched[fieldKey]
-        ? "border-red-500 bg-red-50 focus:ring-2 focus:ring-red-200"
-        : "border-gray-300 focus:ring-2 focus:ring-red-200 focus:border-red-500",
-    ];
+    return getFormInputClass(
+      !!(errors[fieldKey] && touched[fieldKey]),
+      "mt-1",
+    );
   };
 
   const resetFormState = () => {

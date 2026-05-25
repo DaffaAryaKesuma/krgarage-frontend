@@ -1,10 +1,11 @@
-import { ref, reactive, computed, watch } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
 import { handleApiError, logError } from "@/utils/errorHandler";
 import { API_URL } from "@/utils/api";
 import { getRedirectPathForRole } from "@/utils/roleRoutes";
 import { scrollLock } from "@/composables/scrollLock";
+import { getFormInputClass } from "@/utils/formVariants";
 
 export const FORM_FIELDS = [
   { key: "email", label: "Email", type: "email", placeholder: "email@example.com" },
@@ -74,12 +75,11 @@ export function useMasukModal(
     validate(fieldKey);
   };
 
-  const getInputClass = (fieldKey: keyof typeof form) => [
-    "mt-1 w-full rounded-md border px-3 py-2 transition-colors outline-none",
-    errors[fieldKey] && touched[fieldKey]
-      ? "border-red-500 bg-red-50 focus:ring-2 focus:ring-red-200"
-      : "border-gray-300 focus:ring-2 focus:ring-red-200 focus:border-red-500",
-  ];
+  const getInputClass = (fieldKey: keyof typeof form) =>
+    getFormInputClass(
+      !!(errors[fieldKey] && touched[fieldKey]),
+      "mt-1",
+    );
 
   const handleLogin = async () => {
     if (!isFormValid.value) return;

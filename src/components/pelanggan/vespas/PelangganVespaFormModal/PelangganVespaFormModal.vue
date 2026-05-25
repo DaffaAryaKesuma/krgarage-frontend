@@ -6,6 +6,7 @@ import {
   type VespaFormPayload,
 } from "./usePelangganVespaFormModal";
 import { scrollLock } from "@/composables/scrollLock";
+import { getButtonClass } from "@/utils/buttonVariants";
 
 interface Props {
   show: boolean;
@@ -229,14 +230,14 @@ const onSubmit = () => {
         <button
           type="button"
           @click="emit('close')"
-          class="flex-1 sm:flex-none px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all text-sm shadow-sm"
+          :class="getButtonClass('secondary', 'md', 'flex-1 sm:flex-none px-5')"
         >
           Batal
         </button>
         <button
           form="vespa-form"
           type="submit"
-          class="flex-1 sm:flex-none px-6 py-2.5 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition-all flex items-center justify-center text-sm shadow-sm shadow-gray-900/20"
+          :class="getButtonClass('primary', 'md', 'flex-1 sm:flex-none px-6')"
         >
           {{ mode === "add" ? "Tambah Vespa" : "Simpan Perubahan" }}
         </button>

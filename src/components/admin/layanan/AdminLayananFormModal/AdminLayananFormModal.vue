@@ -4,6 +4,7 @@ import {
   type LayananFormData,
 } from "@/components/admin/layanan/AdminLayananFormModal/useAdminLayananFormModal";
 import { getFormInputClass } from "@/utils/formVariants";
+import { getButtonClass } from "@/utils/buttonVariants";
 
 const inputClass = getFormInputClass();
 
@@ -173,13 +174,13 @@ const { formTitle, handleFileChange, FILE_INPUT_ID } =
           <button
             type="button"
             @click="emit('close')"
-            class="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition"
+            :class="getButtonClass('secondary', 'md', 'flex-1')"
           >
             Batal
           </button>
           <button
             type="submit"
-            class="flex-1 px-4 py-2.5 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition shadow-md"
+            :class="getButtonClass('primary', 'md', 'flex-1')"
           >
             Simpan
           </button>
