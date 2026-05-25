@@ -2,6 +2,13 @@
 import { toIDR } from "@/utils/money";
 import type { InventarisSukuCadang } from "@/types/inventaris";
 import { META_LABEL_CLASS, getChipBadgeClass } from "@/utils/badgeVariants";
+import {
+  TABLE_MOBILE_CARD_CLASS,
+  TABLE_MOBILE_CARD_FOOTER_CLASS,
+  TABLE_MOBILE_CARD_GRID_CLASS,
+  TABLE_MOBILE_CARD_HEADER_CLASS,
+} from "@/utils/tableVariants";
+import { getIconButtonClass } from "@/utils/buttonVariants";
 
 interface Props {
   sukucadang: InventarisSukuCadang;
@@ -21,8 +28,8 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-    <div class="flex items-start justify-between gap-3">
+  <div :class="TABLE_MOBILE_CARD_CLASS">
+    <div :class="TABLE_MOBILE_CARD_HEADER_CLASS">
       <div>
         <p class="text-sm font-semibold text-gray-900">
           {{ sukucadang.nama_suku_cadang }}
@@ -36,7 +43,7 @@ const emit = defineEmits<{
       </span>
     </div>
 
-    <div class="mt-3 grid grid-cols-2 gap-3 text-sm">
+    <div :class="TABLE_MOBILE_CARD_GRID_CLASS">
       <div>
         <p :class="META_LABEL_CLASS">
           Stok
@@ -71,24 +78,24 @@ const emit = defineEmits<{
       </div>
     </div>
 
-    <div class="mt-4 flex flex-wrap gap-2 border-t border-gray-100 pt-3">
+    <div :class="[TABLE_MOBILE_CARD_FOOTER_CLASS, 'flex flex-wrap gap-2']">
       <button
         @click="emit('restock', sukucadang)"
-        class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-green-600 transition hover:bg-green-100"
+        :class="getIconButtonClass('success')"
         title="Tambah Stok"
       >
         <i class="mdi mdi-plus"></i>
       </button>
       <button
         @click="emit('edit', sukucadang)"
-        class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-600 transition hover:bg-blue-100"
+        :class="getIconButtonClass('info')"
         title="Ubah"
       >
         <i class="mdi mdi-pencil"></i>
       </button>
       <button
         @click="emit('delete', sukucadang.id)"
-        class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-red-600 transition hover:bg-red-100"
+        :class="getIconButtonClass('danger')"
         title="Hapus"
       >
         <i class="mdi mdi-delete"></i>

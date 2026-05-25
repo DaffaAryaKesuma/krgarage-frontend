@@ -1,5 +1,12 @@
 <script setup lang="ts">
 import { computed, useSlots } from "vue";
+import {
+  TABLE_BODY_CLASS,
+  TABLE_CLASS,
+  TABLE_HEAD_CLASS,
+  TABLE_HEADER_CELL_CLASS,
+  TABLE_MOBILE_KARTU_CLASS,
+} from "@/utils/tableVariants";
 
 interface Props {
   headers: string[];
@@ -16,15 +23,14 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   wrapperClass: "",
-  tableClass: "w-full",
-  headClass: "",
+  tableClass: TABLE_CLASS,
+  headClass: TABLE_HEAD_CLASS,
   headerRowClass: "",
-  headerCellClass:
-    "px-6 py-3 text-xs text-left font-medium text-gray-500 uppercase tracking-wider",
-  bodyClass: "bg-white divide-y divide-gray-200",
+  headerCellClass: TABLE_HEADER_CELL_CLASS,
+  bodyClass: TABLE_BODY_CLASS,
   responsiveKartu: false,
   desktopBreakpoint: "md",
-  mobileKartuClass: "space-y-4 p-4",
+  mobileKartuClass: TABLE_MOBILE_KARTU_CLASS,
 });
 
 const slots = useSlots();

@@ -29,6 +29,17 @@ export const gradientToneVariants = {
   neutral: "from-gray-500 to-gray-600",
 } as const;
 
+export const solidToneVariants = {
+  primary: "bg-red-600 border-red-700",
+  info: "bg-blue-600 border-blue-700",
+  success: "bg-green-600 border-green-700",
+  emerald: "bg-emerald-600 border-emerald-700",
+  warning: "bg-amber-600 border-amber-700",
+  danger: "bg-red-600 border-red-700",
+  owner: "bg-purple-600 border-purple-700",
+  neutral: "bg-gray-600 border-gray-700",
+} as const;
+
 export const softHoverToneVariants = {
   primary: "hover:bg-red-50",
   info: "hover:bg-blue-50",
@@ -107,6 +118,7 @@ export type ChipBadgeKey = keyof typeof badgeVariants.chip;
 export type RankBadgeKey = keyof typeof badgeVariants.rank;
 export type IconToneKey = keyof typeof iconToneVariants;
 export type GradientToneKey = keyof typeof gradientToneVariants;
+export type SolidToneKey = keyof typeof solidToneVariants;
 export type SoftHoverToneKey = keyof typeof softHoverToneVariants;
 export type AlertBoxKey = keyof typeof alertBoxVariants;
 
@@ -146,6 +158,10 @@ export function getToneTextClass(variant: IconToneKey): string {
 
 export function getGradientToneClass(variant: GradientToneKey): string {
   return gradientToneVariants[variant];
+}
+
+export function getSolidToneClass(variant: SolidToneKey): string {
+  return solidToneVariants[variant];
 }
 
 export function getSoftHoverToneClass(variant: SoftHoverToneKey): string {

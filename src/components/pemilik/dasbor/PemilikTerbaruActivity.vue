@@ -3,6 +3,12 @@ import TableShell from "@/components/ui/TableShell.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
 import PemilikTerbaruActivityMobileKartu from "@/components/pemilik/dasbor/PemilikTerbaruActivityMobileKartu.vue";
 import PemilikTerbaruActivityDesktopRow from "@/components/pemilik/dasbor/PemilikTerbaruActivityDesktopRow.vue";
+import {
+  TABLE_BODY_CLASS,
+  TABLE_HEAD_CLASS,
+  TABLE_HEADER_CELL_CLASS,
+  TABLE_MOBILE_KARTU_CLASS,
+} from "@/utils/tableVariants";
 import type { PemilikTerbaruPemesananActivity } from "@/types/pemesanan";
 
 interface Props {
@@ -53,11 +59,11 @@ const TABLE_HEADERS = [
       :headers="TABLE_HEADERS"
       :responsive-kartu="true"
       desktop-breakpoint="lg"
-      mobile-kartu-class="space-y-3"
-      table-class="w-full"
+      :mobile-kartu-class="TABLE_MOBILE_KARTU_CLASS"
+      :head-class="TABLE_HEAD_CLASS"
       header-row-class="border-b border-gray-200"
-      header-cell-class="pb-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider"
-      body-class="divide-y divide-gray-100"
+      :header-cell-class="TABLE_HEADER_CELL_CLASS"
+      :body-class="TABLE_BODY_CLASS"
     >
       <template #mobile>
         <PemilikTerbaruActivityMobileKartu

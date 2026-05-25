@@ -5,6 +5,7 @@ import { getAuthHeaders } from "@/utils/auth";
 import { useToast } from "@/utils/useToast";
 import { logError, handleApiError } from "@/utils/errorHandler";
 import { scrollLock } from "@/composables/scrollLock";
+import { FORM_LABEL_CLASS, getFormInputClass } from "@/utils/formVariants";
 
 export function useProfilModal(
   getShow: () => boolean,
@@ -93,10 +94,8 @@ export function useProfilModal(
     }
   };
 
-  const inputClass =
-    "w-full rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none transition focus:border-red-500 focus:ring-4 focus:ring-red-50";
-  const labelClass =
-    "mb-1 block text-sm font-medium text-gray-700 tracking-wider";
+  const inputClass = getFormInputClass();
+  const labelClass = FORM_LABEL_CLASS;
 
   return {
     loading,

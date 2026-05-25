@@ -6,6 +6,11 @@ import { formatNama } from "@/utils/format";
 import type { PemilikTerbaruPemesananActivity } from "@/types/pemesanan";
 import { getPembayaranStatusBadgeClass, getPembayaranStatusLabel } from "@/utils/pembayaranStatus";
 import { META_LABEL_CLASS } from "@/utils/badgeVariants";
+import {
+  TABLE_MOBILE_CARD_CLASS,
+  TABLE_MOBILE_CARD_DIVIDER_HEADER_CLASS,
+  TABLE_MOBILE_CARD_GRID_CLASS,
+} from "@/utils/tableVariants";
 
 interface Props {
   pemesanan: PemilikTerbaruPemesananActivity;
@@ -15,8 +20,8 @@ defineProps<Props>();
 </script>
 
 <template>
-  <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-    <div class="mb-3 flex items-center justify-between border-b border-gray-100 pb-3">
+  <div :class="TABLE_MOBILE_CARD_CLASS">
+    <div :class="TABLE_MOBILE_CARD_DIVIDER_HEADER_CLASS">
       <div>
         <p :class="META_LABEL_CLASS">Kode Pemesanan</p>
         <p class="font-bold text-gray-900">{{ pemesanan.kode_pemesanan }}</p>
@@ -28,7 +33,7 @@ defineProps<Props>();
       </div>
     </div>
     
-    <div class="grid grid-cols-2 gap-4 text-sm">
+    <div :class="TABLE_MOBILE_CARD_GRID_CLASS">
       <div>
         <p :class="META_LABEL_CLASS">Pelanggan</p>
         <p class="text-gray-700"><span>{{ formatNama(pemesanan.nama_pelanggan) }}</span></p>

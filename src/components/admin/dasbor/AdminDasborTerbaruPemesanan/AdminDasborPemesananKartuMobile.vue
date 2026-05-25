@@ -9,6 +9,11 @@ import type { Pemesanan, MekanikOption } from "@/types/pemesanan";
 import AdminDasborPemesananAksi from "./AdminDasborPemesananAksi.vue";
 import AdminDasborPemesananMekanikCell from "./AdminDasborPemesananSelMekanik.vue";
 import { META_LABEL_CLASS } from "@/utils/badgeVariants";
+import {
+  TABLE_MOBILE_CARD_CLASS,
+  TABLE_MOBILE_CARD_HEADER_CLASS,
+  TABLE_MOBILE_CARD_SINGLE_GRID_CLASS,
+} from "@/utils/tableVariants";
 
 interface Props {
   pemesanan: Pemesanan;
@@ -31,8 +36,8 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-    <div class="flex items-start justify-between gap-3">
+  <div :class="TABLE_MOBILE_CARD_CLASS">
+    <div :class="TABLE_MOBILE_CARD_HEADER_CLASS">
       <div>
         <p :class="META_LABEL_CLASS">
           Kode Pemesanan
@@ -57,7 +62,7 @@ const emit = defineEmits<{
       </span>
     </div>
 
-    <div class="mt-3 grid grid-cols-1 gap-2 text-sm min-[380px]:grid-cols-2">
+    <div :class="TABLE_MOBILE_CARD_SINGLE_GRID_CLASS">
       <div>
         <p :class="META_LABEL_CLASS">
           Tanggal

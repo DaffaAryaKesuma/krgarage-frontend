@@ -1,5 +1,6 @@
 import { ref, watch } from "vue";
 import { scrollLock } from "@/composables/scrollLock";
+import { getFormInputClass } from "@/utils/formVariants";
 
 export interface FormData {
   id: string | number;
@@ -10,8 +11,8 @@ export interface FormData {
   role: string;
 }
 
-export const INPUT_CLASS =
-  "block w-full py-2.5 pl-10 pr-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 sm:text-sm text-gray-900 placeholder-gray-400 transition-all bg-gray-50 focus:bg-white";
+/** INPUT_CLASS untuk KaryawanFormModal — dibungkus helper terpusat dari formVariants.ts */
+export const INPUT_CLASS = getFormInputClass(false, "pl-10");
 
 export interface KaryawanFormModalEmit {
   (e: "close"): void;

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { formatNama } from "@/utils/format";
 import { useProfilModal } from "@/components/ui/ProfilModal/useProfilModal";
+import { getButtonClass } from "@/utils/buttonVariants";
 
 const props = defineProps<{ show: boolean }>();
 const emit = defineEmits<{ close: [] }>();
@@ -116,7 +117,7 @@ const {
               <button
                 type="submit"
                 :disabled="loading"
-                class="flex items-center gap-2 rounded-xl bg-red-600 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-red-700 disabled:bg-gray-400 shadow-md"
+                :class="getButtonClass('primary', 'md', 'rounded-xl px-6 font-bold shadow-md')"
               >
                 <i v-if="loading" class="mdi mdi-loading mdi-spin"></i>
                 Simpan Profil
@@ -172,7 +173,7 @@ const {
               <button
                 type="submit"
                 :disabled="loading"
-                class="flex items-center gap-2 rounded-xl border-2 border-red-600 px-6 py-2 text-sm font-bold text-red-600 transition hover:bg-red-50 disabled:border-gray-300 disabled:text-gray-400"
+                :class="getButtonClass('dangerOutline', 'md', 'rounded-xl border-2 px-6 font-bold')"
               >
                 <i v-if="loading" class="mdi mdi-loading mdi-spin"></i>
                 Ganti Password

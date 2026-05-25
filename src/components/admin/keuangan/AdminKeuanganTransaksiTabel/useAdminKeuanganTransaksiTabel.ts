@@ -1,5 +1,12 @@
 import { computed, ref, watch } from "vue";
 import { toMoneyNumber } from "@/utils/money";
+import {
+  TABLE_BODY_CLASS,
+  TABLE_MOBILE_KARTU_CLASS,
+  TABLE_WRAPPER_CLASS,
+  buildFixedTableClass,
+  buildTableHeaderCellClass,
+} from "@/utils/tableVariants";
 import type {
   KeuanganPemesanan,
   KeuanganPemesananLayanan,
@@ -16,18 +23,12 @@ export const TABLE_HEADERS = [
   "Total",
 ];
 
-export const TABLE_WRAPPER_CLASS =
-  "mb-8 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm";
+export const TABLE_WRAPPER_CLASS_WITH_MARGIN = `mb-8 ${TABLE_WRAPPER_CLASS}`;
 
-export const TABLE_CLASS = "min-w-full table-fixed divide-y divide-gray-200";
+export const TABLE_CLASS = buildFixedTableClass("min-w-full");
 
 export const TABLE_HEADER_CELL_CLASS =
-  "px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-gray-900 sm:px-6 " +
-  "[&:nth-child(1)]:w-[16%] [&:nth-child(2)]:w-[12%] [&:nth-child(3)]:w-[12%] [&:nth-child(4)]:w-[24%] [&:nth-child(5)]:w-[24%] [&:nth-child(6)]:w-[12%]";
-
-export const TABLE_BODY_CLASS = "divide-y divide-gray-100 bg-white";
-
-export const TABLE_MOBILE_KARTU_CLASS = "space-y-4 bg-gray-50 p-4";
+  buildTableHeaderCellClass("text-gray-900 [&:nth-child(1)]:w-[16%] [&:nth-child(2)]:w-[12%] [&:nth-child(3)]:w-[12%] [&:nth-child(4)]:w-[24%] [&:nth-child(5)]:w-[24%] [&:nth-child(6)]:w-[12%]");
 
 export function useAdminKeuanganTransaksiTabel(
   getPemesanan: () => KeuanganPemesanan[],

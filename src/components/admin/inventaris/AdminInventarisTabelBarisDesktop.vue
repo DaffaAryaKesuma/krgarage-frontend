@@ -2,6 +2,7 @@
 import { toIDR } from "@/utils/money";
 import type { InventarisSukuCadang } from "@/types/inventaris";
 import { getChipBadgeClass } from "@/utils/badgeVariants";
+import { getIconButtonClass } from "@/utils/buttonVariants";
 
 interface Props {
   sukucadang: InventarisSukuCadang;
@@ -60,21 +61,21 @@ const emit = defineEmits<{
       <div class="-ml-2 flex items-center gap-2">
         <button
           @click="emit('restock', sukucadang)"
-          class="inline-flex h-9 w-9 items-center justify-center cursor-pointer text-gray-600 transition hover:text-green-600"
+          :class="getIconButtonClass('success')"
           title="Tambah Stok"
         >
           <i class="mdi mdi-plus text-xl"></i>
         </button>
         <button
           @click="emit('edit', sukucadang)"
-          class="inline-flex h-9 w-9 items-center justify-center cursor-pointer text-gray-600 transition hover:text-blue-600"
+          :class="getIconButtonClass('info')"
           title="Ubah"
         >
           <i class="mdi mdi-pencil"></i>
         </button>
         <button
           @click="emit('delete', sukucadang.id)"
-          class="inline-flex h-9 w-9 items-center justify-center cursor-pointer text-gray-600 transition hover:text-red-600"
+          :class="getIconButtonClass('danger')"
           title="Hapus"
         >
           <i class="mdi mdi-delete"></i>

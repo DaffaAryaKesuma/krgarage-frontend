@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from "vue";
+import { FORM_LABEL_CLASS } from "@/utils/formVariants";
 
 interface Props {
   modelValue: string | number | null;
@@ -100,7 +101,7 @@ onUnmounted(() => {
 
 <template>
   <div class="relative w-full">
-    <label v-if="label" class="block text-sm font-medium text-gray-700 mb-2">
+    <label v-if="label" :class="FORM_LABEL_CLASS">
       {{ label }}
     </label>
 

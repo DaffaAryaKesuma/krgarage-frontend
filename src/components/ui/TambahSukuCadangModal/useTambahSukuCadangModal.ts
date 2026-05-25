@@ -1,6 +1,7 @@
 import { ref, computed, watch } from "vue";
 import type { SukuCadangRingkasan } from "@/types/inventaris";
 import { scrollLock } from "@/composables/scrollLock";
+import { getInventoryBadgeClass } from "@/utils/badgeVariants";
 
 export interface KeranjangItem {
   sukucadang: SukuCadangRingkasan;
@@ -62,9 +63,21 @@ export function useTambahSukuCadangModal(
   );
 
   const getStokBadge = (sc: SukuCadangRingkasan) => {
-    if (sc.jumlah_stok === 0) return { label: "Habis", class: "bg-red-100 text-red-700" };
-    if (sc.stok_menipis) return { label: `Kritis: ${sc.jumlah_stok}`, class: "bg-orange-100 text-orange-700" };
-    return { label: `Stok: ${sc.jumlah_stok}`, class: "bg-green-100 text-green-700" };
+    if (sc.jumlah_stok === 0) {
+      return { label: "Habis", class: getInventoryBadgeClass("habis") };
+    }
+
+    if (sc.stok_menipis) {
+      return {
+        label: `Kritis: ${sc.jumlah_stok}`,
+        class: getInventoryBadgeClass("kritis"),
+      };
+    }
+
+    return {
+      label: `Stok: ${sc.jumlah_stok}`,
+      class: getInventoryBadgeClass("aman"),
+    };
   };
 
   const selectCard = (sc: SukuCadangRingkasan) => {

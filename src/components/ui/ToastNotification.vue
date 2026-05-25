@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
+import { getSolidToneClass } from "@/utils/badgeVariants";
+import type { SolidToneKey } from "@/utils/badgeVariants";
 
 export interface Toast {
   id: number;
@@ -36,11 +38,11 @@ function handleClose() {
   }, 300);
 }
 
-const typeClasses = {
-  success: "bg-green-500 border-green-600",
-  error: "bg-red-500 border-red-600",
-  warning: "bg-yellow-500 border-yellow-600",
-  info: "bg-blue-500 border-blue-600",
+const typeToneMap: Record<Toast["type"], SolidToneKey> = {
+  success: "success",
+  error: "danger",
+  warning: "warning",
+  info: "info",
 };
 
 const typeIcons = {
@@ -55,7 +57,7 @@ const typeIcons = {
   <div
     :class="[
       'flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg border-l-4 text-white min-w-[300px] max-w-md transition-all duration-300 transform',
-      typeClasses[toast.type],
+      getSolidToneClass(typeToneMap[toast.type]),
       isVisible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0',
     ]"
   >

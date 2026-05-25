@@ -29,6 +29,8 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 
 import { scrollLock } from "@/composables/scrollLock";
+import { getButtonClass } from "@/utils/buttonVariants";
+import { getFormTextareaClass } from "@/utils/formVariants";
 
 const inputValue = ref('');
 const errorMsg = ref('');
@@ -77,8 +79,7 @@ function handleCancel() {
           <textarea
             v-model="inputValue"
             :placeholder="placeholder"
-            class="w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2"
-            :class="errorMsg ? 'border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-gray-200 focus:ring-gray-200'"
+            :class="getFormTextareaClass(!!errorMsg)"
             rows="4"
             maxlength="1000"
           ></textarea>
@@ -90,14 +91,14 @@ function handleCancel() {
         <div class="flex gap-3">
           <button
             @click="handleCancel"
-            class="flex-1 px-4 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 flex justify-center items-center gap-2 transition-colors"
+            :class="getButtonClass('secondary', 'lg', 'flex-1 border-2')"
           >
             {{ cancelText }}
           </button>
           <button
             @click="handleConfirm"
             :disabled="loading"
-            class="flex-1 px-4 py-3 text-white font-semibold rounded-lg transition-all flex justify-center items-center gap-2 bg-green-600 shadow-lg hover:shadow-xl disabled:opacity-60 disabled:cursor-not-allowed"
+            :class="getButtonClass('success', 'lg', 'flex-1 shadow-lg hover:shadow-xl')"
           >
             <span v-if="loading"><i class="mdi mdi-loading mdi-spin mr-1"></i> Menyimpan...</span>
             <span v-else>{{ confirmText }}</span>

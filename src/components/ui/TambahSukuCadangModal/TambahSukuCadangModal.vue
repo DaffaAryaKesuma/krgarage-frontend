@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
+import {
+  getButtonClass,
+  getFullWidthButtonClass,
+  getIconButtonClass,
+} from "@/utils/buttonVariants";
 import type { SukuCadangRingkasan } from "@/types/inventaris";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
@@ -131,7 +136,7 @@ const {
 
               <span
                 :class="[
-                  'inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full mb-2',
+                  'mb-2 gap-1.5 py-0.5',
                   getStokBadge(sukuCadang).class,
                 ]"
               >
@@ -177,7 +182,7 @@ const {
                 </div>
                 <button
                   @click="tambahKeKeranjang(sukuCadang)"
-                  class="w-full py-2 bg-red-600 text-white text-sm font-bold rounded-lg hover:bg-red-700 transition flex items-center justify-center gap-1"
+                  :class="getFullWidthButtonClass('primary', 'sm', 'gap-1 font-bold')"
                 >
                   <i class="mdi mdi-cart-plus text-base"></i>
                   Tambah ke Daftar
@@ -216,7 +221,7 @@ const {
                   </span>
                   <button
                     @click="hapusDariKeranjang(index)"
-                    class="text-gray-300 hover:text-red-500 transition"
+                    :class="getIconButtonClass('subtle', 'sm')"
                   >
                     <i class="mdi mdi-close-circle text-base"></i>
                   </button>
@@ -243,14 +248,14 @@ const {
         <button
           @click="handleClose"
           :disabled="isSubmitting"
-          class="flex-1 py-2.5 border-2 border-gray-200 text-gray-600 rounded-xl font-semibold hover:bg-gray-50 transition text-sm"
+          :class="getButtonClass('secondary', 'md', 'flex-1 rounded-xl border-2 border-gray-200')"
         >
           Batal
         </button>
         <button
           @click="handleSubmit"
           :disabled="isSubmitting || keranjang.length === 0"
-          class="flex-1 py-2.5 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition disabled:opacity-40 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2"
+          :class="getButtonClass('primary', 'md', 'flex-1 rounded-xl font-bold')"
         >
           <i v-if="isSubmitting" class="mdi mdi-loading mdi-spin"></i>
           {{

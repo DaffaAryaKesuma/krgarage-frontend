@@ -7,12 +7,15 @@ import AdminKeuanganTransaksiBarisDesktop from "@/components/admin/keuangan/Admi
 import {
   useAdminKeuanganTransaksiTabel,
   TABLE_HEADERS,
-  TABLE_WRAPPER_CLASS,
+  TABLE_WRAPPER_CLASS_WITH_MARGIN,
   TABLE_CLASS,
   TABLE_HEADER_CELL_CLASS,
-  TABLE_BODY_CLASS,
-  TABLE_MOBILE_KARTU_CLASS,
 } from "@/components/admin/keuangan/AdminKeuanganTransaksiTabel/useAdminKeuanganTransaksiTabel";
+import {
+  TABLE_BODY_CLASS,
+  TABLE_HEAD_CLASS,
+  TABLE_MOBILE_KARTU_CLASS,
+} from "@/utils/tableVariants";
 import type { KeuanganPemesanan } from "@/types/pemesanan";
 
 const props = defineProps<{ pemesanan: KeuanganPemesanan[] }>();
@@ -32,7 +35,7 @@ const {
 </script>
 
 <template>
-  <div :class="TABLE_WRAPPER_CLASS">
+  <div :class="TABLE_WRAPPER_CLASS_WITH_MARGIN">
     <div class="px-6 py-4 border-b border-gray-200">
       <h2 class="text-lg font-semibold text-gray-900">Detail Transaksi</h2>
     </div>
@@ -43,7 +46,7 @@ const {
       desktop-breakpoint="lg"
       :mobile-kartu-class="TABLE_MOBILE_KARTU_CLASS"
       :table-class="TABLE_CLASS"
-      head-class="bg-gray-50"
+      :head-class="TABLE_HEAD_CLASS"
       :header-cell-class="TABLE_HEADER_CELL_CLASS"
       :body-class="TABLE_BODY_CLASS"
     >

@@ -1,5 +1,6 @@
 import { PEMESANAN_STATUS } from "@/utils/statusBadge";
 import { PEMBAYARAN_STATUS } from "@/utils/pembayaranStatus";
+import { getFullWidthButtonClass } from "@/utils/buttonVariants";
 
 export interface Mekanik {
   id: number;
@@ -59,4 +60,4 @@ export const AKSI_CONFIG: Record<PemesananAksiType, AksiConfirmationConfig> = {
 };
 
 export const CANCEL_BUTTON_CLASS =
-  "w-full py-2.5 bg-white border border-red-700 text-red-700 text-sm font-medium rounded-lg hover:bg-red-50 transition font-semibold";
+  getFullWidthButtonClass("dangerOutline", "md");

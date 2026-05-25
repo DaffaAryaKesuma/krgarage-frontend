@@ -2,6 +2,11 @@
 import { formatDateShort } from "@/utils/date";
 import { toIDR } from "@/utils/money";
 import { META_LABEL_CLASS } from "@/utils/badgeVariants";
+import {
+  TABLE_MOBILE_CARD_CLASS,
+  TABLE_MOBILE_CARD_HEADER_CLASS,
+  TABLE_MOBILE_CARD_STACK_CLASS,
+} from "@/utils/tableVariants";
 import type { KeuanganPemesanan } from "@/types/pemesanan";
 
 interface Props {
@@ -15,8 +20,8 @@ defineProps<Props>();
 </script>
 
 <template>
-  <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-    <div class="flex items-start justify-between gap-3">
+  <div :class="TABLE_MOBILE_CARD_CLASS">
+    <div :class="TABLE_MOBILE_CARD_HEADER_CLASS">
       <div>
         <p :class="META_LABEL_CLASS">
           Kode Pemesanan
@@ -35,7 +40,7 @@ defineProps<Props>();
       </div>
     </div>
 
-    <div class="mt-3 space-y-2 text-sm">
+    <div :class="TABLE_MOBILE_CARD_STACK_CLASS">
       <div>
         <p :class="META_LABEL_CLASS">
           Pelanggan

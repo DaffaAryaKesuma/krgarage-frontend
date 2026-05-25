@@ -1,5 +1,6 @@
 import { computed } from "vue";
 import { scrollLock } from "@/composables/scrollLock";
+import { getButtonClass } from "@/utils/buttonVariants";
 import type { InventarisSukuCadang } from "@/types/inventaris";
 
 export interface AdminInventarisStokUlangModalProps {
@@ -27,12 +28,9 @@ export const modalKartuClass =
 export const inputClass =
   "w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-gray-500 ";
 
-const buttonBaseClass =
-  "inline-flex items-center justify-center rounded-xl px-5 py-3 font-semibold transition disabled:cursor-not-allowed disabled:opacity-50";
+export const buttonPrimaryClass = getButtonClass("success", "lg", "rounded-xl");
 
-export const buttonPrimaryClass = `${buttonBaseClass} bg-green-600 text-white hover:bg-green-700`;
-
-export const buttonSecondaryClass = `${buttonBaseClass} border border-gray-300 text-gray-700 hover:bg-gray-100`;
+export const buttonSecondaryClass = getButtonClass("secondary", "lg", "rounded-xl");
 
 export function useAdminInventarisStokUlangModal(
   props: AdminInventarisStokUlangModalProps,

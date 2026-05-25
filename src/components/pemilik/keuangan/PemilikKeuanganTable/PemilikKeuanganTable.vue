@@ -12,6 +12,16 @@ import {
 import { formatNama } from "@/utils/format";
 import { META_LABEL_CLASS } from "@/utils/badgeVariants";
 import {
+  TABLE_BODY_CLASS,
+  TABLE_COMFORTABLE_HEADER_CELL_CLASS,
+  TABLE_HEAD_CLASS,
+  TABLE_MOBILE_CARD_CLASS,
+  TABLE_MOBILE_CARD_HEADER_CLASS,
+  TABLE_MOBILE_CARD_SINGLE_GRID_CLASS,
+  TABLE_MOBILE_KARTU_CLASS,
+  TABLE_WRAPPER_CLASS,
+} from "@/utils/tableVariants";
+import {
   TABLE_HEADERS,
   usePemilikKeuanganTable,
   type PemilikKeuanganTableProps,
@@ -61,21 +71,20 @@ const {
       :headers="TABLE_HEADERS"
       :responsive-kartu="true"
       desktop-breakpoint="lg"
-      mobile-kartu-class="space-y-4 p-4"
-      wrapper-class="rounded-lg border border-gray-200"
-      table-class="w-full"
-      head-class="bg-gray-50"
+      :mobile-kartu-class="TABLE_MOBILE_KARTU_CLASS"
+      :wrapper-class="TABLE_WRAPPER_CLASS"
+      :head-class="TABLE_HEAD_CLASS"
       header-row-class="text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
-      header-cell-class="px-6 py-4"
-      body-class="divide-y divide-gray-200 bg-white"
+      :header-cell-class="TABLE_COMFORTABLE_HEADER_CELL_CLASS"
+      :body-class="TABLE_BODY_CLASS"
     >
       <template #mobile>
         <div
           v-for="pemesanan in paginatedPemesanan"
           :key="`mobile-${pemesanan.id}`"
-          class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm"
+          :class="TABLE_MOBILE_CARD_CLASS"
         >
-          <div class="flex items-start justify-between gap-3">
+          <div :class="TABLE_MOBILE_CARD_HEADER_CLASS">
             <div>
               <p :class="META_LABEL_CLASS">
                 Kode Pemesanan
@@ -89,9 +98,7 @@ const {
             </span>
           </div>
 
-          <div
-            class="mt-3 grid grid-cols-1 gap-2 text-sm min-[380px]:grid-cols-2"
-          >
+          <div :class="TABLE_MOBILE_CARD_SINGLE_GRID_CLASS">
             <div>
               <p :class="META_LABEL_CLASS">
                 Pelanggan

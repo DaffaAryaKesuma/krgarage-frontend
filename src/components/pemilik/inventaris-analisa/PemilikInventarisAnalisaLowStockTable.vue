@@ -7,6 +7,17 @@ import {
   getAlertIconClass,
   getInventoryBadgeClass,
 } from "@/utils/badgeVariants";
+import {
+  TABLE_BODY_CLASS,
+  TABLE_DANGER_ROW_HOVER_CLASS,
+  TABLE_HEAD_CLASS,
+  TABLE_HEADER_CELL_CLASS,
+  TABLE_MOBILE_CARD_CLASS,
+  TABLE_MOBILE_CARD_GRID_CLASS,
+  TABLE_MOBILE_CARD_HEADER_CLASS,
+  TABLE_MOBILE_KARTU_CLASS,
+  buildTableClass,
+} from "@/utils/tableVariants";
 
 interface LowStockItem {
   id: number;
@@ -74,19 +85,20 @@ const TABLE_HEADERS = [
       :headers="TABLE_HEADERS"
       :responsive-kartu="true"
       desktop-breakpoint="lg"
-      mobile-kartu-class="space-y-4 p-4"
-      table-class="w-full text-sm"
-      header-row-class="border-b text-left text-gray-600"
-      header-cell-class="pb-3 font-semibold"
-      body-class="divide-y"
+      :mobile-kartu-class="TABLE_MOBILE_KARTU_CLASS"
+      :table-class="buildTableClass('text-sm')"
+      :head-class="TABLE_HEAD_CLASS"
+      header-row-class="border-b"
+      :header-cell-class="TABLE_HEADER_CELL_CLASS"
+      :body-class="TABLE_BODY_CLASS"
     >
       <template #mobile>
         <div
           v-for="item in items"
           :key="`mobile-${item.id}`"
-          class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm"
+          :class="TABLE_MOBILE_CARD_CLASS"
         >
-          <div class="flex items-start justify-between gap-3">
+          <div :class="TABLE_MOBILE_CARD_HEADER_CLASS">
             <div>
               <p class="font-semibold text-gray-900">{{ item.nama_barang }}</p>
               <p class="text-xs text-gray-500">{{ item.kategori }}</p>
@@ -100,7 +112,7 @@ const TABLE_HEADERS = [
             </span>
           </div>
 
-          <div class="mt-3 grid grid-cols-2 gap-3 text-sm">
+          <div :class="TABLE_MOBILE_CARD_GRID_CLASS">
             <div>
               <p :class="META_LABEL_CLASS">
                 Stok Saat Ini
@@ -135,7 +147,7 @@ const TABLE_HEADERS = [
       <tr
         v-for="item in items"
         :key="item.id"
-        class="hover:bg-red-50 transition-colors"
+        :class="TABLE_DANGER_ROW_HOVER_CLASS"
       >
         <td class="py-3 pl-2">
           <div class="font-bold text-gray-900">{{ item.nama_barang }}</div>

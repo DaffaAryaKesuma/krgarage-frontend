@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { scrollLock } from "@/composables/scrollLock";
+import { getGradientToneClass } from "@/utils/badgeVariants";
+import type { GradientToneKey } from "@/utils/badgeVariants";
+import { getButtonClass } from "@/utils/buttonVariants";
+import type { ButtonVariant } from "@/utils/buttonVariants";
 
 interface Props {
   show: boolean;
@@ -20,21 +24,18 @@ const emit = defineEmits<Emits>();
 
 scrollLock(() => props.show);
 
-const variantClasses = {
-  danger: "from-red-500 to-red-600",
-  warning: "from-yellow-500 to-yellow-600",
-  info: "from-blue-500 to-blue-600",
-  success: "from-green-500 to-green-600",
+const variantToneMap: Record<NonNullable<Props["variant"]>, GradientToneKey> = {
+  danger: "danger",
+  warning: "warning",
+  info: "info",
+  success: "success",
 };
 
-const variantButtonClasses = {
-  danger:
-    "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700",
-  warning:
-    "bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700",
-  info: "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700",
-  success:
-    "bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700",
+const variantButtonMap: Record<NonNullable<Props["variant"]>, ButtonVariant> = {
+  danger: "danger",
+  warning: "warning",
+  info: "info",
+  success: "success",
 };
 
 const variantIconClasses = {
@@ -66,7 +67,7 @@ function handleCancel() {
       <div
         :class="[
           'bg-gradient-to-r px-6 py-4 rounded-t-xl',
-          variantClasses[variant || 'danger'],
+          getGradientToneClass(variantToneMap[variant || 'danger']),
         ]"
       >
         <h3 class="text-xl font-bold text-white flex items-center gap-2">
@@ -83,16 +84,13 @@ function handleCancel() {
         <div class="flex gap-3">
           <button
             @click="handleCancel"
-            class="flex-1 px-4 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+            :class="getButtonClass('secondary', 'lg', 'flex-1 border-2')"
           >
             {{ cancelText || "Batal" }}
           </button>
           <button
             @click="handleConfirm"
-            :class="[
-              'flex-1 px-4 py-3 text-white font-semibold rounded-lg transition-all shadow-lg hover:shadow-xl',
-              variantButtonClasses[variant || 'danger'],
-            ]"
+            :class="getButtonClass(variantButtonMap[variant || 'danger'], 'lg', 'flex-1 shadow-lg hover:shadow-xl')"
           >
             {{ confirmText || "Ya, Lanjutkan" }}
           </button>

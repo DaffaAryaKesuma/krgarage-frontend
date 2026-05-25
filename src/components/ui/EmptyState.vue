@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { getButtonClass } from "@/utils/buttonVariants";
+
 interface Props {
   icon: string;
   title: string;
@@ -14,9 +16,11 @@ const emit = defineEmits<{
   (e: "aksi"): void;
 }>();
 
-// ✅ Button class constant
-const BUTTON_CLASS =
-  "px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white font-semibold rounded-lg hover:from-red-700 hover:to-red-800 transition-all shadow-lg hover:shadow-xl transform hover:scale-105";
+const BUTTON_CLASS = getButtonClass(
+  "primary",
+  "lg",
+  "shadow-lg hover:shadow-xl hover:scale-105",
+);
 </script>
 
 <template>

@@ -87,7 +87,7 @@ const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
                 @input="emit('update:categoryName', toStr($event))"
                 type="text"
                 placeholder="Kategori baru"
-                class="min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-red-500 focus:ring-4 focus:ring-red-100"
+                :class="inputClass"
               />
               <button
                 type="button"

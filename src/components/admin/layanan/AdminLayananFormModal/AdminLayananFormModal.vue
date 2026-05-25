@@ -3,6 +3,9 @@ import {
   useAdminLayananFormModal,
   type LayananFormData,
 } from "@/components/admin/layanan/AdminLayananFormModal/useAdminLayananFormModal";
+import { getFormInputClass } from "@/utils/formVariants";
+
+const inputClass = getFormInputClass();
 
 const props = defineProps<{
   show: boolean;
@@ -98,7 +101,7 @@ const { formTitle, handleFileChange, FILE_INPUT_ID } =
             "
             type="text"
             required
-            class="w-full rounded-lg border border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-2.5"
+            :class="inputClass"
           />
         </div>
 
@@ -117,7 +120,7 @@ const { formTitle, handleFileChange, FILE_INPUT_ID } =
             "
             required
             rows="3"
-            class="w-full rounded-lg border border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-2.5"
+            :class="inputClass"
           ></textarea>
         </div>
 
@@ -136,7 +139,7 @@ const { formTitle, handleFileChange, FILE_INPUT_ID } =
             "
             type="number"
             required
-            class="w-full rounded-lg border border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-2.5"
+            :class="inputClass"
           />
         </div>
 
@@ -157,7 +160,7 @@ const { formTitle, handleFileChange, FILE_INPUT_ID } =
             "
             type="number"
             min="5"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+            :class="inputClass"
             placeholder="60"
           />
           <p class="text-xs text-gray-500 mt-1">
