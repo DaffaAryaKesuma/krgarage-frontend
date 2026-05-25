@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { getMonthOptions } from "@/utils/dateFilters";
 import type { TeratasSukuCadangMetric } from "@/types/inventaris";
+import {
+  getChipBadgeClass,
+  getIconToneClass,
+  getRankBadgeClass,
+  getSoftHoverToneClass,
+  getToneTextClass,
+} from "@/utils/badgeVariants";
 
 interface Props {
   sukucadang: TeratasSukuCadangMetric[];
@@ -17,8 +24,8 @@ const MONTH_OPTIONS = getMonthOptions();
 <template>
   <div class="rounded-2xl bg-white p-4 sm:p-6 shadow-lg border border-gray-100">
     <div class="mb-4 flex items-center gap-2 sm:gap-3">
-      <div class="rounded-xl bg-green-100 p-2 sm:p-3 shrink-0">
-        <i class="mdi mdi-star text-lg sm:text-2xl text-green-600"></i>
+      <div :class="['rounded-xl p-2 sm:p-3 shrink-0', getIconToneClass('success')]">
+        <i class="mdi mdi-star text-lg sm:text-2xl"></i>
       </div>
       <div class="min-w-0">
         <h2 class="text-base sm:text-xl font-bold text-gray-900 leading-tight">
@@ -26,7 +33,7 @@ const MONTH_OPTIONS = getMonthOptions();
         </h2>
         <p class="text-xs text-gray-600">
           Periode:
-          <span class="font-semibold text-green-600"
+          <span :class="getChipBadgeClass('success')"
             >{{ MONTH_OPTIONS[selectedMonth - 1].label }}
             {{ selectedYear }}</span
           >
@@ -46,10 +53,13 @@ const MONTH_OPTIONS = getMonthOptions();
       <div
         v-for="(item, index) in sukucadang.slice(0, 5)"
         :key="item.id"
-        class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-green-50 transition border border-gray-100"
+        :class="[
+          'flex items-center gap-3 px-3 py-2.5 rounded-lg transition border border-gray-100',
+          getSoftHoverToneClass('success'),
+        ]"
       >
         <!-- Rank badge -->
-        <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white bg-green-500 shrink-0">
+        <span :class="getRankBadgeClass('success')">
           {{ index + 1 }}
         </span>
         <!-- Nama -->
@@ -57,7 +67,7 @@ const MONTH_OPTIONS = getMonthOptions();
           {{ item.nama_barang }}
         </span>
         <!-- Jumlah -->
-        <span class="text-sm font-bold text-green-600 shrink-0">
+        <span :class="['text-sm font-bold shrink-0', getToneTextClass('success')]">
           {{ item.total_terjual }}x
         </span>
       </div>

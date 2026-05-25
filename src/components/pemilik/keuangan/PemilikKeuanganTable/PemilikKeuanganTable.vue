@@ -10,6 +10,7 @@ import {
   getPembayaranStatusLabel,
 } from "@/utils/pembayaranStatus";
 import { formatNama } from "@/utils/format";
+import { META_LABEL_CLASS } from "@/utils/badgeVariants";
 import {
   TABLE_HEADERS,
   usePemilikKeuanganTable,
@@ -76,9 +77,7 @@ const {
         >
           <div class="flex items-start justify-between gap-3">
             <div>
-              <p
-                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-              >
+              <p :class="META_LABEL_CLASS">
                 Kode Pemesanan
               </p>
               <p class="text-sm font-semibold text-gray-900">
@@ -94,9 +93,7 @@ const {
             class="mt-3 grid grid-cols-1 gap-2 text-sm min-[380px]:grid-cols-2"
           >
             <div>
-              <p
-                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-              >
+              <p :class="META_LABEL_CLASS">
                 Pelanggan
               </p>
               <p class="font-medium text-gray-900">
@@ -104,9 +101,7 @@ const {
               </p>
             </div>
             <div>
-              <p
-                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-              >
+              <p :class="META_LABEL_CLASS">
                 Tanggal
               </p>
               <p class="font-medium text-gray-900">
@@ -114,9 +109,7 @@ const {
               </p>
             </div>
             <div>
-              <p
-                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-              >
+              <p :class="META_LABEL_CLASS">
                 Plat Nomor
               </p>
               <p class="font-medium text-gray-900">
@@ -124,9 +117,7 @@ const {
               </p>
             </div>
             <div>
-              <p
-                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-              >
+              <p :class="META_LABEL_CLASS">
                 Pembayaran
               </p>
               <span
@@ -138,9 +129,7 @@ const {
               </span>
             </div>
             <div>
-              <p
-                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-              >
+              <p :class="META_LABEL_CLASS">
                 Total Biaya
               </p>
               <p class="font-semibold text-gray-900">

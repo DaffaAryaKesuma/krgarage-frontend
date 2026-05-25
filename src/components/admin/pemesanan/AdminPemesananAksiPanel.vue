@@ -7,6 +7,7 @@ import {
   isStatusSelesai,
 } from "@/utils/statusBadge";
 import { isUnpaidStatus } from "@/utils/pembayaranStatus";
+import { getAlertBoxClass } from "@/utils/badgeVariants";
 import type { Pemesanan, MekanikOption } from "@/types/pemesanan";
 
 interface Props {
@@ -64,8 +65,8 @@ const BTN_CANCEL =
 
     <!-- Assign Mekanik -->
     <div v-else-if="canAdminAssignAndStart(props.pemesanan.status)" class="space-y-2">
-      <div class="rounded-lg border border-blue-200  p-3">
-        <p class="mb-2 text-xs font-medium text-blue-700">
+      <div :class="[getAlertBoxClass('info'), 'p-3 shadow-none']">
+        <p class="mb-2 text-xs font-medium">
           <i class="mdi mdi-information"></i> Pilih mekanik untuk mulai servis
         </p>
         <CustomSelect
@@ -95,8 +96,8 @@ const BTN_CANCEL =
 
     <!-- Tandai Selesai -->
     <div v-else-if="canAdminCompletePemesanan(props.pemesanan.status)" class="space-y-2">
-      <div class="rounded-lg border border-amber-100 bg-amber-50 p-2">
-        <p class="text-xs text-amber-700">
+      <div :class="[getAlertBoxClass('warning'), 'p-2 shadow-none']">
+        <p class="text-xs">
           <i class="mdi mdi-wrench-cog"></i>
           Dikerjakan: <strong class="capitalize">{{ props.pemesanan.mekanik?.nama || "Belum ditentukan" }}</strong>
         </p>

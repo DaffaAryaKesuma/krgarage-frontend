@@ -1,5 +1,11 @@
 <script setup lang="ts">
 import { formatDateShort } from "@/utils/date";
+import {
+  META_LABEL_CLASS,
+  getAlertBoxClass,
+  getAlertIconClass,
+  getIconToneClass,
+} from "@/utils/badgeVariants";
 import type { VespaDetail } from "@/types/vespa";
 
 interface Props {
@@ -26,7 +32,10 @@ const emit = defineEmits<{
     <div class="mb-5 flex items-start justify-between">
       <div class="flex items-center gap-4">
         <div
-          class="w-14 h-14 rounded-2xl bg-red-50 flex items-center justify-center text-red-600"
+          :class="[
+            getIconToneClass('primary'),
+            'flex h-14 w-14 items-center justify-center rounded-2xl',
+          ]"
         >
           <i class="mdi mdi-motorbike text-3xl"></i>
         </div>
@@ -46,18 +55,21 @@ const emit = defineEmits<{
     <!-- Layanan Status -->
     <div
       v-if="vespa.perlu_servis"
-      class="flex items-center gap-3 p-3.5 bg-red-50 border border-red-100 rounded-xl mb-5"
+      :class="[getAlertBoxClass('error'), 'mb-5 flex items-center gap-3 p-3.5 shadow-none']"
     >
       <div
-        class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0"
+        :class="[
+          getIconToneClass('danger'),
+          'flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full',
+        ]"
       >
-        <i class="mdi mdi-alert-circle text-lg text-red-600"></i>
+        <i class="mdi mdi-alert-circle text-lg"></i>
       </div>
       <div>
-        <p class="text-xs font-bold text-red-800 uppercase tracking-wide">
+        <p class="text-xs font-bold uppercase tracking-wide">
           Perlu Servis
         </p>
-        <p class="text-xs text-red-600 font-medium mt-0.5">
+        <p class="mt-0.5 text-xs font-medium">
           Sudah lewat jadwal servis
         </p>
       </div>
@@ -68,18 +80,21 @@ const emit = defineEmits<{
         vespa.hari_hingga_servis <= 7 &&
         !vespa.perlu_servis
       "
-      class="flex items-center gap-3 p-3.5 bg-orange-50 border border-orange-100 rounded-xl mb-5"
+      :class="[getAlertBoxClass('warning'), 'mb-5 flex items-center gap-3 p-3.5 shadow-none']"
     >
       <div
-        class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0"
+        :class="[
+          getIconToneClass('warning'),
+          'flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full',
+        ]"
       >
-        <i class="mdi mdi-clock-alert text-lg text-orange-600"></i>
+        <i class="mdi mdi-clock-alert text-lg"></i>
       </div>
       <div>
-        <p class="text-xs font-bold text-orange-800 uppercase tracking-wide">
+        <p class="text-xs font-bold uppercase tracking-wide">
           Servis Segera
         </p>
-        <p class="text-xs text-orange-600 font-medium mt-0.5">
+        <p class="mt-0.5 text-xs font-medium">
           {{ vespa.hari_hingga_servis }} hari lagi
         </p>
       </div>
@@ -94,12 +109,12 @@ const emit = defineEmits<{
         <div
           class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm shrink-0"
         >
-          <i class="mdi mdi-calendar-range text-lg text-blue-600"></i>
+          <i
+            :class="[getAlertIconClass('info'), 'mdi mdi-calendar-range text-lg']"
+          ></i>
         </div>
         <div class="overflow-hidden">
-          <p
-            class="text-[10px] font-semibold text-gray-500 uppercase tracking-widest mb-0.5"
-          >
+          <p :class="[META_LABEL_CLASS, 'mb-0.5']">
             Tahun Produksi
           </p>
           <p class="font-bold text-gray-900 text-sm truncate">
@@ -115,12 +130,12 @@ const emit = defineEmits<{
         <div
           class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm"
         >
-          <i class="mdi mdi-wrench-clock text-lg text-green-600"></i>
+          <i
+            :class="[getAlertIconClass('success'), 'mdi mdi-wrench-clock text-lg']"
+          ></i>
         </div>
         <div>
-          <p
-            class="text-[11px] font-semibold text-gray-500 uppercase tracking-widest mb-0.5"
-          >
+          <p :class="[META_LABEL_CLASS, 'mb-0.5']">
             Terakhir Servis
           </p>
           <p

@@ -8,6 +8,12 @@ import {
 import { toMoneyNumber } from "@/utils/money";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
+import {
+  META_LABEL_CLASS,
+  getAlertBoxClass,
+  getAlertIconClass,
+  getToneTextClass,
+} from "@/utils/badgeVariants";
 import type { PelangganPemesanan } from "@/types/pemesanan";
 
 interface Props {
@@ -64,8 +70,8 @@ const getLayananPrice = (pemesanan: PelangganPemesanan) =>
             <i
               :class="
                 item.status === 'Selesai'
-                  ? 'mdi mdi-check-circle text-green-500 text-3xl'
-                  : 'mdi mdi-close-circle text-red-500 text-3xl'
+                  ? `mdi mdi-check-circle ${getToneTextClass('success')} text-3xl`
+                  : `mdi mdi-close-circle ${getToneTextClass('danger')} text-3xl`
               "
             ></i>
             <div>
@@ -87,7 +93,7 @@ const getLayananPrice = (pemesanan: PelangganPemesanan) =>
           <div class="flex items-start gap-2">
             <i class="mdi mdi-motorbike text-xl text-gray-600"></i>
             <div>
-              <p class="text-xs text-gray-500">Vespa</p>
+              <p :class="META_LABEL_CLASS">Vespa</p>
               <p class="font-semibold text-gray-900">
                 {{ item.vespa?.model || "N/A" }}
               </p>
@@ -96,7 +102,7 @@ const getLayananPrice = (pemesanan: PelangganPemesanan) =>
           <div class="flex items-start gap-2">
             <i class="mdi mdi-wrench text-xl text-gray-600"></i>
             <div>
-              <p class="text-xs text-gray-500">Layanan</p>
+              <p :class="META_LABEL_CLASS">Layanan</p>
               <div class="space-y-0.5">
                 <p
                   v-for="(layanan, i) in item.layanan"
@@ -115,18 +121,18 @@ const getLayananPrice = (pemesanan: PelangganPemesanan) =>
         </div>
         <div
           v-if="item.catatan_mekanik"
-          class="mb-4 rounded border border-green-100 bg-green-50 px-3 py-2 w-full"
+          :class="[getAlertBoxClass('success'), 'mb-4 w-full px-3 py-2 shadow-none']"
         >
-          <p class="text-[10px] font-bold uppercase text-green-600">
+          <p :class="[META_LABEL_CLASS, getAlertIconClass('success')]">
             Catatan Mekanik:
           </p>
-          <p class="text-xs text-green-800">{{ item.catatan_mekanik }}</p>
+          <p class="text-xs">{{ item.catatan_mekanik }}</p>
         </div>
         <div
           class="flex items-center justify-between pt-4 border-t border-gray-200 mt-auto"
         >
           <div>
-            <p class="text-xs text-gray-500">Total Biaya</p>
+            <p :class="META_LABEL_CLASS">Total Biaya</p>
             <p class="text-lg font-bold text-gray-900 sm:text-xl">
               {{ toIDR(item.total_harga || getLayananPrice(item)) }}
             </p>

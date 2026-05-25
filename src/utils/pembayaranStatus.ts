@@ -1,3 +1,5 @@
+import { BADGE_BASE_CLASS, badgeVariants } from "./badgeVariants";
+
 export const PEMBAYARAN_STATUS = {
   UNPAID: "Belum Lunas",
   PAID: "Lunas",
@@ -9,8 +11,8 @@ export type PembayaranStatus =
 export type PembayaranStatusFilter = "all" | PembayaranStatus;
 
 const PEMBAYARAN_STATUS_BADGE_MAP: Record<PembayaranStatus, string> = {
-  [PEMBAYARAN_STATUS.UNPAID]: "bg-gray-100 text-gray-700",
-  [PEMBAYARAN_STATUS.PAID]: "bg-emerald-100 text-emerald-700",
+  [PEMBAYARAN_STATUS.UNPAID]: badgeVariants.payment.belumLunas,
+  [PEMBAYARAN_STATUS.PAID]: badgeVariants.payment.lunas,
 };
 
 export const PEMBAYARAN_STATUS_FILTER_OPTIONS: Array<{
@@ -23,7 +25,7 @@ export const PEMBAYARAN_STATUS_FILTER_OPTIONS: Array<{
 ];
 
 export const PEMBAYARAN_STATUS_BADGE_BASE_CLASS =
-  "inline-flex items-center rounded-lg px-3 py-1 text-xs font-semibold";
+  BADGE_BASE_CLASS;
 
 export function isPaidStatus(status: string | null | undefined): boolean {
   return status === PEMBAYARAN_STATUS.PAID;
@@ -61,7 +63,7 @@ export function getPembayaranStatusBadge(
   if (status === PEMBAYARAN_STATUS.UNPAID) {
     return PEMBAYARAN_STATUS_BADGE_MAP[PEMBAYARAN_STATUS.UNPAID];
   }
-  return "bg-gray-100 text-gray-700";
+  return badgeVariants.payment.belumLunas;
 }
 
 export function getPembayaranStatusBadgeClass(

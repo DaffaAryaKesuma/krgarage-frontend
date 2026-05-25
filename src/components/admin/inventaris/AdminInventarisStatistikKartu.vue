@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { getIconToneClass } from "@/utils/badgeVariants";
+import type { IconToneKey } from "@/utils/badgeVariants";
+
 interface Statistik {
   total: number;
   lowStock: number;
@@ -16,24 +19,21 @@ const STAT_KARTU = [
     key: "total" as keyof Statistik,
     label: "Total",
     icon: "mdi-package-variant",
-    bgColor: "bg-blue-100",
-    iconColor: "text-blue-600",
+    tone: "info" as IconToneKey,
     borderColor: "border-blue-600",
   },
   {
     key: "lowStock" as keyof Statistik,
     label: "Stok Kritis/Habis",
     icon: "mdi-alert-circle",
-    bgColor: "bg-red-100",
-    iconColor: "text-red-600",
+    tone: "danger" as IconToneKey,
     borderColor: "border-red-600",
   },
   {
     key: "goodStock" as keyof Statistik,
     label: "Stok Tersedia",
     icon: "mdi-check-circle",
-    bgColor: "bg-green-100",
-    iconColor: "text-green-600",
+    tone: "success" as IconToneKey,
     borderColor: "border-green-600",
   },
 ];
@@ -48,8 +48,8 @@ const STAT_KARTU = [
       :class="card.borderColor"
     >
       <div class="flex items-center">
-        <div class="p-3 rounded-full flex-shrink-0" :class="card.bgColor">
-          <i class="mdi text-2xl" :class="[card.icon, card.iconColor]"></i>
+        <div class="p-3 rounded-full flex-shrink-0" :class="getIconToneClass(card.tone)">
+          <i class="mdi text-2xl" :class="card.icon"></i>
         </div>
         <div class="ml-4">
           <p class="text-sm text-gray-600">{{ card.label }}</p>

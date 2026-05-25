@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { formatDateShort } from "@/utils/date";
 import { toIDR } from "@/utils/money";
+import { META_LABEL_CLASS } from "@/utils/badgeVariants";
 import type { KeuanganPemesanan } from "@/types/pemesanan";
 
 interface Props {
@@ -17,9 +18,7 @@ defineProps<Props>();
   <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
     <div class="flex items-start justify-between gap-3">
       <div>
-        <p
-          class="text-[11px] font-semibold uppercase tracking-wide text-gray-900"
-        >
+        <p :class="META_LABEL_CLASS">
           Kode Pemesanan
         </p>
         <p class="text-sm text-gray-700">
@@ -27,9 +26,7 @@ defineProps<Props>();
         </p>
       </div>
       <div class="text-right">
-        <p
-          class="text-[11px] font-semibold uppercase tracking-wide text-gray-900"
-        >
+        <p :class="META_LABEL_CLASS">
           Tanggal
         </p>
         <p class="text-sm text-gray-900">
@@ -40,9 +37,7 @@ defineProps<Props>();
 
     <div class="mt-3 space-y-2 text-sm">
       <div>
-        <p
-          class="text-[11px] font-semibold uppercase tracking-wide text-gray-900"
-        >
+        <p :class="META_LABEL_CLASS">
           Pelanggan
         </p>
         <p class=" text-gray-900">
@@ -50,7 +45,7 @@ defineProps<Props>();
         </p>
       </div>
       <div>
-        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-900">
+        <p :class="META_LABEL_CLASS">
           Layanan
         </p>
         <div class="space-y-0.5">
@@ -60,7 +55,7 @@ defineProps<Props>();
         </div>
       </div>
       <div>
-        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-900">
+        <p :class="META_LABEL_CLASS">
           Suku Cadang
         </p>
         <div v-if="pemesananItems.length" class="space-y-0.5">
@@ -71,9 +66,7 @@ defineProps<Props>();
         <p v-else class="text-gray-700 italic">-</p>
       </div>
       <div class="border-t border-gray-100 pt-2">
-        <p
-          class="text-[11px] font-semibold uppercase tracking-wide text-gray-900"
-        >
+        <p :class="META_LABEL_CLASS">
           Total
         </p>
         <p class=" text-gray-700">

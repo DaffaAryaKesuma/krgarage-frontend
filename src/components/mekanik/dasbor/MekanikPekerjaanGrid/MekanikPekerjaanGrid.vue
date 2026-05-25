@@ -2,6 +2,13 @@
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
 import {
+  META_LABEL_CLASS,
+  getAlertBoxClass,
+  getAlertIconClass,
+  getChipBadgeClass,
+  getIconToneClass,
+} from "@/utils/badgeVariants";
+import {
   MEKANIK_PEKERJAAN_GRID_DEFAULTS,
   useMekanikPekerjaanGrid,
   type MekanikPekerjaanGridProps,
@@ -50,7 +57,7 @@ const {
       <!-- Header -->
       <div class="bg-white px-5 pt-4 pb-4 flex items-start justify-between">
         <div>
-          <p class="text-xs font-medium text-gray-500 uppercase">
+          <p :class="META_LABEL_CLASS">
             Kode Pemesanan
           </p>
           <p class="text-base font-bold text-gray-900 tracking-tight">
@@ -69,14 +76,15 @@ const {
           <!-- Pelanggan -->
           <div class="flex items-center gap-2.5">
             <div
-              class="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center shrink-0"
+              :class="[
+                getIconToneClass('neutral'),
+                'flex h-7 w-7 shrink-0 items-center justify-center rounded-lg',
+              ]"
             >
-              <i class="mdi mdi-account text-gray-600 text-base"></i>
+              <i class="mdi mdi-account text-base"></i>
             </div>
             <div class="min-w-0">
-              <p
-                class="text-[10px] text-gray-400 font-medium leading-none mb-0.5"
-              >
+              <p :class="[META_LABEL_CLASS, 'mb-0.5 leading-none']">
                 Pelanggan
               </p>
               <p class="text-sm font-semibold text-gray-900 truncate">
@@ -88,14 +96,15 @@ const {
           <!-- Vespa -->
           <div class="flex items-center gap-2.5">
             <div
-              class="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center shrink-0"
+              :class="[
+                getIconToneClass('neutral'),
+                'flex h-7 w-7 shrink-0 items-center justify-center rounded-lg',
+              ]"
             >
-              <i class="mdi mdi-motorbike text-gray-600 text-base"></i>
+              <i class="mdi mdi-motorbike text-base"></i>
             </div>
             <div class="min-w-0">
-              <p
-                class="text-[10px] text-gray-400 font-medium leading-none mb-0.5"
-              >
+              <p :class="[META_LABEL_CLASS, 'mb-0.5 leading-none']">
                 Vespa
               </p>
               <p class="text-sm font-semibold text-gray-900 truncate">
@@ -103,7 +112,7 @@ const {
               </p>
               <span
                 v-if="item.vespa.plat_nomor"
-                class="text-[10px] font-bold text-gray-900 bg-gray-100 px-1.5 py-0.5 rounded uppercase"
+                :class="[getChipBadgeClass('neutral'), 'px-1.5 py-0.5 text-[10px] font-bold uppercase']"
               >
                 {{ item.vespa.plat_nomor }}
               </span>
@@ -113,14 +122,15 @@ const {
           <!-- Tanggal -->
           <div class="flex items-center gap-2.5">
             <div
-              class="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center shrink-0"
+              :class="[
+                getIconToneClass('neutral'),
+                'flex h-7 w-7 shrink-0 items-center justify-center rounded-lg',
+              ]"
             >
-              <i class="mdi mdi-calendar text-gray-600 text-base"></i>
+              <i class="mdi mdi-calendar text-base"></i>
             </div>
             <div class="min-w-0">
-              <p
-                class="text-[10px] text-gray-400 font-medium leading-none mb-0.5"
-              >
+              <p :class="[META_LABEL_CLASS, 'mb-0.5 leading-none']">
                 Tanggal
               </p>
               <p class="text-sm font-semibold text-gray-900">
@@ -132,14 +142,15 @@ const {
           <!-- Jam -->
           <div class="flex items-center gap-2.5">
             <div
-              class="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center shrink-0"
+              :class="[
+                getIconToneClass('neutral'),
+                'flex h-7 w-7 shrink-0 items-center justify-center rounded-lg',
+              ]"
             >
-              <i class="mdi mdi-clock-outline text-gray-600 text-base"></i>
+              <i class="mdi mdi-clock-outline text-base"></i>
             </div>
             <div class="min-w-0">
-              <p
-                class="text-[10px] text-gray-400 font-medium leading-none mb-0.5"
-              >
+              <p :class="[META_LABEL_CLASS, 'mb-0.5 leading-none']">
                 Jam
               </p>
               <p class="text-sm font-semibold text-gray-900">
@@ -152,12 +163,15 @@ const {
         <!-- Layanan (full width) -->
         <div class="flex items-start gap-2.5">
           <div
-            class="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center shrink-0 mt-0.5"
+            :class="[
+              getIconToneClass('neutral'),
+              'mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg',
+            ]"
           >
-            <i class="mdi mdi-wrench text-gray-600 text-base"></i>
+            <i class="mdi mdi-wrench text-base"></i>
           </div>
           <div class="min-w-0">
-            <p class="text-[10px] text-gray-400 font-medium leading-none mb-1">
+            <p :class="[META_LABEL_CLASS, 'mb-1 leading-none']">
               Layanan
             </p>
             <template v-if="item.layanan?.length">
@@ -178,13 +192,16 @@ const {
         <!-- Catatan Pelanggan -->
         <div
           v-if="item.catatan_pelanggan"
-          class="flex items-start gap-2.5 bg-gray-50 border border-gray-100 rounded-xl p-3"
+          :class="[getAlertBoxClass('neutral'), 'flex items-start gap-2.5 p-3 shadow-none']"
         >
           <i
-            class="mdi mdi-note-text-outline text-gray-600 text-base shrink-0 mt-0.5"
+            :class="[
+              getAlertIconClass('neutral'),
+              'mdi mdi-note-text-outline mt-0.5 shrink-0 text-base',
+            ]"
           ></i>
           <div>
-            <p class="text-[10px] font-semibold text-gray-600 mb-0.5">
+            <p :class="[META_LABEL_CLASS, 'mb-0.5']">
               Catatan Pelanggan
             </p>
             <p class="text-xs text-gray-600">{{ item.catatan_pelanggan }}</p>
@@ -203,7 +220,7 @@ const {
             <span class="flex min-w-0 items-center gap-1.5">
               <i class="mdi mdi-cog text-gray-600"></i>
               Suku Cadang Digunakan
-              <span class="rounded-full bg-white px-2 py-0.5 text-[10px] font-bold text-gray-600">
+              <span :class="[getChipBadgeClass('neutral'), 'px-2 py-0.5 text-[10px] font-bold']">
                 {{ item.item_pemesanan.length }}
               </span>
             </span>
@@ -225,7 +242,7 @@ const {
               }}</span>
               <div class="flex items-center gap-2">
                 <span
-                  class="text-xs font-bold text-gray-600 px-2 py-0.5 rounded-full"
+                  :class="[getChipBadgeClass('neutral'), 'px-2 py-0.5 text-xs font-bold']"
                   >{{ subItem.jumlah }}x</span
                 >
                 <button
@@ -244,16 +261,19 @@ const {
         <!-- Catatan Mekanik -->
         <div
           v-if="item.catatan_mekanik"
-          class="flex items-start gap-2.5 bg-green-50 border border-green-100 rounded-xl p-3"
+          :class="[getAlertBoxClass('success'), 'flex items-start gap-2.5 p-3 shadow-none']"
         >
           <i
-            class="mdi mdi-wrench-check text-green-500 text-base shrink-0 mt-0.5"
+            :class="[
+              getAlertIconClass('success'),
+              'mdi mdi-wrench-check mt-0.5 shrink-0 text-base',
+            ]"
           ></i>
           <div>
-            <p class="text-[10px] font-semibold text-green-700 mb-0.5">
+            <p :class="[META_LABEL_CLASS, 'mb-0.5']">
               Catatan Mekanik
             </p>
-            <p class="text-xs text-green-900 whitespace-pre-line">
+            <p class="whitespace-pre-line text-xs">
               {{ item.catatan_mekanik }}
             </p>
           </div>
@@ -292,10 +312,10 @@ const {
           <!-- Status Selesai -->
           <div
             v-if="isStatusSelesai(item.status)"
-            class="flex items-center justify-center gap-2 bg-green-50 border border-green-200 rounded-xl p-3"
+            :class="[getAlertBoxClass('success'), 'flex items-center justify-center gap-2 p-3 shadow-none']"
           >
-            <i class="mdi mdi-check text-green-500 text-xl"></i>
-            <p class="text-sm text-green-700 font-semibold">
+            <i :class="[getAlertIconClass('success'), 'mdi mdi-check text-xl']"></i>
+            <p class="text-sm font-semibold">
               Pekerjaan Selesai
             </p>
           </div>

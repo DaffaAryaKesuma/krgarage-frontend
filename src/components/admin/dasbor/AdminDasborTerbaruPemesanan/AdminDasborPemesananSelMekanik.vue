@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import CustomSelect from "@/components/ui/CustomSelect.vue";
 import { canAdminAssignAndStart } from "@/utils/statusBadge";
+import { META_LABEL_CLASS, getChipBadgeClass, getIconToneClass } from "@/utils/badgeVariants";
 import type { Pemesanan, MekanikOption } from "@/types/pemesanan";
 
 interface Props {
@@ -41,7 +42,7 @@ const handleMekanikChange = (value: string | number | null) => {
     :class="isMobileVariant ? 'space-y-2' : 'flex min-w-0 items-center gap-1.5'"
   >
     <template v-if="isMobileVariant">
-      <p class="text-xs font-medium text-blue-700">Pilih mekanik</p>
+      <p :class="META_LABEL_CLASS">Pilih mekanik</p>
       <CustomSelect
         :model-value="props.selectedMekanikId"
         @update:model-value="handleMekanikChange"
@@ -51,7 +52,7 @@ const handleMekanikChange = (value: string | number | null) => {
       <button
         @click="emit('assignAndStart', props.pemesanan)"
         :disabled="!props.selectedMekanikId"
-        class="w-full rounded-lg bg-blue-100 py-2.5 text-sm font-medium text-blue-700 border border-blue-50 transition disabled:cursor-not-allowed disabled:bg-white disabled:border-blue-100"
+        class="w-full rounded-lg border border-blue-200 bg-blue-50 py-2.5 text-sm font-medium text-blue-700 transition hover:bg-blue-100 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-white disabled:text-gray-400"
       >
         Mulai Servis
       </button>
@@ -71,7 +72,10 @@ const handleMekanikChange = (value: string | number | null) => {
       <button
         @click="emit('assignAndStart', props.pemesanan)"
         :disabled="!props.selectedMekanikId"
-        class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-700 transition hover:bg-blue-200 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-white"
+        :class="[
+          'inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition hover:bg-blue-200 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-white',
+          getIconToneClass('info'),
+        ]"
         title="Mulai Servis"
       >
         <i class="mdi mdi-play-circle text-xl"></i>
@@ -81,7 +85,7 @@ const handleMekanikChange = (value: string | number | null) => {
 
   <span
     v-else-if="props.pemesanan.mekanik"
-    class="inline-flex items-center gap-1 rounded-md border border-gray-200 bg-gray-100 px-2.5 py-1.5 text-xs font-medium text-gray-700"
+    :class="[getChipBadgeClass('neutral'), 'gap-1']"
   >
     <i class="mdi mdi-account-wrench text-sm text-gray-500"></i>
     <span class="capitalize">{{ props.pemesanan.mekanik.nama }}</span>
@@ -89,7 +93,7 @@ const handleMekanikChange = (value: string | number | null) => {
 
   <span
     v-else-if="showDesktopFallback"
-    class="inline-flex items-center rounded-md border border-gray-200 bg-gray-50 px-2.5 py-1 text-xs font-medium text-gray-500"
+    :class="getChipBadgeClass('neutral')"
   >
     Belum ditetapkan
   </span>

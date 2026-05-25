@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { toIDR } from "@/utils/money";
+import { getIconToneClass, type IconToneKey } from "@/utils/badgeVariants";
 
 interface Ringkasan {
   totalRevenue: number;
@@ -22,29 +23,25 @@ const RINGKASAN_KARTU = computed(() => [
     title: "Total Pendapatan",
     value: toIDR(props.ringkasan.totalRevenue),
     icon: "mdi-currency-usd",
-    bg: "bg-green-100",
-    color: "text-green-600",
+    tone: "success" as IconToneKey,
   },
   {
     title: "Total Pemesanan Lunas",
     value: props.ringkasan.totalPemesanan.toString(),
     icon: "mdi-receipt-text",
-    bg: "bg-blue-100",
-    color: "text-blue-600",
+    tone: "info" as IconToneKey,
   },
   {
     title: "Pengeluaran Restok",
     value: toIDR(props.ringkasan.totalExpense),
     icon: "mdi-cash-minus",
-    bg: "bg-red-100",
-    color: "text-red-600",
+    tone: "danger" as IconToneKey,
   },
   {
     title: "Keuntungan Bersih",
     value: toIDR(props.ringkasan.netProfit),
     icon: "mdi-wallet-plus",
-    bg: "bg-emerald-100",
-    color: "text-emerald-600",
+    tone: "emerald" as IconToneKey,
   },
 ]);
 </script>
@@ -68,10 +65,10 @@ const RINGKASAN_KARTU = computed(() => [
         <div
           :class="[
             'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg sm:h-12 sm:w-12 sm:rounded-xl',
-            card.bg,
+            getIconToneClass(card.tone),
           ]"
         >
-          <i :class="['mdi', card.icon, 'text-lg sm:text-2xl', card.color]"></i>
+          <i :class="['mdi', card.icon, 'text-lg sm:text-2xl']"></i>
         </div>
       </div>
     </div>

@@ -17,7 +17,7 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <div class="bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg">
+  <div class="bg-red-700 text-white shadow-lg">
     <div
       :class="[
         'mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-6 lg:px-8',

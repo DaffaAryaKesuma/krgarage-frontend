@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
 import { getImageUrl, formatWaktu } from "@/utils/format";
+import { META_LABEL_CLASS } from "@/utils/badgeVariants";
 import type { LayananCatalogItem } from "@/types/layanan";
 
 interface Props {
@@ -58,13 +59,13 @@ const handleImageError = (e: Event) => {
         class="bg-gray-100 p-3 rounded-lg mb-4 grid grid-cols-2 gap-2 text-sm mt-auto"
       >
         <div>
-          <p class="text-gray-600 text-xs">Estimasi Harga</p>
+          <p :class="META_LABEL_CLASS">Estimasi Harga</p>
           <p class="font-bold text-gray-900">
             {{ toIDR(layanan.harga) }}
           </p>
         </div>
         <div>
-          <p class="text-gray-600 text-xs">Estimasi Durasi</p>
+          <p :class="META_LABEL_CLASS">Estimasi Durasi</p>
           <p class="font-bold text-gray-900">
             {{ formatWaktu(layanan.durasi_pengerjaan) }}
           </p>

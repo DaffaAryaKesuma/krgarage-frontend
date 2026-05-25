@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
+import {
+  getAlertBoxClass,
+  getAlertIconClass,
+  getToneTextClass,
+} from "@/utils/badgeVariants";
 
 interface Props {
   totalHarga: number;
@@ -24,11 +29,16 @@ defineProps<Props>();
       class="flex justify-between text-2xl font-bold text-gray-900 pt-3 border-t"
     >
       <span>Total</span>
-      <span class="text-green-600">{{ toIDR(grandTotal) }}</span>
+      <span :class="getToneTextClass('success')">{{ toIDR(grandTotal) }}</span>
     </div>
 
-    <div class="mt-4 flex items-start gap-2 text-xs text-gray-500">
-      <i class="mdi mdi-information-outline text-base flex-shrink-0"></i>
+    <div :class="[getAlertBoxClass('info'), 'mt-4 flex items-start gap-2 text-xs']">
+      <i
+        :class="[
+          getAlertIconClass('info'),
+          'mdi mdi-information-outline flex-shrink-0 text-base',
+        ]"
+      ></i>
       <p>
         Pembayaran dilakukan saat pelanggan mengambil Vespa setelah servis
         selesai

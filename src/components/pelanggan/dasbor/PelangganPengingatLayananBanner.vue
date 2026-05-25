@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import { formatDateShort } from "@/utils/date";
+import {
+  getAlertBoxClass,
+  getAlertIconClass,
+  getChipBadgeClass,
+} from "@/utils/badgeVariants";
 
 interface VespaDueLayanan {
   id: number;
@@ -18,29 +23,29 @@ defineProps<Props>();
 <template>
   <section
     v-if="vespas.length > 0"
-    class="bg-orange-50 border-l-4 border-orange-500 p-4 sm:p-6 rounded-lg shadow"
+    :class="[getAlertBoxClass('warning'), 'border-l-4 p-4 sm:p-6']"
   >
     <div class="flex items-start">
       <div class="flex-shrink-0">
         <i
-          class="mdi mdi-alert-circle text-2xl sm:text-3xl text-orange-500"
+          :class="[getAlertIconClass('warning'), 'mdi mdi-alert-circle text-2xl sm:text-3xl']"
         ></i>
       </div>
       <div class="ml-3 sm:ml-4 flex-1">
         <h3
-          class="text-base sm:text-lg font-bold text-orange-800 mb-2 flex items-center"
+          class="mb-2 flex items-center text-base font-bold sm:text-lg"
         >
           <i class="mdi mdi-bell-alert text-xl mr-2"></i>
           Pengingat Servis Berkala
         </h3>
-        <p class="text-sm sm:text-base text-orange-700 mb-3">
+        <p class="mb-3 text-sm sm:text-base">
           Vespa Anda sudah waktunya untuk servis berkala:
         </p>
         <div class="space-y-2">
           <div
             v-for="vespa in vespas"
             :key="vespa.id"
-            class="bg-white p-3 rounded border border-orange-200"
+            :class="[getChipBadgeClass('warning'), 'block rounded p-3']"
           >
             <p class="font-semibold text-gray-800">
               {{ vespa.model }} - {{ vespa.plat_nomor }}

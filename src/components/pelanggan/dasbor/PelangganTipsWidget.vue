@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { getAlertBoxClass, getAlertIconClass } from "@/utils/badgeVariants";
 
 const TIPS = [
   "Servis rutin setiap 3 bulan untuk performa optimal",
@@ -15,15 +16,17 @@ const currentTip = computed(
 
 <template>
   <section
-    class="rounded-xl border-l-4 border-gray-400 bg-gray-50 p-4 shadow-md sm:p-6"
+    :class="[getAlertBoxClass('neutral'), 'border-l-4 p-4 sm:p-6']"
   >
     <div class="flex items-start gap-3 sm:gap-4">
-      <i class="mdi mdi-lightbulb-on text-3xl text-gray-500 sm:text-4xl"></i>
+      <i
+        :class="[getAlertIconClass('neutral'), 'mdi mdi-lightbulb-on text-3xl sm:text-4xl']"
+      ></i>
       <div>
         <h3 class="text-lg font-bold text-gray-900 mb-2">Tips Perawatan</h3>
         <div class="flex items-start gap-2">
           <i
-            class="mdi mdi-wrench text-gray-600 text-lg mt-0.5 flex-shrink-0"
+            :class="[getAlertIconClass('neutral'), 'mdi mdi-wrench mt-0.5 flex-shrink-0 text-lg']"
           ></i>
           <p class="text-gray-700 text-sm">{{ currentTip }}</p>
         </div>

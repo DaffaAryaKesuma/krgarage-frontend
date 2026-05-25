@@ -9,6 +9,7 @@ import {
   getPembayaranStatusBadgeClass,
   getPembayaranStatusLabel,
 } from "@/utils/pembayaranStatus";
+import { META_LABEL_CLASS, getChipBadgeClass } from "@/utils/badgeVariants";
 import AdminPemesananAksiPanel from "./AdminPemesananAksiPanel.vue";
 import type { Pemesanan, MekanikOption } from "@/types/pemesanan";
 
@@ -63,9 +64,7 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
       >
         <div class="flex items-center gap-2 mb-2">
           <i class="mdi mdi-motorbike text-lg text-gray-500"></i>
-          <p
-            class="text-xs font-semibold text-gray-500 uppercase tracking-wider"
-          >
+          <p :class="META_LABEL_CLASS">
             Vespa
           </p>
         </div>
@@ -73,7 +72,7 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
           {{ pemesanan.vespa?.model || "N/A" }}
         </p>
         <p
-          class="text-xs text-gray-600 mt-1 font-semibold bg-white inline-block px-1.5 py-0.5 rounded border border-gray-200"
+          :class="[getChipBadgeClass('neutral'), 'mt-1']"
         >
           {{ pemesanan.vespa?.plat_nomor || "N/A" }}
         </p>
@@ -85,9 +84,7 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
       >
         <div class="flex items-center gap-2 mb-2">
           <i class="mdi mdi-calendar-clock text-lg text-gray-500"></i>
-          <p
-            class="text-xs font-semibold text-gray-500 uppercase tracking-wider"
-          >
+          <p :class="META_LABEL_CLASS">
             Jadwal
           </p>
         </div>
@@ -104,7 +101,7 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
     <!-- Layanan -->
     <div class="mb-4">
       <p
-        class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-1.5"
+        :class="[META_LABEL_CLASS, 'mb-2 flex items-center gap-1.5']"
       >
         <i class="mdi mdi-wrench text-gray-400 text-sm"></i> Layanan
       </p>
@@ -112,7 +109,7 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
         <span
           v-for="(layanan, idx) in pemesanan.layanan"
           :key="idx"
-          class="inline-flex items-center rounded-md bg-gray-50 px-2.5 py-1 text-xs font-semibold text-gray-700 border border-gray-200"
+          :class="getChipBadgeClass('neutral')"
         >
           {{
             layanan.pivot?.nama_layanan_saat_ini ||
@@ -132,9 +129,7 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
       >
         <!-- Status Servis -->
         <div>
-          <p
-            class="text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider"
-          >
+          <p :class="[META_LABEL_CLASS, 'mb-1.5']">
             Status Servis
           </p>
           <div class="flex items-center gap-2">
@@ -149,9 +144,7 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
 
         <!-- Status Pembayaran -->
         <div>
-          <p
-            class="text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider"
-          >
+          <p :class="[META_LABEL_CLASS, 'mb-1.5']">
             Pembayaran
           </p>
           <span
@@ -168,11 +161,11 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
         v-if="pemesanan.mekanik"
         class="mt-4 pt-3 border-t border-slate-200 flex items-center gap-2"
       >
-        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+        <p :class="META_LABEL_CLASS">
           Mekanik
         </p>
         <span
-          class="inline-flex items-center gap-1.5 text-sm font-bold text-gray-700 bg-white px-2.5 py-1 rounded-md border border-gray-200"
+          :class="[getChipBadgeClass('neutral'), 'gap-1.5 text-sm font-bold']"
         >
           <i class="mdi mdi-account-wrench text-gray-400"></i>
           <span class="capitalize">{{ pemesanan.mekanik.nama }}</span>

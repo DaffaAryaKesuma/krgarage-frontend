@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { getToneTextClass } from "@/utils/badgeVariants";
+
 interface Props {
   vespaCount: number;
   totalPemesanan: number;
@@ -25,7 +27,10 @@ defineProps<Props>();
           </p>
         </div>
         <i
-          class="mdi mdi-motorbike text-4xl sm:text-5xl text-red-500 opacity-20"
+          :class="[
+            getToneTextClass('primary'),
+            'mdi mdi-motorbike text-4xl opacity-20 sm:text-5xl',
+          ]"
         ></i>
       </div>
     </div>
@@ -42,7 +47,10 @@ defineProps<Props>();
           </p>
         </div>
         <i
-          class="mdi mdi-clipboard-list text-4xl sm:text-5xl text-green-500 opacity-20"
+          :class="[
+            getToneTextClass('success'),
+            'mdi mdi-clipboard-list text-4xl opacity-20 sm:text-5xl',
+          ]"
         ></i>
       </div>
     </div>
@@ -59,7 +67,10 @@ defineProps<Props>();
           </p>
         </div>
         <i
-          class="mdi mdi-clock-outline text-4xl sm:text-5xl text-purple-500 opacity-20"
+          :class="[
+            getToneTextClass('owner'),
+            'mdi mdi-clock-outline text-4xl opacity-20 sm:text-5xl',
+          ]"
         ></i>
       </div>
     </div>

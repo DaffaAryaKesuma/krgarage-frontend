@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { getMonthOptions } from "@/utils/dateFilters";
+import { getGradientToneClass, type GradientToneKey } from "@/utils/badgeVariants";
 
 interface Ringkasan {
   totalLayanan: number;
@@ -23,21 +24,21 @@ const RINGKASAN_KARTU = computed(() => [
     title: "Total Layanan Terjual",
     key: "totalLayanan" as keyof Ringkasan,
     subtitle: `Periode ${MONTH_OPTIONS[props.selectedMonth - 1].label} ${props.selectedYear}`,
-    gradient: "from-blue-500 to-blue-600",
+    tone: "info" as GradientToneKey,
     icon: "mdi-wrench",
   },
   {
     title: "Total Suku Cadang Terjual",
     key: "totalSukuCadang" as keyof Ringkasan,
     subtitle: `Periode ${MONTH_OPTIONS[props.selectedMonth - 1].label} ${props.selectedYear}`,
-    gradient: "from-green-500 to-green-600",
+    tone: "success" as GradientToneKey,
     icon: "mdi-package-variant",
   },
   {
     title: "Stok Menipis",
     key: "lowStockCount" as keyof Ringkasan,
     subtitle: "Saat Ini",
-    gradient: "from-red-500 to-red-600",
+    tone: "danger" as GradientToneKey,
     icon: "mdi-alert",
   },
 ]);
@@ -50,7 +51,7 @@ const RINGKASAN_KARTU = computed(() => [
       :key="card.key"
       :class="[
         'rounded-2xl px-5 py-4 text-white shadow-lg flex items-center justify-between gap-4',
-        `bg-gradient-to-r ${card.gradient}`,
+        `bg-gradient-to-r ${getGradientToneClass(card.tone)}`,
       ]"
     >
       <!-- Kiri: icon + label -->

@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
 import { formatDateShort } from "@/utils/date";
+import {
+  getAlertBoxClass,
+  getAlertIconClass,
+  getChipBadgeClass,
+  getIconToneClass,
+} from "@/utils/badgeVariants";
 
 import type { LayananCatalogItem } from "@/types/layanan";
 import type { VespaBasic } from "@/types/vespa";
@@ -27,9 +33,12 @@ withDefaults(defineProps<Props>(), {
       <!-- Header -->
       <div class="text-center mb-6">
         <div
-          class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-red-50 mb-3 border border-red-100/50"
+          :class="[
+            getIconToneClass('primary'),
+            'mb-3 inline-flex h-14 w-14 items-center justify-center rounded-full border border-red-100/50',
+          ]"
         >
-          <i class="mdi mdi-receipt-text-outline text-3xl text-red-600"></i>
+          <i class="mdi mdi-receipt-text-outline text-3xl"></i>
         </div>
         <h2 class="text-xl sm:text-2xl font-bold text-gray-900">
           Ringkasan Pemesanan
@@ -87,7 +96,7 @@ withDefaults(defineProps<Props>(), {
             </div>
             <div
               v-if="selectedVespa.plat_nomor"
-              class="text-xs font-bold text-red-600 mt-0.5 inline-block px-1.5 py-0.5 rounded uppercase"
+              :class="[getChipBadgeClass('primary'), 'mt-0.5 inline-flex px-1.5 py-0.5 text-xs font-bold uppercase']"
             >
               {{ selectedVespa.plat_nomor }}
             </div>
@@ -105,7 +114,7 @@ withDefaults(defineProps<Props>(), {
             </div>
             <div
               v-if="selectedTime"
-              class="text-xs font-bold text-red-600 mt-0.5 inline-block px-1.5 py-0.5 rounded"
+              :class="[getChipBadgeClass('primary'), 'mt-0.5 inline-flex px-1.5 py-0.5 text-xs font-bold']"
             >
               {{ selectedTime }}
             </div>
@@ -130,13 +139,13 @@ withDefaults(defineProps<Props>(), {
       <!-- Disclaimer Info Box -->
       <div
         v-if="selectedLayanan.length > 0"
-        class="flex items-start gap-3 p-3.5 bg-yellow-50/80 border border-yellow-100 rounded-xl mb-6"
+        :class="[getAlertBoxClass('warning'), 'mb-6 flex items-start gap-3 p-3.5 shadow-none']"
       >
         <i
-          class="mdi mdi-alert-circle-outline text-yellow-600 text-lg shrink-0 mt-0.5"
+          :class="[getAlertIconClass('warning'), 'mdi mdi-alert-circle-outline mt-0.5 shrink-0 text-lg']"
         ></i>
         <p
-          class="text-[11px] sm:text-xs text-yellow-800/90 leading-relaxed font-medium"
+          class="text-[11px] font-medium leading-relaxed sm:text-xs"
         >
           Harga di atas adalah estimasi awal. Harga akhir dapat berubah
           menyesuaikan kondisi aktual Vespa dan penambahan suku cadang saat

@@ -1,30 +1,32 @@
+import { BADGE_BASE_CLASS, badgeVariants } from "./badgeVariants";
+
 export const PEMESANAN_STATUS = {
   MENUNGGU: "Menunggu",
   DIKONFIRMASI: "Dikonfirmasi",
   DIKERJAKAN: "Dikerjakan",
   SELESAI: "Selesai",
-  BATAL: "batal",
+  BATAL: "Batal",
 } as const;
 
 export const STATUS_MAP = {
   [PEMESANAN_STATUS.MENUNGGU]: {
-    badge: "bg-gray-100 text-gray-700",
+    badge: badgeVariants.status.menunggu,
     label: "Menunggu",
   },
   [PEMESANAN_STATUS.DIKONFIRMASI]: {
-    badge: "bg-blue-100 text-blue-700",
+    badge: badgeVariants.status.dikonfirmasi,
     label: "Dikonfirmasi",
   },
   [PEMESANAN_STATUS.DIKERJAKAN]: {
-    badge: "bg-amber-100 text-amber-700",
+    badge: badgeVariants.status.dikerjakan,
     label: "Dikerjakan",
   },
   [PEMESANAN_STATUS.SELESAI]: {
-    badge: "bg-emerald-100 text-emerald-700",
+    badge: badgeVariants.status.selesai,
     label: "Selesai",
   },
   [PEMESANAN_STATUS.BATAL]: {
-    badge: "bg-red-100 text-red-700",
+    badge: badgeVariants.status.batal,
     label: "Batal",
   },
 };
@@ -60,15 +62,24 @@ export const MEKANIK_STATUS_FILTER_OPTIONS: Array<{
 ];
 
 export const STATUS_BADGE_BASE_CLASS =
-  "inline-flex items-center rounded-lg px-3 py-1 text-xs font-semibold";
+  BADGE_BASE_CLASS;
 
 export function toPemesananStatus(
   status: string | null | undefined,
 ): PemesananStatus | null {
-  const validStatuses = Object.values(PEMESANAN_STATUS) as string[];
-  if (status && validStatuses.includes(status)) {
-    return status as PemesananStatus;
+  if (!status) {
+    return null;
   }
+
+  const normalizedStatus = status.toLowerCase();
+  const validStatus = (Object.values(PEMESANAN_STATUS) as PemesananStatus[]).find(
+    (item) => item.toLowerCase() === normalizedStatus,
+  );
+
+  if (validStatus) {
+    return validStatus;
+  }
+
   return null;
 }
 

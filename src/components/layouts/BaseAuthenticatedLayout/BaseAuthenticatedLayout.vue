@@ -5,6 +5,7 @@ import ProfilModal from "@/components/ui/ProfilModal/ProfilModal.vue";
 import { useAuthenticatedLayoutShell } from "./useAuthenticatedLayoutShell";
 import { scrollLock } from "@/composables/scrollLock";
 import { formatNama } from "@/utils/format";
+import { getRoleBadgeClass } from "@/utils/badgeVariants";
 
 interface NavItem {
   label: string;
@@ -110,7 +111,9 @@ scrollLock(() => isMobileMenuOpen.value);
                 <p class="text-sm font-semibold text-gray-900">
                   <span>{{ formatNama(user.nama) }}</span>
                 </p>
-                <p class="text-xs text-red-600 font-medium">{{ roleLabel }}</p>
+                <p :class="[getRoleBadgeClass(roleLabel), 'mt-1 justify-end capitalize']">
+                  {{ roleLabel }}
+                </p>
               </div>
 
               <div
@@ -211,7 +214,9 @@ scrollLock(() => isMobileMenuOpen.value);
             <p class="text-sm font-semibold text-gray-900 truncate">
               <span>{{ formatNama(user.nama) }}</span>
             </p>
-            <p class="text-xs text-gray-500 font-medium truncate">{{ roleLabel }}</p>
+            <p :class="[getRoleBadgeClass(roleLabel), 'mt-1 max-w-max capitalize']">
+              {{ roleLabel }}
+            </p>
           </div>
           <NotificationBell />
         </div>

@@ -10,6 +10,7 @@ import AdminPemesananRincianDaftar from "@/components/admin/pemesanan-detail/Adm
 import AdminPemesananTotalRingkasan from "@/components/admin/pemesanan-detail/AdminPemesananDetailTotalRingkasan/AdminPemesananTotalRingkasan.vue";
 import AdminPemesananCatatan from "@/components/admin/pemesanan-detail/AdminPemesananDetailCatatan/AdminPemesananCatatan.vue";
 import TambahSukuCadangModal from "@/components/ui/TambahSukuCadangModal/TambahSukuCadangModal.vue";
+import { getAlertBoxClass, getAlertIconClass } from "@/utils/badgeVariants";
 import { useAdminPemesananDetailPage } from "./useAdminPemesananDetailPage";
 
 const route = useRoute();
@@ -69,10 +70,12 @@ onMounted(async () => {
 
       <div
         v-else-if="error"
-        class="rounded-xl border border-red-200 bg-red-50 p-6 text-center"
+        :class="[getAlertBoxClass('error'), 'text-center']"
       >
-        <i class="mdi mdi-alert-circle mb-2 text-4xl text-red-600"></i>
-        <p class="font-medium text-red-800">{{ error }}</p>
+        <i
+          :class="[getAlertIconClass('error'), 'mdi mdi-alert-circle mb-2 text-4xl']"
+        ></i>
+        <p class="font-medium">{{ error }}</p>
       </div>
 
       <div v-else-if="pemesanan" class="space-y-6">

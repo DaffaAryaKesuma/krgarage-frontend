@@ -5,6 +5,7 @@ import {
   toPemesananStatus,
   type PemesananStatus,
 } from "./statusCore";
+import { badgeVariants } from "./badgeVariants";
 
 export function isStatusMenunggu(status: string | null | undefined): boolean {
   return status?.toLowerCase() === "menunggu";
@@ -115,7 +116,7 @@ export function getStatusBadge(status: string | null): string {
   const canonicalStatus = toPemesananStatus(status);
   return (
     (canonicalStatus ? STATUS_MAP[canonicalStatus]?.badge : null) ||
-    "bg-gray-100 text-gray-800"
+    badgeVariants.status.menunggu
   );
 }
 

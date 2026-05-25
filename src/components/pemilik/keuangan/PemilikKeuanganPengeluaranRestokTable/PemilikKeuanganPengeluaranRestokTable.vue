@@ -5,6 +5,7 @@ import TableShell from "@/components/ui/TableShell.vue";
 import { formatDateShort } from "@/utils/date";
 import { formatNama } from "@/utils/format";
 import { toIDR } from "@/utils/money";
+import { META_LABEL_CLASS } from "@/utils/badgeVariants";
 import {
   TABLE_HEADERS,
   usePemilikKeuanganPengeluaranRestokTable,
@@ -74,13 +75,13 @@ const { totalPages, from, to, paginatedPengeluaran } =
 
           <div class="mt-3 grid grid-cols-2 gap-2 text-sm">
             <div>
-              <p class="text-[11px] font-medium uppercase tracking-wide text-gray-500">
+              <p :class="META_LABEL_CLASS">
                 Jumlah
               </p>
               <p class="font-medium text-gray-900">{{ item.jumlah }}</p>
             </div>
             <div>
-              <p class="text-[11px] font-medium uppercase tracking-wide text-gray-500">
+              <p :class="META_LABEL_CLASS">
                 Harga/Unit
               </p>
               <p class="font-medium text-gray-900">
@@ -88,7 +89,7 @@ const { totalPages, from, to, paginatedPengeluaran } =
               </p>
             </div>
             <div>
-              <p class="text-[11px] font-medium uppercase tracking-wide text-gray-500">
+              <p :class="META_LABEL_CLASS">
                 Stok
               </p>
               <p class="font-medium text-gray-900">
@@ -96,7 +97,7 @@ const { totalPages, from, to, paginatedPengeluaran } =
               </p>
             </div>
             <div>
-              <p class="text-[11px] font-medium uppercase tracking-wide text-gray-500">
+              <p :class="META_LABEL_CLASS">
                 Admin
               </p>
               <p class="font-medium text-gray-900">

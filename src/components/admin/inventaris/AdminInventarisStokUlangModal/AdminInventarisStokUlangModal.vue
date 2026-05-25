@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
 import {
+  META_LABEL_CLASS,
+  getIconToneClass,
+  getInventoryBadgeClass,
+  getToneTextClass,
+} from "@/utils/badgeVariants";
+import {
   buttonPrimaryClass,
   buttonSecondaryClass,
   inputClass,
@@ -28,7 +34,10 @@ const { totalPengeluaran } = useAdminInventarisStokUlangModal(props);
       <div class="shrink-0 border-b border-gray-200 px-6 py-5">
         <div class="flex items-center gap-3">
           <div
-            class="flex h-11 w-11 items-center justify-center rounded-xl bg-green-50 text-green-600"
+            :class="[
+              getIconToneClass('success'),
+              'flex h-11 w-11 items-center justify-center rounded-xl',
+            ]"
           >
             <i class="mdi mdi-package-variant-closed text-xl"></i>
           </div>
@@ -53,14 +62,14 @@ const { totalPengeluaran } = useAdminInventarisStokUlangModal(props);
             class="mt-4 flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3"
           >
             <div>
-              <p class="text-sm font-medium text-gray-600">Stok Saat Ini</p>
+              <p :class="META_LABEL_CLASS">Stok Saat Ini</p>
             </div>
             <span
               :class="[
-                'rounded-lg px-3 py-1 text-sm font-bold',
+                'text-sm font-bold',
                 selectedSukuCadang?.stok_menipis
-                  ? 'bg-red-100 text-red-600'
-                  : 'bg-green-100 text-green-600',
+                  ? getInventoryBadgeClass('kritis')
+                  : getInventoryBadgeClass('aman'),
               ]"
             >
               {{ selectedSukuCadang?.jumlah_stok }}
@@ -163,13 +172,13 @@ const { totalPengeluaran } = useAdminInventarisStokUlangModal(props);
           <div class="space-y-2 text-sm text-gray-700">
             <p>
               Estimasi stok baru:
-              <span class="font-black text-green-600">
+              <span class="font-black" :class="getToneTextClass('success')">
                 {{ (selectedSukuCadang?.jumlah_stok || 0) + restockQuantity }}
               </span>
             </p>
             <p>
               Total pengeluaran:
-              <span class="font-black text-red-600">
+              <span class="font-black" :class="getToneTextClass('danger')">
                 {{ toIDR(totalPengeluaran) }}
               </span>
             </p>

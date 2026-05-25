@@ -9,6 +9,7 @@ import {
 import { toMoneyNumber } from "@/utils/money";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
+import { META_LABEL_CLASS } from "@/utils/badgeVariants";
 import type { PelangganPemesanan } from "@/types/pemesanan";
 
 interface Props {
@@ -85,7 +86,7 @@ const getLayananTotal = (pemesanan: PelangganPemesanan) =>
           <div class="flex items-start gap-2">
             <i class="mdi mdi-motorbike text-xl text-gray-600"></i>
             <div>
-              <p class="text-xs text-gray-500">Vespa</p>
+              <p :class="META_LABEL_CLASS">Vespa</p>
               <p class="font-semibold text-gray-900">
                 {{ item.vespa?.model || "N/A" }}
               </p>
@@ -94,7 +95,7 @@ const getLayananTotal = (pemesanan: PelangganPemesanan) =>
           <div class="flex items-start gap-2">
             <i class="mdi mdi-wrench text-xl text-gray-600"></i>
             <div>
-              <p class="text-xs text-gray-500">Layanan</p>
+              <p :class="META_LABEL_CLASS">Layanan</p>
               <div class="space-y-0.5">
                 <p
                   v-for="(layanan, i) in item.layanan"
@@ -115,7 +116,7 @@ const getLayananTotal = (pemesanan: PelangganPemesanan) =>
           class="flex items-center justify-between pt-4 border-t border-gray-200 mt-auto"
         >
           <div>
-            <p class="text-xs text-gray-500">Total Biaya</p>
+            <p :class="META_LABEL_CLASS">Total Biaya</p>
             <p class="text-lg font-bold text-red-600 sm:text-xl">
               {{ toIDR(item.total_harga || getLayananTotal(item)) }}
             </p>

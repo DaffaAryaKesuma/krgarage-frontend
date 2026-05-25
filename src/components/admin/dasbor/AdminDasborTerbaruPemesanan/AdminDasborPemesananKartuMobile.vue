@@ -8,6 +8,7 @@ import {
 import type { Pemesanan, MekanikOption } from "@/types/pemesanan";
 import AdminDasborPemesananAksi from "./AdminDasborPemesananAksi.vue";
 import AdminDasborPemesananMekanikCell from "./AdminDasborPemesananSelMekanik.vue";
+import { META_LABEL_CLASS } from "@/utils/badgeVariants";
 
 interface Props {
   pemesanan: Pemesanan;
@@ -33,9 +34,7 @@ const emit = defineEmits<{
   <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
     <div class="flex items-start justify-between gap-3">
       <div>
-        <p
-          class="text-[11px] font-medium uppercase tracking-wide text-gray-900"
-        >
+        <p :class="META_LABEL_CLASS">
           Kode Pemesanan
         </p>
         <p class="text-sm text-gray-700">
@@ -48,7 +47,7 @@ const emit = defineEmits<{
     </div>
 
     <div class="mt-2 flex items-center justify-between gap-2">
-      <p class="text-[11px] font-medium uppercase tracking-wide text-gray-900">
+      <p :class="META_LABEL_CLASS">
         Pembayaran
       </p>
       <span
@@ -60,9 +59,7 @@ const emit = defineEmits<{
 
     <div class="mt-3 grid grid-cols-1 gap-2 text-sm min-[380px]:grid-cols-2">
       <div>
-        <p
-          class="text-[11px] font-medium uppercase tracking-wide text-gray-900"
-        >
+        <p :class="META_LABEL_CLASS">
           Tanggal
         </p>
         <p class="text-gray-700">
@@ -70,9 +67,7 @@ const emit = defineEmits<{
         </p>
       </div>
       <div>
-        <p
-          class="text-[11px] font-medium uppercase tracking-wide text-gray-900"
-        >
+        <p :class="META_LABEL_CLASS">
           Pelanggan
         </p>
         <p class="text-gray-700">

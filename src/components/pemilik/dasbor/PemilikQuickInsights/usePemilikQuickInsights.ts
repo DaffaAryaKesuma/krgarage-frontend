@@ -1,5 +1,6 @@
 import { ref, computed, onMounted, onUnmounted } from "vue";
 import axios from "axios";
+import { getGradientToneClass } from "@/utils/badgeVariants";
 
 export function usePemilikQuickInsights(props: { ringkasan: any; statistik: any }) {
   const now = ref(new Date());
@@ -36,7 +37,7 @@ export function usePemilikQuickInsights(props: { ringkasan: any; statistik: any 
     value: isOpen.value ? "Bengkel Buka" : "Bengkel Tutup",
     subtitle: isFriday.value ? "Libur: Jumat" : "Jam Operasional: 10:00 - 17:00",
     icon: isOpen.value ? "mdi-store-clock" : "mdi-store-off",
-    gradient: isOpen.value ? "from-green-500 to-green-600" : "from-gray-500 to-gray-600",
+    gradient: isOpen.value ? getGradientToneClass("success") : getGradientToneClass("neutral"),
   }));
 
   const teamKartu = computed(() => ({
@@ -44,7 +45,7 @@ export function usePemilikQuickInsights(props: { ringkasan: any; statistik: any 
     value: `${mechanicsCount.value} Mekanik`,
     subtitle: "Siap melayani pelanggan",
     icon: "mdi-account-group",
-    gradient: "from-blue-500 to-blue-600",
+    gradient: getGradientToneClass("info"),
   }));
 
   const bestMechanicKartu = computed(() => {
@@ -56,7 +57,7 @@ export function usePemilikQuickInsights(props: { ringkasan: any; statistik: any 
       value: name,
       subtitle: `${jobs} pesanan selesai bulan ini`,
       icon: "mdi-star-circle",
-      gradient: "from-amber-500 to-amber-600",
+      gradient: getGradientToneClass("warning"),
     };
   });
 
@@ -65,7 +66,7 @@ export function usePemilikQuickInsights(props: { ringkasan: any; statistik: any 
     value: `${props.statistik?.unitHariIni || 0} Vespa`,
     subtitle: "Sedang/selesai diproses",
     icon: "mdi-motorbike",
-    gradient: "from-purple-500 to-purple-600",
+    gradient: getGradientToneClass("owner"),
   }));
 
   const INSIGHT_KARTU = computed(() => {

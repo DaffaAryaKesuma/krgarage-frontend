@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
 import type { Pemesanan, PemesananItem } from "@/types/pemesanan";
+import { getAlertBoxClass, getAlertIconClass } from "@/utils/badgeVariants";
 
 interface Props {
   layanan?: Pemesanan["layanan"];
@@ -96,8 +97,10 @@ const emit = defineEmits<{
       </div>
 
       <!-- Empty State -->
-      <div v-else class="text-center py-6 text-gray-500 bg-gray-50 rounded-lg">
-        <i class="mdi mdi-package-variant text-3xl mb-2"></i>
+      <div v-else :class="[getAlertBoxClass('info'), 'text-center']">
+        <i
+          :class="[getAlertIconClass('info'), 'mdi mdi-package-variant mb-2 text-3xl']"
+        ></i>
         <p class="text-sm">Belum ada suku cadang yang digunakan</p>
       </div>
     </div>

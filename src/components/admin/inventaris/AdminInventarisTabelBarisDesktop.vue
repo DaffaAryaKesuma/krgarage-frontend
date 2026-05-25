@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
 import type { InventarisSukuCadang } from "@/types/inventaris";
+import { getChipBadgeClass } from "@/utils/badgeVariants";
 
 interface Props {
   sukucadang: InventarisSukuCadang;
@@ -31,7 +32,7 @@ const emit = defineEmits<{
     </td>
     <td class="px-6 py-4 whitespace-nowrap">
       <span
-        class="inline-flex items-center rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-700"
+        :class="getChipBadgeClass('neutral')"
       >
         {{ sukucadang.kategori }}
       </span>
@@ -43,10 +44,7 @@ const emit = defineEmits<{
         </span>
         <span
           v-if="hasStockAlert"
-          :class="[
-            'px-2 py-1 text-xs font-semibold rounded-full',
-            stockAlertBadgeClass,
-          ]"
+          :class="stockAlertBadgeClass"
         >
           {{ stockAlertLabel }}
         </span>

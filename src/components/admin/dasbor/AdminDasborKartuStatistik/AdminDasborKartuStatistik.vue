@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { getIconToneClass, getToneTextClass } from "@/utils/badgeVariants";
+import type { IconToneKey } from "@/utils/badgeVariants";
 
 interface Statistik {
   pemesanan_hari_ini: number;
@@ -10,7 +12,8 @@ interface Statistik {
 interface StatKartu {
   label: string;
   key: keyof Statistik | "lowStock";
-  color: "blue" | "yellow" | "green" | "red";
+  color: IconToneKey;
+  border: string;
   icon: string;
   route: string;
   suffix?: (value: number) => string;
@@ -27,7 +30,8 @@ const STAT_KARTU = computed<StatKartu[]>(() => [
   {
     label: "Pemesanan Hari Ini",
     key: "pemesanan_hari_ini",
-    color: "blue",
+    color: "info",
+    border: "border-blue-500",
     icon: "mdi mdi-calendar-today",
     route: "/admin/pemesanan",
     suffix: () => "pemesanan",
@@ -35,7 +39,8 @@ const STAT_KARTU = computed<StatKartu[]>(() => [
   {
     label: "Dikerjakan",
     key: "sedang_dikerjakan",
-    color: "yellow",
+    color: "warning",
+    border: "border-amber-500",
     icon: "mdi mdi-wrench-cog",
     route: "/admin/pemesanan",
     suffix: () => "vespa",
@@ -43,7 +48,8 @@ const STAT_KARTU = computed<StatKartu[]>(() => [
   {
     label: "Selesai Hari Ini",
     key: "selesai_hari_ini",
-    color: "green",
+    color: "success",
+    border: "border-green-500",
     icon: "mdi mdi-check-circle",
     route: "/admin/pemesanan",
     suffix: () => "pemesanan",
@@ -51,34 +57,16 @@ const STAT_KARTU = computed<StatKartu[]>(() => [
   {
     label: "Stok Kritis/Habis",
     key: "lowStock",
-    color: props.lowStockCount > 0 ? "red" : "green",
+    color: props.lowStockCount > 0 ? "danger" : "success",
+    border: props.lowStockCount > 0 ? "border-red-500" : "border-green-500",
     icon: props.lowStockCount > 0 ? "mdi mdi-alert-circle" : "mdi mdi-check-circle",
     route: "/admin/inventaris",
     suffix: (value) => (value > 0 ? "item perlu stok ulang" : "semua aman"),
   },
 ]);
 
-const colorClasses = computed(() => ({
-  blue: { bg: "bg-blue-100", text: "text-blue-600", border: "border-blue-500" },
-  yellow: {
-    bg: "bg-yellow-100",
-    text: "text-yellow-600",
-    border: "border-yellow-500",
-  },
-  green: {
-    bg: "bg-green-100",
-    text: "text-green-600",
-    border: "border-green-500",
-  },
-  red: { bg: "bg-red-100", text: "text-red-600", border: "border-red-500" },
-}));
-
 const getStatValue = (key: StatKartu["key"]) => {
   return key === "lowStock" ? props.lowStockCount : props.statistik[key];
-};
-
-const getKartuColorClasses = (color: string) => {
-  return colorClasses.value[color as keyof typeof colorClasses.value];
 };
 </script>
 
@@ -89,7 +77,7 @@ const getKartuColorClasses = (color: string) => {
       :key="card.key"
       :to="card.route"
       class="rounded-xl border-l-4 bg-white p-3 shadow-md transition-shadow hover:shadow-lg sm:p-6"
-      :class="getKartuColorClasses(card.color).border"
+      :class="card.border"
     >
       <div class="flex items-center justify-between">
         <div>
@@ -104,8 +92,8 @@ const getKartuColorClasses = (color: string) => {
             :class="
               card.key === 'lowStock'
                 ? getStatValue(card.key) > 0
-                  ? 'text-red-600 font-medium'
-                  : 'text-green-600 font-medium'
+                  ? `${getToneTextClass('danger')} font-medium`
+                  : `${getToneTextClass('success')} font-medium`
                 : 'text-gray-500'
             "
           >
@@ -114,13 +102,9 @@ const getKartuColorClasses = (color: string) => {
         </div>
         <div
           class="rounded-full p-2 sm:p-3"
-          :class="getKartuColorClasses(card.color).bg"
+          :class="getIconToneClass(card.color)"
         >
-          <i
-            :class="`${card.icon} text-2xl sm:text-4xl ${
-              getKartuColorClasses(card.color).text
-            }`"
-          ></i>
+          <i :class="[card.icon, 'text-2xl sm:text-4xl']"></i>
         </div>
       </div>
     </router-link>

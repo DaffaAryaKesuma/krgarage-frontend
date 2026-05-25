@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { toIDR } from "@/utils/money";
+import { getIconToneClass, type IconToneKey } from "@/utils/badgeVariants";
 
 interface Statistik {
   pendapatanHariIni: number;
@@ -30,29 +31,25 @@ const STAT_KARTU = computed(() => [
     title: "Pendapatan Hari Ini",
     value: toIDR(props.statistik.pendapatanHariIni),
     icon: "mdi-cash-multiple",
-    iconBgColor: "bg-green-100",
-    iconColor: "text-green-600",
+    tone: "success" as IconToneKey,
   },
   {
     title: "Pendapatan Bulan Ini",
     value: toIDR(props.ringkasan?.finansial?.pendapatan_kotor || 0),
     icon: "mdi-chart-line",
-    iconBgColor: "bg-blue-100",
-    iconColor: "text-blue-600",
+    tone: "info" as IconToneKey,
   },
   {
     title: "Pengeluaran Bulan Ini",
     value: toIDR(props.ringkasan?.finansial?.pengeluaran || 0),
     icon: "mdi-cash-minus",
-    iconBgColor: "bg-red-100",
-    iconColor: "text-red-600",
+    tone: "danger" as IconToneKey,
   },
   {
     title: "Keuntungan Bulan Ini",
     value: toIDR(props.ringkasan?.finansial?.keuntungan_bersih || 0),
     icon: "mdi-wallet-plus",
-    iconBgColor: "bg-emerald-100",
-    iconColor: "text-emerald-600",
+    tone: "emerald" as IconToneKey,
   },
 ]);
 </script>
@@ -89,11 +86,11 @@ const STAT_KARTU = computed(() => [
           <div
             :class="[
               'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg sm:h-12 sm:w-12 sm:rounded-xl',
-              card.iconBgColor,
+              getIconToneClass(card.tone),
             ]"
           >
             <i
-              :class="['mdi', card.icon, card.iconColor, 'text-lg sm:text-2xl']"
+              :class="['mdi', card.icon, 'text-lg sm:text-2xl']"
               style="line-height: 1"
             ></i>
           </div>

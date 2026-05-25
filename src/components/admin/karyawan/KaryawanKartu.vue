@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { formatDateShort } from "@/utils/date";
+import { getRoleBadgeClass } from "@/utils/badgeVariants";
 
 interface Karyawan {
   id: number;
@@ -36,12 +37,7 @@ const emit = defineEmits<{
         </p>
       </div>
       <span
-        class="capitalize inline-flex px-2.5 py-0.5 text-xs font-semibold leading-5 rounded-lg"
-        :class="
-          karyawan.role === 'admin'
-            ? 'bg-red-100 text-red-700'
-            : 'bg-blue-100 text-blue-700'
-        "
+        :class="[getRoleBadgeClass(karyawan.role), 'capitalize']"
       >
         {{ karyawan.role }}
       </span>

@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
+import { getIconToneClass } from "@/utils/badgeVariants";
+import type { IconToneKey } from "@/utils/badgeVariants";
 
 interface Ringkasan {
   total_pendapatan: number;
@@ -10,7 +12,7 @@ interface Ringkasan {
 interface RingkasanKartu {
   title: string;
   key: keyof Ringkasan;
-  color: "green" | "blue";
+  color: IconToneKey;
   icon: string;
   format: (value: number) => string;
 }
@@ -21,29 +23,18 @@ interface Props {
 
 defineProps<Props>();
 
-const KARTU_COLOR_CLASSES = {
-  green: {
-    bgIcon: "bg-green-50",
-    textIcon: "text-green-600",
-  },
-  blue: {
-    bgIcon: "bg-blue-50",
-    textIcon: "text-blue-600",
-  },
-} as const;
-
 const RINGKASAN_KARTU: RingkasanKartu[] = [
   {
     title: "Total Pendapatan",
     key: "total_pendapatan",
-    color: "green",
+    color: "success",
     icon: "mdi-cash-multiple",
     format: (value) => toIDR(value),
   },
   {
     title: "Total Transaksi",
     key: "total_pemesanan",
-    color: "blue",
+    color: "info",
     icon: "mdi-receipt-text",
     format: (value) => value.toString(),
   },
@@ -67,8 +58,7 @@ const RINGKASAN_KARTU: RingkasanKartu[] = [
       <div 
         :class="[
           'h-14 w-14 rounded-full flex items-center justify-center', 
-          KARTU_COLOR_CLASSES[kartu.color].bgIcon, 
-          KARTU_COLOR_CLASSES[kartu.color].textIcon
+          getIconToneClass(kartu.color)
         ]"
       >
         <i :class="['mdi text-3xl', kartu.icon]"></i>

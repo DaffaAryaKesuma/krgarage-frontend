@@ -4,6 +4,7 @@ import EmptyState from "@/components/ui/EmptyState.vue";
 import AdminInventarisTabelKartuMobile from "@/components/admin/inventaris/AdminInventarisTabelKartuMobile.vue";
 import AdminInventarisTabelBarisDesktop from "@/components/admin/inventaris/AdminInventarisTabelBarisDesktop.vue";
 import type { InventarisSukuCadang } from "@/types/inventaris";
+import { getInventoryBadgeClass, getToneTextClass } from "@/utils/badgeVariants";
 
 interface Props {
   sukucadang: InventarisSukuCadang[];
@@ -38,7 +39,7 @@ const getStockValueClass = (sukucadang: InventarisSukuCadang) => {
 
   return isOutOfStock(sukucadang)
     ? "text-red-600 font-bold"
-    : "text-orange-600 font-bold";
+    : `${getToneTextClass("warning")} font-bold`;
 };
 
 const getStockAlertLabel = (sukucadang: InventarisSukuCadang) =>
@@ -46,8 +47,8 @@ const getStockAlertLabel = (sukucadang: InventarisSukuCadang) =>
 
 const getStockAlertBadgeClass = (sukucadang: InventarisSukuCadang) =>
   isOutOfStock(sukucadang)
-    ? "bg-red-100 text-red-800"
-    : "bg-orange-100 text-orange-800";
+    ? getInventoryBadgeClass("habis")
+    : getInventoryBadgeClass("kritis");
 
 const TABLE_WRAPPER_CLASS =
   "overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm";

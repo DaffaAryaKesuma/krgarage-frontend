@@ -2,7 +2,6 @@
 import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import PemilikStatistikGrid from "@/components/pemilik/dasbor/PemilikStatistikGrid.vue";
-import PemilikMetrikKeuanganChart from "@/components/pemilik/dasbor/PemilikMetrikKeuanganChart.vue";
 import PemilikQuickInsights from "@/components/pemilik/dasbor/PemilikQuickInsights/PemilikQuickInsights.vue";
 import PemilikTerbaruActivity from "@/components/pemilik/dasbor/PemilikTerbaruActivity.vue";
 import { usePemilikDasborPage } from "./usePemilikDasborPage";

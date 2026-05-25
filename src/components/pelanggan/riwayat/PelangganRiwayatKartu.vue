@@ -9,6 +9,11 @@ import {
   getPembayaranStatusBadgeClass,
   getPembayaranStatusLabel,
 } from "@/utils/pembayaranStatus";
+import {
+  META_LABEL_CLASS,
+  getAlertBoxClass,
+  getIconToneClass,
+} from "@/utils/badgeVariants";
 import type { PelangganPemesanan } from "@/types/pemesanan";
 
 interface Props {
@@ -39,14 +44,15 @@ const handleCancel = () => {
     >
       <div class="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
         <div
-          class="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-100 shrink-0"
+          :class="[
+            getIconToneClass('neutral'),
+            'flex h-10 w-10 shrink-0 items-center justify-center rounded-full sm:h-12 sm:w-12',
+          ]"
         >
-          <i class="mdi mdi-calendar text-xl sm:text-2xl text-gray-600"></i>
+          <i class="mdi mdi-calendar text-xl sm:text-2xl"></i>
         </div>
         <div class="min-w-0">
-          <p
-            class="text-[10px] sm:text-xs text-gray-500 font-semibold uppercase tracking-wider"
-          >
+          <p :class="META_LABEL_CLASS">
             Kode Pemesanan
           </p>
           <p class="font-bold text-gray-900 text-sm sm:text-base break-all">
@@ -72,7 +78,7 @@ const handleCancel = () => {
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-5">
       <!-- Vespa Info -->
       <div
-        class="p-2.5 sm:p-3 bg-gray-50 border border-gray-100 rounded-lg flex gap-2"
+        :class="[getAlertBoxClass('neutral'), 'flex gap-2 p-2.5 shadow-none sm:p-3']"
       >
         <div
           class="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg text-gray-600 shrink-0"
@@ -80,9 +86,7 @@ const handleCancel = () => {
           <i class="mdi mdi-motorbike text-lg sm:text-xl"></i>
         </div>
         <div class="min-w-0 flex-1">
-          <p
-            class="text-[9px] sm:text-[10px] uppercase tracking-wider font-semibold text-gray-400"
-          >
+          <p :class="META_LABEL_CLASS">
             Vespa
           </p>
           <p class="font-semibold text-gray-900 text-xs sm:text-sm truncate">
@@ -96,7 +100,7 @@ const handleCancel = () => {
 
       <!-- Layanan -->
       <div
-        class="p-2.5 sm:p-3 bg-gray-50 border border-gray-100 rounded-lg flex gap-2"
+        :class="[getAlertBoxClass('neutral'), 'flex gap-2 p-2.5 shadow-none sm:p-3']"
       >
         <div
           class="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg text-gray-600 shrink-0"
@@ -104,9 +108,7 @@ const handleCancel = () => {
           <i class="mdi mdi-wrench text-lg sm:text-xl"></i>
         </div>
         <div class="min-w-0 flex-1">
-          <p
-            class="text-[9px] sm:text-[10px] uppercase tracking-wider font-semibold text-gray-400"
-          >
+          <p :class="META_LABEL_CLASS">
             Layanan
           </p>
           <div class="space-y-0.5">
@@ -127,7 +129,7 @@ const handleCancel = () => {
 
       <!-- Tanggal Pemesanan -->
       <div
-        class="p-2.5 sm:p-3 bg-gray-50 border border-gray-100 rounded-lg flex gap-2"
+        :class="[getAlertBoxClass('neutral'), 'flex gap-2 p-2.5 shadow-none sm:p-3']"
       >
         <div
           class="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg text-gray-600 shrink-0"
@@ -135,9 +137,7 @@ const handleCancel = () => {
           <i class="mdi mdi-calendar-clock text-lg sm:text-xl"></i>
         </div>
         <div class="min-w-0">
-          <p
-            class="text-[9px] sm:text-[10px] uppercase tracking-wider font-semibold text-gray-400"
-          >
+          <p :class="META_LABEL_CLASS">
             Tanggal
           </p>
           <p class="font-semibold text-gray-900 text-xs sm:text-sm">
@@ -148,7 +148,7 @@ const handleCancel = () => {
 
       <!-- Jam Pemesanan -->
       <div
-        class="p-2.5 sm:p-3 bg-gray-50 border border-gray-100 rounded-lg flex gap-2"
+        :class="[getAlertBoxClass('neutral'), 'flex gap-2 p-2.5 shadow-none sm:p-3']"
       >
         <div
           class="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg text-gray-600 shrink-0"
@@ -156,9 +156,7 @@ const handleCancel = () => {
           <i class="mdi mdi-clock-outline text-lg sm:text-xl"></i>
         </div>
         <div class="min-w-0">
-          <p
-            class="text-[9px] sm:text-[10px] uppercase tracking-wider font-semibold text-gray-400"
-          >
+          <p :class="META_LABEL_CLASS">
             Jam
           </p>
           <p class="font-semibold text-gray-900 text-xs sm:text-sm">

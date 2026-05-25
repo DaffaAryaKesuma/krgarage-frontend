@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
 import { formatWaktu, getImageUrl } from "@/utils/format";
+import {
+  META_LABEL_CLASS,
+  getAlertBoxClass,
+  getIconToneClass,
+  getToneTextClass,
+} from "@/utils/badgeVariants";
 import type { LayananCatalogItem } from "@/types/layanan";
 
 interface Props {
@@ -35,9 +41,12 @@ const toggleLayanan = (id: number) => {
   <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
     <div class="flex items-center gap-3 mb-6">
       <div
-        class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center"
+        :class="[
+          getIconToneClass('primary'),
+          'flex h-10 w-10 items-center justify-center rounded-full',
+        ]"
       >
-        <i class="mdi mdi-wrench text-xl text-red-600"></i>
+        <i class="mdi mdi-wrench text-xl"></i>
       </div>
       <div>
         <h2 class="text-xl sm:text-2xl font-bold text-gray-900">
@@ -89,15 +98,15 @@ const toggleLayanan = (id: number) => {
 
           <!-- Info -->
           <div class="grid grid-cols-2 gap-2 mb-3">
-            <div class="bg-red-50 p-2 rounded border border-red-200">
-              <p class="text-xs text-gray-600">Harga</p>
-              <p class="text-sm font-bold text-red-600">
+            <div :class="[getAlertBoxClass('info'), 'rounded p-2 shadow-none']">
+              <p :class="META_LABEL_CLASS">Harga</p>
+              <p class="text-sm font-bold" :class="getToneTextClass('info')">
                 {{ toIDR(item.harga) }}
               </p>
             </div>
-            <div class="bg-green-50 p-2 rounded border border-green-200">
-              <p class="text-xs text-gray-600">Durasi</p>
-              <p class="text-sm font-bold text-green-600">
+            <div :class="[getAlertBoxClass('success'), 'rounded p-2 shadow-none']">
+              <p :class="META_LABEL_CLASS">Durasi</p>
+              <p class="text-sm font-bold" :class="getToneTextClass('success')">
                 {{ formatWaktu(item.durasi_pengerjaan) }}
               </p>
             </div>

@@ -2,6 +2,7 @@
 import { Line } from "vue-chartjs";
 import { formatDateShort } from "@/utils/date";
 import { CHART_OPTIONS } from "./usePemilikKeuanganChart";
+import { getChipBadgeClass } from "@/utils/badgeVariants";
 
 interface Props {
   revenueData: {
@@ -25,7 +26,7 @@ defineProps<Props>();
       </h2>
       <p class="text-sm text-gray-600 mt-1">
         Periode:
-        <span class="font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded">
+        <span :class="getChipBadgeClass('primary')">
           {{ formatDateShort(startDate) }} -
           {{ formatDateShort(endDate) }}
         </span>

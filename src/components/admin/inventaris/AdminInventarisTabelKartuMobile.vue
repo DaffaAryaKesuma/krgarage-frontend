@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
 import type { InventarisSukuCadang } from "@/types/inventaris";
+import { META_LABEL_CLASS, getChipBadgeClass } from "@/utils/badgeVariants";
 
 interface Props {
   sukucadang: InventarisSukuCadang;
@@ -29,7 +30,7 @@ const emit = defineEmits<{
         <p class="text-xs text-gray-500">{{ sukucadang.deskripsi }}</p>
       </div>
       <span
-        class="shrink-0 inline-flex items-center rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700"
+        :class="[getChipBadgeClass('neutral'), 'shrink-0']"
       >
         {{ sukucadang.kategori }}
       </span>
@@ -37,9 +38,7 @@ const emit = defineEmits<{
 
     <div class="mt-3 grid grid-cols-2 gap-3 text-sm">
       <div>
-        <p
-          class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-        >
+        <p :class="META_LABEL_CLASS">
           Stok
         </p>
         <div class="flex items-center gap-2">
@@ -48,19 +47,14 @@ const emit = defineEmits<{
           </span>
           <span
             v-if="hasStockAlert"
-            :class="[
-              'px-2 py-0.5 text-xs font-semibold rounded-full',
-              stockAlertBadgeClass,
-            ]"
+            :class="stockAlertBadgeClass"
           >
             {{ stockAlertLabel }}
           </span>
         </div>
       </div>
       <div>
-        <p
-          class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-        >
+        <p :class="META_LABEL_CLASS">
           Harga Beli
         </p>
         <p class="font-medium text-gray-900">
@@ -68,9 +62,7 @@ const emit = defineEmits<{
         </p>
       </div>
       <div>
-        <p
-          class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-        >
+        <p :class="META_LABEL_CLASS">
           Harga Jual
         </p>
         <p class="font-medium text-gray-900">

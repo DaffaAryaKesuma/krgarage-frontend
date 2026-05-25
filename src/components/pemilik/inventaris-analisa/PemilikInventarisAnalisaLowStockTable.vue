@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import TableShell from "@/components/ui/TableShell.vue";
 import { toIDR } from "@/utils/money";
+import {
+  META_LABEL_CLASS,
+  getAlertBoxClass,
+  getAlertIconClass,
+  getInventoryBadgeClass,
+} from "@/utils/badgeVariants";
 
 interface LowStockItem {
   id: number;
@@ -19,8 +25,8 @@ interface Props {
 const props = defineProps<Props>();
 
 const STOCK_STATUS = {
-  habis: { label: "Habis", class: "bg-red-100 text-red-800" },
-  kritis: { label: "Kritis", class: "bg-orange-100 text-orange-800" },
+  habis: { label: "Habis", class: getInventoryBadgeClass("habis") },
+  kritis: { label: "Kritis", class: getInventoryBadgeClass("kritis") },
 };
 
 const getStockStatus = (stock: number, _minStock: number) => {
@@ -38,13 +44,13 @@ const TABLE_HEADERS = [
 </script>
 
 <template>
-  <div
-    class="rounded-2xl bg-white p-6 shadow-lg mb-8 border-l-4 border-red-500"
-  >
+  <div class="rounded-2xl bg-white p-6 shadow-lg mb-8 border-l-4 border-red-500">
     <div class="mb-6 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="rounded-lg bg-red-100 p-2">
-          <i class="mdi mdi-alert-circle text-3xl text-red-600"></i>
+          <i
+            :class="['mdi mdi-alert-circle text-3xl', getAlertIconClass('error')]"
+          ></i>
         </div>
         <div>
           <h2 class="text-lg font-bold text-gray-900">Stok Menipis</h2>
@@ -87,7 +93,6 @@ const TABLE_HEADERS = [
             </div>
             <span
               :class="[
-                'inline-flex rounded-full px-3 py-1 text-xs font-semibold',
                 getStockStatus(item.jumlah_stok, item.minimum_stok).class,
               ]"
             >
@@ -97,32 +102,26 @@ const TABLE_HEADERS = [
 
           <div class="mt-3 grid grid-cols-2 gap-3 text-sm">
             <div>
-              <p
-                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-              >
+              <p :class="META_LABEL_CLASS">
                 Stok Saat Ini
               </p>
               <p
                 :class="[
                   'font-medium',
-                  item.jumlah_stok === 0 ? 'text-red-600' : 'text-orange-600',
+                item.jumlah_stok === 0 ? 'text-red-600' : 'text-amber-600',
                 ]"
               >
                 {{ item.jumlah_stok }}
               </p>
             </div>
             <div>
-              <p
-                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-              >
+              <p :class="META_LABEL_CLASS">
                 Minimum
               </p>
               <p class="font-medium text-gray-900">{{ item.minimum_stok }}</p>
             </div>
             <div>
-              <p
-                class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-              >
+              <p :class="META_LABEL_CLASS">
                 Harga Beli
               </p>
               <p class="font-medium text-gray-900">
@@ -146,7 +145,7 @@ const TABLE_HEADERS = [
           <span
             :class="[
               'font-bold',
-              item.jumlah_stok === 0 ? 'text-red-600' : 'text-orange-600',
+              item.jumlah_stok === 0 ? 'text-red-600' : 'text-amber-600',
             ]"
           >
             {{ item.jumlah_stok }}
@@ -157,7 +156,6 @@ const TABLE_HEADERS = [
         <td class="py-3">
           <span
             :class="[
-              'inline-flex rounded-full px-3 py-1 text-xs font-semibold',
               getStockStatus(item.jumlah_stok, item.minimum_stok).class,
             ]"
           >
@@ -167,13 +165,12 @@ const TABLE_HEADERS = [
       </tr>
     </TableShell>
 
-    <div
-      v-else
-      class="rounded-xl py-8 text-center"
-    >
-      <i class="mdi mdi-check-circle text-5xl text-green-500"></i>
-      <p class="mt-1 text-lg font-bold text-green-700">Semua Stok Aman</p>
-      <p class="text-sm text-green-600">
+    <div v-else :class="[getAlertBoxClass('success'), 'py-8 text-center']">
+      <i
+        :class="['mdi mdi-check-circle text-5xl', getAlertIconClass('success')]"
+      ></i>
+      <p class="mt-1 text-lg font-bold">Semua Stok Aman</p>
+      <p class="text-sm">
         Tidak ada barang yang perlu dibelanjakan ulang saat ini
       </p>
     </div>

@@ -4,6 +4,12 @@ import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
 import CatatanInputModal from "@/components/ui/CatatanInputModal.vue";
 import CustomSelect from "@/components/ui/CustomSelect.vue";
 import {
+  META_LABEL_CLASS,
+  getAlertBoxClass,
+  getIconToneClass,
+  getToneTextClass,
+} from "@/utils/badgeVariants";
+import {
   CANCEL_BUTTON_CLASS,
   useAdminPemesananControlPanel,
 } from "./useAdminPemesananControlPanel";
@@ -64,10 +70,10 @@ onMounted(() => {
           : 'border-gray-200 bg-gray-50'
       "
     >
-      <p class="text-xs text-gray-500">Mekanik Ditugaskan</p>
+      <p :class="META_LABEL_CLASS">Mekanik Ditugaskan</p>
       <p
         class="text-sm font-semibold capitalize"
-        :class="assignedMekanikName ? 'text-blue-800' : 'text-gray-600'"
+        :class="assignedMekanikName ? getToneTextClass('info') : 'text-gray-600'"
       >
         {{ assignedMekanikName || "Belum ditugaskan" }}
       </p>
@@ -98,10 +104,8 @@ onMounted(() => {
       </div>
 
       <div v-else-if="canAssignAndStart" class="space-y-4">
-        <div class="border border-blue-200 rounded-lg p-4">
-          <p
-            class="text-sm text-blue-700 mb-3 font-medium flex items-center gap-2"
-          >
+        <div :class="getAlertBoxClass('info')">
+          <p class="mb-3 flex items-center gap-2 text-sm font-medium">
             <i class="mdi mdi-information text-lg"></i>
             Pilih mekanik
           </p>
@@ -135,8 +139,8 @@ onMounted(() => {
       </div>
 
       <div v-else-if="canComplete" class="space-y-3">
-        <div class="bg-amber-100 border border-amber-200 rounded-lg p-4 mb-3">
-          <p class="text-sm text-amber-700 flex items-center gap-2">
+        <div :class="[getAlertBoxClass('warning'), 'mb-3']">
+          <p class="flex items-center gap-2 text-sm">
             <i class="mdi mdi-wrench-cog text-lg"></i>
             <span>
               Sedang dikerjakan oleh
@@ -161,16 +165,19 @@ onMounted(() => {
       <div v-else>
         <div
           v-if="isCompleted"
-          class="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-3"
+          :class="[getAlertBoxClass('success'), 'flex items-center gap-3']"
         >
           <div
-            class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600"
+            :class="[
+              getIconToneClass('success'),
+              'flex h-10 w-10 items-center justify-center rounded-full',
+            ]"
           >
             <i class="mdi mdi-check-all text-xl"></i>
           </div>
           <div>
-            <h4 class="text-sm font-bold text-green-800">Servis Selesai</h4>
-            <p class="text-xs text-green-600 mt-1">
+            <h4 class="text-sm font-bold">Servis Selesai</h4>
+            <p class="mt-1 text-xs">
               Pemesanan ini telah selesai dikerjakan.
             </p>
 
@@ -178,9 +185,7 @@ onMounted(() => {
               class="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-green-200 bg-white px-3 py-2"
             >
               <div>
-                <p
-                  class="text-[11px] font-medium uppercase tracking-wide text-gray-500"
-                >
+                <p :class="META_LABEL_CLASS">
                   Status Pembayaran
                 </p>
                 <span :class="pembayaranStatusBadgeClass">
@@ -202,16 +207,19 @@ onMounted(() => {
         </div>
         <div
           v-if="isCancelled"
-          class="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center gap-3"
+          :class="[getAlertBoxClass('error'), 'flex items-center gap-3']"
         >
           <div
-            class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600"
+            :class="[
+              getIconToneClass('danger'),
+              'flex h-10 w-10 items-center justify-center rounded-full',
+            ]"
           >
             <i class="mdi mdi-close-circle text-xl"></i>
           </div>
           <div>
-            <h4 class="text-sm font-bold text-red-800">Dibatalkan</h4>
-            <p class="text-xs text-red-600 mt-1">
+            <h4 class="text-sm font-bold">Dibatalkan</h4>
+            <p class="mt-1 text-xs">
               Pemesanan ini telah dibatalkan.
             </p>
             <p v-if="assignedMekanikName" class="mt-2 text-xs text-gray-600">

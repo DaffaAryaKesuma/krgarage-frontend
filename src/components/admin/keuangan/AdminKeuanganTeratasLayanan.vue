@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
+import { getAlertBoxClass, getAlertIconClass, getRankBadgeClass } from "@/utils/badgeVariants";
 
 interface TeratasLayanan {
   nama_layanan: string;
@@ -35,9 +36,7 @@ defineProps<Props>();
         class="flex items-center gap-3 px-3 py-2.5 rounded-lg"
       >
         <!-- Rank badge -->
-        <span
-          class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white bg-blue-500 shrink-0"
-        >
+        <span :class="[getRankBadgeClass('info'), 'h-8 w-8 text-sm']">
           {{ index + 1 }}
         </span>
 
@@ -55,11 +54,10 @@ defineProps<Props>();
     </div>
 
     <!-- Empty state -->
-    <div
-      v-else
-      class="py-8 text-center bg-gray-50 rounded-lg border-2 border-dashed border-gray-200"
-    >
-      <i class="mdi mdi-chart-box-outline text-4xl text-gray-300"></i>
+    <div v-else :class="[getAlertBoxClass('info'), 'text-center']">
+      <i
+        :class="[getAlertIconClass('info'), 'mdi mdi-chart-box-outline text-4xl']"
+      ></i>
       <p class="mt-2 text-sm text-gray-600 font-medium">Belum ada data layanan</p>
       <p class="text-xs text-gray-400">Pada periode ini</p>
     </div>

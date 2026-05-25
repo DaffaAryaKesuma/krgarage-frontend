@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import {
+  getAlertBoxClass,
+  getAlertIconClass,
+  getIconToneClass,
+} from "@/utils/badgeVariants";
+
 interface Props {
   timeSlots: string[];
   bookedSlots: string[];
@@ -37,9 +43,12 @@ const selectTime = (slot: string) => {
   <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
     <div class="flex items-center gap-3 mb-6">
       <div
-        class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center"
+        :class="[
+          getIconToneClass('success'),
+          'flex h-10 w-10 items-center justify-center rounded-full',
+        ]"
       >
-        <i class="mdi mdi-calendar-clock text-xl text-green-600"></i>
+        <i class="mdi mdi-calendar-clock text-xl"></i>
       </div>
       <div>
         <h2 class="text-xl sm:text-2xl font-bold text-gray-900">
@@ -110,10 +119,12 @@ const selectTime = (slot: string) => {
         <!-- Pesan khusus jika semua slot penuh karena mekanik sibuk -->
         <div
           v-if="bookedSlots.length === timeSlots.length"
-          class="mt-3 flex items-start gap-2 bg-orange-50 border border-orange-200 rounded-lg px-3 py-2"
+          :class="[getAlertBoxClass('warning'), 'mt-3 flex items-start gap-2 px-3 py-2 shadow-none']"
         >
-          <i class="mdi mdi-wrench-clock text-orange-500 mt-0.5 flex-shrink-0"></i>
-          <p class="text-xs text-orange-700 font-medium">
+          <i
+            :class="[getAlertIconClass('warning'), 'mdi mdi-wrench-clock mt-0.5 flex-shrink-0']"
+          ></i>
+          <p class="text-xs font-medium">
             Semua mekanik sedang sibuk di tanggal ini
           </p>
         </div>

@@ -6,6 +6,7 @@ import PelangganPemesananDetailInfoKartu from "@/components/pelanggan/pemesanan-
 import PelangganPemesananDetailLayananSukuCadangGrid from "@/components/pelanggan/pemesanan-detail/PelangganPemesananDetailLayananSukuCadangGrid.vue";
 import PelangganPemesananDetailCatatanGrid from "@/components/pelanggan/pemesanan-detail/PelangganPemesananDetailCatatanGrid.vue";
 import PelangganPemesananDetailTotalRingkasan from "@/components/pelanggan/pemesanan-detail/PelangganPemesananDetailTotalRingkasan.vue";
+import { getAlertBoxClass } from "@/utils/badgeVariants";
 import { usePelangganPemesananDetailPage } from "./usePelangganPemesananDetailPage";
 
 const {
@@ -50,7 +51,7 @@ const {
 
       <div
         v-else-if="errorMessage"
-        class="rounded-xl border border-red-200 bg-red-50 p-5 text-red-700"
+        :class="getAlertBoxClass('error')"
       >
         <p class="font-semibold mb-1">Gagal memuat detail pemesanan</p>
         <p class="text-sm">{{ errorMessage }}</p>

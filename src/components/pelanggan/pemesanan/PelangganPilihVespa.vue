@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { getChipBadgeClass, getIconToneClass } from "@/utils/badgeVariants";
 import type { VespaBasic } from "@/types/vespa";
 
 interface Props {
@@ -24,9 +25,12 @@ const selectVespa = (id: number) => {
   <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
     <div class="flex items-center gap-3 mb-6">
       <div
-        class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center"
+        :class="[
+          getIconToneClass('info'),
+          'flex h-10 w-10 items-center justify-center rounded-full',
+        ]"
       >
-        <i class="mdi mdi-motorbike text-xl text-blue-600"></i>
+        <i class="mdi mdi-motorbike text-xl"></i>
       </div>
       <div>
         <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Pilih Vespa</h2>
@@ -66,18 +70,18 @@ const selectVespa = (id: number) => {
         <div class="flex items-start gap-3">
           <div
             :class="[
-              'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0',
-              vespa.pemesanan_aktif ? 'bg-blue-100' : 'bg-blue-100',
+              getIconToneClass('info'),
+              'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full',
             ]"
           >
-            <i :class="['mdi mdi-motorbike text-lg', vespa.pemesanan_aktif ? 'text-gray-500' : 'text-blue-600']"></i>
+            <i :class="['mdi mdi-motorbike text-lg', vespa.pemesanan_aktif ? 'text-gray-500' : '']"></i>
           </div>
           <div class="flex-1">
             <h4 class="font-bold text-gray-900">{{ vespa.model }}</h4>
             <p class="text-sm text-gray-600">{{ vespa.plat_nomor }}</p>
             <span
               v-if="vespa.pemesanan_aktif"
-              class="inline-flex items-center gap-1 mt-1 text-xs font-semibold text-gray-600 bg-gray-100 px-2 py-0.5 rounded-full"
+              :class="[getChipBadgeClass('neutral'), 'mt-1 gap-1 px-2 py-0.5 text-xs font-semibold']"
             >
               <i class="mdi mdi-clock-outline text-xs"></i>
               Sedang dalam servis
