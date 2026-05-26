@@ -7,6 +7,7 @@ import {
   isStatusSelesai,
 } from "@/utils/statusBadge";
 import { isUnpaidStatus } from "@/utils/pembayaranStatus";
+import { getButtonClass } from "@/utils/buttonVariants";
 import type { Pemesanan } from "@/types/pemesanan";
 
 interface Props {
@@ -50,16 +51,16 @@ const wrapperClass = computed(() =>
 
 const aksiButtonClass = computed(() =>
   isMobileVariant.value
-    ? "inline-flex h-9 items-center justify-center rounded-lg px-3 text-xs font-semibold transition"
-    : "inline-flex h-8 items-center justify-center rounded-lg px-3 text-xs font-semibold transition",
+    ? "h-9"
+    : "h-8",
 );
 
 const detailClass = computed(() =>
   isMobileVariant.value
     ? shouldPairDetailOnMobile.value
-      ? "inline-flex h-9 items-center justify-center rounded-lg border-2 border-indigo-50 bg-white px-3 text-xs font-semibold text-indigo-600 no-underline transition hover:bg-indigo-50 hover:text-indigo-800"
-      : "col-span-2 inline-flex h-9 items-center justify-center rounded-lg border-2 border-indigo-50 bg-white px-3 text-xs font-semibold text-indigo-600 no-underline transition hover:bg-indigo-50 hover:text-indigo-800"
-    : "inline-flex h-8 shrink-0 items-center rounded-lg border-2 border-indigo-50 bg-white px-3 text-xs font-semibold text-indigo-600 no-underline transition hover:bg-indigo-50 hover:text-indigo-800",
+      ? getButtonClass("infoOutline", "xs", "h-9 no-underline")
+      : getButtonClass("infoOutline", "xs", "col-span-2 h-9 no-underline")
+    : getButtonClass("infoOutline", "xs", "h-8 shrink-0 no-underline"),
 );
 </script>
 
@@ -68,7 +69,7 @@ const detailClass = computed(() =>
     <button
       v-if="canAdminConfirmPemesanan(props.pemesanan.status)"
       @click="emit('confirm', props.pemesanan)"
-      :class="[aksiButtonClass, 'bg-blue-50 text-blue-700 hover:bg-blue-100']"
+      :class="getButtonClass('infoOutline', 'xs', aksiButtonClass)"
       title="Konfirmasi"
     >
       Konfirmasi
@@ -77,10 +78,7 @@ const detailClass = computed(() =>
     <button
       v-if="canAdminCompletePemesanan(props.pemesanan.status)"
       @click="emit('complete', props.pemesanan)"
-      :class="[
-        aksiButtonClass,
-        'bg-green-50 text-green-700 hover:bg-green-100',
-      ]"
+      :class="getButtonClass('successOutline', 'xs', aksiButtonClass)"
       title="Tandai Selesai"
     >
       Tandai Selesai
@@ -89,7 +87,7 @@ const detailClass = computed(() =>
     <button
       v-if="canShowCancelAksi"
       @click="emit('cancel', props.pemesanan)"
-      :class="[aksiButtonClass, 'bg-red-50 text-red-600 hover:bg-red-100']"
+      :class="getButtonClass('dangerOutline', 'xs', aksiButtonClass)"
       title="Batalkan"
     >
       Batalkan
@@ -98,10 +96,7 @@ const detailClass = computed(() =>
     <button
       v-if="canShowMarkPaidAksi"
       @click="emit('markPaid', props.pemesanan)"
-      :class="[
-        aksiButtonClass,
-        'bg-emerald-50 text-emerald-700 hover:bg-emerald-100',
-      ]"
+      :class="getButtonClass('successOutline', 'xs', aksiButtonClass)"
       title="Tandai Lunas"
     >
       Tandai Lunas

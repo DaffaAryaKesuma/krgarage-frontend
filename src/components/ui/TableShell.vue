@@ -16,6 +16,7 @@ interface Props {
   headerRowClass?: string;
   headerCellClass?: string;
   bodyClass?: string;
+  columnWidths?: string[];
   responsiveKartu?: boolean;
   desktopBreakpoint?: "md" | "lg" | "xl";
   mobileKartuClass?: string;
@@ -28,6 +29,7 @@ const props = withDefaults(defineProps<Props>(), {
   headerRowClass: "",
   headerCellClass: TABLE_HEADER_CELL_CLASS,
   bodyClass: TABLE_BODY_CLASS,
+  columnWidths: () => [],
   responsiveKartu: false,
   desktopBreakpoint: "md",
   mobileKartuClass: TABLE_MOBILE_KARTU_CLASS,
@@ -54,6 +56,8 @@ const mobileKartuVisibilityClass = computed(() => {
   if (props.desktopBreakpoint === "lg") return "lg:hidden";
   return "md:hidden";
 });
+
+const hasColumnWidths = computed(() => props.columnWidths.length > 0);
 </script>
 
 <template>
@@ -68,6 +72,13 @@ const mobileKartuVisibilityClass = computed(() => {
     <div :class="desktopTableClass">
       <div class="overflow-x-auto">
         <table :class="tableClass">
+          <colgroup v-if="hasColumnWidths">
+            <col
+              v-for="(width, index) in columnWidths"
+              :key="index"
+              :style="{ width }"
+            />
+          </colgroup>
           <thead :class="headClass">
             <tr :class="headerRowClass">
               <th

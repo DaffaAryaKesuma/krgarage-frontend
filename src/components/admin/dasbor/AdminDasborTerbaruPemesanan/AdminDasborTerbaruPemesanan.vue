@@ -45,10 +45,12 @@ const TABLE_HEADERS = [
   "Aksi",
 ];
 
+const TABLE_COLUMN_WIDTHS = ["15%", "16%", "12%", "12%", "12%", "20%", "13%"];
+
 const TABLE_CLASS = buildFixedTableClass("min-w-[1200px]");
 
 const TABLE_HEADER_CELL_CLASS =
-  buildTableHeaderCellClass("text-gray-900 sm:px-4 [&:nth-child(1)]:w-[10%] [&:nth-child(2)]:w-[14%] [&:nth-child(3)]:w-[10%] [&:nth-child(4)]:w-[10%] [&:nth-child(5)]:w-[12%] [&:nth-child(6)]:w-[22%] [&:nth-child(7)]:w-[22%]");
+  buildTableHeaderCellClass("text-gray-900 sm:px-4");
 
 const {
   hasPemesanan,
@@ -105,6 +107,7 @@ const {
       :responsive-kartu="true"
       desktop-breakpoint="lg"
       :mobile-kartu-class="TABLE_MOBILE_KARTU_CLASS"
+      :column-widths="TABLE_COLUMN_WIDTHS"
       :table-class="TABLE_CLASS"
       :head-class="TABLE_HEAD_CLASS"
       :header-cell-class="TABLE_HEADER_CELL_CLASS"

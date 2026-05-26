@@ -9,8 +9,12 @@ import {
 import {
   buttonPrimaryClass,
   buttonSecondaryClass,
+  checkboxClass,
+  hintClass,
   inputClass,
+  labelClass,
   modalKartuClass,
+  textareaClass,
   useAdminInventarisStokUlangModal,
   type AdminInventarisStokUlangModalEmit,
   type AdminInventarisStokUlangModalProps,
@@ -78,7 +82,7 @@ const { totalPengeluaran } = useAdminInventarisStokUlangModal(props);
         </div>
 
         <div :class="modalKartuClass">
-          <label class="mb-2 block text-sm font-semibold text-gray-700">
+          <label :class="labelClass">
             Jumlah Tambahan
           </label>
           <input
@@ -98,7 +102,7 @@ const { totalPengeluaran } = useAdminInventarisStokUlangModal(props);
         </div>
 
         <div :class="modalKartuClass">
-          <label class="mb-2 block text-sm font-semibold text-gray-700">
+          <label :class="labelClass">
             Harga Beli per Unit
           </label>
           <input
@@ -115,7 +119,7 @@ const { totalPengeluaran } = useAdminInventarisStokUlangModal(props);
             placeholder="Masukkan harga beli per unit"
             :class="inputClass"
           />
-          <p class="mt-2 text-xs text-gray-500">
+          <p :class="hintClass">
             Harga master saat ini:
             <span class="font-semibold text-gray-700">
               {{ toIDR(selectedSukuCadang?.harga_beli || 0) }}
@@ -135,7 +139,7 @@ const { totalPengeluaran } = useAdminInventarisStokUlangModal(props);
               )
             "
             type="checkbox"
-            class="mt-1 h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
+            :class="checkboxClass"
           />
           <span>
             <span class="block font-semibold text-gray-900">
@@ -148,7 +152,7 @@ const { totalPengeluaran } = useAdminInventarisStokUlangModal(props);
         </label>
 
         <div :class="modalKartuClass">
-          <label class="mb-2 block text-sm font-semibold text-gray-700">
+          <label :class="labelClass">
             Catatan
           </label>
           <textarea
@@ -161,7 +165,7 @@ const { totalPengeluaran } = useAdminInventarisStokUlangModal(props);
             "
             rows="2"
             placeholder="Opsional"
-            :class="inputClass"
+            :class="textareaClass"
           ></textarea>
         </div>
 

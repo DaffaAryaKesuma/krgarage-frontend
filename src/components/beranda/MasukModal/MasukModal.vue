@@ -1,5 +1,12 @@
 <script setup lang="ts">
 import { FORM_FIELDS, useMasukModal } from "@/components/beranda/MasukModal/useMasukModal";
+import { getAlertBoxClass } from "@/utils/badgeVariants";
+import { getButtonClass, getFullWidthButtonClass } from "@/utils/buttonVariants";
+import {
+  FORM_ERROR_CLASS,
+  FORM_LABEL_CLASS,
+  FORM_REQUIRED_MARK_CLASS,
+} from "@/utils/formVariants";
 
 const props = defineProps<{ open: boolean }>();
 const emit = defineEmits<{
@@ -41,9 +48,9 @@ const {
         <div v-for="field in FORM_FIELDS" :key="field.key" class="space-y-1">
           <label
             :for="field.key"
-            class="block text-sm font-medium text-gray-700"
+            :class="FORM_LABEL_CLASS"
           >
-            {{ field.label }} <span class="text-red-500">*</span>
+            {{ field.label }} <span :class="FORM_REQUIRED_MARK_CLASS">*</span>
           </label>
 
           <input
@@ -61,17 +68,18 @@ const {
               errors[field.key as keyof typeof errors] &&
               touched[field.key as keyof typeof touched]
             "
-            class="text-xs text-red-600 flex items-center gap-1 mt-1"
+            :class="FORM_ERROR_CLASS"
           >
-            <span>⚠</span> {{ errors[field.key as keyof typeof errors] }}
+            <i class="mdi mdi-alert-circle text-xs"></i>
+            {{ errors[field.key as keyof typeof errors] }}
           </p>
         </div>
 
         <div
           v-if="error"
-          class="p-3 bg-red-50 border border-red-200 rounded-lg"
+          :class="[getAlertBoxClass('error'), 'p-3 text-center shadow-none']"
         >
-          <p class="text-red-700 text-sm font-medium text-center">
+          <p class="text-sm font-medium">
             {{ error }}
           </p>
         </div>
@@ -79,12 +87,7 @@ const {
         <button
           type="submit"
           :disabled="isLoading || !isFormValid"
-          :class="[
-            'w-full mt-6 py-2 px-4 rounded-lg font-semibold transition-all flex items-center justify-center gap-2',
-            isLoading || !isFormValid
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-red-600 hover:bg-red-700 text-white shadow-lg',
-          ]"
+          :class="getFullWidthButtonClass('primary', 'md', 'mt-6 shadow-lg')"
         >
           <span
             v-if="isLoading"
@@ -98,7 +101,7 @@ const {
           <button
             type="button"
             @click="emit('openRegister')"
-            class="text-red-600 font-semibold hover:text-red-700 hover:underline transition-colors"
+            :class="getButtonClass('link', 'xs', 'inline p-0 align-baseline hover:underline')"
           >
             Daftar di sini
           </button>

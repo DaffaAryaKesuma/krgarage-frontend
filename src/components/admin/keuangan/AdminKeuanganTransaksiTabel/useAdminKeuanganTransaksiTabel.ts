@@ -25,10 +25,12 @@ export const TABLE_HEADERS = [
 
 export const TABLE_WRAPPER_CLASS_WITH_MARGIN = `mb-8 ${TABLE_WRAPPER_CLASS}`;
 
+export const TABLE_COLUMN_WIDTHS = ["16%", "12%", "12%", "24%", "24%", "12%"];
+
 export const TABLE_CLASS = buildFixedTableClass("min-w-full");
 
 export const TABLE_HEADER_CELL_CLASS =
-  buildTableHeaderCellClass("text-gray-900 [&:nth-child(1)]:w-[16%] [&:nth-child(2)]:w-[12%] [&:nth-child(3)]:w-[12%] [&:nth-child(4)]:w-[24%] [&:nth-child(5)]:w-[24%] [&:nth-child(6)]:w-[12%]");
+  buildTableHeaderCellClass("text-gray-900");
 
 export function useAdminKeuanganTransaksiTabel(
   getPemesanan: () => KeuanganPemesanan[],

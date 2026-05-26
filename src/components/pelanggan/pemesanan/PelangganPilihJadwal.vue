@@ -3,7 +3,16 @@ import {
   getAlertBoxClass,
   getAlertIconClass,
   getIconToneClass,
+  getToneTextClass,
 } from "@/utils/badgeVariants";
+import {
+  FORM_ERROR_CLASS,
+  FORM_HINT_CLASS,
+  FORM_LABEL_CLASS,
+  FORM_REQUIRED_MARK_CLASS,
+  getFormInputClass,
+  getFormTextareaClass,
+} from "@/utils/formVariants";
 
 interface Props {
   timeSlots: string[];
@@ -61,9 +70,9 @@ const selectTime = (slot: string) => {
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
       <!-- Date -->
       <div>
-        <label class="block text-sm font-semibold text-gray-700 mb-2">
-          <i class="mdi mdi-calendar text-green-600 mr-1"></i>Tanggal Pemesanan
-          <span class="text-red-500">*</span>
+        <label :class="FORM_LABEL_CLASS">
+          <i :class="['mdi mdi-calendar mr-1', getToneTextClass('success')]"></i>Tanggal Pemesanan
+          <span :class="FORM_REQUIRED_MARK_CLASS">*</span>
         </label>
         <input
           :value="dateValue"
@@ -73,26 +82,21 @@ const selectTime = (slot: string) => {
           @change="handleDateChange"
           type="date"
           :min="new Date().toISOString().split('T')[0]"
-          :class="[
-            'w-full px-4 py-3 rounded-lg border-2 transition focus:outline-none',
-            dateError && dateTouched
-              ? 'border-red-400 bg-red-50'
-              : 'border-gray-300 focus:border-green-500',
-          ]"
+          :class="getFormInputClass(!!(dateError && dateTouched), 'px-4 py-3')"
         />
         <p
           v-if="dateError && dateTouched"
-          class="text-red-600 text-sm mt-2 flex items-center gap-1"
+          :class="FORM_ERROR_CLASS"
         >
-          <i class="mdi mdi-alert-circle"></i>{{ dateError }}
+          <i class="mdi mdi-alert-circle text-xs"></i>{{ dateError }}
         </p>
       </div>
 
       <!-- Time -->
       <div>
-        <label class="block text-sm font-semibold text-gray-700 mb-2">
-          <i class="mdi mdi-clock-outline text-green-600 mr-1"></i>Jam Pemesanan
-          <span class="text-red-500">*</span>
+        <label :class="FORM_LABEL_CLASS">
+          <i :class="['mdi mdi-clock-outline mr-1', getToneTextClass('success')]"></i>Jam Pemesanan
+          <span :class="FORM_REQUIRED_MARK_CLASS">*</span>
         </label>
         <div class="grid grid-cols-4 gap-2">
           <button
@@ -113,7 +117,7 @@ const selectTime = (slot: string) => {
             {{ slot }}
           </button>
         </div>
-        <p class="text-xs text-gray-500 mt-2">
+        <p :class="FORM_HINT_CLASS">
           <i class="mdi mdi-information-outline"></i> Merah = Sudah dipesan
         </p>
         <!-- Pesan khusus jika semua slot penuh karena mekanik sibuk -->
@@ -130,17 +134,17 @@ const selectTime = (slot: string) => {
         </div>
         <p
           v-if="timeError && timeTouched"
-          class="text-red-600 text-sm mt-2 flex items-center gap-1"
+          :class="FORM_ERROR_CLASS"
         >
-          <i class="mdi mdi-alert-circle"></i>{{ timeError }}
+          <i class="mdi mdi-alert-circle text-xs"></i>{{ timeError }}
         </p>
       </div>
     </div>
 
     <!-- Catatan -->
     <div>
-      <label class="block text-sm font-semibold text-gray-700 mb-2">
-        <i class="mdi mdi-note-text text-green-600 mr-1"></i>Catatan Tambahan
+      <label :class="FORM_LABEL_CLASS">
+        <i :class="['mdi mdi-note-text mr-1', getToneTextClass('success')]"></i>Catatan Tambahan
         (Opsional)
       </label>
       <textarea
@@ -148,7 +152,7 @@ const selectTime = (slot: string) => {
         @input="
           emit('update:catatan', ($event.target as HTMLTextAreaElement).value)
         "
-        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none transition"
+        :class="getFormTextareaClass(false, 'px-4 py-3')"
         rows="4"
         placeholder="Contoh: Vespa terasa kurang responsif, mohon dicek karburator dan kampas rem..."
       ></textarea>

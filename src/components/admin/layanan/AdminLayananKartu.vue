@@ -2,6 +2,7 @@
 import { toIDR } from "@/utils/money";
 import { getImageUrl, formatWaktu } from "@/utils/format";
 import { META_LABEL_CLASS } from "@/utils/badgeVariants";
+import { getButtonClass } from "@/utils/buttonVariants";
 import type { LayananCatalogItem } from "@/types/layanan";
 
 interface Props {
@@ -76,14 +77,14 @@ const handleImageError = (e: Event) => {
       <div class="flex gap-3">
         <button
           @click="emit('edit', layanan)"
-          class="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 transition shadow-md rounded-lg"
+          :class="getButtonClass('primary', 'md', 'flex-1 shadow-md')"
         >
           <i class="mdi mdi-pencil"></i>
           <span>Edit</span>
         </button>
         <button
           @click="emit('delete', layanan)"
-          class="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 transition shadow-md rounded-lg"
+          :class="getButtonClass('danger', 'md', 'flex-1 shadow-md')"
         >
           <i class="mdi mdi-delete"></i>
           <span>Hapus</span>

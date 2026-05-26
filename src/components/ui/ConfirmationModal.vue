@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { scrollLock } from "@/composables/scrollLock";
-import { getGradientToneClass } from "@/utils/badgeVariants";
-import type { GradientToneKey } from "@/utils/badgeVariants";
 import { getButtonClass } from "@/utils/buttonVariants";
 import type { ButtonVariant } from "@/utils/buttonVariants";
 
@@ -24,11 +22,11 @@ const emit = defineEmits<Emits>();
 
 scrollLock(() => props.show);
 
-const variantToneMap: Record<NonNullable<Props["variant"]>, GradientToneKey> = {
-  danger: "danger",
-  warning: "warning",
-  info: "info",
-  success: "success",
+const variantHeaderBgMap: Record<NonNullable<Props["variant"]>, string> = {
+  danger: "bg-red-600",
+  warning: "bg-amber-600",
+  info: "bg-blue-600",
+  success: "bg-green-600",
 };
 
 const variantButtonMap: Record<NonNullable<Props["variant"]>, ButtonVariant> = {
@@ -66,8 +64,8 @@ function handleCancel() {
       <!-- Header -->
       <div
         :class="[
-          'bg-gradient-to-r px-6 py-4 rounded-t-xl',
-          getGradientToneClass(variantToneMap[variant || 'danger']),
+          'px-6 py-4 rounded-t-xl',
+          variantHeaderBgMap[variant || 'danger'],
         ]"
       >
         <h3 class="text-xl font-bold text-white flex items-center gap-2">

@@ -5,6 +5,9 @@ import {
   buttonSecondaryClass,
   formKartuClass,
   inputClass,
+  labelClass,
+  requiredMarkClass,
+  textareaClass,
   useAdminInventarisFormModal,
   type AdminInventarisFormModalEmit,
   type AdminInventarisFormModalProps,
@@ -54,8 +57,8 @@ const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
       >
         <!-- Nama Suku Cadang -->
         <div :class="formKartuClass">
-          <label class="mb-2 block text-sm font-semibold text-slate-700">
-            Nama Suku Cadang <span class="text-red-600">*</span>
+          <label :class="labelClass">
+            Nama Suku Cadang <span :class="requiredMarkClass">*</span>
           </label>
           <input
             :value="form.nama_suku_cadang"
@@ -70,8 +73,8 @@ const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
         <!-- Kategori + Stok Awal -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div :class="formKartuClass">
-            <label class="mb-2 block text-sm font-semibold text-slate-700">
-              Kategori <span class="text-red-600">*</span>
+            <label :class="labelClass">
+              Kategori <span :class="requiredMarkClass">*</span>
             </label>
             <CustomSelect
               :model-value="form.id_kategori"
@@ -101,8 +104,8 @@ const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
           </div>
 
           <div :class="formKartuClass">
-            <label class="mb-2 block text-sm font-semibold text-slate-700">
-              Stok Awal <span class="text-red-600">*</span>
+            <label :class="labelClass">
+              Stok Awal <span :class="requiredMarkClass">*</span>
             </label>
             <input
               :value="form.jumlah_stok"
@@ -119,8 +122,8 @@ const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
         <!-- Harga Beli + Harga Jual -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div :class="formKartuClass">
-            <label class="mb-2 block text-sm font-semibold text-slate-700">
-              Harga Beli <span class="text-red-600">*</span>
+            <label :class="labelClass">
+              Harga Beli <span :class="requiredMarkClass">*</span>
             </label>
             <input
               :value="form.harga_beli"
@@ -136,8 +139,8 @@ const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
           </div>
 
           <div :class="formKartuClass">
-            <label class="mb-2 block text-sm font-semibold text-slate-700">
-              Harga Jual <span class="text-red-600">*</span>
+            <label :class="labelClass">
+              Harga Jual <span :class="requiredMarkClass">*</span>
             </label>
             <input
               :value="form.harga_jual"
@@ -155,8 +158,8 @@ const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
 
         <!-- Batas Minimal Stok -->
         <div :class="formKartuClass">
-          <label class="mb-2 block text-sm font-semibold text-slate-700">
-            Batas Minimal Stok <span class="text-red-600">*</span>
+          <label :class="labelClass">
+            Batas Minimal Stok <span :class="requiredMarkClass">*</span>
           </label>
           <input
             :value="form.batas_minimal_stok"
@@ -172,22 +175,20 @@ const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
             placeholder="Contoh: 5"
             :class="inputClass"
           />
-          <p class="mt-2 text-xs text-slate-500">
+          <p class="mt-1.5 text-xs text-gray-500">
             Peringatan akan muncul jika stok mencapai nilai ini
           </p>
         </div>
 
         <!-- Deskripsi -->
         <div :class="formKartuClass">
-          <label class="mb-2 block text-sm font-semibold text-slate-700"
-            >Deskripsi</label
-          >
+          <label :class="labelClass">Deskripsi</label>
           <textarea
             :value="form.deskripsi"
             @input="updateField('deskripsi', toStr($event))"
             rows="3"
             placeholder="Tulis informasi tambahan jika perlu"
-            :class="inputClass"
+            :class="textareaClass"
           ></textarea>
         </div>
 

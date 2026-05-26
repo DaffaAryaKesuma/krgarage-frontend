@@ -13,6 +13,10 @@ import {
   PEMBAYARAN_STATUS_FILTER_OPTIONS,
   type PembayaranStatusFilter,
 } from "@/utils/pembayaranStatus";
+import {
+  getFormCheckboxClass,
+  getFormInputWithIconClass,
+} from "@/utils/formVariants";
 
 interface Props {
   searchQuery: string;
@@ -67,7 +71,7 @@ const handlePembayaranChange = (value: string | number | null) => {
         "
         type="text"
         placeholder="Cari pelanggan, vespa, atau plat nomor..."
-        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:border-gray-400 outline-none "
+        :class="getFormInputWithIconClass()"
       />
       <i
         class="mdi mdi-magnify absolute left-3 top-1/2 -translate-y-1/2 text-xl text-gray-400"
@@ -114,7 +118,7 @@ const handlePembayaranChange = (value: string | number | null) => {
               ($event.target as HTMLInputElement).checked,
             )
           "
-          class="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
+          :class="getFormCheckboxClass()"
         />
         <span class="text-sm text-gray-700">Tampilkan Pemesanan Hari Ini</span>
       </label>

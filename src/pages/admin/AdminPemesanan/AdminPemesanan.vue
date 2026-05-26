@@ -38,6 +38,15 @@ const {
   isPaidConfirmOpen,
   handleMarkPaidClick,
   handleMarkPaidConfirm,
+  isConfirmModalOpen,
+  handleConfirmClick,
+  handleConfirmConfirm,
+  isCancelModalOpen,
+  handleCancelClick,
+  handleCancelConfirm,
+  isAssignStartModalOpen,
+  handleAssignStartClick,
+  handleAssignStartConfirm,
 } = useAdminPemesananPage();
 
 onMounted(() => {
@@ -106,11 +115,11 @@ onMounted(() => {
               v-model:selected-mekanik-id="
                 selectedMekanikForPemesanan[pemesanan.id]
               "
-              @confirm="confirmPemesanan"
-              @cancel="cancelPemesanan"
+              @confirm="handleConfirmClick"
+              @cancel="handleCancelClick"
               @complete="handleCompleteClick"
               @mark-paid="handleMarkPaidClick"
-              @assign-and-start="assignMekanikAndStart"
+              @assign-and-start="handleAssignStartClick"
             />
           </div>
 
@@ -149,5 +158,38 @@ onMounted(() => {
     variant="success"
     @confirm="handleMarkPaidConfirm"
     @cancel="isPaidConfirmOpen = false"
+  />
+
+  <ConfirmationModal
+    :show="isConfirmModalOpen"
+    title="Konfirmasi Pemesanan"
+    message="Apakah Anda yakin ingin menyetujui dan mengonfirmasi pemesanan ini?"
+    confirm-text="Ya, Konfirmasi"
+    cancel-text="Batal"
+    variant="info"
+    @confirm="handleConfirmConfirm"
+    @cancel="isConfirmModalOpen = false"
+  />
+
+  <ConfirmationModal
+    :show="isCancelModalOpen"
+    title="Batalkan Pemesanan"
+    message="Apakah Anda yakin ingin membatalkan pemesanan ini? Tindakan ini tidak dapat dibatalkan."
+    confirm-text="Ya, Batalkan"
+    cancel-text="Batal"
+    variant="danger"
+    @confirm="handleCancelConfirm"
+    @cancel="isCancelModalOpen = false"
+  />
+
+  <ConfirmationModal
+    :show="isAssignStartModalOpen"
+    title="Mulai Pekerjaan Servis"
+    message="Apakah Anda yakin ingin menugaskan mekanik yang dipilih dan memulai pekerjaan servis ini?"
+    confirm-text="Ya, Mulai Servis"
+    cancel-text="Batal"
+    variant="info"
+    @confirm="handleAssignStartConfirm"
+    @cancel="isAssignStartModalOpen = false"
   />
 </template>

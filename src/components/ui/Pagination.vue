@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { getButtonClass, getIconButtonClass } from "@/utils/buttonVariants";
 
 interface Props {
   currentPage: number;
@@ -55,14 +56,11 @@ const visiblePages = computed(() => {
   return pages;
 });
 
-const getButtonClass = (isActive: boolean, isDisabled: boolean = false) => [
-  "px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-  isDisabled
-    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-    : isActive
-      ? "bg-red-600 text-white hover:bg-red-700"
-      : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50",
-];
+const getPaginationButtonClass = (isActive: boolean) =>
+  getButtonClass(isActive ? "primary" : "secondary", "sm", "min-w-10");
+
+const getPaginationIconButtonClass = () =>
+  getIconButtonClass("neutral", "md", "border border-gray-300 bg-white");
 
 const goToPage = (page: number) => {
   if (page >= 1 && page <= props.lastPage && page !== props.currentPage) {
@@ -89,7 +87,7 @@ const goToPage = (page: number) => {
       <button
         @click="goToPage(currentPage - 1)"
         :disabled="!canPrevious"
-        :class="getButtonClass(false, !canPrevious)"
+        :class="getPaginationIconButtonClass()"
       >
         <i class="mdi mdi-chevron-left text-lg"></i>
       </button>
@@ -102,8 +100,7 @@ const goToPage = (page: number) => {
         <button
           v-else
           @click="goToPage(page as number)"
-          :class="getButtonClass(currentPage === page)"
-          class="min-w-[40px]"
+          :class="getPaginationButtonClass(currentPage === page)"
         >
           {{ page }}
         </button>
@@ -113,7 +110,7 @@ const goToPage = (page: number) => {
       <button
         @click="goToPage(currentPage + 1)"
         :disabled="!canNext"
-        :class="getButtonClass(false, !canNext)"
+        :class="getPaginationIconButtonClass()"
       >
         <i class="mdi mdi-chevron-right text-lg"></i>
       </button>

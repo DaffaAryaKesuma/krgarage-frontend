@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import CustomSelect from "@/components/ui/CustomSelect.vue";
 import { getButtonClass } from "@/utils/buttonVariants";
-import { getFormInputClass } from "@/utils/formVariants";
+import { getFormCheckboxClass, getFormInputClass } from "@/utils/formVariants";
 
 interface Props {
   searchQuery: string;
@@ -64,7 +64,7 @@ const handleKategoriChange = (value: string | number | null) => {
           )
         "
         type="checkbox"
-        class="w-4 h-4 text-red-600 rounded focus:ring-red-500 mr-2"
+        :class="getFormCheckboxClass('mr-2')"
       />
       <span>Tampilkan hanya stok kritis/habis</span>
     </div>

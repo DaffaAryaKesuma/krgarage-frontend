@@ -8,6 +8,7 @@ import {
   useAdminKeuanganTransaksiTabel,
   TABLE_HEADERS,
   TABLE_WRAPPER_CLASS_WITH_MARGIN,
+  TABLE_COLUMN_WIDTHS,
   TABLE_CLASS,
   TABLE_HEADER_CELL_CLASS,
 } from "@/components/admin/keuangan/AdminKeuanganTransaksiTabel/useAdminKeuanganTransaksiTabel";
@@ -45,6 +46,7 @@ const {
       :responsive-kartu="true"
       desktop-breakpoint="lg"
       :mobile-kartu-class="TABLE_MOBILE_KARTU_CLASS"
+      :column-widths="TABLE_COLUMN_WIDTHS"
       :table-class="TABLE_CLASS"
       :head-class="TABLE_HEAD_CLASS"
       :header-cell-class="TABLE_HEADER_CELL_CLASS"

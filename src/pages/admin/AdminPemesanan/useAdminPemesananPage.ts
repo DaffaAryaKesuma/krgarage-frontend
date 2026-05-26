@@ -111,12 +111,65 @@ export function useAdminPemesananPage() {
     }
   };
 
+  const isConfirmModalOpen = ref(false);
+  const pemesananToConfirm = ref<Pemesanan | null>(null);
+
+  const handleConfirmClick = (pemesanan: Pemesanan) => {
+    pemesananToConfirm.value = pemesanan;
+    isConfirmModalOpen.value = true;
+  };
+
+  const handleConfirmConfirm = async () => {
+    if (pemesananToConfirm.value) {
+      await confirmPemesanan(pemesananToConfirm.value);
+      isConfirmModalOpen.value = false;
+      pemesananToConfirm.value = null;
+    }
+  };
+
   const confirmPemesanan = async (pemesanan: Pemesanan) => {
     await changeStatus(pemesanan, PEMESANAN_STATUS.DIKONFIRMASI);
   };
 
   const cancelPemesanan = async (pemesanan: Pemesanan) => {
     await changeStatus(pemesanan, PEMESANAN_STATUS.BATAL);
+  };
+
+  const isCancelModalOpen = ref(false);
+  const pemesananToCancel = ref<Pemesanan | null>(null);
+
+  const handleCancelClick = (pemesanan: Pemesanan) => {
+    pemesananToCancel.value = pemesanan;
+    isCancelModalOpen.value = true;
+  };
+
+  const handleCancelConfirm = async () => {
+    if (pemesananToCancel.value) {
+      await cancelPemesanan(pemesananToCancel.value);
+      isCancelModalOpen.value = false;
+      pemesananToCancel.value = null;
+    }
+  };
+
+  const isAssignStartModalOpen = ref(false);
+  const pemesananToAssignStart = ref<Pemesanan | null>(null);
+
+  const handleAssignStartClick = (pemesanan: Pemesanan) => {
+    const mekanikId = selectedMekanikForPemesanan.value[pemesanan.id];
+    if (!mekanikId) {
+      toast.error("Pilih mekanik terlebih dahulu");
+      return;
+    }
+    pemesananToAssignStart.value = pemesanan;
+    isAssignStartModalOpen.value = true;
+  };
+
+  const handleAssignStartConfirm = async () => {
+    if (pemesananToAssignStart.value) {
+      await assignMekanikAndStart(pemesananToAssignStart.value);
+      isAssignStartModalOpen.value = false;
+      pemesananToAssignStart.value = null;
+    }
   };
 
   const isCompleteModalOpen = ref(false);
@@ -230,5 +283,14 @@ export function useAdminPemesananPage() {
     isPaidConfirmOpen,
     handleMarkPaidClick,
     handleMarkPaidConfirm,
+    isConfirmModalOpen,
+    handleConfirmClick,
+    handleConfirmConfirm,
+    isCancelModalOpen,
+    handleCancelClick,
+    handleCancelConfirm,
+    isAssignStartModalOpen,
+    handleAssignStartClick,
+    handleAssignStartConfirm,
   };
 }

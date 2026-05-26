@@ -6,7 +6,16 @@ import {
   type VespaFormPayload,
 } from "./usePelangganVespaFormModal";
 import { scrollLock } from "@/composables/scrollLock";
+import { getAlertBoxClass } from "@/utils/badgeVariants";
 import { getButtonClass } from "@/utils/buttonVariants";
+import {
+  FORM_LABEL_CLASS,
+  FORM_REQUIRED_MARK_CLASS,
+  FORM_INPUT_ICON_WRAPPER_CLASS,
+  FORM_INPUT_ICON_PREFIX_CLASS,
+  FORM_ERROR_CLASS,
+  getFormInputWithIconClass,
+} from "@/utils/formVariants";
 
 interface Props {
   show: boolean;
@@ -93,15 +102,11 @@ const onSubmit = () => {
         <form @submit.prevent="onSubmit" id="vespa-form" class="p-6 space-y-5">
           <!-- Model Field -->
           <div>
-            <label
-              class="block text-sm font-bold text-gray-700 mb-2 tracking-wide"
-            >
-              Model Vespa <span class="text-red-500">*</span>
+            <label :class="FORM_LABEL_CLASS">
+              Model Vespa <span :class="FORM_REQUIRED_MARK_CLASS">*</span>
             </label>
-            <div class="relative group">
-              <div
-                class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none transition-colors group-focus-within:text-gray-700 text-gray-400"
-              >
+            <div :class="FORM_INPUT_ICON_WRAPPER_CLASS">
+              <div :class="FORM_INPUT_ICON_PREFIX_CLASS">
                 <i class="mdi mdi-motorbike text-lg"></i>
               </div>
               <input
@@ -112,18 +117,13 @@ const onSubmit = () => {
                   validateField('model');
                 "
                 @input="validateField('model')"
-                :class="[
-                  'w-full pl-11 pr-4 py-2.5 rounded-xl border text-sm transition-all focus:outline-none',
-                  errors.model && touched.model
-                    ? 'border-red-300 focus:ring-4 focus:ring-red-50 bg-red-50/50 text-red-900 placeholder-red-300'
-                    : 'border-gray-200 focus:ring-4 focus:ring-gray-100 focus:border-gray-400 bg-gray-50/50 hover:bg-white',
-                ]"
+                :class="getFormInputWithIconClass(!!(errors.model && touched.model))"
                 placeholder="Contoh: PX 150"
               />
             </div>
             <p
               v-if="errors.model && touched.model"
-              class="mt-1.5 text-[11px] text-red-600 flex items-start gap-1 font-medium"
+              :class="FORM_ERROR_CLASS"
             >
               <i class="mdi mdi-alert-circle text-xs mt-0.5"></i>
               {{ errors.model }}
@@ -133,15 +133,11 @@ const onSubmit = () => {
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <!-- Tahun Field -->
             <div>
-              <label
-                class="block text-sm font-bold text-gray-700 mb-2 tracking-wide"
-              >
-                Tahun Produksi <span class="text-red-500">*</span>
+              <label :class="FORM_LABEL_CLASS">
+                Tahun Produksi <span :class="FORM_REQUIRED_MARK_CLASS">*</span>
               </label>
-              <div class="relative group">
-                <div
-                  class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none transition-colors group-focus-within:text-gray-700 text-gray-400"
-                >
+              <div :class="FORM_INPUT_ICON_WRAPPER_CLASS">
+                <div :class="FORM_INPUT_ICON_PREFIX_CLASS">
                   <i class="mdi mdi-calendar-range text-lg"></i>
                 </div>
                 <input
@@ -154,18 +150,13 @@ const onSubmit = () => {
                   @input="validateField('tahun_produksi')"
                   :min="1946"
                   :max="maxProductionYear"
-                  :class="[
-                    'w-full pl-11 pr-4 py-2.5 rounded-xl border text-sm transition-all focus:outline-none',
-                    errors.tahun_produksi && touched.tahun_produksi
-                      ? 'border-red-300 focus:ring-4 focus:ring-red-50 bg-red-50/50 text-red-900 placeholder-red-300'
-                      : 'border-gray-200 focus:ring-4 focus:ring-gray-100 focus:border-gray-400 bg-gray-50/50 hover:bg-white',
-                  ]"
+                  :class="getFormInputWithIconClass(!!(errors.tahun_produksi && touched.tahun_produksi))"
                   placeholder="Contoh: 1980"
                 />
               </div>
               <p
                 v-if="errors.tahun_produksi && touched.tahun_produksi"
-                class="mt-1.5 text-[11px] text-red-600 flex items-start gap-1 font-medium"
+                :class="FORM_ERROR_CLASS"
               >
                 <i class="mdi mdi-alert-circle text-xs mt-0.5"></i>
                 {{ errors.tahun_produksi }}
@@ -174,15 +165,11 @@ const onSubmit = () => {
 
             <!-- Plat Nomor Field -->
             <div>
-              <label
-                class="block text-sm font-bold text-gray-700 mb-2 tracking-wide"
-              >
-                Plat Nomor <span class="text-red-500">*</span>
+              <label :class="FORM_LABEL_CLASS">
+                Plat Nomor <span :class="FORM_REQUIRED_MARK_CLASS">*</span>
               </label>
-              <div class="relative group">
-                <div
-                  class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none transition-colors group-focus-within:text-gray-700 text-gray-400"
-                >
+              <div :class="FORM_INPUT_ICON_WRAPPER_CLASS">
+                <div :class="FORM_INPUT_ICON_PREFIX_CLASS">
                   <i class="mdi mdi-license text-lg"></i>
                 </div>
                 <input
@@ -193,18 +180,13 @@ const onSubmit = () => {
                     validateField('plat_nomor');
                   "
                   @input="validateField('plat_nomor')"
-                  :class="[
-                    'w-full pl-11 pr-4 py-2.5 rounded-xl border text-sm transition-all focus:outline-none uppercase font-bold tracking-wider',
-                    errors.plat_nomor && touched.plat_nomor
-                      ? 'border-red-300 focus:ring-4 focus:ring-red-50 bg-red-50/50 text-red-900 placeholder-red-300'
-                      : 'border-gray-200 focus:ring-4 focus:ring-gray-100 focus:border-gray-400 bg-gray-50/50 hover:bg-white',
-                  ]"
+                  :class="getFormInputWithIconClass(!!(errors.plat_nomor && touched.plat_nomor), 'uppercase font-bold tracking-wider')"
                   placeholder="Contoh: BM 1234 ABC"
                 />
               </div>
               <p
                 v-if="errors.plat_nomor && touched.plat_nomor"
-                class="mt-1.5 text-[11px] text-red-600 flex items-start gap-1 font-medium"
+                :class="FORM_ERROR_CLASS"
               >
                 <i class="mdi mdi-alert-circle text-xs mt-0.5"></i>
                 {{ errors.plat_nomor }}
@@ -215,7 +197,7 @@ const onSubmit = () => {
           <!-- Error Global -->
           <div
             v-if="error"
-            class="p-3 bg-red-50 border border-red-100 rounded-xl flex gap-3 text-red-700 mt-2"
+            :class="[getAlertBoxClass('error'), 'mt-2 flex gap-3 p-3 shadow-none']"
           >
             <i class="mdi mdi-alert-outline text-lg shrink-0 mt-0.5"></i>
             <p class="text-sm font-medium">{{ error }}</p>

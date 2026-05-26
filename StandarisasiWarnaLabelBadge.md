@@ -350,14 +350,17 @@ Helper form:
 | `FORM_INPUT_ICON_WRAPPER_CLASS` | Wrapper `relative group` untuk input dengan icon prefix |
 | `FORM_INPUT_ICON_PREFIX_CLASS` | Posisi absolut icon prefix kiri |
 | `getFormInputWithIconClass()` | Input dengan padding kiri untuk icon prefix |
+| `FORM_CHECKBOX_CLASS` | Base class checkbox standar |
+| `getFormCheckboxClass()` | Helper checkbox dengan class tambahan opsional |
 
-Focus ring standar: **`focus:ring-2 focus:ring-red-200`** (merah brand, ring tipis).
+Focus ring standar input/select/textarea: **`focus:ring-2 focus:ring-gray-200/50`** dengan border abu netral. State error memakai ring merah melalui `FORM_INPUT_ERROR_CLASS`.
 
 Aturan pemakaian:
 
 - Pakai `getFormInputClass(hasError?)` untuk semua `<input>` di modal dan form.
 - Pakai `getFormTextareaClass(hasError?)` untuk semua `<textarea>`.
 - Pakai `getFormSelectClass(hasError?)` untuk native `<select>`.
+- Pakai `getFormCheckboxClass()` untuk checkbox filter dan opsi form.
 - Pakai `FORM_LABEL_CLASS` untuk semua `<label>` field form standar.
 - Pakai `FORM_ERROR_CLASS` untuk `<p>` pesan error di bawah field.
 - Pakai `FORM_HINT_CLASS` untuk `<p>` petunjuk/hint di bawah field.

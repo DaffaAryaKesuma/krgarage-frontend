@@ -8,6 +8,7 @@ import {
   TABLE_HEAD_CLASS,
   TABLE_HEADER_CELL_CLASS,
   TABLE_MOBILE_KARTU_CLASS,
+  TABLE_WRAPPER_CLASS,
 } from "@/utils/tableVariants";
 import type { PemilikTerbaruPemesananActivity } from "@/types/pemesanan";
 
@@ -32,12 +33,15 @@ const TABLE_HEADERS = [
 <template>
   <div class="rounded-2xl bg-white p-6 shadow-lg mb-8">
     <div class="mb-6 flex items-center justify-between">
-      <h2 class="text-xl font-bold text-gray-900">
-        Aktivitas Terbaru
-      </h2>
+      <div class="flex items-center gap-2">
+        <i class="mdi mdi-calendar-clock text-2xl"></i>
+        <h2 class="text-xl font-bold text-gray-900">
+          Aktivitas Terbaru
+        </h2>
+      </div>
       <router-link
         to="/pemilik/laporan-keuangan"
-        class="flex items-center gap-2 text-sm font-semibold text-red-600 hover:text-red-700"
+        class="flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-red-600"
       >
         Lihat Semua
         <i class="mdi mdi-arrow-right"></i>
@@ -60,6 +64,7 @@ const TABLE_HEADERS = [
       :responsive-kartu="true"
       desktop-breakpoint="lg"
       :mobile-kartu-class="TABLE_MOBILE_KARTU_CLASS"
+      :wrapper-class="TABLE_WRAPPER_CLASS"
       :head-class="TABLE_HEAD_CLASS"
       header-row-class="border-b border-gray-200"
       :header-cell-class="TABLE_HEADER_CELL_CLASS"

@@ -8,6 +8,7 @@ import {
 import { toMoneyNumber } from "@/utils/money";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
+import { getButtonClass } from "@/utils/buttonVariants";
 import {
   META_LABEL_CLASS,
   getAlertBoxClass,
@@ -139,7 +140,7 @@ const getLayananPrice = (pemesanan: PelangganPemesanan) =>
           </div>
           <router-link
             :to="`/app/riwayat/${item.id}`"
-            class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+            :class="getButtonClass('secondary', 'xs', 'gap-1.5 shadow-sm no-underline hover:text-red-600')"
           >
             <i class="mdi mdi-eye-outline text-sm"></i>
             <span>Detail</span>

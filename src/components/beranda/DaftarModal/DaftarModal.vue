@@ -2,6 +2,14 @@
 import { watch } from "vue";
 import { useRegisterModal } from "./useRegisterModal";
 import { scrollLock } from "@/composables/scrollLock";
+import { getAlertBoxClass } from "@/utils/badgeVariants";
+import { getFullWidthButtonClass } from "@/utils/buttonVariants";
+import {
+  FORM_ERROR_CLASS,
+  FORM_HINT_CLASS,
+  FORM_LABEL_CLASS,
+  FORM_REQUIRED_MARK_CLASS,
+} from "@/utils/formVariants";
 
 const props = defineProps<{
   open: boolean;
@@ -61,9 +69,9 @@ watch(
         <div v-for="field in FORM_FIELDS" :key="field.key" class="space-y-1">
           <label
             :for="field.key"
-            class="block text-sm font-medium text-gray-700"
+            :class="FORM_LABEL_CLASS"
           >
-            {{ field.label }} <span class="text-red-500">*</span>
+            {{ field.label }} <span :class="FORM_REQUIRED_MARK_CLASS">*</span>
           </label>
 
           <input
@@ -76,7 +84,7 @@ watch(
             :class="getInputClass(field.key as keyof typeof form)"
           />
 
-          <p v-if="field.hint" class="text-[10px] text-gray-500 mt-1">
+          <p v-if="field.hint" :class="FORM_HINT_CLASS">
             {{ field.hint }}
           </p>
 
@@ -85,35 +93,31 @@ watch(
               errors[field.key as keyof typeof errors] &&
               touched[field.key as keyof typeof touched]
             "
-            class="text-xs text-red-600 flex items-center gap-1 mt-1"
+            :class="FORM_ERROR_CLASS"
           >
-            <span>⚠</span> {{ errors[field.key as keyof typeof errors] }}
+            <i class="mdi mdi-alert-circle text-xs"></i>
+            {{ errors[field.key as keyof typeof errors] }}
           </p>
         </div>
 
         <div
           v-if="error"
-          class="p-3 bg-red-50 border border-red-200 rounded-lg"
+          :class="[getAlertBoxClass('error'), 'p-3 shadow-none']"
         >
-          <p class="text-red-700 text-sm font-medium">{{ error }}</p>
+          <p class="text-sm font-medium">{{ error }}</p>
         </div>
 
         <div
           v-if="successMessage"
-          class="p-3 bg-green-50 border border-green-200 rounded-lg"
+          :class="[getAlertBoxClass('success'), 'p-3 shadow-none']"
         >
-          <p class="text-green-700 text-sm font-medium">{{ successMessage }}</p>
+          <p class="text-sm font-medium">{{ successMessage }}</p>
         </div>
 
         <button
           type="submit"
           :disabled="isLoading || !isFormValid"
-          :class="[
-            'w-full mt-6 py-2 px-4 rounded-lg font-semibold transition-all flex items-center justify-center gap-2',
-            isLoading || !isFormValid
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-red-600 hover:bg-red-700 text-white shadow-lg hover:shadow-xl',
-          ]"
+          :class="getFullWidthButtonClass('primary', 'md', 'mt-6 shadow-lg hover:shadow-xl')"
         >
           <span
             v-if="isLoading"

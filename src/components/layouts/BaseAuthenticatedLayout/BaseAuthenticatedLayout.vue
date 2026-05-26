@@ -6,6 +6,11 @@ import { useAuthenticatedLayoutShell } from "./useAuthenticatedLayoutShell";
 import { scrollLock } from "@/composables/scrollLock";
 import { formatNama } from "@/utils/format";
 import { getRoleBadgeClass } from "@/utils/badgeVariants";
+import {
+  getButtonClass,
+  getFullWidthButtonClass,
+  getIconButtonClass,
+} from "@/utils/buttonVariants";
 
 interface NavItem {
   label: string;
@@ -47,6 +52,43 @@ const {
 } = useAuthenticatedLayoutShell(props.desktopBreakpoint);
 
 scrollLock(() => isMobileMenuOpen.value);
+
+const PROFILE_AVATAR_CLASS =
+  "flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-red-600 to-red-700 text-sm font-bold text-white shadow-md transition-all hover:ring-4 hover:ring-red-100";
+
+const roleBadgeClass = () => getRoleBadgeClass(props.roleLabel);
+
+const navItemClass = (to: string) =>
+  [
+    "group whitespace-nowrap no-underline duration-200 lg:px-3 xl:px-4",
+    getButtonClass(isActive(to) ? "primary" : "ghost", "sm"),
+    isActive(to)
+      ? "shadow-sm shadow-red-100/50"
+      : "text-gray-700 hover:text-red-600",
+  ].join(" ");
+
+const navIconClass = (to: string, icon: string) =>
+  [
+    "mdi shrink-0 text-base transition-colors duration-200",
+    icon,
+    isActive(to) ? "text-white" : "text-gray-500 group-hover:text-red-600",
+  ].join(" ");
+
+const mobileNavItemClass = (to: string) =>
+  [
+    "group w-full justify-start gap-3 rounded-lg px-4 py-3 no-underline duration-200",
+    getButtonClass(isActive(to) ? "primary" : "ghost", "md"),
+    isActive(to)
+      ? "shadow-sm shadow-red-100/30"
+      : "text-gray-700 hover:text-red-600",
+  ].join(" ");
+
+const mobileNavIconClass = (to: string, icon: string) =>
+  [
+    "mdi text-xl transition-colors duration-200",
+    icon,
+    isActive(to) ? "text-white" : "text-gray-500 group-hover:text-red-600",
+  ].join(" ");
 </script>
 
 <template>
@@ -85,14 +127,9 @@ scrollLock(() => isMobileMenuOpen.value);
               v-for="item in navItems"
               :key="item.to"
               :to="item.to"
-              :class="[
-                'group inline-flex items-center gap-2 whitespace-nowrap rounded-lg px-3 py-2 text-sm transition-all duration-200 no-underline lg:px-3 xl:px-4',
-                isActive(item.to)
-                  ? 'bg-red-50 text-red-600 font-semibold shadow-sm shadow-red-100/50'
-                  : 'text-gray-700 font-medium hover:text-red-600 hover:bg-gray-50'
-              ]"
+              :class="navItemClass(item.to)"
             >
-              <i :class="['mdi shrink-0 text-base transition-colors duration-200', item.icon, isActive(item.to) ? 'text-red-600' : 'text-gray-500 group-hover:text-red-600']"></i>
+              <i :class="navIconClass(item.to, item.icon)"></i>
               <span>{{ item.label }}</span>
             </router-link>
 
@@ -107,26 +144,32 @@ scrollLock(() => isMobileMenuOpen.value);
             >
               <NotificationBell />
 
-              <div class="hidden text-right xl:block">
-                <p class="text-sm font-semibold text-gray-900">
-                  <span>{{ formatNama(user.nama) }}</span>
-                </p>
-                <p :class="[getRoleBadgeClass(roleLabel), 'mt-1 justify-end capitalize']">
+              <div class="hidden flex-col items-end justify-center text-right xl:flex">
+                <span class="text-sm font-bold text-gray-900 leading-tight">
+                  {{ formatNama(user.nama) }}
+                </span>
+                <span
+                  :class="[
+                    'inline-flex items-center rounded border text-[9px] font-bold uppercase px-1.5 py-[1.5px] leading-none mt-1 shadow-sm',
+                    roleBadgeClass(),
+                  ]"
+                >
                   {{ roleLabel }}
-                </p>
+                </span>
               </div>
 
-              <div
-                class="w-10 h-10 rounded-full bg-gradient-to-r from-red-600 to-red-700 flex items-center justify-center text-white font-bold text-sm cursor-pointer hover:ring-4 hover:ring-red-100 transition-all shadow-md"
+              <button
+                type="button"
+                :class="PROFILE_AVATAR_CLASS"
                 @click="showProfilModal = true"
                 title="Lihat Profil"
               >
                 {{ userInitials }}
-              </div>
+              </button>
 
               <button
                 @click="showLogoutConfirm = true"
-                class="shrink-0 rounded-lg p-2 transition-colors hover:bg-gray-100"
+                :class="getIconButtonClass('neutral', 'md', 'shrink-0')"
                 title="Keluar"
               >
                 <i class="mdi mdi-logout text-xl text-gray-700"></i>
@@ -139,7 +182,7 @@ scrollLock(() => isMobileMenuOpen.value);
             @click="isMobileMenuOpen = !isMobileMenuOpen"
             :class="[
               breakpointClasses.mobileMenuButton,
-              'shrink-0 rounded-lg p-2 transition-colors hover:bg-gray-100',
+              getIconButtonClass('neutral', 'md', 'shrink-0'),
             ]"
           >
             <i
@@ -191,7 +234,7 @@ scrollLock(() => isMobileMenuOpen.value);
           <h2 class="text-xl font-bold">Menu</h2>
           <button
             @click="closeMenu"
-            class="p-2 text-gray-500 hover:text-red-700 transition"
+            :class="getIconButtonClass('neutral', 'md', 'hover:text-red-700')"
           >
             <i class="mdi mdi-close text-2xl"></i>
           </button>
@@ -201,22 +244,28 @@ scrollLock(() => isMobileMenuOpen.value);
         <div
           class="flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-lg mb-6 border border-gray-100"
         >
-          <div
-            class="w-10 h-10 rounded-full bg-gradient-to-r from-red-600 to-red-700 flex items-center justify-center text-white font-bold text-sm cursor-pointer shadow-sm"
+          <button
+            type="button"
+            :class="PROFILE_AVATAR_CLASS"
             @click="
               showProfilModal = true;
               closeMenu();
             "
           >
             {{ userInitials }}
-          </div>
-          <div class="flex-1 min-w-0">
-            <p class="text-sm font-semibold text-gray-900 truncate">
-              <span>{{ formatNama(user.nama) }}</span>
-            </p>
-            <p :class="[getRoleBadgeClass(roleLabel), 'mt-1 max-w-max capitalize']">
+          </button>
+          <div class="flex-1 min-w-0 flex flex-col justify-center">
+            <span class="text-sm font-bold text-gray-900 truncate leading-tight">
+              {{ formatNama(user.nama) }}
+            </span>
+            <span
+              :class="[
+                'inline-flex items-center rounded border text-[9px] font-bold uppercase px-1.5 py-[1.5px] leading-none mt-1 shadow-sm max-w-max',
+                roleBadgeClass(),
+              ]"
+            >
               {{ roleLabel }}
-            </p>
+            </span>
           </div>
           <NotificationBell />
         </div>
@@ -228,32 +277,23 @@ scrollLock(() => isMobileMenuOpen.value);
             :key="item.to"
             :to="item.to"
             @click="closeMenu"
-            :class="[
-              'group flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 font-medium no-underline w-full',
-              isActive(item.to)
-                ? 'bg-red-50 text-red-600 font-semibold shadow-sm shadow-red-100/30'
-                : 'text-gray-700 hover:bg-gray-50 hover:text-red-600'
-            ]"
+            :class="mobileNavItemClass(item.to)"
           >
             <i
-              :class="[
-                'mdi text-xl transition-colors duration-200',
-                item.icon,
-                isActive(item.to) ? 'text-red-600' : 'text-gray-500 group-hover:text-red-600'
-              ]"
+              :class="mobileNavIconClass(item.to, item.icon)"
             ></i>
             <span>{{ item.label }}</span>
           </router-link>
         </nav>
 
         <!-- Logout button at the bottom -->
-        <div class="border-t pt-4">
+        <div class="pt-4">
           <button
             @click="
               showLogoutConfirm = true;
               closeMenu();
             "
-            class="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors font-medium"
+            :class="getFullWidthButtonClass('danger', 'lg')"
           >
             <i class="mdi mdi-logout text-lg"></i>
             <span>Keluar</span>

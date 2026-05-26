@@ -1,5 +1,6 @@
 import type { RouteLocationRaw } from "vue-router";
 import { normalizeUserRole, type CanonicalUserRole } from "@/utils/roleRoutes";
+import { getIconToneClass, type IconToneKey } from "@/utils/badgeVariants";
 
 export interface AppNotification {
   id: number;
@@ -29,16 +30,16 @@ const NOTIFICATION_ICONS: Record<string, string> = {
   pembayaran_diterima:    "mdi-cash-check",
 };
 
-const NOTIFICATION_COLORS: Record<string, string> = {
-  pemesanan_dikonfirmasi: "text-blue-600 bg-blue-50",
-  pemesanan_diproses:     "text-orange-600 bg-orange-50",
-  pemesanan_selesai:      "text-green-600 bg-green-50",
-  pemesanan_dibatalkan:   "text-red-600 bg-red-50",
-  pemesanan_ditugaskan:   "text-orange-600 bg-orange-50",
-  pemesanan_dihapus:      "text-red-700 bg-red-50",
-  pemesanan_diperbarui:   "text-gray-600 bg-gray-50",
-  stok_menipis:           "text-yellow-600 bg-yellow-50",
-  pembayaran_diterima:    "text-green-700 bg-green-50",
+const NOTIFICATION_TONES: Record<string, IconToneKey> = {
+  pemesanan_dikonfirmasi: "info",
+  pemesanan_diproses: "warning",
+  pemesanan_selesai: "success",
+  pemesanan_dibatalkan: "danger",
+  pemesanan_ditugaskan: "warning",
+  pemesanan_dihapus: "danger",
+  pemesanan_diperbarui: "neutral",
+  stok_menipis: "warning",
+  pembayaran_diterima: "success",
 };
 
 export function normalizeRole(role?: string | null): AppRole {
@@ -119,5 +120,5 @@ export function getNotificationIcon(tipe: string): string {
 }
 
 export function getNotificationColor(tipe: string): string {
-  return NOTIFICATION_COLORS[tipe] || "text-gray-600 bg-gray-50";
+  return getIconToneClass(NOTIFICATION_TONES[tipe] || "neutral");
 }

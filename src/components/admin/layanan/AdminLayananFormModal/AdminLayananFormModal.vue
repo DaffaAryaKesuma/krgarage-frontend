@@ -3,10 +3,17 @@ import {
   useAdminLayananFormModal,
   type LayananFormData,
 } from "@/components/admin/layanan/AdminLayananFormModal/useAdminLayananFormModal";
-import { getFormInputClass } from "@/utils/formVariants";
+import {
+  FORM_HINT_CLASS,
+  FORM_LABEL_CLASS,
+  FORM_REQUIRED_MARK_CLASS,
+  getFormInputClass,
+  getFormTextareaClass,
+} from "@/utils/formVariants";
 import { getButtonClass } from "@/utils/buttonVariants";
 
 const inputClass = getFormInputClass();
+const textareaClass = getFormTextareaClass();
 
 const props = defineProps<{
   show: boolean;
@@ -53,7 +60,7 @@ const { formTitle, handleFileChange, FILE_INPUT_ID } =
       <form @submit.prevent="emit('submit')" class="p-6 space-y-4 overflow-y-auto flex-1 custom-scrollbar">
         <!-- Image Upload -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+          <label :class="FORM_LABEL_CLASS">
             Foto Layanan
           </label>
           <div class="flex items-center gap-4">
@@ -80,7 +87,7 @@ const { formTitle, handleFileChange, FILE_INPUT_ID } =
                 @change="handleFileChange"
                 class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100"
               />
-              <p class="text-xs text-gray-500 mt-1">
+              <p :class="FORM_HINT_CLASS">
                 Format: JPG, PNG (Maks. 2MB)
               </p>
             </div>
@@ -89,8 +96,8 @@ const { formTitle, handleFileChange, FILE_INPUT_ID } =
 
         <!-- Nama Layanan -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            Nama Layanan *
+          <label :class="FORM_LABEL_CLASS">
+            Nama Layanan <span :class="FORM_REQUIRED_MARK_CLASS">*</span>
           </label>
           <input
             :value="form.nama_layanan"
@@ -108,8 +115,8 @@ const { formTitle, handleFileChange, FILE_INPUT_ID } =
 
         <!-- Deskripsi -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            Deskripsi *
+          <label :class="FORM_LABEL_CLASS">
+            Deskripsi <span :class="FORM_REQUIRED_MARK_CLASS">*</span>
           </label>
           <textarea
             :value="form.deskripsi"
@@ -121,14 +128,14 @@ const { formTitle, handleFileChange, FILE_INPUT_ID } =
             "
             required
             rows="3"
-            :class="inputClass"
+            :class="textareaClass"
           ></textarea>
         </div>
 
         <!-- Harga -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            Estimasi Harga (Rp) *
+          <label :class="FORM_LABEL_CLASS">
+            Estimasi Harga (Rp) <span :class="FORM_REQUIRED_MARK_CLASS">*</span>
           </label>
           <input
             :value="form.harga"
@@ -146,7 +153,7 @@ const { formTitle, handleFileChange, FILE_INPUT_ID } =
 
         <!-- Waktu -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label :class="FORM_LABEL_CLASS">
             Estimasi Waktu (menit)
           </label>
           <input
@@ -164,7 +171,7 @@ const { formTitle, handleFileChange, FILE_INPUT_ID } =
             :class="inputClass"
             placeholder="60"
           />
-          <p class="text-xs text-gray-500 mt-1">
+          <p :class="FORM_HINT_CLASS">
             Contoh: 30 (30 menit), 90 (1.5 jam), 120 (2 jam)
           </p>
         </div>

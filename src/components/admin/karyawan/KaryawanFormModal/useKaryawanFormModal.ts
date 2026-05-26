@@ -1,6 +1,11 @@
 import { ref, watch } from "vue";
 import { scrollLock } from "@/composables/scrollLock";
-import { getFormInputClass } from "@/utils/formVariants";
+import {
+  FORM_INPUT_ICON_PREFIX_CLASS,
+  FORM_INPUT_ICON_WRAPPER_CLASS,
+  FORM_LABEL_CLASS,
+  getFormInputClass,
+} from "@/utils/formVariants";
 
 export interface FormData {
   id: string | number;
@@ -13,6 +18,9 @@ export interface FormData {
 
 /** INPUT_CLASS untuk KaryawanFormModal — dibungkus helper terpusat dari formVariants.ts */
 export const INPUT_CLASS = getFormInputClass(false, "pl-10");
+export const FIELD_WRAPPER_CLASS = FORM_INPUT_ICON_WRAPPER_CLASS;
+export const ICON_PREFIX_CLASS = FORM_INPUT_ICON_PREFIX_CLASS;
+export const LABEL_CLASS = FORM_LABEL_CLASS;
 
 export interface KaryawanFormModalEmit {
   (e: "close"): void;

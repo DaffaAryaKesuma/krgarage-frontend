@@ -1,6 +1,13 @@
 import { computed } from "vue";
 import { scrollLock } from "@/composables/scrollLock";
 import { getButtonClass } from "@/utils/buttonVariants";
+import {
+  FORM_HINT_CLASS,
+  FORM_LABEL_CLASS,
+  getFormCheckboxClass,
+  getFormInputClass,
+  getFormTextareaClass,
+} from "@/utils/formVariants";
 import type { InventarisSukuCadang } from "@/types/inventaris";
 
 export interface AdminInventarisStokUlangModalProps {
@@ -25,8 +32,11 @@ export interface AdminInventarisStokUlangModalEmit {
 export const modalKartuClass =
   "rounded-2xl border border-gray-200 bg-gray-50 p-4";
 
-export const inputClass =
-  "w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-gray-500 ";
+export const inputClass = getFormInputClass(false, "rounded-xl px-4 py-3");
+export const textareaClass = getFormTextareaClass(false, "rounded-xl px-4 py-3");
+export const labelClass = FORM_LABEL_CLASS;
+export const hintClass = FORM_HINT_CLASS;
+export const checkboxClass = getFormCheckboxClass("mt-1");
 
 export const buttonPrimaryClass = getButtonClass("success", "lg", "rounded-xl");
 

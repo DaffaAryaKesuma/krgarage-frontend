@@ -31,9 +31,9 @@ export const FORM_INPUT_BASE_CLASS =
 
 // ─── Input States ─────────────────────────────────────────────────────────────
 
-/** State normal: border abu, hover lebih gelap, focus ring merah brand. */
+/** State normal: border abu, hover lebih gelap, focus ring abu-abu. */
 export const FORM_INPUT_NORMAL_CLASS =
-  "border-gray-300 hover:border-gray-400 focus:border-red-500 focus:ring-2 focus:ring-red-200";
+  "border-gray-300 hover:border-gray-400 focus:border-gray-400 focus:ring-2 focus:ring-gray-200/50";
 
 /** State error: border merah, bg merah muda, focus ring merah. */
 export const FORM_INPUT_ERROR_CLASS =
@@ -116,11 +116,23 @@ export const FORM_INPUT_ICON_PREFIX_CLASS =
  * Mengembalikan class input dengan padding kiri untuk icon prefix.
  *
  * @param hasError  - true jika field memiliki error validasi
+ * @param extraClass - class tambahan opsional (misal: uppercase)
  */
-export function getFormInputWithIconClass(hasError = false): string {
-  return getFormInputClass(hasError, "pl-10");
+export function getFormInputWithIconClass(
+  hasError = false,
+  extraClass = "",
+): string {
+  const plClass = ["pl-10", extraClass].filter(Boolean).join(" ");
+  return getFormInputClass(hasError, plClass);
 }
 
 // ─── Type exports ─────────────────────────────────────────────────────────────
+
+export const FORM_CHECKBOX_CLASS =
+  "h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500";
+
+export function getFormCheckboxClass(extraClass = ""): string {
+  return [FORM_CHECKBOX_CLASS, extraClass].filter(Boolean).join(" ");
+}
 
 export type FormInputState = "normal" | "error" | "disabled";

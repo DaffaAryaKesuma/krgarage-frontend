@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { toRef } from "vue";
 import { usePemilihTanggal } from "./usePemilihTanggal";
+import { getButtonClass, getIconButtonClass } from "@/utils/buttonVariants";
+import { getToneTextClass } from "@/utils/badgeVariants";
+import { FORM_LABEL_CLASS, getFormInputClass } from "@/utils/formVariants";
 
 interface Props {
   modelValue: string;
@@ -38,16 +41,16 @@ const {
 
 <template>
   <div class="w-full sm:w-auto relative">
-    <label class="block text-xs font-semibold text-gray-500 mb-1">
+    <label :class="[FORM_LABEL_CLASS, 'text-xs']">
       {{ label }}
     </label>
     <button
       @click="showPemilih = !showPemilih"
       @blur="handleBlur"
-      class="w-full sm:w-36 px-3 py-2 border border-gray-300 rounded-lg hover:border-red-400 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition text-sm text-gray-700 flex items-center justify-between bg-white"
+      :class="getFormInputClass(false, 'flex w-full items-center justify-between px-3 py-2 sm:w-36')"
     >
       <span>{{ formatDateDisplay(modelValue) }}</span>
-      <i class="mdi mdi-calendar text-red-600"></i>
+      <i :class="['mdi mdi-calendar', getToneTextClass('primary')]"></i>
     </button>
 
     <div
@@ -62,13 +65,13 @@ const {
         <div class="flex gap-1">
           <button
             @click="changeYear(-1)"
-            class="p-1 hover:bg-gray-100 text-gray-500 hover:text-gray-900 rounded transition"
+            :class="getIconButtonClass('neutral', 'sm')"
           >
             <i class="mdi mdi-chevron-double-left text-xl"></i>
           </button>
           <button
             @click="changeMonth(-1)"
-            class="p-1 hover:bg-gray-100 rounded transition"
+            :class="getIconButtonClass('neutral', 'sm')"
           >
             <i class="mdi mdi-chevron-left text-xl"></i>
           </button>
@@ -81,13 +84,13 @@ const {
         <div class="flex gap-1">
           <button
             @click="changeMonth(1)"
-            class="p-1 hover:bg-gray-100 rounded transition"
+            :class="getIconButtonClass('neutral', 'sm')"
           >
             <i class="mdi mdi-chevron-right text-xl"></i>
           </button>
           <button
             @click="changeYear(1)"
-            class="p-1 hover:bg-gray-100 text-gray-500 hover:text-gray-900 rounded transition"
+            :class="getIconButtonClass('neutral', 'sm')"
           >
             <i class="mdi mdi-chevron-double-right text-xl"></i>
           </button>
@@ -128,13 +131,13 @@ const {
       <div class="flex gap-2 mt-3 pt-3 border-t">
         <button
           @click="setToday"
-          class="flex-1 px-3 py-1.5 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded transition"
+          :class="getButtonClass('secondary', 'xs', 'flex-1')"
         >
           Hari Ini
         </button>
         <button
           @click="showPemilih = false"
-          class="px-3 py-1.5 text-xs text-gray-600 hover:bg-gray-100 rounded transition"
+          :class="getButtonClass('ghost', 'xs')"
         >
           Tutup
         </button>

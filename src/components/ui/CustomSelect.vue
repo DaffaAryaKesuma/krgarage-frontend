@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from "vue";
-import { FORM_LABEL_CLASS } from "@/utils/formVariants";
+import { FORM_LABEL_CLASS, getFormSelectClass } from "@/utils/formVariants";
 
 interface Props {
   modelValue: string | number | null;
@@ -112,12 +112,7 @@ onUnmounted(() => {
       :disabled="disabled"
       type="button"
       :class="[
-        'w-full min-w-0 px-4 py-2 border border-gray-300 rounded-lg text-left flex items-center justify-between',
-        'transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent',
-        'text-sm sm:text-base',
-        disabled
-          ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
-          : 'bg-white hover:border-gray-400',
+        getFormSelectClass(false, 'flex min-w-0 items-center justify-between px-4 py-2 text-left sm:text-base'),
         props.class,
       ]"
     >
@@ -167,7 +162,7 @@ onUnmounted(() => {
             :class="[
               'px-4 py-3 cursor-pointer text-sm sm:text-base transition-colors capitalize',
               modelValue === option.value
-                ? 'bg-red-500 text-white font-medium'
+                ? 'bg-red-600 text-white font-medium'
                 : 'text-gray-900 hover:bg-gray-100',
             ]"
           >

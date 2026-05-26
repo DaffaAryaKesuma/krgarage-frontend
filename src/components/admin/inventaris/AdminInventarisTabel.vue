@@ -35,6 +35,8 @@ const TABLE_HEADERS = [
   "Aksi",
 ];
 
+const TABLE_COLUMN_WIDTHS = ["38%", "14%", "10%", "14%", "14%", "10%"];
+
 const hasStockAlert = (sukucadang: InventarisSukuCadang) => sukucadang.stok_menipis;
 
 const isOutOfStock = (sukucadang: InventarisSukuCadang) =>
@@ -60,8 +62,7 @@ const getStockAlertBadgeClass = (sukucadang: InventarisSukuCadang) =>
 
 const TABLE_CLASS = buildFixedTableClass();
 
-const TABLE_HEADER_CELL_CLASS =
-  buildTableHeaderCellClass("[&:nth-child(1)]:w-[38%] [&:nth-child(2)]:w-[14%] [&:nth-child(3)]:w-[10%] [&:nth-child(4)]:w-[14%] [&:nth-child(5)]:w-[14%] [&:nth-child(6)]:w-[10%]");
+const TABLE_HEADER_CELL_CLASS = buildTableHeaderCellClass();
 </script>
 
 <template>
@@ -72,6 +73,7 @@ const TABLE_HEADER_CELL_CLASS =
       :responsive-kartu="true"
       desktop-breakpoint="xl"
       :mobile-kartu-class="TABLE_MOBILE_KARTU_CLASS"
+      :column-widths="TABLE_COLUMN_WIDTHS"
       :table-class="TABLE_CLASS"
       :head-class="TABLE_HEAD_CLASS"
       :header-cell-class="TABLE_HEADER_CELL_CLASS"

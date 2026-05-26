@@ -2,7 +2,10 @@
 import CustomSelect from "@/components/ui/CustomSelect.vue";
 import {
   useKaryawanFormModal,
+  FIELD_WRAPPER_CLASS,
+  ICON_PREFIX_CLASS,
   INPUT_CLASS,
+  LABEL_CLASS,
   type FormData,
 } from "@/components/admin/karyawan/KaryawanFormModal/useKaryawanFormModal";
 import { getButtonClass } from "@/utils/buttonVariants";
@@ -61,9 +64,9 @@ const { formData, handleSubmit } = useKaryawanFormModal(props, emit);
           >
             <!-- Nama -->
             <div>
-              <label class="block mb-1.5 text-sm font-medium text-gray-700">Nama Lengkap</label>
-              <div class="relative">
-                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <label :class="LABEL_CLASS">Nama Lengkap</label>
+              <div :class="FIELD_WRAPPER_CLASS">
+                <div :class="ICON_PREFIX_CLASS">
                   <i class="text-gray-400 mdi mdi-account-outline text-lg leading-none"></i>
                 </div>
                 <input
@@ -82,9 +85,9 @@ const { formData, handleSubmit } = useKaryawanFormModal(props, emit);
 
             <!-- Email -->
             <div>
-              <label class="block mb-1.5 text-sm font-medium text-gray-700">Email</label>
-              <div class="relative">
-                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <label :class="LABEL_CLASS">Email</label>
+              <div :class="FIELD_WRAPPER_CLASS">
+                <div :class="ICON_PREFIX_CLASS">
                   <i class="text-gray-400 mdi mdi-email-outline text-lg leading-none"></i>
                 </div>
                 <input
@@ -102,9 +105,9 @@ const { formData, handleSubmit } = useKaryawanFormModal(props, emit);
 
             <!-- No. Telepon -->
             <div>
-              <label class="block mb-1.5 text-sm font-medium text-gray-700">Nomor Telepon</label>
-              <div class="relative">
-                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <label :class="LABEL_CLASS">Nomor Telepon</label>
+              <div :class="FIELD_WRAPPER_CLASS">
+                <div :class="ICON_PREFIX_CLASS">
                   <i class="text-gray-400 mdi mdi-phone-outline text-lg leading-none"></i>
                 </div>
                 <input
@@ -135,15 +138,15 @@ const { formData, handleSubmit } = useKaryawanFormModal(props, emit);
                 />
               </div>
               <div>
-                <label class="block mb-1.5 text-sm font-medium text-gray-700">
+                <label :class="LABEL_CLASS">
                   Password
                   <span
                     v-if="isEditMode"
                     class="text-[10px] font-normal text-gray-500 block -mt-0.5 leading-none"
                   >(Opsional)</span>
                 </label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <div :class="FIELD_WRAPPER_CLASS">
+                  <div :class="ICON_PREFIX_CLASS">
                     <i class="text-gray-400 mdi mdi-lock-outline text-lg leading-none"></i>
                   </div>
                   <input

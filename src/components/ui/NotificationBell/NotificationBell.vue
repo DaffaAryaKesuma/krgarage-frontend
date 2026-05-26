@@ -1,5 +1,11 @@
 <script setup lang="ts">
 import { formatDateShort } from "@/utils/date";
+import {
+  getChipBadgeClass,
+  getGradientToneClass,
+  getToneTextClass,
+} from "@/utils/badgeVariants";
+import { getIconButtonClass } from "@/utils/buttonVariants";
 import { useNotificationBell } from "./useNotificationBell";
 
 const {
@@ -19,18 +25,17 @@ const {
   <div class="notification-bell-container relative">
     <button
       @click="toggleDropdown"
-      class="relative p-2"
-      :class="{ '': isOpen || hasUnread }"
+      :class="getIconButtonClass('neutral', 'md', 'relative')"
       title="Notifikasi"
     >
       <i
-        class="mdi mdi-bell text-2xl hover:text-red-600"
-        :class="hasUnread ? 'text-red-600' : 'text-gray-700'"
+        class="mdi mdi-bell text-2xl"
+        :class="hasUnread ? getToneTextClass('primary') : 'text-gray-700'"
       ></i>
 
       <span
         v-if="hasUnread"
-        class="absolute -top-1 -right-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform bg-red-600 rounded-full min-w-[20px] animate-pulse shadow-lg"
+        class="absolute -right-1 -top-1 inline-flex min-w-[20px] items-center justify-center rounded-full bg-red-600 px-2 py-1 text-xs font-bold leading-none text-white shadow-lg animate-pulse"
       >
         {{ unreadCount > 99 ? "99+" : unreadCount }}
       </span>
@@ -49,7 +54,10 @@ const {
         class="absolute -right-6 sm:right-0 mt-2 w-[calc(100vw-2rem)] max-w-sm sm:w-96 bg-white rounded-xl shadow-2xl border border-gray-200 z-50"
       >
         <div
-          class="px-4 py-3 border-b border-gray-200 flex items-center justify-between bg-gradient-to-r from-red-600 to-red-700 rounded-t-xl"
+          :class="[
+            'flex items-center justify-between rounded-t-xl border-b border-gray-200 bg-gradient-to-r px-4 py-3',
+            getGradientToneClass('primary'),
+          ]"
         >
           <h3 class="text-lg font-bold text-white flex items-center gap-2">
             <i class="mdi mdi-bell"></i>
@@ -102,7 +110,7 @@ const {
                     </p>
                     <span
                       v-if="notification.pemesanan?.kode_pemesanan"
-                      class="mt-1 inline-block rounded bg-red-100 px-2 py-0.5 text-xs font-mono font-bold text-red-700"
+                      :class="[getChipBadgeClass('primary'), 'mt-1 inline-block rounded px-2 py-0.5 font-mono text-xs font-bold']"
                     >
                       {{ notification.pemesanan.kode_pemesanan }}
                     </span>
@@ -113,7 +121,7 @@ const {
                   ></span>
                 </div>
 
-                <p class="mt-1.5 line-clamp-2 text-xs text-gray-600">
+                <p class="mt-1.5 text-xs text-gray-600">
                   {{ notification.pesan }}
                 </p>
 

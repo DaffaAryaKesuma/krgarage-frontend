@@ -2,7 +2,8 @@
 import { computed } from "vue";
 import CustomSelect from "@/components/ui/CustomSelect.vue";
 import { canAdminAssignAndStart } from "@/utils/statusBadge";
-import { META_LABEL_CLASS, getChipBadgeClass, getIconToneClass } from "@/utils/badgeVariants";
+import { META_LABEL_CLASS, getChipBadgeClass } from "@/utils/badgeVariants";
+import { getFullWidthButtonClass, getIconButtonClass } from "@/utils/buttonVariants";
 import type { Pemesanan, MekanikOption } from "@/types/pemesanan";
 
 interface Props {
@@ -52,7 +53,7 @@ const handleMekanikChange = (value: string | number | null) => {
       <button
         @click="emit('assignAndStart', props.pemesanan)"
         :disabled="!props.selectedMekanikId"
-        class="w-full rounded-lg border border-blue-200 bg-blue-50 py-2.5 text-sm font-medium text-blue-700 transition hover:bg-blue-100 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-white disabled:text-gray-400"
+        :class="getFullWidthButtonClass('infoOutline', 'md')"
       >
         Mulai Servis
       </button>
@@ -72,10 +73,7 @@ const handleMekanikChange = (value: string | number | null) => {
       <button
         @click="emit('assignAndStart', props.pemesanan)"
         :disabled="!props.selectedMekanikId"
-        :class="[
-          'inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition hover:bg-blue-200 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-white',
-          getIconToneClass('info'),
-        ]"
+        :class="getIconButtonClass('info', 'md', 'shrink-0')"
         title="Mulai Servis"
       >
         <i class="mdi mdi-play-circle text-xl"></i>

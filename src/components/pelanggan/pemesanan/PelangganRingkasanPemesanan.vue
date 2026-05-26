@@ -7,6 +7,7 @@ import {
   getChipBadgeClass,
   getIconToneClass,
 } from "@/utils/badgeVariants";
+import { getFullWidthButtonClass } from "@/utils/buttonVariants";
 
 import type { LayananCatalogItem } from "@/types/layanan";
 import type { VespaBasic } from "@/types/vespa";
@@ -157,12 +158,7 @@ withDefaults(defineProps<Props>(), {
       <button
         type="submit"
         :disabled="isSubmitting"
-        :class="[
-          'w-full py-3.5 px-4 text-white font-bold rounded-xl transition-all duration-200 flex justify-center items-center gap-2 text-base sm:text-lg',
-          isSubmitting
-            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            : 'bg-red-600 hover:bg-red-700 active:scale-[0.98] shadow-lg shadow-red-600/30',
-        ]"
+        :class="getFullWidthButtonClass('primary', 'lg', 'rounded-xl py-3.5 text-base font-bold shadow-lg shadow-red-600/30 active:scale-[0.98] sm:text-lg')"
       >
         <i
           :class="[

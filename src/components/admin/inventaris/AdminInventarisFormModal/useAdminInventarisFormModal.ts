@@ -1,6 +1,11 @@
 import { scrollLock } from "@/composables/scrollLock";
 import { getButtonClass } from "@/utils/buttonVariants";
-import { getFormInputClass } from "@/utils/formVariants";
+import {
+  FORM_LABEL_CLASS,
+  FORM_REQUIRED_MARK_CLASS,
+  getFormInputClass,
+  getFormTextareaClass,
+} from "@/utils/formVariants";
 import type {
   InventarisSukuCadang,
   InventarisSukuCadangForm,
@@ -29,6 +34,9 @@ export const formKartuClass =
 
 /** inputClass untuk AdminInventarisFormModal — dibungkus helper terpusat dari formVariants.ts */
 export const inputClass = getFormInputClass();
+export const textareaClass = getFormTextareaClass();
+export const labelClass = FORM_LABEL_CLASS;
+export const requiredMarkClass = FORM_REQUIRED_MARK_CLASS;
 
 export const buttonPrimaryClass = getButtonClass("primary", "lg", "rounded-xl");
 
