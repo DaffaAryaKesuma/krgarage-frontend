@@ -17,6 +17,9 @@ import {
 import {
   AKSI_CONFIG,
   CANCEL_BUTTON_CLASS,
+  COMPLETE_BUTTON_CLASS,
+  CONFIRM_BUTTON_CLASS,
+  MARK_PAID_BUTTON_CLASS,
   type AksiConfirmationConfig,
   type PemesananAksiType,
   type Mekanik,
@@ -28,7 +31,12 @@ import {
   patchAdminPembayaranStatus,
 } from "@/components/admin/pemesanan-detail/AdminPemesananDetailControlPanel/adminPemesananControlPanelApi";
 
-export { CANCEL_BUTTON_CLASS };
+export {
+  CANCEL_BUTTON_CLASS,
+  COMPLETE_BUTTON_CLASS,
+  CONFIRM_BUTTON_CLASS,
+  MARK_PAID_BUTTON_CLASS,
+};
 
 export interface PropertiAdminPemesananControlPanel {
   pemesananId: number;

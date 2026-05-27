@@ -33,10 +33,7 @@ const { statistik, ringkasan, metrik, terbaruPemesanan } =
         <PemilikStatistikGrid :statistik="statistik" :ringkasan="ringkasan" />
 
         <!-- Terbaru Activity -->
-        <PemilikTerbaruActivity
-          :pemesanan="terbaruPemesanan"
-          :loading="statistik.loading"
-        />
+        <PemilikTerbaruActivity :pemesanan="terbaruPemesanan" />
       </template>
     </div>
   </div>

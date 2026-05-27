@@ -1,4 +1,5 @@
 import { reactive, watch, type Ref } from "vue";
+import { formatPlatNomor } from "@/utils/format";
 
 export interface VespaFormInitialData {
   id?: number | null;
@@ -132,7 +133,7 @@ export function usePelangganVespaFormModal(
       id: form.id,
       model: form.model,
       tahun_produksi: form.tahun_produksi,
-      plat_nomor: form.plat_nomor,
+      plat_nomor: formatPlatNomor(form.plat_nomor),
     };
   };
 
@@ -143,7 +144,9 @@ export function usePelangganVespaFormModal(
         form.id = newData.id || null;
         form.model = newData.model || "";
         form.tahun_produksi = newData.tahun_produksi || null;
-        form.plat_nomor = newData.plat_nomor || "";
+        form.plat_nomor = newData.plat_nomor
+          ? formatPlatNomor(newData.plat_nomor)
+          : "";
         return;
       }
 

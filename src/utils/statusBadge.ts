@@ -28,7 +28,6 @@ export {
   canMekanikUpdateStatus,
   canMekanikAddSukuCadang,
   getMekanikAksiButtonText,
-  getMekanikAksiButtonClass,
   getMekanikNextStatus,
   getStatusBadge,
   getStatusBadgeClass,

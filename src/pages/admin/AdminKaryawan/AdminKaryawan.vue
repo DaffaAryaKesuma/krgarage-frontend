@@ -4,6 +4,11 @@ import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import KaryawanKartu from "@/components/admin/karyawan/KaryawanKartu.vue";
 import KaryawanFormModal from "@/components/admin/karyawan/KaryawanFormModal/KaryawanFormModal.vue";
+import {
+  ADD_ACTION_ICON_CLASS,
+  ADD_ACTION_TITLE_CLASS,
+  getAddActionCardClass,
+} from "@/utils/selectionVariants";
 import { useAdminKaryawanPage } from "./useAdminKaryawanPage";
 
 const {
@@ -40,12 +45,15 @@ const {
         <!-- Tombol Tambah -->
         <button
           @click="openAddModal"
-          class="flex flex-col items-center justify-center p-6 text-gray-400 transition-all bg-transparent border-2 border-gray-300 border-dashed rounded-xl hover:border-red-500 hover:text-red-600 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 min-h-[220px] group"
+          :class="getAddActionCardClass('card', 'min-h-[220px] focus:ring-offset-2')"
         >
           <i
-            class="mb-2 text-5xl transition-transform mdi mdi-plus-circle-outline group-hover:scale-110"
+            :class="[
+              'mdi mdi-plus-circle-outline mb-2 text-5xl transition-transform group-hover:scale-110',
+              ADD_ACTION_ICON_CLASS,
+            ]"
           ></i>
-          <span class="text-sm font-semibold tracking-wide uppercase"
+          <span :class="[ADD_ACTION_TITLE_CLASS, 'text-sm uppercase tracking-wide']"
             >Tambah Karyawan</span
           >
         </button>

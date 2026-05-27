@@ -13,6 +13,7 @@ import {
   getFormInputClass,
   getFormTextareaClass,
 } from "@/utils/formVariants";
+import { getTimeSlotClass } from "@/utils/selectionVariants";
 
 interface Props {
   timeSlots: string[];
@@ -107,11 +108,10 @@ const selectTime = (slot: string) => {
             :disabled="bookedSlots.includes(slot)"
             :class="[
               'py-2 px-2 rounded-lg font-semibold text-sm transition border-2',
-              bookedSlots.includes(slot)
-                ? 'bg-red-100 border-red-300 text-red-600 opacity-50 cursor-not-allowed line-through'
-                : timeValue === slot
-                  ? 'bg-green-500 border-green-600 text-white shadow-lg'
-                  : 'bg-white border-gray-300 hover:border-green-400 hover:bg-green-50',
+              getTimeSlotClass({
+                booked: bookedSlots.includes(slot),
+                selected: timeValue === slot,
+              }),
             ]"
           >
             {{ slot }}

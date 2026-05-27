@@ -2,6 +2,13 @@
 import PelangganVespaKartu from "./PelangganVespaKartu.vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
+import { getIconToneClass } from "@/utils/badgeVariants";
+import {
+  ADD_ACTION_ICON_WRAPPER_CLASS,
+  ADD_ACTION_SUBTITLE_CLASS,
+  ADD_ACTION_TITLE_CLASS,
+  getAddActionCardClass,
+} from "@/utils/selectionVariants";
 import type { VespaDetail } from "@/types/vespa";
 
 interface Props {
@@ -22,17 +29,8 @@ const emit = defineEmits<{
 
 <template>
   <section class="mb-8">
-    <div class="flex items-center justify-between mb-6">
-      <div class="flex items-center gap-3">
-        <div
-          class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center text-red-600"
-        >
-          <i class="mdi mdi-format-list-bulleted text-xl"></i>
-        </div>
-        <h2 class="text-2xl font-bold text-gray-900 tracking-tight">
-          Koleksi Vespa
-        </h2>
-      </div>
+    <div class="flex items-center justify-between mb-2">
+      <div class="flex items-center gap-3"></div>
     </div>
 
     <div class="bg-transparent">
@@ -63,21 +61,20 @@ const emit = defineEmits<{
         <!-- Add New Vespa Kartu -->
         <button
           @click="emit('addNew')"
-          class="bg-transparent border-2 border-dashed border-gray-300 rounded-2xl p-6 hover:border-red-500 hover:bg-red-50 transition-all duration-300 flex flex-col items-center justify-center min-h-[250px] group cursor-pointer"
+          :class="
+            getAddActionCardClass(
+              'card',
+              'min-h-[250px] rounded-2xl duration-300',
+            )
+          "
         >
-          <div
-            class="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 group-hover:bg-red-100 group-hover:text-red-500 transition-colors mb-4"
-          >
+          <div :class="['mb-4 h-14 w-14', ADD_ACTION_ICON_WRAPPER_CLASS]">
             <i class="mdi mdi-plus text-3xl"></i>
           </div>
-          <h3
-            class="font-bold text-gray-600 group-hover:text-red-600 transition-colors text-lg"
-          >
+          <h3 :class="[ADD_ACTION_TITLE_CLASS, 'text-lg font-bold']">
             Tambah Vespa
           </h3>
-          <p
-            class="text-sm text-gray-400 group-hover:text-red-400 text-center mt-2"
-          >
+          <p :class="[ADD_ACTION_SUBTITLE_CLASS, 'mt-2 text-center text-sm']">
             Daftarkan Vespa baru Anda
           </p>
         </button>

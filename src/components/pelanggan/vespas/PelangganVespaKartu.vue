@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { formatDateShort } from "@/utils/date";
+import { formatPlatNomor } from "@/utils/format";
 import {
   META_LABEL_CLASS,
   getAlertBoxClass,
   getAlertIconClass,
   getIconToneClass,
 } from "@/utils/badgeVariants";
+import { getButtonClass, getIconButtonClass } from "@/utils/buttonVariants";
 import type { VespaDetail } from "@/types/vespa";
 
 interface Props {
@@ -21,32 +23,27 @@ const emit = defineEmits<{
 
 <template>
   <div
-    class="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col relative overflow-hidden group"
+    class="group flex h-full flex-col rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-gray-200 hover:shadow-xl hover:shadow-gray-500/5 sm:p-5"
   >
-    <!-- Accent Line -->
-    <div
-      class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 to-red-600"
-    ></div>
-
     <!-- Kartu Header -->
-    <div class="mb-5 flex items-start justify-between">
-      <div class="flex items-center gap-4">
+    <div class="mb-4 flex items-start justify-between gap-3">
+      <div class="flex min-w-0 items-center gap-3">
         <div
           :class="[
             getIconToneClass('primary'),
-            'flex h-14 w-14 items-center justify-center rounded-2xl',
+            'flex h-12 w-12 shrink-0 items-center justify-center rounded-full',
           ]"
         >
-          <i class="mdi mdi-motorbike text-3xl"></i>
+          <i class="mdi mdi-motorbike text-2xl"></i>
         </div>
-        <div>
-          <h3 class="font-bold text-gray-900 text-xl tracking-tight">
+        <div class="min-w-0">
+          <h3 class="truncate text-lg font-bold text-gray-900">
             {{ vespa.model }}
           </h3>
           <p
-            class="text-sm text-gray-500 font-bold uppercase tracking-widest mt-0.5"
+            class="mt-0.5 text-sm font-bold uppercase tracking-wider text-gray-500"
           >
-            {{ vespa.plat_nomor }}
+            {{ formatPlatNomor(vespa.plat_nomor) }}
           </p>
         </div>
       </div>
@@ -55,12 +52,12 @@ const emit = defineEmits<{
     <!-- Layanan Status -->
     <div
       v-if="vespa.perlu_servis"
-      :class="[getAlertBoxClass('error'), 'mb-5 flex items-center gap-3 p-3.5 shadow-none']"
+      :class="[getAlertBoxClass('error'), 'mb-4 flex items-center gap-3 p-3 shadow-none']"
     >
       <div
         :class="[
           getIconToneClass('danger'),
-          'flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full',
+          'flex h-8 w-8 shrink-0 items-center justify-center rounded-full',
         ]"
       >
         <i class="mdi mdi-alert-circle text-lg"></i>
@@ -80,12 +77,12 @@ const emit = defineEmits<{
         vespa.hari_hingga_servis <= 7 &&
         !vespa.perlu_servis
       "
-      :class="[getAlertBoxClass('warning'), 'mb-5 flex items-center gap-3 p-3.5 shadow-none']"
+      :class="[getAlertBoxClass('warning'), 'mb-4 flex items-center gap-3 p-3 shadow-none']"
     >
       <div
         :class="[
           getIconToneClass('warning'),
-          'flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full',
+          'flex h-8 w-8 shrink-0 items-center justify-center rounded-full',
         ]"
       >
         <i class="mdi mdi-clock-alert text-lg"></i>
@@ -101,13 +98,13 @@ const emit = defineEmits<{
     </div>
 
     <!-- Info Kartu -->
-    <div class="grid grid-cols-2 gap-3 mb-6 flex-1">
+    <div class="mb-5 grid flex-1 grid-cols-1 gap-3">
       <!-- Tahun (Full Width) -->
       <div
-        class="col-span-2 flex items-center gap-2 p-3 bg-gray-50 rounded-xl border border-gray-100"
+        class="flex items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 p-3"
       >
         <div
-          class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm shrink-0"
+          class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white shadow-sm"
         >
           <i
             :class="[getAlertIconClass('info'), 'mdi mdi-calendar-range text-lg']"
@@ -125,10 +122,10 @@ const emit = defineEmits<{
 
       <!-- Servis Terakhir -->
       <div
-        class="col-span-2 flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100"
+        class="flex items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 p-3"
       >
         <div
-          class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm"
+          class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white shadow-sm"
         >
           <i
             :class="[getAlertIconClass('success'), 'mdi mdi-wrench-clock text-lg']"
@@ -157,17 +154,17 @@ const emit = defineEmits<{
     </div>
 
     <!-- Aksi Buttons -->
-    <div class="flex gap-3 mt-auto pt-4 border-t border-gray-100">
+    <div class="mt-auto flex gap-3 border-t border-gray-100 pt-4">
       <button
         @click="emit('edit', vespa)"
-        class="flex-1 py-2.5 bg-white border border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all flex items-center justify-center gap-2 text-sm shadow-sm"
+        :class="getButtonClass('secondary', 'md', 'flex-1 rounded-xl shadow-sm')"
       >
         <i class="mdi mdi-pencil"></i>
         Edit
       </button>
       <button
         @click="emit('delete', vespa)"
-        class="py-2.5 px-4 bg-white border border-red-100 text-red-600 font-semibold rounded-xl hover:bg-red-50 hover:border-red-200 transition-all flex items-center justify-center text-sm shadow-sm"
+        :class="getIconButtonClass('danger', 'lg', 'rounded-xl border border-red-100 bg-white shadow-sm')"
         title="Hapus Vespa"
       >
         <i class="mdi mdi-delete text-lg"></i>

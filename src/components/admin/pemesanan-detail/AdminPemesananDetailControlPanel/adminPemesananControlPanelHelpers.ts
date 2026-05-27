@@ -1,6 +1,6 @@
 import { PEMESANAN_STATUS } from "@/utils/statusBadge";
 import { PEMBAYARAN_STATUS } from "@/utils/pembayaranStatus";
-import { getFullWidthButtonClass } from "@/utils/buttonVariants";
+import { getButtonClass, getFullWidthButtonClass } from "@/utils/buttonVariants";
 
 export interface Mekanik {
   id: number;
@@ -61,3 +61,15 @@ export const AKSI_CONFIG: Record<PemesananAksiType, AksiConfirmationConfig> = {
 
 export const CANCEL_BUTTON_CLASS =
   getFullWidthButtonClass("dangerOutline", "md");
+
+export const CONFIRM_BUTTON_CLASS =
+  getFullWidthButtonClass("infoOutline", "md");
+
+export const COMPLETE_BUTTON_CLASS =
+  getFullWidthButtonClass("successOutline", "md");
+
+export const MARK_PAID_BUTTON_CLASS = getButtonClass(
+  "success",
+  "sm",
+  "text-xs",
+);

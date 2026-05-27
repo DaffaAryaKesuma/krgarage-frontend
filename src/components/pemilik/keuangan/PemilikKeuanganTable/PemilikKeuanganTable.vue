@@ -20,6 +20,7 @@ import {
   TABLE_MOBILE_CARD_SINGLE_GRID_CLASS,
   TABLE_MOBILE_KARTU_CLASS,
   TABLE_WRAPPER_CLASS,
+  buildFixedTableClass,
 } from "@/utils/tableVariants";
 import {
   TABLE_HEADERS,
@@ -45,6 +46,10 @@ const {
   getPemesananStatus,
   getPemesananTotal,
 } = usePemilikKeuanganTable(props, emit);
+
+const TABLE_COLUMN_WIDTHS = ["16%", "17%", "13%", "13%", "15%", "13%", "13%"];
+const TABLE_CELL_CLASS = "px-6 py-4 align-middle text-sm text-gray-900";
+const TABLE_BADGE_CELL_CLASS = "px-6 py-4 align-middle whitespace-nowrap";
 </script>
 
 <template>
@@ -58,25 +63,19 @@ const {
       </div>
     </div>
 
-    <div v-if="loading" class="space-y-4">
-      <div
-        v-for="i in 5"
-        :key="i"
-        class="h-16 animate-pulse rounded-lg bg-gray-200"
-      ></div>
-    </div>
-
     <TableShell
-      v-else-if="pemesanan.length > 0"
+      v-if="pemesanan.length > 0"
       :headers="TABLE_HEADERS"
       :responsive-kartu="true"
       desktop-breakpoint="lg"
       :mobile-kartu-class="TABLE_MOBILE_KARTU_CLASS"
       :wrapper-class="TABLE_WRAPPER_CLASS"
+      :table-class="buildFixedTableClass('text-sm')"
       :head-class="TABLE_HEAD_CLASS"
       header-row-class="text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
       :header-cell-class="TABLE_COMFORTABLE_HEADER_CELL_CLASS"
       :body-class="TABLE_BODY_CLASS"
+      :column-widths="TABLE_COLUMN_WIDTHS"
     >
       <template #mobile>
         <div
@@ -152,27 +151,27 @@ const {
         :key="pemesanan.id"
         class="hover:bg-gray-50 transition-colors"
       >
-        <td class="px-6 py-4 text-sm text-gray-900">
+        <td :class="TABLE_CELL_CLASS">
           {{ pemesanan.kode_pemesanan }}
         </td>
-        <td class="px-6 py-4 text-sm text-gray-900">
+        <td :class="TABLE_CELL_CLASS">
           {{ formatDateShort(getPemesananDate(pemesanan)) }}
         </td>
-        <td class="px-6 py-4 text-sm text-gray-900">
+        <td :class="TABLE_CELL_CLASS">
           {{ formatNama(pemesanan.pengguna?.nama || "-") }}
         </td>
-        <td class="px-6 py-4 text-sm text-gray-900">
+        <td :class="TABLE_CELL_CLASS">
           {{ getPemesananPlateNumber(pemesanan) }}
         </td>
-        <td class="px-6 py-4 text-sm text-gray-900">
+        <td :class="TABLE_CELL_CLASS">
           {{ toIDR(getPemesananTotal(pemesanan)) }}
         </td>
-        <td class="px-6 py-4">
+        <td :class="TABLE_BADGE_CELL_CLASS">
           <span :class="getStatusBadgeClass(getPemesananStatus(pemesanan))">
             {{ getStatusLabel(getPemesananStatus(pemesanan)) }}
           </span>
         </td>
-        <td class="px-6 py-4">
+        <td :class="TABLE_BADGE_CELL_CLASS">
           <span
             :class="getPembayaranStatusBadgeClass(pemesanan.status_pembayaran)"
           >

@@ -11,6 +11,9 @@ import {
 } from "@/utils/badgeVariants";
 import {
   CANCEL_BUTTON_CLASS,
+  COMPLETE_BUTTON_CLASS,
+  CONFIRM_BUTTON_CLASS,
+  MARK_PAID_BUTTON_CLASS,
   useAdminPemesananControlPanel,
 } from "./useAdminPemesananControlPanel";
 
@@ -63,12 +66,10 @@ onMounted(() => {
     </h3>
 
     <div
-      class="mb-4 rounded-lg border px-3 py-2"
-      :class="
-        assignedMekanikName
-          ? 'border-blue-200 bg-blue-50'
-          : 'border-gray-200 bg-gray-50'
-      "
+      :class="[
+        getAlertBoxClass(assignedMekanikName ? 'info' : 'neutral'),
+        'mb-4 px-3 py-2 shadow-none',
+      ]"
     >
       <p :class="META_LABEL_CLASS">Mekanik Ditugaskan</p>
       <p
@@ -84,7 +85,7 @@ onMounted(() => {
         <button
           @click="handleConfirm"
           :disabled="isProcessing"
-          class="w-full py-3 bg-white border border-blue-700 text-blue-700 text-sm font-semibold rounded-lg hover:bg-blue-50 transition flex items-center justify-center gap-2 disabled:opacity-50"
+          :class="CONFIRM_BUTTON_CLASS"
         >
           <span v-if="isProcessing"
             ><i class="mdi mdi-loading mdi-spin"></i
@@ -118,7 +119,7 @@ onMounted(() => {
           <button
             @click="assignMekanikAndStart"
             :disabled="!selectedMekanikId || isProcessing"
-            class="w-full py-3 bg-white border border-blue-700 text-blue-700 text-sm font-semibold rounded-lg hover:bg-blue-50 transition flex items-center justify-center gap-2 disabled:border-gray-300 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
+            :class="CONFIRM_BUTTON_CLASS"
           >
             <span v-if="isProcessing"
               ><i class="mdi mdi-loading mdi-spin"></i
@@ -151,7 +152,7 @@ onMounted(() => {
         <button
           @click="handleComplete"
           :disabled="isProcessing"
-          class="w-full py-3 bg-white border border-green-600 text-green-600 text-sm font-semibold rounded-lg hover:bg-green-50 transition flex items-center justify-center gap-2 disabled:opacity-50"
+          :class="COMPLETE_BUTTON_CLASS"
         >
           <span v-if="isProcessing"
             ><i class="mdi mdi-loading mdi-spin"></i
@@ -197,7 +198,7 @@ onMounted(() => {
                 v-if="canMarkAsPaid"
                 @click="handleMarkAsPaid"
                 :disabled="isProcessing"
-                class="inline-flex items-center gap-1 rounded-lg bg-green-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
+                :class="MARK_PAID_BUTTON_CLASS"
               >
                 <i class="mdi mdi-cash-check"></i>
                 Tandai Lunas

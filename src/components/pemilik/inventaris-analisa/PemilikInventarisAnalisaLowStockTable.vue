@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import TableShell from "@/components/ui/TableShell.vue";
 import { toIDR } from "@/utils/money";
 import {
   META_LABEL_CLASS,
   getAlertBoxClass,
   getAlertIconClass,
+  getIconToneClass,
+  getToneTextClass,
   getInventoryBadgeClass,
 } from "@/utils/badgeVariants";
 import {
@@ -16,7 +19,7 @@ import {
   TABLE_MOBILE_CARD_GRID_CLASS,
   TABLE_MOBILE_CARD_HEADER_CLASS,
   TABLE_MOBILE_KARTU_CLASS,
-  buildTableClass,
+  buildFixedTableClass,
 } from "@/utils/tableVariants";
 
 interface LowStockItem {
@@ -33,7 +36,7 @@ interface Props {
   loading: boolean;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 
 const STOCK_STATUS = {
   habis: { label: "Habis", class: getInventoryBadgeClass("habis") },
@@ -45,6 +48,9 @@ const getStockStatus = (stock: number, _minStock: number) => {
   return STOCK_STATUS.kritis;
 };
 
+const getStockTextClass = (stock: number) =>
+  stock === 0 ? getToneTextClass("danger") : getToneTextClass("warning");
+
 const TABLE_HEADERS = [
   "Nama Barang",
   "Stok Saat Ini",
@@ -52,13 +58,19 @@ const TABLE_HEADERS = [
   "Harga Beli",
   "Status",
 ];
+
+const TABLE_COLUMN_WIDTHS = ["28%", "16%", "16%", "22%", "18%"];
+
+const TABLE_CELL_CLASS = "px-4 py-4 align-middle sm:px-6";
+const TABLE_NUMBER_CELL_CLASS = `${TABLE_CELL_CLASS} font-bold`;
+const TABLE_PRICE_CELL_CLASS = `${TABLE_CELL_CLASS} font-semibold text-gray-900`;
 </script>
 
 <template>
-  <div class="rounded-2xl bg-white p-6 shadow-lg mb-8 border-l-4 border-red-500">
+  <div class="rounded-2xl bg-white p-6 shadow-lg mb-8 border border-gray-100">
     <div class="mb-6 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="rounded-lg bg-red-100 p-2">
+        <div :class="[getIconToneClass('danger'), 'rounded-full p-2']">
           <i
             :class="['mdi mdi-alert-circle text-3xl', getAlertIconClass('error')]"
           ></i>
@@ -72,13 +84,7 @@ const TABLE_HEADERS = [
       </div>
     </div>
 
-    <div v-if="loading" class="space-y-4">
-      <div
-        v-for="i in 3"
-        :key="i"
-        class="h-20 animate-pulse rounded-lg bg-gray-200"
-      ></div>
-    </div>
+    <LoadingSpinner v-if="loading" message="Memuat stok menipis..." />
 
     <TableShell
       v-else-if="items.length > 0"
@@ -86,11 +92,12 @@ const TABLE_HEADERS = [
       :responsive-kartu="true"
       desktop-breakpoint="lg"
       :mobile-kartu-class="TABLE_MOBILE_KARTU_CLASS"
-      :table-class="buildTableClass('text-sm')"
+      :table-class="buildFixedTableClass('text-sm')"
       :head-class="TABLE_HEAD_CLASS"
       header-row-class="border-b"
       :header-cell-class="TABLE_HEADER_CELL_CLASS"
       :body-class="TABLE_BODY_CLASS"
+      :column-widths="TABLE_COLUMN_WIDTHS"
     >
       <template #mobile>
         <div
@@ -120,7 +127,7 @@ const TABLE_HEADERS = [
               <p
                 :class="[
                   'font-medium',
-                item.jumlah_stok === 0 ? 'text-red-600' : 'text-amber-600',
+                  getStockTextClass(item.jumlah_stok),
                 ]"
               >
                 {{ item.jumlah_stok }}
@@ -149,23 +156,23 @@ const TABLE_HEADERS = [
         :key="item.id"
         :class="TABLE_DANGER_ROW_HOVER_CLASS"
       >
-        <td class="py-3 pl-2">
+        <td :class="TABLE_CELL_CLASS">
           <div class="font-bold text-gray-900">{{ item.nama_barang }}</div>
           <div class="text-xs text-gray-600">{{ item.kategori }}</div>
         </td>
-        <td class="py-3 px-8">
+        <td :class="TABLE_NUMBER_CELL_CLASS">
           <span
             :class="[
               'font-bold',
-              item.jumlah_stok === 0 ? 'text-red-600' : 'text-amber-600',
+              getStockTextClass(item.jumlah_stok),
             ]"
           >
             {{ item.jumlah_stok }}
           </span>
         </td>
-        <td class="py-3 px-8 font-bold">{{ item.minimum_stok }}</td>
-        <td class="py-3 font-semibold">{{ toIDR(item.harga_beli) }}</td>
-        <td class="py-3">
+        <td :class="TABLE_NUMBER_CELL_CLASS">{{ item.minimum_stok }}</td>
+        <td :class="TABLE_PRICE_CELL_CLASS">{{ toIDR(item.harga_beli) }}</td>
+        <td :class="TABLE_CELL_CLASS">
           <span
             :class="[
               getStockStatus(item.jumlah_stok, item.minimum_stok).class,

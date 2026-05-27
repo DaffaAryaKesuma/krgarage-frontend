@@ -7,7 +7,6 @@ import type {
 
 export interface PemilikKeuanganTableProps {
   pemesanan: KeuanganPemesanan[];
-  loading: boolean;
   startDate: string;
   endDate: string;
   currentPage: number;

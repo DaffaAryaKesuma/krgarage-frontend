@@ -6,7 +6,7 @@ import {
   type VespaFormPayload,
 } from "./usePelangganVespaFormModal";
 import { scrollLock } from "@/composables/scrollLock";
-import { getAlertBoxClass } from "@/utils/badgeVariants";
+import { getAlertBoxClass, getIconToneClass } from "@/utils/badgeVariants";
 import { getButtonClass } from "@/utils/buttonVariants";
 import {
   FORM_LABEL_CLASS,
@@ -66,20 +66,15 @@ const onSubmit = () => {
 
     <!-- Modal Content -->
     <section
-      class="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col"
+      class="relative flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
     >
-      <!-- Accent Line -->
-      <div
-        class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-red-500 to-red-600"
-      ></div>
-
       <!-- Header -->
       <div
-        class="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-white pt-6"
+        class="flex items-center justify-between border-b border-gray-100 bg-white px-6 py-5"
       >
         <div class="flex items-center gap-3">
           <div
-            class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center text-red-600"
+            :class="[getIconToneClass('primary'), 'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl']"
           >
             <i
               class="mdi text-xl"
@@ -90,7 +85,7 @@ const onSubmit = () => {
             <h2 class="text-xl font-bold text-gray-900 tracking-tight">
               {{ mode === "add" ? "Tambah Vespa Baru" : "Edit Data Vespa" }}
             </h2>
-            <p class="text-xs text-gray-500 mt-0.5 font-medium">
+            <p class="mt-0.5 text-xs font-medium text-gray-500">
               Lengkapi data kendaraan di bawah ini
             </p>
           </div>
@@ -99,7 +94,7 @@ const onSubmit = () => {
 
       <!-- Body -->
       <div class="overflow-y-auto flex-1 custom-scrollbar">
-        <form @submit.prevent="onSubmit" id="vespa-form" class="p-6 space-y-5">
+        <form @submit.prevent="onSubmit" id="vespa-form" class="space-y-5 p-6">
           <!-- Model Field -->
           <div>
             <label :class="FORM_LABEL_CLASS">
@@ -130,7 +125,7 @@ const onSubmit = () => {
             </p>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <!-- Tahun Field -->
             <div>
               <label :class="FORM_LABEL_CLASS">
@@ -207,7 +202,7 @@ const onSubmit = () => {
 
       <!-- Footer -->
       <div
-        class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex gap-3 sm:justify-end mt-auto"
+        class="mt-auto flex gap-3 border-t border-gray-100 bg-gray-50 px-6 py-4 sm:justify-end"
       >
         <button
           type="button"

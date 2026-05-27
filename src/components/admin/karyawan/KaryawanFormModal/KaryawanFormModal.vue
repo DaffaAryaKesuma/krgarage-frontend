@@ -8,6 +8,7 @@ import {
   LABEL_CLASS,
   type FormData,
 } from "@/components/admin/karyawan/KaryawanFormModal/useKaryawanFormModal";
+import { getToneTextClass } from "@/utils/badgeVariants";
 import { getButtonClass } from "@/utils/buttonVariants";
 
 const props = defineProps<{
@@ -48,8 +49,8 @@ const { formData, handleSubmit } = useKaryawanFormModal(props, emit);
               <i
                 :class="
                   isEditMode
-                    ? 'mdi mdi-account-edit text-blue-600'
-                    : 'mdi mdi-account-plus text-blue-600'
+                    ? `mdi mdi-account-edit ${getToneTextClass('primary')}`
+                    : `mdi mdi-account-plus ${getToneTextClass('primary')}`
                 "
               ></i>
               {{ isEditMode ? "Edit Karyawan" : "Tambah Karyawan Baru" }}

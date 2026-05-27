@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch } from "vue";
+import { scrollLock } from "@/composables/scrollLock";
+import { getGradientToneClass } from "@/utils/badgeVariants";
+import { getButtonClass } from "@/utils/buttonVariants";
+import { FORM_ERROR_CLASS, getFormTextareaClass } from "@/utils/formVariants";
 
 interface Props {
   show: boolean;
@@ -19,41 +23,37 @@ interface Emits {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  confirmText: 'Simpan',
-  cancelText: 'Batal',
-  placeholder: 'Contoh: Keluhan bunyi kasar pada mesin sudah diatasi',
+  confirmText: "Simpan",
+  cancelText: "Batal",
+  placeholder: "Contoh: Keluhan bunyi kasar pada mesin sudah diatasi",
   required: false,
   loading: false,
 });
 
 const emit = defineEmits<Emits>();
 
-import { scrollLock } from "@/composables/scrollLock";
-import { getButtonClass } from "@/utils/buttonVariants";
-import { getFormTextareaClass } from "@/utils/formVariants";
-
-const inputValue = ref('');
-const errorMsg = ref('');
+const inputValue = ref("");
+const errorMsg = ref("");
 
 scrollLock(() => props.show);
 
 watch(() => props.show, (newVal) => {
   if (newVal) {
-    inputValue.value = '';
-    errorMsg.value = '';
+    inputValue.value = "";
+    errorMsg.value = "";
   }
 }, { immediate: true });
 
 function handleConfirm() {
   if (props.required && !inputValue.value.trim()) {
-    errorMsg.value = 'Bagian ini wajib diisi';
+    errorMsg.value = "Bagian ini wajib diisi";
     return;
   }
-  emit('confirm', inputValue.value.trim());
+  emit("confirm", inputValue.value.trim());
 }
 
 function handleCancel() {
-  emit('cancel');
+  emit("cancel");
 }
 </script>
 
@@ -64,12 +64,17 @@ function handleCancel() {
     @click.self="handleCancel"
   >
     <div class="w-full max-w-md transform transition-all duration-300 scale-100 bg-white rounded-xl shadow-2xl">
-      <div class="px-6 py-4 rounded-t-xl bg-green-600">
+      <div
+        :class="[
+          'px-6 py-4 rounded-t-xl bg-gradient-to-br',
+          getGradientToneClass('success'),
+        ]"
+      >
         <h3 class="text-xl font-bold text-white flex items-center gap-2">
           <i class="mdi mdi-check-all text-2xl"></i>
           {{ title }}
         </h3>
-        <p v-if="subtitle" class="text-green-50 text-sm mt-1">
+        <p v-if="subtitle" class="text-white/85 text-sm mt-1">
           {{ subtitle }}
         </p>
       </div>
@@ -86,7 +91,7 @@ function handleCancel() {
           <div class="mt-1 text-right text-xs text-gray-500">
             {{ inputValue.length }}/1000
           </div>
-          <p v-if="errorMsg" class="mt-1 text-sm text-red-500">{{ errorMsg }}</p>
+          <p v-if="errorMsg" :class="FORM_ERROR_CLASS">{{ errorMsg }}</p>
         </div>
         <div class="flex gap-3">
           <button

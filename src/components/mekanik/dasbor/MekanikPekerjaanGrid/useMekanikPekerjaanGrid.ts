@@ -2,7 +2,6 @@ import { formatDateShort, formatTimeShort } from "@/utils/date";
 import {
   canMekanikAddSukuCadang,
   canMekanikUpdateStatus,
-  getMekanikAksiButtonClass,
   getMekanikAksiButtonText,
   getStatusBadgeClass,
   getStatusLabel,
@@ -32,7 +31,6 @@ export function useMekanikPekerjaanGrid() {
     formatTimeShort,
     canMekanikAddSukuCadang,
     canMekanikUpdateStatus,
-    getMekanikAksiButtonClass,
     getMekanikAksiButtonText,
     getStatusBadgeClass,
     getStatusLabel,

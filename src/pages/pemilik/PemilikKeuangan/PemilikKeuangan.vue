@@ -89,7 +89,6 @@ onMounted(() => {
       <PemilikKeuanganTable
         v-else-if="activeTab === 'pemasukan'"
         :pemesanan="pemesanan"
-        :loading="loading"
         :start-date="startDate"
         :end-date="endDate"
         v-model:currentPage="currentPage"
@@ -99,7 +98,6 @@ onMounted(() => {
       <PemilikKeuanganPengeluaranRestokTable
         v-else
         :pengeluaran="pengeluaranRestok"
-        :loading="loading"
         :start-date="startDate"
         :end-date="endDate"
         v-model:currentPage="expenseCurrentPage"

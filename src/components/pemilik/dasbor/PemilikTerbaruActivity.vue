@@ -9,12 +9,12 @@ import {
   TABLE_HEADER_CELL_CLASS,
   TABLE_MOBILE_KARTU_CLASS,
   TABLE_WRAPPER_CLASS,
+  buildFixedTableClass,
 } from "@/utils/tableVariants";
 import type { PemilikTerbaruPemesananActivity } from "@/types/pemesanan";
 
 interface Props {
   pemesanan: PemilikTerbaruPemesananActivity[];
-  loading: boolean;
 }
 
 defineProps<Props>();
@@ -28,6 +28,8 @@ const TABLE_HEADERS = [
   "Status",
   "Pembayaran",
 ];
+
+const TABLE_COLUMN_WIDTHS = ["14%", "16%", "13%", "23%", "12%", "11%", "11%"];
 </script>
 
 <template>
@@ -48,27 +50,20 @@ const TABLE_HEADERS = [
       </router-link>
     </div>
 
-    <!-- Loading State -->
-    <div v-if="loading" class="space-y-4">
-      <div
-        v-for="i in 3"
-        :key="i"
-        class="h-20 animate-pulse rounded-lg bg-gray-200"
-      ></div>
-    </div>
-
     <!-- Pemesanan Table -->
     <TableShell
-      v-else-if="pemesanan.length > 0"
+      v-if="pemesanan.length > 0"
       :headers="TABLE_HEADERS"
       :responsive-kartu="true"
       desktop-breakpoint="lg"
       :mobile-kartu-class="TABLE_MOBILE_KARTU_CLASS"
       :wrapper-class="TABLE_WRAPPER_CLASS"
+      :table-class="buildFixedTableClass('text-sm')"
       :head-class="TABLE_HEAD_CLASS"
       header-row-class="border-b border-gray-200"
       :header-cell-class="TABLE_HEADER_CELL_CLASS"
       :body-class="TABLE_BODY_CLASS"
+      :column-widths="TABLE_COLUMN_WIDTHS"
     >
       <template #mobile>
         <PemilikTerbaruActivityMobileKartu

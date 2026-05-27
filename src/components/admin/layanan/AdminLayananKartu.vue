@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
 import { getImageUrl, formatWaktu } from "@/utils/format";
-import { META_LABEL_CLASS } from "@/utils/badgeVariants";
+import {
+  META_LABEL_CLASS,
+  getAlertBoxClass,
+  getToneTextClass,
+} from "@/utils/badgeVariants";
 import { getButtonClass } from "@/utils/buttonVariants";
 import type { LayananCatalogItem } from "@/types/layanan";
 
@@ -56,18 +60,16 @@ const handleImageError = (e: Event) => {
       </p>
 
       <!-- Info Box -->
-      <div
-        class="bg-gray-100 p-3 rounded-lg mb-4 grid grid-cols-2 gap-2 text-sm mt-auto"
-      >
-        <div>
-          <p :class="META_LABEL_CLASS">Estimasi Harga</p>
-          <p class="font-bold text-gray-900">
+      <div class="mb-4 mt-auto grid grid-cols-2 gap-2">
+        <div :class="[getAlertBoxClass('info'), 'rounded p-2 shadow-none']">
+          <p :class="META_LABEL_CLASS">Harga</p>
+          <p class="text-sm font-bold" :class="getToneTextClass('info')">
             {{ toIDR(layanan.harga) }}
           </p>
         </div>
-        <div>
-          <p :class="META_LABEL_CLASS">Estimasi Durasi</p>
-          <p class="font-bold text-gray-900">
+        <div :class="[getAlertBoxClass('success'), 'rounded p-2 shadow-none']">
+          <p :class="META_LABEL_CLASS">Durasi</p>
+          <p class="text-sm font-bold" :class="getToneTextClass('success')">
             {{ formatWaktu(layanan.durasi_pengerjaan) }}
           </p>
         </div>

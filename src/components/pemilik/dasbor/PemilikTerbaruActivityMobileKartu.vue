@@ -4,7 +4,10 @@ import { formatDateShort } from "@/utils/date";
 import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
 import { formatNama } from "@/utils/format";
 import type { PemilikTerbaruPemesananActivity } from "@/types/pemesanan";
-import { getPembayaranStatusBadgeClass, getPembayaranStatusLabel } from "@/utils/pembayaranStatus";
+import {
+  getPembayaranStatusBadgeClass,
+  getPembayaranStatusLabel,
+} from "@/utils/pembayaranStatus";
 import { META_LABEL_CLASS } from "@/utils/badgeVariants";
 import {
   TABLE_MOBILE_CARD_CLASS,
@@ -36,11 +39,15 @@ defineProps<Props>();
     <div :class="TABLE_MOBILE_CARD_GRID_CLASS">
       <div>
         <p :class="META_LABEL_CLASS">Pelanggan</p>
-        <p class="text-gray-700"><span>{{ formatNama(pemesanan.nama_pelanggan) }}</span></p>
+        <p class="text-gray-700">
+          {{ formatNama(pemesanan.nama_pelanggan) }}
+        </p>
       </div>
       <div>
         <p :class="META_LABEL_CLASS">Tanggal</p>
-        <p class="text-gray-700">{{ formatDateShort(pemesanan.tanggal_pemesanan) }}</p>
+        <p class="text-gray-700">
+          {{ formatDateShort(pemesanan.tanggal_pemesanan) }}
+        </p>
       </div>
       <div>
         <p :class="META_LABEL_CLASS">Layanan</p>
@@ -56,13 +63,22 @@ defineProps<Props>();
       </div>
       <div>
         <p :class="META_LABEL_CLASS">Pembayaran</p>
-        <p :class="getPembayaranStatusBadgeClass(pemesanan.status_pembayaran)" class="mt-0.5">
+        <p
+          :class="[
+            getPembayaranStatusBadgeClass(pemesanan.status_pembayaran),
+            'mt-0.5',
+          ]"
+        >
           {{ getPembayaranStatusLabel(pemesanan.status_pembayaran) }}
         </p>
       </div>
-      <div class="col-span-2 mt-2 border-t border-gray-100 pt-3 flex justify-between items-center">
+      <div
+        class="col-span-2 mt-2 flex items-center justify-between border-t border-gray-100 pt-3"
+      >
         <p :class="META_LABEL_CLASS">Total</p>
-        <p class="text-base font-bold text-gray-900">{{ toIDR(pemesanan.total_harga) }}</p>
+        <p class="text-base font-bold text-gray-900">
+          {{ toIDR(pemesanan.total_harga) }}
+        </p>
       </div>
     </div>
   </div>

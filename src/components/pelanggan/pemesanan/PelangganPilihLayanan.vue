@@ -7,6 +7,11 @@ import {
   getIconToneClass,
   getToneTextClass,
 } from "@/utils/badgeVariants";
+import {
+  getSelectionCardClass,
+  getSelectionCheckClass,
+} from "@/utils/selectionVariants";
+import { FORM_ERROR_CLASS } from "@/utils/formVariants";
 import type { LayananCatalogItem } from "@/types/layanan";
 
 interface Props {
@@ -63,12 +68,11 @@ const toggleLayanan = (id: number) => {
         v-for="item in layanan"
         :key="item.id"
         @click="toggleLayanan(item.id)"
-        :class="[
-          'group relative bg-white rounded-xl border-2 cursor-pointer transition-all duration-200',
-          modelValue.includes(item.id)
-            ? 'border-green-500 shadow-lg'
-            : 'border-gray-200 hover:border-gray-300 hover:shadow-md',
-        ]"
+        :class="getSelectionCardClass({
+          selected: modelValue.includes(item.id),
+          tone: 'success',
+          extraClass: 'group relative overflow-hidden rounded-xl duration-200 hover:shadow-md',
+        })"
       >
         <!-- Gambar -->
         <div class="relative h-48 overflow-hidden rounded-t-lg bg-gray-100">
@@ -120,12 +124,7 @@ const toggleLayanan = (id: number) => {
               >Pilih layanan</span
             >
             <div
-              :class="[
-                'w-6 h-6 rounded-full border-2 flex items-center justify-center',
-                modelValue.includes(item.id)
-                  ? 'bg-green-500 border-green-600'
-                  : 'border-gray-300',
-              ]"
+              :class="getSelectionCheckClass('success', modelValue.includes(item.id))"
             >
               <i
                 v-if="modelValue.includes(item.id)"
@@ -139,7 +138,7 @@ const toggleLayanan = (id: number) => {
 
     <p
       v-if="error && touched"
-      class="text-red-600 text-sm mt-4 flex items-center gap-2"
+      :class="[FORM_ERROR_CLASS, 'mt-4']"
     >
       <i class="mdi mdi-alert-circle"></i>{{ error }}
     </p>

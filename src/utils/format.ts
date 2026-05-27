@@ -59,6 +59,17 @@ export function formatNama(nama: string | null | undefined): string {
 }
 
 /**
+ * Format plat nomor agar konsisten ditampilkan dalam huruf kapital.
+ * @param platNomor - Plat nomor kendaraan
+ * @returns Plat nomor uppercase atau "-"
+ */
+export function formatPlatNomor(platNomor: string | null | undefined): string {
+  if (!platNomor) return "-";
+
+  return platNomor.trim().replace(/\s+/g, " ").toUpperCase();
+}
+
+/**
  * Format tanggal menjadi format lokal YYYY-MM-DD
  * @param date - Objek Date yang akan diformat
  * @returns String format tanggal YYYY-MM-DD

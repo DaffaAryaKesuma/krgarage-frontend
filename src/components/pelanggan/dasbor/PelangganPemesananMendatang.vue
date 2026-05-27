@@ -9,7 +9,8 @@ import {
 import { toMoneyNumber } from "@/utils/money";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
-import { META_LABEL_CLASS } from "@/utils/badgeVariants";
+import { META_LABEL_CLASS, getToneTextClass } from "@/utils/badgeVariants";
+import { getButtonClass } from "@/utils/buttonVariants";
 import type { PelangganPemesanan } from "@/types/pemesanan";
 
 interface Props {
@@ -38,7 +39,7 @@ const getLayananTotal = (pemesanan: PelangganPemesanan) =>
       </h2>
       <router-link
         to="/app/riwayat"
-        class="text-red-600 hover:text-red-700 font-medium text-sm flex items-center gap-1"
+        :class="getButtonClass('link', 'xs', 'no-underline')"
       >
         Lihat Semua
         <i class="mdi mdi-arrow-right text-lg"></i>
@@ -65,7 +66,7 @@ const getLayananTotal = (pemesanan: PelangganPemesanan) =>
       >
         <div class="mb-3 flex flex-wrap items-start justify-between gap-3">
           <div class="flex min-w-0 items-center gap-3">
-            <i class="mdi mdi-calendar-month text-3xl text-red-600"></i>
+            <i :class="['mdi mdi-calendar-month text-3xl', getToneTextClass('primary')]"></i>
             <div>
               <p class="text-base font-bold text-gray-900 sm:text-lg">
                 {{ item.kode_pemesanan }}
@@ -117,7 +118,7 @@ const getLayananTotal = (pemesanan: PelangganPemesanan) =>
         >
           <div>
             <p :class="META_LABEL_CLASS">Total Biaya</p>
-            <p class="text-lg font-bold text-red-600 sm:text-xl">
+            <p :class="['text-lg font-bold sm:text-xl', getToneTextClass('primary')]">
               {{ toIDR(item.total_harga || getLayananTotal(item)) }}
             </p>
           </div>

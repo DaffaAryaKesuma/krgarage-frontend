@@ -13,6 +13,7 @@ import {
   useMekanikPekerjaanGrid,
   type MekanikPekerjaanGridProps,
 } from "./useMekanikPekerjaanGrid";
+import { getButtonClass, getIconButtonClass } from "@/utils/buttonVariants";
 
 withDefaults(
   defineProps<MekanikPekerjaanGridProps>(),
@@ -30,7 +31,6 @@ const {
   formatTimeShort,
   canMekanikAddSukuCadang,
   canMekanikUpdateStatus,
-  getMekanikAksiButtonClass,
   getMekanikAksiButtonText,
   getStatusBadgeClass,
   getStatusLabel,
@@ -248,7 +248,7 @@ const {
                 <button
                   v-if="canMekanikAddSukuCadang(item.status)"
                   @click="emit('deleteSukuCadang', item.id, subItem.id)"
-                  class="text-gray-400 hover:text-red-600 transition-colors"
+                  :class="getIconButtonClass('subtle', 'sm')"
                   title="Hapus Suku Cadang"
                 >
                   <i class="mdi mdi-close-circle text-base"></i>
@@ -292,10 +292,7 @@ const {
             <button
               v-if="canMekanikUpdateStatus(item.status)"
               @click="emit('updateStatus', item.id)"
-              :class="[
-                'flex items-center justify-center gap-2 py-2.5 text-white font-semibold rounded-xl transition-all duration-150 text-sm active:scale-[0.97]',
-                getMekanikAksiButtonClass(item.status),
-              ]"
+              :class="getButtonClass('success', 'md', 'rounded-xl active:scale-[0.97]')"
             >
               {{ getMekanikAksiButtonText(item.status) }}
             </button>
@@ -303,7 +300,7 @@ const {
             <button
               v-if="canMekanikAddSukuCadang(item.status)"
               @click="emit('addSukuCadang', item.id)"
-              class="flex items-center justify-center gap-2 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl transition-all duration-150 text-sm active:scale-[0.97]"
+              :class="getButtonClass('primary', 'md', 'rounded-xl active:scale-[0.97]')"
             >
               Tambah Suku Cadang
             </button>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import { getMonthOptions } from "@/utils/dateFilters";
 import type { TeratasLayananMetric } from "@/types/layanan";
 import {
@@ -24,8 +25,8 @@ const MONTH_OPTIONS = getMonthOptions();
 <template>
   <div class="rounded-2xl bg-white p-4 sm:p-6 shadow-lg border border-gray-100">
     <div class="mb-4 flex items-center gap-2 sm:gap-3">
-      <div :class="['rounded-xl p-2 sm:p-3 shrink-0', getIconToneClass('info')]">
-        <i class="mdi mdi-trophy text-lg sm:text-2xl"></i>
+      <div :class="['rounded-full p-2 sm:p-3 shrink-0', getIconToneClass('info')]">
+        <i class="mdi mdi-wrench text-lg sm:text-2xl"></i>
       </div>
       <div class="min-w-0">
         <h2 class="text-base sm:text-xl font-bold text-gray-900 leading-tight">Layanan Terlaris</h2>
@@ -39,13 +40,7 @@ const MONTH_OPTIONS = getMonthOptions();
       </div>
     </div>
 
-    <div v-if="loading" class="space-y-3">
-      <div
-        v-for="i in 5"
-        :key="i"
-        class="h-14 animate-pulse rounded-lg bg-gray-200"
-      ></div>
-    </div>
+    <LoadingSpinner v-if="loading" message="Memuat layanan terlaris..." />
 
     <div v-else-if="layanan.length > 0" class="space-y-2">
       <div

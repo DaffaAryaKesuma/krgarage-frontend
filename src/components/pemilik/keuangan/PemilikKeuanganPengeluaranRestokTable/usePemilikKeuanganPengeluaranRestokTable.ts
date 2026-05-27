@@ -3,7 +3,6 @@ import type { RiwayatRestokSukuCadang } from "@/types/inventaris";
 
 export interface PemilikKeuanganPengeluaranRestokTableProps {
   pengeluaran: RiwayatRestokSukuCadang[];
-  loading: boolean;
   startDate: string;
   endDate: string;
   currentPage: number;

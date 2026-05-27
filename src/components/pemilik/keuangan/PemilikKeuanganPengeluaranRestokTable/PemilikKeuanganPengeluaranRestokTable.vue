@@ -15,6 +15,7 @@ import {
   TABLE_MOBILE_CARD_HEADER_CLASS,
   TABLE_MOBILE_KARTU_CLASS,
   TABLE_WRAPPER_CLASS,
+  buildFixedTableClass,
 } from "@/utils/tableVariants";
 import {
   TABLE_HEADERS,
@@ -31,6 +32,11 @@ const emit = defineEmits<Emits>();
 
 const { totalPages, from, to, paginatedPengeluaran } =
   usePemilikKeuanganPengeluaranRestokTable(props);
+
+const TABLE_COLUMN_WIDTHS = ["14%", "22%", "10%", "15%", "15%", "12%", "12%"];
+const TABLE_CELL_CLASS = "px-6 py-4 align-middle text-sm text-gray-900";
+const TABLE_TOTAL_CELL_CLASS =
+  "px-6 py-4 align-middle text-sm font-semibold text-red-600";
 </script>
 
 <template>
@@ -42,25 +48,19 @@ const { totalPages, from, to, paginatedPengeluaran } =
       </h2>
     </div>
 
-    <div v-if="loading" class="space-y-4">
-      <div
-        v-for="i in 5"
-        :key="i"
-        class="h-16 animate-pulse rounded-lg bg-gray-200"
-      ></div>
-    </div>
-
     <TableShell
-      v-else-if="pengeluaran.length > 0"
+      v-if="pengeluaran.length > 0"
       :headers="TABLE_HEADERS"
       :responsive-kartu="true"
       desktop-breakpoint="lg"
       :mobile-kartu-class="TABLE_MOBILE_KARTU_CLASS"
       :wrapper-class="TABLE_WRAPPER_CLASS"
+      :table-class="buildFixedTableClass('text-sm')"
       :head-class="TABLE_HEAD_CLASS"
       header-row-class="text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
       :header-cell-class="TABLE_COMFORTABLE_HEADER_CELL_CLASS"
       :body-class="TABLE_BODY_CLASS"
+      :column-widths="TABLE_COLUMN_WIDTHS"
     >
       <template #mobile>
         <div
@@ -122,23 +122,23 @@ const { totalPages, from, to, paginatedPengeluaran } =
         :key="item.id"
         class="transition-colors hover:bg-gray-50"
       >
-        <td class="px-6 py-4 text-sm text-gray-900">
+        <td :class="TABLE_CELL_CLASS">
           {{ formatDateShort(item.created_at) }}
         </td>
-        <td class="px-6 py-4 text-sm text-gray-900">
+        <td :class="TABLE_CELL_CLASS">
           {{ item.suku_cadang?.nama_suku_cadang || "Suku Cadang" }}
         </td>
-        <td class="px-6 py-4 text-sm text-gray-900">{{ item.jumlah }}</td>
-        <td class="px-6 py-4 text-sm text-gray-900">
+        <td :class="TABLE_CELL_CLASS">{{ item.jumlah }}</td>
+        <td :class="TABLE_CELL_CLASS">
           {{ toIDR(item.harga_beli_satuan) }}
         </td>
-        <td class="px-6 py-4 text-sm font-semibold text-red-600">
+        <td :class="TABLE_TOTAL_CELL_CLASS">
           {{ toIDR(item.total_pengeluaran) }}
         </td>
-        <td class="px-6 py-4 text-sm text-gray-900">
+        <td :class="TABLE_CELL_CLASS">
           {{ item.stok_sebelum }} -> {{ item.stok_sesudah }}
         </td>
-        <td class="px-6 py-4 text-sm text-gray-900">
+        <td :class="TABLE_CELL_CLASS">
           {{ formatNama(item.admin?.nama || "-") }}
         </td>
       </tr>

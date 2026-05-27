@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { toIDR } from "@/utils/money";
 import { formatDateShort } from "@/utils/date";
+import { formatPlatNomor } from "@/utils/format";
 import {
   getAlertBoxClass,
   getAlertIconClass,
   getChipBadgeClass,
   getIconToneClass,
+  getTonePanelClass,
 } from "@/utils/badgeVariants";
 import { getFullWidthButtonClass } from "@/utils/buttonVariants";
 
@@ -36,7 +38,7 @@ withDefaults(defineProps<Props>(), {
         <div
           :class="[
             getIconToneClass('primary'),
-            'mb-3 inline-flex h-14 w-14 items-center justify-center rounded-full border border-red-100/50',
+            'mb-3 inline-flex h-14 w-14 items-center justify-center rounded-full border border-transparent',
           ]"
         >
           <i class="mdi mdi-receipt-text-outline text-3xl"></i>
@@ -99,7 +101,7 @@ withDefaults(defineProps<Props>(), {
               v-if="selectedVespa.plat_nomor"
               :class="[getChipBadgeClass('primary'), 'mt-0.5 inline-flex px-1.5 py-0.5 text-xs font-bold uppercase']"
             >
-              {{ selectedVespa.plat_nomor }}
+              {{ formatPlatNomor(selectedVespa.plat_nomor) }}
             </div>
           </div>
         </div>
@@ -126,7 +128,7 @@ withDefaults(defineProps<Props>(), {
       <!-- Total Price Banner -->
       <div
         v-if="selectedLayanan.length > 0"
-        class="flex items-center justify-between py-4 px-5 bg-red-100 rounded-xl mb-6 shadow-inner"
+        :class="[getTonePanelClass('primary'), 'mb-6 flex items-center justify-between px-5 py-4 shadow-inner']"
       >
         <span class="text-gray-700 font-bold text-sm sm:text-xl"
           >Total Estimasi</span
@@ -158,7 +160,7 @@ withDefaults(defineProps<Props>(), {
       <button
         type="submit"
         :disabled="isSubmitting"
-        :class="getFullWidthButtonClass('primary', 'lg', 'rounded-xl py-3.5 text-base font-bold shadow-lg shadow-red-600/30 active:scale-[0.98] sm:text-lg')"
+        :class="getFullWidthButtonClass('primary', 'lg', 'rounded-xl py-3.5 text-base font-bold shadow-lg active:scale-[0.98] sm:text-lg')"
       >
         <i
           :class="[

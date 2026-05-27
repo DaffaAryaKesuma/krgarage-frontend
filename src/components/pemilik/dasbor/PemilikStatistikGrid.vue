@@ -56,7 +56,9 @@ const STAT_KARTU = computed(() => [
 
 <template>
   <div class="mb-4 sm:mb-6">
-    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
+    <div
+      class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4"
+    >
       <div
         v-for="card in STAT_KARTU"
         :key="card.title"
@@ -68,14 +70,7 @@ const STAT_KARTU = computed(() => [
               {{ card.title }}
             </p>
 
-            <!-- Loading State -->
-            <div v-if="statistik.loading || !ringkasan" class="mt-2">
-              <div class="h-6 w-20 animate-pulse rounded bg-gray-200 sm:h-8 sm:w-32"></div>
-            </div>
-
-            <!-- Value -->
             <h3
-              v-else
               class="mt-1 break-words text-base font-bold leading-tight text-gray-900 sm:mt-2 sm:text-xl"
             >
               {{ card.value }}

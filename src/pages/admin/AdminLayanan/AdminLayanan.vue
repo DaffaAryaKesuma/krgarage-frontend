@@ -6,6 +6,11 @@ import EmptyState from "@/components/ui/EmptyState.vue";
 import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import AdminLayananKartu from "@/components/admin/layanan/AdminLayananKartu.vue";
 import AdminLayananFormModal from "@/components/admin/layanan/AdminLayananFormModal/AdminLayananFormModal.vue";
+import {
+  ADD_ACTION_ICON_CLASS,
+  ADD_ACTION_TITLE_CLASS,
+  getAddActionCardClass,
+} from "@/utils/selectionVariants";
 import { useAdminLayananPage } from "./useAdminLayananPage";
 
 const {
@@ -58,13 +63,13 @@ onMounted(fetchLayanan);
         <!-- Add Layanan Button -->
         <button
           @click="openAddForm"
-          class="w-full group flex items-center justify-center gap-2 py-4 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-red-50 hover:border-red-400 transition duration-300 cursor-pointer mb-6"
+          :class="getAddActionCardClass('bar', 'mb-6 bg-gray-50 duration-300')"
         >
           <i
-            class="mdi mdi-plus-circle text-3xl text-gray-400 group-hover:text-red-600"
+            :class="['mdi mdi-plus-circle text-3xl', ADD_ACTION_ICON_CLASS]"
           ></i>
           <span
-            class="text-base font-semibold text-gray-500 group-hover:text-red-600 transition-colors"
+            :class="[ADD_ACTION_TITLE_CLASS, 'text-base']"
           >
             Tambah Layanan Baru
           </span>

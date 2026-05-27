@@ -1,5 +1,11 @@
 <script setup lang="ts">
 import { getChipBadgeClass, getIconToneClass } from "@/utils/badgeVariants";
+import {
+  getSelectionCardClass,
+  getSelectionCheckClass,
+} from "@/utils/selectionVariants";
+import { FORM_ERROR_CLASS } from "@/utils/formVariants";
+import { formatPlatNomor } from "@/utils/format";
 import type { VespaBasic } from "@/types/vespa";
 
 interface Props {
@@ -58,14 +64,12 @@ const selectVespa = (id: number) => {
         v-for="vespa in vespas"
         :key="vespa.id"
         @click="!vespa.pemesanan_aktif && selectVespa(vespa.id)"
-        :class="[
-          'p-5 rounded-lg border-2 transition-all',
-          vespa.pemesanan_aktif
-            ? 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-75'
-            : modelValue === vespa.id
-              ? 'border-blue-500 bg-blue-50 shadow-lg cursor-pointer'
-              : 'border-gray-200 hover:border-blue-200 cursor-pointer',
-        ]"
+        :class="getSelectionCardClass({
+          selected: modelValue === vespa.id,
+          disabled: vespa.pemesanan_aktif,
+          tone: 'info',
+          extraClass: 'p-5',
+        })"
       >
         <div class="flex items-start gap-3">
           <div
@@ -78,7 +82,9 @@ const selectVespa = (id: number) => {
           </div>
           <div class="flex-1">
             <h4 class="font-bold text-gray-900">{{ vespa.model }}</h4>
-            <p class="text-sm text-gray-600">{{ vespa.plat_nomor }}</p>
+            <p class="text-sm text-gray-600">
+              {{ formatPlatNomor(vespa.plat_nomor) }}
+            </p>
             <span
               v-if="vespa.pemesanan_aktif"
               :class="[getChipBadgeClass('neutral'), 'mt-1 gap-1 px-2 py-0.5 text-xs font-semibold']"
@@ -89,7 +95,7 @@ const selectVespa = (id: number) => {
           </div>
           <div
             v-if="modelValue === vespa.id && !vespa.pemesanan_aktif"
-            class="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0"
+            :class="getSelectionCheckClass('info', true, 'flex-shrink-0')"
           >
             <i class="mdi mdi-check text-white text-sm"></i>
           </div>
@@ -99,7 +105,7 @@ const selectVespa = (id: number) => {
 
     <p
       v-if="error && touched"
-      class="text-red-600 text-sm mt-4 flex items-center gap-2"
+      :class="[FORM_ERROR_CLASS, 'mt-4']"
     >
       <i class="mdi mdi-alert-circle"></i>{{ error }}
     </p>

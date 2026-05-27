@@ -94,15 +94,6 @@ export function getMekanikAksiButtonText(
   return "";
 }
 
-export function getMekanikAksiButtonClass(
-  status: string | null | undefined,
-): string {
-  if (isStatusDikerjakan(status)) {
-    return "bg-green-600 hover:bg-green-700";
-  }
-  return "";
-}
-
 export function getMekanikNextStatus(
   currentStatus: string | null | undefined,
 ): PemesananStatus | null {

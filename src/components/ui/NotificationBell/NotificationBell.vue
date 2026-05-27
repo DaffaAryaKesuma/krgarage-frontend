@@ -2,7 +2,6 @@
 import { formatDateShort } from "@/utils/date";
 import {
   getChipBadgeClass,
-  getGradientToneClass,
   getToneTextClass,
 } from "@/utils/badgeVariants";
 import { getIconButtonClass } from "@/utils/buttonVariants";
@@ -54,10 +53,7 @@ const {
         class="absolute -right-6 sm:right-0 mt-2 w-[calc(100vw-2rem)] max-w-sm sm:w-96 bg-white rounded-xl shadow-2xl border border-gray-200 z-50"
       >
         <div
-          :class="[
-            'flex items-center justify-between rounded-t-xl border-b border-gray-200 bg-gradient-to-r px-4 py-3',
-            getGradientToneClass('primary'),
-          ]"
+          class="flex items-center justify-between rounded-t-xl border-b border-red-700 bg-red-600 px-4 py-3"
         >
           <h3 class="text-lg font-bold text-white flex items-center gap-2">
             <i class="mdi mdi-bell"></i>
@@ -67,7 +63,7 @@ const {
 
         <div v-if="isLoading" class="p-6 text-center">
           <div
-            class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"
+            class="inline-block h-8 w-8 animate-spin rounded-full border-b-2 border-red-600"
           ></div>
           <p class="mt-2 text-sm text-gray-600">Memuat notifikasi...</p>
         </div>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { formatDateShort } from "@/utils/date";
 import { getRoleBadgeClass } from "@/utils/badgeVariants";
+import { getButtonClass } from "@/utils/buttonVariants";
 
 interface Karyawan {
   id: number;
@@ -61,14 +62,14 @@ const emit = defineEmits<{
     >
       <button
         @click="emit('edit', karyawan)"
-        class="flex items-center px-4 py-1.5 text-sm font-medium text-gray-700 border border-transparent rounded-md hover:bg-blue-100 hover:text-blue-600"
+        :class="getButtonClass('infoOutline', 'xs')"
       >
         Edit
       </button>
       <button
         v-if="currentUserId !== karyawan.id"
         @click="emit('delete', karyawan.id)"
-        class="flex items-center px-4 py-1.5 text-sm font-medium text-gray-700 border border-transparent rounded-md hover:bg-red-100 hover:text-red-600"
+        :class="getButtonClass('dangerOutline', 'xs')"
       >
         Hapus
       </button>

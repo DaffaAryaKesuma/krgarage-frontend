@@ -5,6 +5,8 @@ import {
   getFullWidthButtonClass,
   getIconButtonClass,
 } from "@/utils/buttonVariants";
+import { getGradientToneClass } from "@/utils/badgeVariants";
+import { getFormInputWithIconClass } from "@/utils/formVariants";
 import type { SukuCadangRingkasan } from "@/types/inventaris";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
@@ -55,11 +57,14 @@ const {
     >
       <!-- Header -->
       <div
-        class="bg-red-600 px-5 py-4 rounded-t-2xl flex items-center justify-between shrink-0"
+        :class="[
+          'bg-gradient-to-br px-5 py-4 rounded-t-2xl flex items-center justify-between shrink-0',
+          getGradientToneClass('primary'),
+        ]"
       >
         <div>
           <h3 class="text-xl font-bold text-white">Tambah Suku Cadang</h3>
-          <p class="text-red-200 font-medium text-sm mt-0.5">
+          <p class="text-white/80 font-medium text-sm mt-0.5">
             Pilih item lalu tentukan jumlah
           </p>
         </div>
@@ -83,7 +88,7 @@ const {
               v-model="searchQuery"
               type="text"
               placeholder="Cari nama atau kategori suku cadang..."
-              class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm outline-gray-300"
+              :class="getFormInputWithIconClass(false, 'rounded-xl bg-gray-50 pl-9')"
             />
           </div>
         </div>

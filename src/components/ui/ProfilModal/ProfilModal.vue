@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { formatNama } from "@/utils/format";
 import { useProfilModal } from "@/components/ui/ProfilModal/useProfilModal";
-import { getButtonClass } from "@/utils/buttonVariants";
+import { getButtonClass, getIconButtonClass } from "@/utils/buttonVariants";
+import {
+  getGradientToneClass,
+  getRoleBadgeClass,
+  getToneTextClass,
+} from "@/utils/badgeVariants";
 
 const props = defineProps<{ show: boolean }>();
 const emit = defineEmits<{ close: [] }>();
@@ -32,12 +37,12 @@ const {
         class="sticky top-0 z-10 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between"
       >
         <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
-          <i class="mdi mdi-account-circle text-red-600"></i>
+          <i :class="['mdi mdi-account-circle', getToneTextClass('primary')]"></i>
           Profil Saya
         </h2>
         <button
           @click="emit('close')"
-          class="rounded-full p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
+          :class="getIconButtonClass('neutral', 'md')"
         >
           <i class="mdi mdi-close text-xl"></i>
         </button>
@@ -51,7 +56,10 @@ const {
             class="flex flex-col items-center gap-3 shrink-0 mx-auto md:mx-0"
           >
             <div
-              class="h-28 w-28 rounded-full bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center text-3xl font-bold text-white shadow-lg ring-4 ring-red-50"
+              :class="[
+                'h-28 w-28 rounded-full bg-gradient-to-br flex items-center justify-center text-3xl font-bold text-white shadow-lg ring-4 ring-gray-100',
+                getGradientToneClass('primary'),
+              ]"
             >
               {{
                 formatNama(user.nama)
@@ -63,9 +71,7 @@ const {
               }}
             </div>
             <div class="text-center">
-              <span
-                class="inline-block px-3 py-1 rounded-full bg-red-100 text-xs font-bold text-red-700 capitalize tracking-widest"
-              >
+              <span :class="[getRoleBadgeClass(user.role), 'uppercase tracking-widest']">
                 {{ user.role }}
               </span>
             </div>
@@ -131,7 +137,7 @@ const {
           <h3
             class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2"
           >
-            <i class="mdi mdi-shield-lock text-red-600"></i>
+            <i :class="['mdi mdi-shield-lock', getToneTextClass('primary')]"></i>
             Ganti Password
           </h3>
           <form @submit.prevent="handleGantiPassword" class="space-y-4">

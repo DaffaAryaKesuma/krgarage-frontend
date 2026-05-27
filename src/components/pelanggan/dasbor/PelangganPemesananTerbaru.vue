@@ -39,12 +39,12 @@ const getLayananPrice = (pemesanan: PelangganPemesanan) =>
   <section class="rounded-xl bg-white p-4 shadow-md sm:p-6">
     <div class="mb-5 flex flex-wrap items-center justify-between gap-2 sm:mb-6">
       <h2 class="text-xl font-bold text-gray-900 sm:text-2xl">
-      <i class="mr-1 mdi mdi-clipboard-text text-2xl text-red-600"></i>
+      <i class="mdi mdi-clipboard-text text-2xl"></i>
         Riwayat Terakhir
       </h2>
       <router-link
         to="/app/riwayat"
-        class="text-red-600 hover:text-red-700 font-medium text-sm flex items-center gap-1"
+        :class="getButtonClass('link', 'xs', 'no-underline')"
       >
         Lihat Semua
         <i class="mdi mdi-arrow-right text-lg"></i>

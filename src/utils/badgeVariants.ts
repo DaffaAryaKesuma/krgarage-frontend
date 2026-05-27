@@ -72,6 +72,15 @@ export const alertBoxVariants = {
   },
 } as const;
 
+export const tonePanelVariants = {
+  primary: "border-red-100 bg-red-50 text-red-700",
+  info: "border-blue-100 bg-blue-50 text-blue-700",
+  success: "border-green-100 bg-green-50 text-green-700",
+  warning: "border-amber-100 bg-amber-50 text-amber-700",
+  danger: "border-red-100 bg-red-50 text-red-700",
+  neutral: "border-gray-100 bg-gray-50 text-gray-700",
+} as const;
+
 export const badgeVariants = {
   status: {
     menunggu: "border-gray-300 bg-gray-100 text-gray-600",
@@ -121,6 +130,7 @@ export type GradientToneKey = keyof typeof gradientToneVariants;
 export type SolidToneKey = keyof typeof solidToneVariants;
 export type SoftHoverToneKey = keyof typeof softHoverToneVariants;
 export type AlertBoxKey = keyof typeof alertBoxVariants;
+export type TonePanelKey = keyof typeof tonePanelVariants;
 
 export function buildBadgeClass(variantClass: string): string {
   return `${BADGE_BASE_CLASS} ${variantClass}`;
@@ -174,4 +184,8 @@ export function getAlertBoxClass(variant: AlertBoxKey): string {
 
 export function getAlertIconClass(variant: AlertBoxKey): string {
   return alertBoxVariants[variant].icon;
+}
+
+export function getTonePanelClass(variant: TonePanelKey): string {
+  return `rounded-xl border p-4 ${tonePanelVariants[variant]}`;
 }

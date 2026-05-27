@@ -42,26 +42,30 @@ const RINGKASAN_KARTU: RingkasanKartu[] = [
 </script>
 
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-2 sm:gap-6 gap-4 mb-6">
+  <div class="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
     <div 
       v-for="kartu in RINGKASAN_KARTU" 
       :key="kartu.key"
-      class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex items-center justify-between"
+      class="rounded-xl border border-gray-100 bg-white px-4 py-2.5 shadow-lg sm:p-6"
     >
-      <div>
-        <p class="text-slate-500 text-sm font-medium">{{ kartu.title }}</p>
-        <h3 class="text-3xl font-bold text-slate-800 mt-1">
-          {{ kartu.format(ringkasan[kartu.key]) }}
-        </h3>
-      </div>
-      
-      <div 
-        :class="[
-          'h-14 w-14 rounded-full flex items-center justify-center', 
-          getIconToneClass(kartu.color)
-        ]"
-      >
-        <i :class="['mdi text-3xl', kartu.icon]"></i>
+      <div class="flex items-center justify-between gap-3 sm:items-start">
+        <div class="min-w-0">
+          <p class="text-[11px] font-medium leading-tight text-gray-600 sm:text-sm">
+            {{ kartu.title }}
+          </p>
+          <h3 class="mt-1 break-words text-base font-bold leading-tight text-gray-900 sm:text-xl">
+            {{ kartu.format(ringkasan[kartu.key]) }}
+          </h3>
+        </div>
+
+        <div
+          :class="[
+            'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg sm:h-12 sm:w-12 sm:rounded-xl',
+            getIconToneClass(kartu.color),
+          ]"
+        >
+          <i :class="['mdi', kartu.icon, 'text-lg sm:text-2xl']"></i>
+        </div>
       </div>
     </div>
   </div>
