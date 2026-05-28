@@ -81,8 +81,8 @@ const selectVespa = (id: number) => {
             <i :class="['mdi mdi-motorbike text-lg', vespa.pemesanan_aktif ? 'text-gray-500' : '']"></i>
           </div>
           <div class="flex-1">
-            <h4 class="font-bold text-gray-900">{{ vespa.model }}</h4>
-            <p class="text-sm text-gray-600">
+            <h4 class="font-bold text-sm text-gray-900">{{ vespa.model }}</h4>
+            <p class="text-xs text-gray-600">
               {{ formatPlatNomor(vespa.plat_nomor) }}
             </p>
             <span

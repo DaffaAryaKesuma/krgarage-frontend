@@ -68,11 +68,14 @@ const toggleLayanan = (id: number) => {
         v-for="item in layanan"
         :key="item.id"
         @click="toggleLayanan(item.id)"
-        :class="getSelectionCardClass({
-          selected: modelValue.includes(item.id),
-          tone: 'success',
-          extraClass: 'group relative overflow-hidden rounded-xl duration-200 hover:shadow-md',
-        })"
+        :class="
+          getSelectionCardClass({
+            selected: modelValue.includes(item.id),
+            tone: 'success',
+            extraClass:
+              'group relative overflow-hidden rounded-xl duration-200 hover:shadow-md',
+          })
+        "
       >
         <!-- Gambar -->
         <div class="relative h-48 overflow-hidden rounded-t-lg bg-gray-100">
@@ -93,10 +96,13 @@ const toggleLayanan = (id: number) => {
 
         <!-- Content -->
         <div class="p-4">
-          <h3 class="font-bold text-gray-900 text-base mb-2">
-            {{ item.nama_layanan }}
-          </h3>
-          <p class="text-sm text-gray-600 mb-3 line-clamp-2">
+          <div class="flex items-center gap-2 mb-1">
+            <i class="mdi mdi-wrench"></i>
+            <h3 class="font-bold text-sm">
+              {{ item.nama_layanan }}
+            </h3>
+          </div>
+          <p class="text-xs text-gray-600 mb-3 line-clamp-2">
             {{ item.deskripsi }}
           </p>
 
@@ -108,7 +114,9 @@ const toggleLayanan = (id: number) => {
                 {{ toIDR(item.harga) }}
               </p>
             </div>
-            <div :class="[getAlertBoxClass('success'), 'rounded p-2 shadow-none']">
+            <div
+              :class="[getAlertBoxClass('success'), 'rounded p-2 shadow-none']"
+            >
               <p :class="META_LABEL_CLASS">Durasi</p>
               <p class="text-sm font-bold" :class="getToneTextClass('success')">
                 {{ formatWaktu(item.durasi_pengerjaan) }}
@@ -124,7 +132,9 @@ const toggleLayanan = (id: number) => {
               >Pilih layanan</span
             >
             <div
-              :class="getSelectionCheckClass('success', modelValue.includes(item.id))"
+              :class="
+                getSelectionCheckClass('success', modelValue.includes(item.id))
+              "
             >
               <i
                 v-if="modelValue.includes(item.id)"
@@ -136,10 +146,7 @@ const toggleLayanan = (id: number) => {
       </div>
     </div>
 
-    <p
-      v-if="error && touched"
-      :class="[FORM_ERROR_CLASS, 'mt-4']"
-    >
+    <p v-if="error && touched" :class="[FORM_ERROR_CLASS, 'mt-4']">
       <i class="mdi mdi-alert-circle"></i>{{ error }}
     </p>
   </div>
