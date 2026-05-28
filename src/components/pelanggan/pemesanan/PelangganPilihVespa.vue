@@ -16,14 +16,14 @@ interface Props {
 }
 
 interface Emits {
-  (e: "update:modelValue", value: number): void;
+  (e: "update:modelValue", value: number | null): void;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 const selectVespa = (id: number) => {
-  emit("update:modelValue", id);
+  emit("update:modelValue", props.modelValue === id ? null : id);
 };
 </script>
 
@@ -39,7 +39,7 @@ const selectVespa = (id: number) => {
         <i class="mdi mdi-motorbike text-xl"></i>
       </div>
       <div>
-        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Pilih Vespa</h2>
+        <h2 class="text-lg sm:text-xl font-bold text-gray-900">Pilih Vespa</h2>
         <p class="text-sm text-gray-500">Vespa mana yang akan dilayanan?</p>
       </div>
     </div>

@@ -43,7 +43,7 @@ withDefaults(defineProps<Props>(), {
         >
           <i class="mdi mdi-receipt-text-outline text-3xl"></i>
         </div>
-        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">
+        <h2 class="text-lg sm:text-xl font-bold text-gray-900">
           Ringkasan Pemesanan
         </h2>
         <p class="text-sm text-gray-500 mt-1">
@@ -64,27 +64,19 @@ withDefaults(defineProps<Props>(), {
       <div class="space-y-4 mb-6 px-1">
         <div class="flex items-start justify-between">
           <div class="flex items-start gap-2.5 text-gray-600 shrink-0">
-            <i class="mdi mdi-wrench-outline text-lg"></i>
+            <i class="mdi mdi-wrench text-lg"></i>
             <span class="text-sm sm:text-base font-medium leading-relaxed"
               >Layanan Dipilih</span
             >
           </div>
           <div class="text-right ml-4">
-            <template v-if="selectedLayanan.length > 0">
-              <div
-                v-for="layanan in selectedLayanan"
-                :key="layanan.id"
-                class="text-sm sm:text-base font-bold text-gray-900 mb-0.5 leading-relaxed"
-              >
-                {{ layanan.nama_layanan }}
-              </div>
-            </template>
-            <span
-              v-else
-              class="text-sm sm:text-base font-medium text-gray-400 italic"
+            <div
+              v-for="layanan in selectedLayanan"
+              :key="layanan.id"
+              class="text-sm sm:text-base font-bold text-gray-900 mb-0.5 leading-relaxed"
             >
-              Belum ada
-            </span>
+              {{ layanan.nama_layanan }}
+            </div>
           </div>
         </div>
 
@@ -106,9 +98,9 @@ withDefaults(defineProps<Props>(), {
           </div>
         </div>
 
-        <div v-if="selectedTime" class="flex items-center justify-between">
+        <div class="flex items-center justify-between">
           <div class="flex items-center gap-2.5 text-gray-600">
-            <i class="mdi mdi-calendar-clock-outline text-lg"></i>
+            <i class="mdi mdi-calendar-clock text-lg"></i>
             <span class="text-sm sm:text-base font-medium">Jadwal Servis</span>
           </div>
           <div class="text-right">
@@ -116,7 +108,6 @@ withDefaults(defineProps<Props>(), {
               {{ formatDateShort(selectedDate) }}
             </div>
             <div
-              v-if="selectedTime"
               :class="[getChipBadgeClass('primary'), 'mt-0.5 inline-flex px-1.5 py-0.5 text-xs font-bold']"
             >
               {{ selectedTime }}
@@ -127,7 +118,6 @@ withDefaults(defineProps<Props>(), {
 
       <!-- Total Price Banner -->
       <div
-        v-if="selectedLayanan.length > 0"
         :class="[getTonePanelClass('primary'), 'mb-6 flex items-center justify-between px-5 py-4 shadow-inner']"
       >
         <span class="text-gray-700 font-bold text-sm sm:text-xl"
@@ -141,7 +131,6 @@ withDefaults(defineProps<Props>(), {
 
       <!-- Disclaimer Info Box -->
       <div
-        v-if="selectedLayanan.length > 0"
         :class="[getAlertBoxClass('warning'), 'mb-6 flex items-start gap-3 p-3.5 shadow-none']"
       >
         <i

@@ -65,6 +65,15 @@ export function usePelangganPemesananPage() {
     );
   };
 
+  const validasiBidangWajib = (fields: PemesananFormField[]) => {
+    fields.forEach((field) => {
+      touched.value[field] = true;
+      validasiBidang(field);
+    });
+
+    return fields.every((field) => !errors.value[field]);
+  };
+
   const cekKetersediaan = async () => {
     if (!form.value.tanggal_pemesanan) return;
 
@@ -95,7 +104,7 @@ export function usePelangganPemesananPage() {
     validasiBidang("id_layanan");
   };
 
-  const tanganiPerubahanVespa = (vespaId: number) => {
+  const tanganiPerubahanVespa = (vespaId: number | null) => {
     form.value.id_vespa = vespaId;
     touched.value.id_vespa = true;
     validasiBidang("id_vespa");
@@ -122,12 +131,10 @@ export function usePelangganPemesananPage() {
       "jam_pemesanan",
     ];
 
-    fieldsToValidate.forEach((field) => {
-      touched.value[field] = true;
-      validasiBidang(field);
-    });
-
-    if (hasPelangganPemesananErrors(errors.value)) {
+    if (
+      !validasiBidangWajib(fieldsToValidate) ||
+      hasPelangganPemesananErrors(errors.value)
+    ) {
       toast.error("Lengkapi semua field yang wajib");
       return;
     }
@@ -196,6 +203,7 @@ export function usePelangganPemesananPage() {
     handleVespaChange: tanganiPerubahanVespa,
     handleDateChange: tanganiPerubahanTanggal,
     handleTimeSelect: tanganiPilihWaktu,
+    validateRequiredFields: validasiBidangWajib,
     submit: kirimData,
     loadInitialData: muatDataAwal,
   };

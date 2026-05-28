@@ -61,7 +61,7 @@ const selectTime = (slot: string) => {
         <i class="mdi mdi-calendar-clock text-xl"></i>
       </div>
       <div>
-        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">
+        <h2 class="text-lg sm:text-xl font-bold text-gray-900">
           Jadwal Pemesanan
         </h2>
         <p class="text-sm text-gray-500">Pilih tanggal dan jam yang sesuai</p>

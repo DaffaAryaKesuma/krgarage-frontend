@@ -3,6 +3,7 @@ import PelangganPilihLayanan from "@/components/pelanggan/pemesanan/PelangganPil
 import PelangganPilihVespa from "@/components/pelanggan/pemesanan/PelangganPilihVespa.vue";
 import PelangganPilihJadwal from "@/components/pelanggan/pemesanan/PelangganPilihJadwal.vue";
 import PelangganRingkasanPemesanan from "@/components/pelanggan/pemesanan/PelangganRingkasanPemesanan.vue";
+import PelangganStepProgress from "@/components/pelanggan/pemesanan/PelangganStepProgress.vue";
 import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import { onMounted } from "vue";
@@ -25,6 +26,7 @@ const {
   handleVespaChange,
   handleDateChange,
   handleTimeSelect,
+  validateRequiredFields,
   submit,
   loadInitialData,
 } = usePelangganPemesananPage();
@@ -50,48 +52,61 @@ onMounted(() => {
 
       <!-- Form -->
       <form v-else @submit.prevent="submit" class="space-y-6">
-        <!-- STEP 1: Layanan -->
-        <PelangganPilihLayanan
-          :layanan="allLayanan"
-          v-model="form.id_layanan"
-          :error="errors.id_layanan"
-          :touched="touched.id_layanan"
-          @update:model-value="handleLayananChange"
-        />
-
-        <!-- STEP 2: Vespa -->
-        <PelangganPilihVespa
-          :vespas="myVespas"
-          v-model="form.id_vespa"
-          :error="errors.id_vespa"
-          :touched="touched.id_vespa"
-          @update:model-value="handleVespaChange"
-        />
-
-        <!-- STEP 3: Jadwal -->
-        <PelangganPilihJadwal
-          :time-slots="TIME_SLOTS"
+        <PelangganStepProgress
+          :form="form"
+          :errors="errors"
           :booked-slots="bookedSlots"
-          v-model:date-value="form.tanggal_pemesanan"
-          v-model:time-value="form.jam_pemesanan"
-          v-model:catatan="form.catatan_pelanggan"
-          :date-error="errors.tanggal_pemesanan"
-          :time-error="errors.jam_pemesanan"
-          :date-touched="touched.tanggal_pemesanan"
-          :time-touched="touched.jam_pemesanan"
-          @date-change="handleDateChange"
-          @time-select="handleTimeSelect"
-        />
+          :validate-required-fields="validateRequiredFields"
+        >
+          <template #default="{ currentStep }">
+            <!-- STEP 1: Layanan -->
+            <PelangganPilihLayanan
+              v-if="currentStep === 1"
+              :layanan="allLayanan"
+              v-model="form.id_layanan"
+              :error="errors.id_layanan"
+              :touched="touched.id_layanan"
+              @update:model-value="handleLayananChange"
+            />
 
-        <!-- Ringkasan & Submit -->
-        <PelangganRingkasanPemesanan
-          :selected-layanan="selectedLayanan"
-          :selected-vespa="selectedVespa"
-          :total-price="totalHarga"
-          :selected-date="form.tanggal_pemesanan"
-          :selected-time="form.jam_pemesanan"
-          :is-submitting="isSubmitting"
-        />
+            <!-- STEP 2: Vespa -->
+            <PelangganPilihVespa
+              v-if="currentStep === 2"
+              :vespas="myVespas"
+              v-model="form.id_vespa"
+              :error="errors.id_vespa"
+              :touched="touched.id_vespa"
+              @update:model-value="handleVespaChange"
+            />
+
+            <!-- STEP 3: Jadwal -->
+            <PelangganPilihJadwal
+              v-if="currentStep === 3"
+              :time-slots="TIME_SLOTS"
+              :booked-slots="bookedSlots"
+              v-model:date-value="form.tanggal_pemesanan"
+              v-model:time-value="form.jam_pemesanan"
+              v-model:catatan="form.catatan_pelanggan"
+              :date-error="errors.tanggal_pemesanan"
+              :time-error="errors.jam_pemesanan"
+              :date-touched="touched.tanggal_pemesanan"
+              :time-touched="touched.jam_pemesanan"
+              @date-change="handleDateChange"
+              @time-select="handleTimeSelect"
+            />
+          </template>
+
+          <template #summary>
+            <PelangganRingkasanPemesanan
+              :selected-layanan="selectedLayanan"
+              :selected-vespa="selectedVespa"
+              :total-price="totalHarga"
+              :selected-date="form.tanggal_pemesanan"
+              :selected-time="form.jam_pemesanan"
+              :is-submitting="isSubmitting"
+            />
+          </template>
+        </PelangganStepProgress>
       </form>
     </div>
   </div>

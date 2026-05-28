@@ -54,7 +54,7 @@ const toggleLayanan = (id: number) => {
         <i class="mdi mdi-wrench text-xl"></i>
       </div>
       <div>
-        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">
+        <h2 class="text-lg sm:text-xl font-bold text-gray-900">
           Pilih Layanan
         </h2>
         <p class="text-sm text-gray-500">
