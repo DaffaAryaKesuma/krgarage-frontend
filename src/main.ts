@@ -2,12 +2,13 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import axios from "axios";
+import { API_BASE_URL } from "./utils/api";
 import "./main.css";
 import "@mdi/font/css/materialdesignicons.css";
 
 // Configure axios defaults untuk improve performance awareness
 axios.defaults.timeout = 60000; // 60 detik timeout (lebih lama untuk request yang heavy)
-axios.defaults.baseURL = "http://127.0.0.1:8000";
+axios.defaults.baseURL = API_BASE_URL;
 
 // Add request interceptor untuk show loading state
 axios.interceptors.request.use(

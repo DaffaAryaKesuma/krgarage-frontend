@@ -16,3 +16,7 @@ const resolveDefaultApiUrl = (): string => {
 
 export const API_URL =
   (import.meta.env.VITE_API_URL || "").trim() || resolveDefaultApiUrl();
+
+export const API_BASE_URL =
+  (import.meta.env.VITE_API_BASE_URL || "").trim() ||
+  API_URL.replace(/\/api\/?$/, "");
