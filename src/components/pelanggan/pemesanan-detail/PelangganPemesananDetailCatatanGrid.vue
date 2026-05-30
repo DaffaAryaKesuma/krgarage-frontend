@@ -10,7 +10,7 @@ defineProps<{
   <section class="grid grid-cols-1 gap-4 sm:grid-cols-2">
     <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-5">
       <div class="mb-2 flex items-center gap-2">
-        <i class="mdi mdi-note-text text-gray-600"></i>
+        <i class="mdi mdi-note-text text-blue-600"></i>
         <h2 class="font-semibold text-gray-900">Catatan Pelanggan</h2>
       </div>
       <p class="whitespace-pre-line text-sm text-gray-700">
