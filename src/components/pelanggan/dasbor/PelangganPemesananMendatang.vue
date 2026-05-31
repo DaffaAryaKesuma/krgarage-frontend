@@ -37,13 +37,6 @@ const getLayananTotal = (pemesanan: PelangganPemesanan) =>
       <h2 class="text-xl font-bold text-gray-900 sm:text-2xl">
         Pemesanan Mendatang
       </h2>
-      <router-link
-        to="/app/riwayat"
-        :class="getButtonClass('link', 'xs', 'no-underline')"
-      >
-        Lihat Semua
-        <i class="mdi mdi-arrow-right text-lg"></i>
-      </router-link>
     </div>
 
     <!-- Loading -->
