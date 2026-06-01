@@ -49,8 +49,19 @@ export function usePemilikQuickInsights(props: { ringkasan: any; statistik: any 
 
   const bestMechanicKartu = computed(() => {
     const name = props.ringkasan?.performa?.mekanik_terbaik?.nama;
-    const jobs = props.ringkasan?.performa?.mekanik_terbaik?.total_pekerjaan;
-    if (!name) return null;
+    const jobs =
+      props.ringkasan?.performa?.mekanik_terbaik?.total_pekerjaan ?? 0;
+
+    if (!name) {
+      return {
+        title: "Mekanik Terbaik",
+        value: "Belum Tersedia",
+        subtitle: "Belum ada servis selesai bulan ini",
+        icon: "mdi-star-outline",
+        tone: "warning",
+      };
+    }
+
     return {
       title: "Mekanik Terbaik",
       value: name,
@@ -69,10 +80,12 @@ export function usePemilikQuickInsights(props: { ringkasan: any; statistik: any 
   }));
 
   const INSIGHT_KARTU = computed(() => {
-    const cards = [firstKartu.value, teamKartu.value];
-    if (bestMechanicKartu.value) cards.push(bestMechanicKartu.value);
-    cards.push(unitKartu.value);
-    return cards;
+    return [
+      firstKartu.value,
+      teamKartu.value,
+      bestMechanicKartu.value,
+      unitKartu.value,
+    ];
   });
 
   onMounted(() => {
