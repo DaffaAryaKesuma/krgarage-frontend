@@ -107,7 +107,7 @@ const getLayananTotal = (pemesanan: PelangganPemesanan) =>
           </div>
         </div>
         <div
-          class="flex items-center justify-between pt-4 border-t border-gray-200 mt-auto"
+          class="flex flex-col gap-3 pt-4 border-t border-gray-200 mt-auto sm:flex-row sm:items-center sm:justify-between"
         >
           <div>
             <p :class="META_LABEL_CLASS">Total Biaya</p>
@@ -115,6 +115,13 @@ const getLayananTotal = (pemesanan: PelangganPemesanan) =>
               {{ toIDR(item.total_harga || getLayananTotal(item)) }}
             </p>
           </div>
+          <router-link
+            :to="`/app/riwayat/${item.id}`"
+            :class="getButtonClass('neutralOutline', 'sm', 'w-full sm:w-auto')"
+          >
+            <i class="mdi mdi-text-box-search-outline text-base"></i>
+            <span>Lihat Detail</span>
+          </router-link>
         </div>
       </div>
     </div>
