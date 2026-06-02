@@ -1,4 +1,4 @@
-import { API_URL } from "@/utils/api";
+import { STORAGE_URL } from "@/utils/api";
 
 /**
  * Format waktu dalam menit ke format yang lebih readable
@@ -36,10 +36,21 @@ export function getImageUrl(
     return "https://placehold.co/600x400?text=No+Image";
   }
 
-  const baseUrl = apiUrl || API_URL;
-  const storageUrl = baseUrl.replace(/\/api\/?$/, "");
+  const normalizedPath = imagePath.trim();
 
-  return `${storageUrl}/storage/${imagePath}`;
+  if (/^(https?:|data:|blob:)/i.test(normalizedPath)) {
+    return normalizedPath;
+  }
+
+  const storageUrl = apiUrl
+    ? `${apiUrl.replace(/\/api\/?$/, "").replace(/\/$/, "")}/storage`
+    : STORAGE_URL.replace(/\/$/, "");
+
+  const pathWithoutStoragePrefix = normalizedPath
+    .replace(/^\/+/, "")
+    .replace(/^storage\/+/, "");
+
+  return `${storageUrl}/${pathWithoutStoragePrefix}`;
 }
 
 /**

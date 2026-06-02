@@ -29,3 +29,7 @@ export const API_URL =
 export const API_BASE_URL =
   (import.meta.env.VITE_API_BASE_URL || "").trim() ||
   API_URL.replace(/\/api\/?$/, "");
+
+export const STORAGE_URL =
+  (import.meta.env.VITE_STORAGE_URL || "").trim() ||
+  `${API_BASE_URL.replace(/\/$/, "")}/storage`;
