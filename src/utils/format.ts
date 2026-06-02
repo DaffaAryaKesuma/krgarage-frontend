@@ -1,4 +1,4 @@
-import { STORAGE_URL } from "@/utils/api";
+import { API_BASE_URL, STORAGE_URL } from "@/utils/api";
 
 /**
  * Format waktu dalam menit ke format yang lebih readable
@@ -49,6 +49,10 @@ export function getImageUrl(
   const pathWithoutStoragePrefix = normalizedPath
     .replace(/^\/+/, "")
     .replace(/^storage\/+/, "");
+
+  if (pathWithoutStoragePrefix.startsWith("services/")) {
+    return `${API_BASE_URL.replace(/\/$/, "")}/${pathWithoutStoragePrefix}`;
+  }
 
   return `${storageUrl}/${pathWithoutStoragePrefix}`;
 }
