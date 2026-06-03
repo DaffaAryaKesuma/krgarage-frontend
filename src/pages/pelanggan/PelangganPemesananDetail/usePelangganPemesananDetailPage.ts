@@ -7,7 +7,12 @@ import { getAuthHeaders } from "@/utils/auth";
 import { handleApiError, logError } from "@/utils/errorHandler";
 import { toMoneyNumber } from "@/utils/money";
 import { canPelangganCancelPemesanan } from "@/utils/statusBadge";
+import { useRealtimeRefresh } from "@/composables/useRealtimeRefresh";
 import type { Pemesanan } from "@/types/pemesanan";
+
+interface FetchOptions {
+  silent?: boolean;
+}
 
 export function usePelangganPemesananDetailPage() {
   const route = useRoute();
@@ -52,19 +57,25 @@ export function usePelangganPemesananDetailPage() {
     canPelangganCancelPemesanan(pemesanan.value?.status || null),
   );
 
-  const fetchPemesananDetail = async () => {
-    isLoading.value = true;
-    errorMessage.value = "";
+  const fetchPemesananDetail = async (options: FetchOptions = {}) => {
+    if (!options.silent) {
+      isLoading.value = true;
+      errorMessage.value = "";
+    }
 
     if (!Number.isFinite(pemesananId.value) || pemesananId.value <= 0) {
-      errorMessage.value = "ID pemesanan tidak valid.";
-      isLoading.value = false;
+      if (!options.silent) {
+        errorMessage.value = "ID pemesanan tidak valid.";
+        isLoading.value = false;
+      }
       return;
     }
 
     const headers = getAuthHeaders();
     if (!Object.keys(headers).length) {
-      isLoading.value = false;
+      if (!options.silent) {
+        isLoading.value = false;
+      }
       return;
     }
 
@@ -76,11 +87,17 @@ export function usePelangganPemesananDetailPage() {
       pemesanan.value = data?.data || data;
     } catch (error: any) {
       logError(error, "fetchPemesananDetail");
-      errorMessage.value = handleApiError(error);
+      if (!options.silent) {
+        errorMessage.value = handleApiError(error);
+      }
     } finally {
-      isLoading.value = false;
+      if (!options.silent) {
+        isLoading.value = false;
+      }
     }
   };
+
+  useRealtimeRefresh(() => fetchPemesananDetail({ silent: true }));
 
   const handleConfirmCancel = async () => {
     if (!pemesanan.value || isCancelling.value) return;

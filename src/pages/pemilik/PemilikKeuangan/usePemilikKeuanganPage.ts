@@ -4,10 +4,14 @@ import { getAuthHeaders } from "@/utils/auth";
 import { API_URL } from "@/utils/api";
 import { logError } from "@/utils/errorHandler";
 import { toLocalISOString } from "@/utils/format";
+import { useRealtimeRefresh } from "@/composables/useRealtimeRefresh";
 import type { KeuanganPemesanan } from "@/types/pemesanan";
 import type { RiwayatRestokSukuCadang } from "@/types/inventaris";
 import type { PemilikKeuanganTabKey } from "@/components/pemilik/keuangan/PemilikKeuanganTabs/usePemilikKeuanganTabs";
 
+interface FetchOptions {
+  silent?: boolean;
+}
 
 export function usePemilikKeuanganPage() {
   // 1. Pindahkan State ke sini
@@ -36,10 +40,12 @@ export function usePemilikKeuanganPage() {
   const activeTab = ref<PemilikKeuanganTabKey>("ringkasan");
   
   // 2. Pindahkan fungsi fetchKeuanganData ke sini
-  const fetchKeuanganData = async () => {
-    loading.value = true;
-    currentPage.value = 1; 
-    expenseCurrentPage.value = 1;
+  const fetchKeuanganData = async (options: FetchOptions = {}) => {
+    if (!options.silent) {
+      loading.value = true;
+      currentPage.value = 1;
+      expenseCurrentPage.value = 1;
+    }
     try {
       const headers = getAuthHeaders();
       const params = {
@@ -103,9 +109,13 @@ export function usePemilikKeuanganPage() {
         avgPemesanan: 0,
       };
     } finally {
-      loading.value = false;
+      if (!options.silent) {
+        loading.value = false;
+      }
     }
   };
+
+  useRealtimeRefresh(() => fetchKeuanganData({ silent: true }));
   
   // 3. Wajib: "Keluarkan" semua variabel dan fungsi agar bisa dibaca oleh komponen .vue
   return {

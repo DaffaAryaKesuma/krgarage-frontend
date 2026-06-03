@@ -3,6 +3,11 @@ import axios from "axios";
 import { getAuthHeaders } from "@/utils/auth";
 import { logError } from "@/utils/errorHandler";
 import { API_URL } from "@/utils/api";
+import { useRealtimeRefresh } from "@/composables/useRealtimeRefresh";
+
+interface FetchOptions {
+  silent?: boolean;
+}
 
 export function usePemilikDasborPage() {
   const statistik = ref({
@@ -17,7 +22,7 @@ export function usePemilikDasborPage() {
   const metrik = ref(null);
   const terbaruPemesanan = ref<any[]>([]);
 
-  const fetchDasborData = async () => {
+  const fetchDasborData = async (options: FetchOptions = {}) => {
     try {
       const headers = getAuthHeaders();
 
@@ -58,16 +63,21 @@ export function usePemilikDasborPage() {
         : [];
     } catch (error: any) {
       logError(error, "fetchDasborData");
-      statistik.value.loading = false;
+      if (!options.silent) {
+        statistik.value.loading = false;
+      }
     }
   };
 
   onMounted(fetchDasborData);
+
+  useRealtimeRefresh(() => fetchDasborData({ silent: true }));
 
   return {
     statistik,
     ringkasan,
     metrik,
     terbaruPemesanan,
+    fetchDasborData,
   };
 }

@@ -3,6 +3,7 @@ import axios from "axios";
 import { useToast } from "@/utils/useToast";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
+import { useRealtimeRefresh } from "@/composables/useRealtimeRefresh";
 import { PEMESANAN_STATUS, type PemesananStatusFilter } from "@/utils/statusBadge";
 import {
   PEMBAYARAN_STATUS,
@@ -15,6 +16,10 @@ import {
   matchesAdminPemesananFilters,
   type AdminPemesananFilterState,
 } from "@/pages/admin/AdminPemesanan/adminPemesananHelpers";
+
+interface FetchOptions {
+  silent?: boolean;
+}
 
 export function useAdminPemesananPage() {
   const toast = useToast();
@@ -53,8 +58,10 @@ export function useAdminPemesananPage() {
     mekaniks.value.map((m) => ({ value: m.id, label: m.nama })),
   );
 
-  const fetchAllPemesanan = async (page = 1) => {
-    isLoading.value = true;
+  const fetchAllPemesanan = async (page = 1, options: FetchOptions = {}) => {
+    if (!options.silent) {
+      isLoading.value = true;
+    }
     error.value = "";
 
     try {
@@ -67,14 +74,22 @@ export function useAdminPemesananPage() {
       updateFromApi(data.meta || data);
     } catch (err: any) {
       console.error("Gagal mengambil data pemesanan:", err);
-      error.value =
-        err.response?.status === 401
-          ? "Sesi tidak valid. Silakan login kembali."
-          : "Gagal memuat data pemesanan.";
+      if (!options.silent) {
+        error.value =
+          err.response?.status === 401
+            ? "Sesi tidak valid. Silakan login kembali."
+            : "Gagal memuat data pemesanan.";
+      }
     } finally {
-      isLoading.value = false;
+      if (!options.silent) {
+        isLoading.value = false;
+      }
     }
   };
+
+  useRealtimeRefresh(
+    () => fetchAllPemesanan(pagination.value.current_page, { silent: true }),
+  );
 
   const changeStatus = async (pemesanan: Pemesanan, newStatus: string, catatan?: string) => {
     try {

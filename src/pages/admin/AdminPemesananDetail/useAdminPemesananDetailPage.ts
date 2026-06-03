@@ -4,8 +4,13 @@ import { useToast } from "@/utils/useToast";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
 import { toMoneyNumber } from "@/utils/money";
+import { useRealtimeRefresh } from "@/composables/useRealtimeRefresh";
 import type { Pemesanan } from "@/types/pemesanan";
 import type { SukuCadangRingkasan } from "@/types/inventaris";
+
+interface FetchOptions {
+  silent?: boolean;
+}
 
 export function useAdminPemesananDetailPage(pemesananId: string) {
   const toast = useToast();
@@ -53,7 +58,11 @@ export function useAdminPemesananDetailPage(pemesananId: string) {
     () => toMoneyNumber(pemesanan.value?.total_harga) || grandTotal.value,
   );
 
-  const fetchPemesananData = async () => {
+  const fetchPemesananData = async (options: FetchOptions = {}) => {
+    if (!options.silent) {
+      isLoading.value = true;
+    }
+
     try {
       const { data } = await axios.get(
         `${API_URL}/admin/pemesanan/${pemesananId}`,
@@ -64,9 +73,15 @@ export function useAdminPemesananDetailPage(pemesananId: string) {
       pemesanan.value = data.data ?? data;
     } catch (err) {
       console.error("Gagal mengambil detail pemesanan:", err);
-      if (!pemesanan.value) error.value = "Gagal memload data.";
+      if (!pemesanan.value && !options.silent) error.value = "Gagal memload data.";
+    } finally {
+      if (!options.silent) {
+        isLoading.value = false;
+      }
     }
   };
+
+  useRealtimeRefresh(() => fetchPemesananData({ silent: true }));
 
   const fetchAvailableSukuCadang = async () => {
     try {

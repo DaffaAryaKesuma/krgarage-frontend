@@ -5,6 +5,7 @@ import { handleApiError, logError } from "@/utils/errorHandler";
 import { useToast } from "@/utils/useToast";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
+import { useRealtimeRefresh } from "@/composables/useRealtimeRefresh";
 import {
   isCompletedOrCancelledStatus,
   mapMekanikFilterToPemesananStatus,
@@ -14,6 +15,10 @@ import { useApiPagination } from "@/composables/useApiPagination";
 import type { MekanikPemesanan } from "@/types/pemesanan";
 
 type MekanikTab = "active" | "riwayat";
+
+interface FetchOptions {
+  silent?: boolean;
+}
 
 export function useMekanikPemesanan(activeTab: Ref<MekanikTab>) {
   const router = useRouter();
@@ -42,8 +47,10 @@ export function useMekanikPemesanan(activeTab: Ref<MekanikTab>) {
     return headers;
   };
 
-  const fetchActiveJobs = async () => {
-    loading.value = true;
+  const fetchActiveJobs = async (options: FetchOptions = {}) => {
+    if (!options.silent) {
+      loading.value = true;
+    }
     try {
       const headers = getValidAuthHeaders();
       if (!headers) {
@@ -61,14 +68,20 @@ export function useMekanikPemesanan(activeTab: Ref<MekanikTab>) {
       );
     } catch (error: any) {
       logError(error, "fetchActiveJobs");
-      toast.error(handleApiError(error));
+      if (!options.silent) {
+        toast.error(handleApiError(error));
+      }
     } finally {
-      loading.value = false;
+      if (!options.silent) {
+        loading.value = false;
+      }
     }
   };
 
-  const fetchRiwayat = async (page = 1) => {
-    loading.value = true;
+  const fetchRiwayat = async (page = 1, options: FetchOptions = {}) => {
+    if (!options.silent) {
+      loading.value = true;
+    }
     try {
       const headers = getValidAuthHeaders();
       if (!headers) {
@@ -100,9 +113,13 @@ export function useMekanikPemesanan(activeTab: Ref<MekanikTab>) {
       updateRiwayatPagination(response.data.meta || response.data);
     } catch (error: any) {
       logError(error, "fetchRiwayat");
-      toast.error(handleApiError(error));
+      if (!options.silent) {
+        toast.error(handleApiError(error));
+      }
     } finally {
-      loading.value = false;
+      if (!options.silent) {
+        loading.value = false;
+      }
     }
   };
 
@@ -114,6 +131,13 @@ export function useMekanikPemesanan(activeTab: Ref<MekanikTab>) {
 
     await fetchRiwayat(riwayatPagination.value.current_page);
   };
+
+  useRealtimeRefresh(
+    () =>
+      activeTab.value === "active"
+        ? fetchActiveJobs({ silent: true })
+        : fetchRiwayat(riwayatPagination.value.current_page, { silent: true }),
+  );
 
   const filteredPemesanan = computed(() => {
     if (activeTab.value === "riwayat") {

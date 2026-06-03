@@ -5,7 +5,12 @@ import { handleApiError, logError } from "@/utils/errorHandler";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
 import { useApiPagination } from "@/composables/useApiPagination";
+import { useRealtimeRefresh } from "@/composables/useRealtimeRefresh";
 import type { PelangganPemesanan } from "@/types/pemesanan";
+
+interface FetchOptions {
+  silent?: boolean;
+}
 
 export function usePelangganRiwayatPage() {
   const toast = useToast();
@@ -20,12 +25,16 @@ export function usePelangganRiwayatPage() {
   const selectedYear = ref<number>(new Date().getFullYear());
   const { pagination, setCurrentPage, updateFromApi } = useApiPagination(10);
 
-  const fetchPemesanan = async (page = 1) => {
-    isLoading.value = true;
+  const fetchPemesanan = async (page = 1, options: FetchOptions = {}) => {
+    if (!options.silent) {
+      isLoading.value = true;
+    }
     const headers = getAuthHeaders();
 
     if (!Object.keys(headers).length) {
-      isLoading.value = false;
+      if (!options.silent) {
+        isLoading.value = false;
+      }
       return;
     }
 
@@ -39,11 +48,19 @@ export function usePelangganRiwayatPage() {
       updateFromApi(data.meta || data);
     } catch (error) {
       logError(error, "fetchPemesanan");
-      toast.error("Gagal memuat riwayat pemesanan.");
+      if (!options.silent) {
+        toast.error("Gagal memuat riwayat pemesanan.");
+      }
     } finally {
-      isLoading.value = false;
+      if (!options.silent) {
+        isLoading.value = false;
+      }
     }
   };
+
+  useRealtimeRefresh(
+    () => fetchPemesanan(pagination.value.current_page, { silent: true }),
+  );
 
   const cancelPemesanan = (pemesananId: number) => {
     pemesananToCancel.value = pemesananId;

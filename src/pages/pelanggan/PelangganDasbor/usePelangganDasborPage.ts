@@ -4,6 +4,7 @@ import { handleApiError, logError } from "@/utils/errorHandler";
 import { useToast } from "@/utils/useToast";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
+import { useRealtimeRefresh } from "@/composables/useRealtimeRefresh";
 import type { PelangganPemesanan } from "@/types/pemesanan";
 import type { VespaDetail } from "@/types/vespa";
 import {
@@ -14,6 +15,10 @@ import {
   isStatusBatal,
 } from "@/utils/statusBadge";
 
+interface FetchOptions {
+  silent?: boolean;
+}
+
 export function usePelangganDasborPage() {
   const toast = useToast();
 
@@ -23,10 +28,12 @@ export function usePelangganDasborPage() {
   const isLoading = ref(true);
   const user = ref({ nama: "Guest" });
 
-  const fetchDasborData = async () => {
+  const fetchDasborData = async (options: FetchOptions = {}) => {
     const headers = getAuthHeaders();
     if (!Object.keys(headers).length) {
-      isLoading.value = false;
+      if (!options.silent) {
+        isLoading.value = false;
+      }
       return;
     }
 
@@ -45,11 +52,17 @@ export function usePelangganDasborPage() {
         dueLayananResponse.data.data || dueLayananResponse.data;
     } catch (error: any) {
       logError(error, "fetchDasborData");
-      toast.error(handleApiError(error));
+      if (!options.silent) {
+        toast.error(handleApiError(error));
+      }
     } finally {
-      isLoading.value = false;
+      if (!options.silent) {
+        isLoading.value = false;
+      }
     }
   };
+
+  useRealtimeRefresh(() => fetchDasborData({ silent: true }));
 
   const upcomingPemesanan = computed(() =>
     pemesananDaftar.value
@@ -84,5 +97,6 @@ export function usePelangganDasborPage() {
     isLoading,
     upcomingPemesanan,
     terbaruPemesanan,
+    fetchDasborData,
   };
 }

@@ -4,6 +4,7 @@ import { logError, handleApiError } from "@/utils/errorHandler";
 import { useToast } from "@/utils/useToast";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
+import { useRealtimeRefresh } from "@/composables/useRealtimeRefresh";
 import type { KeuanganPemesanan } from "@/types/pemesanan";
 
 export interface Ringkasan {
@@ -15,6 +16,10 @@ export interface Ringkasan {
 export interface MonthlyData {
   bulan: number;
   pendapatan: string;
+}
+
+interface FetchOptions {
+  silent?: boolean;
 }
 
 export function useAdminKeuanganLaporanPage() {
@@ -34,8 +39,10 @@ export function useAdminKeuanganLaporanPage() {
   const topLayanan = ref<any[]>([]);
   const pemesanan = ref<KeuanganPemesanan[]>([]);
 
-  const fetchLaporan = async () => {
-    isLoading.value = true;
+  const fetchLaporan = async (options: FetchOptions = {}) => {
+    if (!options.silent) {
+      isLoading.value = true;
+    }
     try {
       const params = {
         year: selectedYear.value,
@@ -53,11 +60,17 @@ export function useAdminKeuanganLaporanPage() {
       pemesanan.value = data.pemesanan;
     } catch (error: any) {
       logError(error, "fetchLaporan");
-      toast.error(handleApiError(error));
+      if (!options.silent) {
+        toast.error(handleApiError(error));
+      }
     } finally {
-      isLoading.value = false;
+      if (!options.silent) {
+        isLoading.value = false;
+      }
     }
   };
+
+  useRealtimeRefresh(() => fetchLaporan({ silent: true }));
 
   onMounted(() => fetchLaporan());
 

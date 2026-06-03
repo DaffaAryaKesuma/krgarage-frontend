@@ -5,6 +5,7 @@ import { useToast } from "@/utils/useToast";
 import { handleApiError, logError } from "@/utils/errorHandler";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
+import { useRealtimeRefresh } from "@/composables/useRealtimeRefresh";
 import { PEMESANAN_STATUS } from "@/utils/statusBadge";
 import { PEMBAYARAN_STATUS } from "@/utils/pembayaranStatus";
 import type { Pemesanan, MekanikOption } from "@/types/pemesanan";
@@ -14,6 +15,10 @@ interface DasborStatistik {
   pemesanan_hari_ini: number;
   sedang_dikerjakan: number;
   selesai_hari_ini: number;
+}
+
+interface FetchOptions {
+  silent?: boolean;
 }
 
 export function useAdminDasborPage() {
@@ -65,8 +70,10 @@ export function useAdminDasborPage() {
     }
   };
 
-  const fetchDasborData = async () => {
-    isLoading.value = true;
+  const fetchDasborData = async (options: FetchOptions = {}) => {
+    if (!options.silent) {
+      isLoading.value = true;
+    }
     try {
       const [pemesananRes, lowStockRes] = await Promise.all([
         axios.get(`${API_URL}/admin/dashboard/pemesanan-terbaru`, {
@@ -82,11 +89,17 @@ export function useAdminDasborPage() {
       await fetchDasborStatistik(false);
     } catch (error: any) {
       logError(error, "fetchDasborData");
-      toast.error(handleApiError(error));
+      if (!options.silent) {
+        toast.error(handleApiError(error));
+      }
     } finally {
-      isLoading.value = false;
+      if (!options.silent) {
+        isLoading.value = false;
+      }
     }
   };
+
+  useRealtimeRefresh(() => fetchDasborData({ silent: true }));
 
   const changeStatus = async (pemesanan: Pemesanan, statusBaru: string, catatan?: string) => {
     try {

@@ -9,6 +9,7 @@ import {
 import { getAuthHeaders, getCurrentUser } from "@/utils/auth";
 import { logError } from "@/utils/errorHandler";
 import { API_URL } from "@/utils/api";
+import { useRealtimeRefresh } from "@/composables/useRealtimeRefresh";
 import { getRedirectPathForRole } from "@/utils/roleRoutes";
 import {
   getPemesananIdFromNotification,
@@ -29,8 +30,6 @@ export function useNotificationBell() {
   const notifications = ref<AppNotification[]>([]);
   const unreadCount = ref(0);
   const isLoading = ref(false);
-
-  let pollingInterval: ReturnType<typeof setInterval> | null = null;
 
   const hasUnread = computed(() => unreadCount.value > 0);
 
@@ -134,22 +133,18 @@ export function useNotificationBell() {
     },
   );
 
+  useRealtimeRefresh(() => fetchNotifications(true), {
+    events: ["notifikasi.changed", "pemesanan.changed"],
+  });
+
   onMounted(() => {
     document.addEventListener("click", handleClickOutside);
 
     fetchNotifications(false);
-
-    pollingInterval = setInterval(() => {
-      fetchNotifications(true);
-    }, 10000);
   });
 
   onUnmounted(() => {
     document.removeEventListener("click", handleClickOutside);
-
-    if (pollingInterval) {
-      clearInterval(pollingInterval);
-    }
   });
 
   return {
