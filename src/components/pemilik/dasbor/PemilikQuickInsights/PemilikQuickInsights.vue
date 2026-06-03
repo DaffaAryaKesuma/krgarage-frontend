@@ -13,6 +13,13 @@ const CARD_TONE_CLASS = {
     subtitle: "text-white/80",
     icon: "bg-white/20 text-white",
   },
+  success: {
+    card: "from-green-500 to-green-600 shadow-green-100/70",
+    title: "text-white/90",
+    value: "text-white",
+    subtitle: "text-white/80",
+    icon: "bg-white/20 text-white",
+  },
   info: {
     card: "from-blue-500 to-blue-600 shadow-blue-100/70",
     title: "text-white/90",

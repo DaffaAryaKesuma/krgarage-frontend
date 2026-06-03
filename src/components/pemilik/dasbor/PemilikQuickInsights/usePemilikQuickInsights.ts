@@ -36,7 +36,7 @@ export function usePemilikQuickInsights(props: { ringkasan: any; statistik: any 
     value: isOpen.value ? "Bengkel Buka" : "Bengkel Tutup",
     subtitle: isFriday.value ? "Libur: Jumat" : "Jam Operasional: 10:00 - 17:00",
     icon: isOpen.value ? "mdi-store-clock" : "mdi-store-off",
-    tone: "neutral",
+    tone: isOpen.value ? "success" : "neutral",
   }));
 
   const teamKartu = computed(() => ({
