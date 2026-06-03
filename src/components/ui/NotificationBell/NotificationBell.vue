@@ -5,6 +5,7 @@ import {
   getToneTextClass,
 } from "@/utils/badgeVariants";
 import { getIconButtonClass } from "@/utils/buttonVariants";
+import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import { useNotificationBell } from "./useNotificationBell";
 
 const {
@@ -61,11 +62,8 @@ const {
           </h3>
         </div>
 
-        <div v-if="isLoading" class="p-6 text-center">
-          <div
-            class="inline-block h-8 w-8 animate-spin rounded-full border-b-2 border-red-600"
-          ></div>
-          <p class="mt-2 text-sm text-gray-600">Memuat notifikasi...</p>
+        <div v-if="isLoading" class="px-4 py-2">
+          <LoadingSpinner message="Memuat notifikasi..." />
         </div>
 
         <div

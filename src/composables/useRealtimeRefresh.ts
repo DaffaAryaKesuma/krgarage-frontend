@@ -1,4 +1,5 @@
 import { onBeforeUnmount, onMounted } from "vue";
+import { getPusherClient } from "@/utils/pusher";
 
 export const KRGARAGE_DATA_CHANGED_EVENT = "krgarage:data-changed";
 
@@ -37,6 +38,14 @@ export function useRealtimeRefresh(
 ) {
   const allowedEvents = options.events ?? ["pemesanan.changed"];
   let isRefreshing = false;
+  const pusher = getPusherClient();
+  const pusherChannel = pusher?.subscribe("krgarage-status");
+  const handlePusherPemesananChanged = (payload: Record<string, unknown>) => {
+    void runRefresh({
+      event: "pemesanan.changed",
+      payload,
+    });
+  };
 
   const runRefresh = async (message: RealtimeMessage) => {
     if (isRefreshing) return;
@@ -69,11 +78,14 @@ export function useRealtimeRefresh(
     window.addEventListener(KRGARAGE_DATA_CHANGED_EVENT, handleDataChanged);
     window.addEventListener("storage", handleStorageChanged);
     window.addEventListener("focus", handleFocus);
+
+    pusherChannel?.bind("pemesanan.changed", handlePusherPemesananChanged);
   });
 
   onBeforeUnmount(() => {
     window.removeEventListener(KRGARAGE_DATA_CHANGED_EVENT, handleDataChanged);
     window.removeEventListener("storage", handleStorageChanged);
     window.removeEventListener("focus", handleFocus);
+    pusherChannel?.unbind("pemesanan.changed", handlePusherPemesananChanged);
   });
 }
