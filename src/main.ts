@@ -3,6 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import axios from "axios";
 import { API_BASE_URL } from "./utils/api";
+import { notifyKrGarageDataChanged } from "./composables/useRealtimeRefresh";
 import "./main.css";
 import "@mdi/font/css/materialdesignicons.css";
 
@@ -28,6 +29,23 @@ axios.interceptors.request.use(
 // Add response interceptor untuk handle errors
 axios.interceptors.response.use(
   (response) => {
+    const method = response.config.method?.toUpperCase();
+    const url = String(response.config.url || "");
+    const isMutation = ["POST", "PUT", "PATCH", "DELETE"].includes(method || "");
+    const shouldNotify =
+      isMutation &&
+      !url.includes("/masuk") &&
+      !url.includes("/daftar") &&
+      !url.includes("/keluar") &&
+      !url.includes("/ping") &&
+      !url.includes("/notifikasi/");
+
+    if (shouldNotify) {
+      notifyKrGarageDataChanged(
+        url.includes("/notifikasi") ? "notifikasi.changed" : "pemesanan.changed",
+      );
+    }
+
     return response;
   },
   (error) => {
