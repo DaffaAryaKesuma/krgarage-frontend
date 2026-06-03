@@ -23,7 +23,7 @@ export function useRealtimeRefresh(
   let abortController: AbortController | null = null;
   let reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
   let isRefreshing = false;
-  let lastEventId = Number(localStorage.getItem("krg_last_realtime_event_id") || 0);
+  let lastEventId: number | null = null;
 
   const runRefresh = async (message: RealtimeMessage) => {
     if (isRefreshing) return;
@@ -52,21 +52,19 @@ export function useRealtimeRefresh(
       buffer = chunks.pop() || "";
 
       for (const chunk of chunks) {
-        const dataLine = chunk
-          .split("\n")
-          .find((line) => line.startsWith("data: "));
+        const lines = chunk.split("\n");
+        const idLine = lines.find((line) => line.startsWith("id: "));
+        const dataLine = lines.find((line) => line.startsWith("data: "));
 
         if (!dataLine) continue;
 
         const message = JSON.parse(dataLine.replace("data: ", "")) as RealtimeMessage;
-        if (!message.event || !allowedEvents.includes(message.event)) {
-          continue;
+        const eventId = Number(message.id || idLine?.replace("id: ", ""));
+        if (Number.isFinite(eventId) && eventId >= 0) {
+          lastEventId = eventId;
         }
 
-        if (message.id) {
-          lastEventId = message.id;
-          localStorage.setItem("krg_last_realtime_event_id", String(message.id));
-        }
+        if (!message.event || !allowedEvents.includes(message.event)) continue;
 
         await runRefresh(message);
       }
@@ -78,18 +76,19 @@ export function useRealtimeRefresh(
 
     abortController?.abort();
     abortController = new AbortController();
+    const eventUrl =
+      lastEventId === null
+        ? `${API_URL}/realtime/events`
+        : `${API_URL}/realtime/events?last_event_id=${lastEventId}`;
 
     try {
-      const response = await fetch(
-        `${API_URL}/realtime/events?last_event_id=${lastEventId}`,
-        {
-          headers: {
-            ...getAuthHeaders(),
-            Accept: "text/event-stream",
-          },
-          signal: abortController.signal,
+      const response = await fetch(eventUrl, {
+        headers: {
+          ...getAuthHeaders(),
+          Accept: "text/event-stream",
         },
-      );
+        signal: abortController.signal,
+      });
 
       if (!response.ok) return;
 
