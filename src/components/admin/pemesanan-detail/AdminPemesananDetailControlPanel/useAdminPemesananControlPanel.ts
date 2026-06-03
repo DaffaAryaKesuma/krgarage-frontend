@@ -1,4 +1,5 @@
 import { computed, ref, watch } from "vue";
+import { notifyKrGarageDataChanged } from "@/composables/useRealtimeRefresh";
 import { useToast } from "@/utils/useToast";
 import {
   PEMESANAN_STATUS,
@@ -202,6 +203,7 @@ export function useAdminPemesananControlPanel(
       );
 
       toast.success("Mekanik ditugaskan dan servis dimulai!");
+      notifyKrGarageDataChanged();
       onRefresh();
     } catch (error: any) {
       console.error("Gagal menugaskan mekanik dan memulai servis:", error);

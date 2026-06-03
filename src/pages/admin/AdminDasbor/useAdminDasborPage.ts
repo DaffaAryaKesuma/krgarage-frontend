@@ -5,7 +5,10 @@ import { useToast } from "@/utils/useToast";
 import { handleApiError, logError } from "@/utils/errorHandler";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
-import { useRealtimeRefresh } from "@/composables/useRealtimeRefresh";
+import {
+  notifyKrGarageDataChanged,
+  useRealtimeRefresh,
+} from "@/composables/useRealtimeRefresh";
 import { PEMESANAN_STATUS } from "@/utils/statusBadge";
 import { PEMBAYARAN_STATUS } from "@/utils/pembayaranStatus";
 import type { Pemesanan, MekanikOption } from "@/types/pemesanan";
@@ -148,6 +151,7 @@ export function useAdminDasborPage() {
         mekaniks.value.find((mekanik) => mekanik.id === mekanikId) || null;
 
       toast.success("Mekanik di-assign dan servis dimulai!");
+      notifyKrGarageDataChanged();
       await fetchDasborStatistik(false);
     } catch (error: any) {
       logError(error, "assignMekanikAndStart");

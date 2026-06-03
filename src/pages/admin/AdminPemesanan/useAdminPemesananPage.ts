@@ -3,7 +3,10 @@ import axios from "axios";
 import { useToast } from "@/utils/useToast";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
-import { useRealtimeRefresh } from "@/composables/useRealtimeRefresh";
+import {
+  notifyKrGarageDataChanged,
+  useRealtimeRefresh,
+} from "@/composables/useRealtimeRefresh";
 import { PEMESANAN_STATUS, type PemesananStatusFilter } from "@/utils/statusBadge";
 import {
   PEMBAYARAN_STATUS,
@@ -264,6 +267,7 @@ export function useAdminPemesananPage() {
       );
 
       toast.success("Mekanik di-assign dan servis dimulai!");
+      notifyKrGarageDataChanged();
       await fetchAllPemesanan(pagination.value.current_page);
     } catch (err: any) {
       console.error("Gagal assign mekanik dan mulai servis:", err);

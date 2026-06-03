@@ -1,4 +1,4 @@
-import { computed, ref, type Ref } from "vue";
+import { computed, onBeforeUnmount, ref, type Ref } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
 import { handleApiError, logError } from "@/utils/errorHandler";
@@ -28,6 +28,7 @@ export function useMekanikPemesanan(activeTab: Ref<MekanikTab>) {
   const riwayatPemesanan = ref<MekanikPemesanan[]>([]);
   const loading = ref(false);
   const statusFilter = ref<MekanikStatusFilter>("semua");
+  let delayedRealtimeRefresh: ReturnType<typeof setTimeout> | null = null;
 
   const selectedYear = ref(0);
   const selectedMonth = ref(0);
@@ -132,12 +133,31 @@ export function useMekanikPemesanan(activeTab: Ref<MekanikTab>) {
     await fetchRiwayat(riwayatPagination.value.current_page);
   };
 
-  useRealtimeRefresh(
-    () =>
-      activeTab.value === "active"
+  const refreshFromRealtime = async () => {
+    if (activeTab.value === "active") {
+      await fetchActiveJobs({ silent: true });
+    } else {
+      await fetchRiwayat(riwayatPagination.value.current_page, { silent: true });
+    }
+
+    if (delayedRealtimeRefresh) {
+      clearTimeout(delayedRealtimeRefresh);
+    }
+
+    delayedRealtimeRefresh = setTimeout(() => {
+      void (activeTab.value === "active"
         ? fetchActiveJobs({ silent: true })
-        : fetchRiwayat(riwayatPagination.value.current_page, { silent: true }),
-  );
+        : fetchRiwayat(riwayatPagination.value.current_page, { silent: true }));
+    }, 1200);
+  };
+
+  useRealtimeRefresh(refreshFromRealtime);
+
+  onBeforeUnmount(() => {
+    if (delayedRealtimeRefresh) {
+      clearTimeout(delayedRealtimeRefresh);
+    }
+  });
 
   const filteredPemesanan = computed(() => {
     if (activeTab.value === "riwayat") {
