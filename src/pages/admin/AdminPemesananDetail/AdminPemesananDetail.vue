@@ -1,19 +1,34 @@
 <script setup lang="ts">
+// onMounted menjalankan fetch detail saat halaman dibuka.
 import { onMounted } from "vue";
+// useRoute dipakai untuk mengambil id pemesanan dari URL.
 import { useRoute } from "vue-router";
+// Modal konfirmasi untuk hapus suku cadang dari pemesanan.
 import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
+// Loading saat detail pemesanan masih dimuat.
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
+// Header standar halaman.
 import AppPageHeader from "@/components/ui/AppPageHeader.vue";
+// Kartu info pelanggan, vespa, dan jadwal.
 import AdminPemesananInfoKartu from "@/components/admin/pemesanan-detail/AdminPemesananDetailInfoKartu/AdminPemesananInfoKartu.vue";
+// Panel kontrol status, mekanik, dan pembayaran.
 import AdminPemesananPanelKontrol from "@/components/admin/pemesanan-detail/AdminPemesananDetailControlPanel/AdminPemesananPanelKontrol.vue";
+// Daftar layanan dan item suku cadang.
 import AdminPemesananRincianDaftar from "@/components/admin/pemesanan-detail/AdminPemesananDetailRincianDaftar/AdminPemesananRincianDaftar.vue";
+// Ringkasan total biaya.
 import AdminPemesananTotalRingkasan from "@/components/admin/pemesanan-detail/AdminPemesananDetailTotalRingkasan/AdminPemesananTotalRingkasan.vue";
+// Komponen catatan pelanggan dan mekanik.
 import AdminPemesananCatatan from "@/components/admin/pemesanan-detail/AdminPemesananDetailCatatan/AdminPemesananCatatan.vue";
+// Modal untuk menambahkan suku cadang ke pemesanan.
 import TambahSukuCadangModal from "@/components/ui/TambahSukuCadangModal/TambahSukuCadangModal.vue";
+// Class alert reusable.
 import { getAlertBoxClass, getAlertIconClass } from "@/utils/badgeVariants";
+// Composable logic detail pemesanan admin.
 import { useAdminPemesananDetailPage } from "./useAdminPemesananDetailPage";
 
+// Ambil data route, terutama params.id.
 const route = useRoute();
+// Kirim id pemesanan dari URL ke composable.
 const {
   pemesanan,
   isLoading,
@@ -34,7 +49,7 @@ const {
   removeSukuCadangFromPemesanan,
 } = useAdminPemesananDetailPage(String(route.params.id));
 
-// Lifecycle
+// Saat halaman dibuka, ambil detail pemesanan dari API.
 onMounted(async () => {
   isLoading.value = true;
   await fetchPemesananData();
@@ -43,7 +58,9 @@ onMounted(async () => {
 </script>
 
 <template>
+  <!-- Container halaman detail pemesanan admin. -->
   <div class="min-h-screen bg-gray-50">
+    <!-- Header dengan subtitle dinamis berdasarkan kode pemesanan. -->
     <AppPageHeader
       title="Detail Pemesanan"
       icon="mdi-clipboard-text"
@@ -54,6 +71,7 @@ onMounted(async () => {
       "
       subtitle-class="text-sm sm:text-base text-red-100"
     >
+      <!-- Slot aksi berisi tombol kembali. -->
       <template #aksi>
         <router-link
           to="/admin/pemesanan"
@@ -65,9 +83,12 @@ onMounted(async () => {
       </template>
     </AppPageHeader>
 
+    <!-- Area konten detail. -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+      <!-- Loading selama detail API dimuat. -->
       <LoadingSpinner v-if="isLoading" message="Memuat data..." />
 
+      <!-- Alert error jika detail gagal diambil. -->
       <div
         v-else-if="error"
         :class="[getAlertBoxClass('error'), 'text-center']"
@@ -78,14 +99,17 @@ onMounted(async () => {
         <p class="font-medium">{{ error }}</p>
       </div>
 
+      <!-- Konten detail hanya tampil jika data pemesanan tersedia. -->
       <div v-else-if="pemesanan" class="space-y-6">
         <section>
+          <!-- Kartu info utama berisi pelanggan, vespa, dan jadwal. -->
           <AdminPemesananInfoKartu
             :user="pemesanan.pengguna"
             :vespa="pemesanan.vespa"
             :tanggal-pemesanan="pemesanan.tanggal_pemesanan"
             :jam-pemesanan="pemesanan.jam_pemesanan"
           >
+            <!-- Panel kontrol diletakkan di dalam slot kartu info. -->
             <AdminPemesananPanelKontrol
               :pemesanan-id="pemesanan.id"
               :current-status="pemesanan.status"
@@ -99,11 +123,13 @@ onMounted(async () => {
           </AdminPemesananInfoKartu>
         </section>
 
+        <!-- Catatan pelanggan dan mekanik. -->
         <AdminPemesananCatatan 
           :catatan-pelanggan="pemesanan.catatan_pelanggan"
           :catatan-mekanik="pemesanan.catatan_mekanik"
         />
 
+        <!-- Rincian layanan dan suku cadang, termasuk tombol tambah/hapus item. -->
         <AdminPemesananRincianDaftar
           :layanan="pemesanan.layanan"
           :pemesanan-items="pemesanan.item_pemesanan"
@@ -112,6 +138,7 @@ onMounted(async () => {
           @delete-item="promptDeleteSukuCadang"
         />
 
+        <!-- Ringkasan total dan modal tambah suku cadang. -->
         <section class="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
           <AdminPemesananTotalRingkasan
             :total-harga="totalHarga"
@@ -119,6 +146,7 @@ onMounted(async () => {
             :grand-total="totalAkhir"
           />
 
+          <!-- Modal ini muncul saat admin menambah suku cadang ke pemesanan. -->
           <TambahSukuCadangModal
             :show="showAddSukuCadangModal"
             :suku-cadang="availableSukuCadang"
@@ -129,6 +157,7 @@ onMounted(async () => {
         </section>
       </div>
 
+      <!-- Konfirmasi hapus item suku cadang dari pemesanan. -->
       <ConfirmationModal
         :show="showDeleteConfirm"
         title="Hapus Suku Cadang"

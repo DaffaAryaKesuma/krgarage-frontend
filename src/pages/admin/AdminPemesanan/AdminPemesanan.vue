@@ -1,16 +1,26 @@
 <script setup lang="ts">
+// onMounted menjalankan fetch saat halaman pertama kali dibuka.
 import { onMounted } from "vue";
+// Komponen loading saat data pemesanan masih diambil.
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
+// EmptyState untuk kondisi data kosong atau filter tidak ada hasil.
 import EmptyState from "@/components/ui/EmptyState.vue";
+// Pagination untuk pindah halaman data pemesanan.
 import Pagination from "@/components/ui/Pagination.vue";
-import { ref } from "vue";
+// Modal input catatan mekanik saat menandai pekerjaan selesai.
 import CatatanInputModal from "@/components/ui/CatatanInputModal.vue";
+// Header standar halaman.
 import AppPageHeader from "@/components/ui/AppPageHeader.vue";
+// Filter pencarian, bulan, tahun, status, dan pembayaran.
 import AdminPemesananFilters from "@/components/admin/pemesanan/AdminPemesananFilters.vue";
+// Kartu satu pemesanan admin.
 import AdminPemesananKartu from "@/components/admin/pemesanan/AdminPemesananKartu.vue";
+// Composable berisi seluruh logic halaman pemesanan admin.
 import { useAdminPemesananPage } from "./useAdminPemesananPage";
+// Modal konfirmasi untuk aksi penting.
 import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
 
+// Mengambil state dan function dari composable.
 const {
   pemesanan,
   showTodayOnly,
@@ -49,6 +59,7 @@ const {
   handleAssignStartConfirm,
 } = useAdminPemesananPage();
 
+// Saat halaman dibuka, ambil daftar pemesanan dan daftar mekanik.
 onMounted(() => {
   fetchAllPemesanan();
   fetchMekaniks();
@@ -56,7 +67,9 @@ onMounted(() => {
 </script>
 
 <template>
+  <!-- Container halaman kelola pemesanan. -->
   <div class="min-h-screen bg-gray-50">
+    <!-- Header halaman. -->
     <AppPageHeader
       title="Kelola Pemesanan"
       icon="mdi-clipboard-list"
@@ -64,18 +77,18 @@ onMounted(() => {
       subtitle-class="text-sm sm:text-base text-red-100"
     />
 
-    <!-- Content Area -->
+    <!-- Area konten utama. -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
       <section class="bg-white p-4 sm:p-6 rounded-xl shadow-md">
-        <!-- Loading State -->
+        <!-- Loading tampil ketika request data masih berjalan. -->
         <LoadingSpinner v-if="isLoading" message="Memuat data pemesanan..." />
 
-        <!-- Error State -->
+        <!-- Pesan error jika request gagal. -->
         <div v-else-if="error" class="text-center text-red-600 py-8">
           {{ error }}
         </div>
 
-        <!-- Empty State -->
+        <!-- Jika belum ada pemesanan sama sekali dari API. -->
         <EmptyState
           v-else-if="pemesanan.length === 0"
           icon="mdi mdi-clipboard-list"
@@ -83,9 +96,9 @@ onMounted(() => {
           message="Belum ada pemesanan yang masuk dari pelanggan."
         />
 
-        <!-- Main Content -->
+        <!-- Konten utama jika ada data pemesanan. -->
         <div v-else>
-          <!-- Filters -->
+          <!-- Filter memakai v-model agar nilai filter langsung masuk composable. -->
           <AdminPemesananFilters
             v-model:search-query="searchQuery"
             v-model:month-filter="monthFilter"
@@ -97,7 +110,7 @@ onMounted(() => {
             :filtered-count="filteredPemesanan.length"
           />
 
-          <!-- Empty Filtered Results -->
+          <!-- Jika ada data, tetapi tidak cocok dengan filter. -->
           <EmptyState
             v-if="filteredPemesanan.length === 0"
             icon="mdi mdi-magnify-close"
@@ -105,7 +118,7 @@ onMounted(() => {
             message="Tidak ada pemesanan yang sesuai dengan filter yang dipilih."
           />
 
-          <!-- Pemesanan Kartu Grid -->
+          <!-- Grid kartu pemesanan hasil filter. -->
           <div v-else class="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <AdminPemesananKartu
               v-for="pemesanan in filteredPemesanan"
@@ -123,7 +136,7 @@ onMounted(() => {
             />
           </div>
 
-          <!-- Pagination -->
+          <!-- Pagination memanggil fetchAllPemesanan dengan halaman baru. -->
           <Pagination
             v-if="filteredPemesanan.length > 0"
             :current-page="pagination.current_page"
@@ -139,6 +152,7 @@ onMounted(() => {
     </div>
   </div>
 
+  <!-- Modal catatan wajib saat admin menandai servis selesai. -->
   <CatatanInputModal
     :show="isCompleteModalOpen"
     title="Tandai Selesai"
@@ -149,6 +163,7 @@ onMounted(() => {
     @cancel="isCompleteModalOpen = false"
   />
 
+  <!-- Modal konfirmasi untuk menandai pembayaran lunas. -->
   <ConfirmationModal
     :show="isPaidConfirmOpen"
     title="Konfirmasi Pembayaran"
@@ -160,6 +175,7 @@ onMounted(() => {
     @cancel="isPaidConfirmOpen = false"
   />
 
+  <!-- Modal konfirmasi untuk menyetujui pemesanan. -->
   <ConfirmationModal
     :show="isConfirmModalOpen"
     title="Konfirmasi Pemesanan"
@@ -171,6 +187,7 @@ onMounted(() => {
     @cancel="isConfirmModalOpen = false"
   />
 
+  <!-- Modal konfirmasi untuk membatalkan pemesanan. -->
   <ConfirmationModal
     :show="isCancelModalOpen"
     title="Batalkan Pemesanan"
@@ -182,6 +199,7 @@ onMounted(() => {
     @cancel="isCancelModalOpen = false"
   />
 
+  <!-- Modal konfirmasi untuk assign mekanik dan mulai servis. -->
   <ConfirmationModal
     :show="isAssignStartModalOpen"
     title="Mulai Pekerjaan Servis"

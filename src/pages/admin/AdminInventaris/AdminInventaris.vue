@@ -1,14 +1,24 @@
 <script setup lang="ts">
+// Modal konfirmasi dipakai sebelum admin menghapus suku cadang.
 import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
+// Loading saat data inventaris sedang diambil dari API.
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
+// Header standar halaman.
 import AppPageHeader from "@/components/ui/AppPageHeader.vue";
+// Kartu statistik inventaris: total, stok aman, dan stok menipis.
 import AdminInventarisStatistikKartu from "@/components/admin/inventaris/AdminInventarisStatistikKartu.vue";
+// Komponen filter pencarian, kategori, dan stok menipis.
 import AdminInventarisFilters from "@/components/admin/inventaris/AdminInventarisFilters.vue";
+// Tabel daftar suku cadang.
 import AdminInventarisTabel from "@/components/admin/inventaris/AdminInventarisTabel.vue";
+// Modal form untuk tambah dan edit suku cadang.
 import AdminInventarisFormModal from "@/components/admin/inventaris/AdminInventarisFormModal/AdminInventarisFormModal.vue";
+// Modal khusus untuk menambah stok suku cadang.
 import AdminInventarisStokUlangModal from "@/components/admin/inventaris/AdminInventarisStokUlangModal/AdminInventarisStokUlangModal.vue";
+// Composable yang menyimpan seluruh logika halaman inventaris admin.
 import { useAdminInventarisPage } from "./useAdminInventarisPage";
 
+// State dan function diambil dari composable agar file template fokus ke tampilan.
 const {
   kategoriOptions,
   kategoriFilterOptions,
@@ -43,7 +53,9 @@ const {
 </script>
 
 <template>
+  <!-- Container utama halaman inventaris. -->
   <div class="min-h-screen bg-gray-50">
+    <!-- Header halaman inventaris admin. -->
     <AppPageHeader
       title="Inventori Suku Cadang"
       icon="mdi-package-variant"
@@ -51,9 +63,12 @@ const {
       subtitle-class="text-sm sm:text-base text-blue-100"
     />
 
+    <!-- Konten utama: statistik, filter, lalu tabel. -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+      <!-- Ringkasan angka inventaris. -->
       <AdminInventarisStatistikKartu :statistik="statistik" />
 
+      <!-- Filter memakai v-model agar nilai input langsung tersimpan di composable. -->
       <AdminInventarisFilters
         v-model:search-query="searchQuery"
         v-model:selected-kategori="selectedKategori"
@@ -62,8 +77,10 @@ const {
         @add-new="openCreateModal"
       />
 
+      <!-- Muncul ketika API inventaris masih loading. -->
       <LoadingSpinner v-if="loading" message="Memuat data..." />
 
+      <!-- Tabel menerima data yang sudah difilter dari computed filteredSukuCadang. -->
       <AdminInventarisTabel
         v-else
         :sukucadang="filteredSukuCadang"
@@ -73,6 +90,7 @@ const {
       />
     </div>
 
+    <!-- Modal tambah/edit suku cadang. -->
     <AdminInventarisFormModal
       :show="showModal"
       v-model:form="form"
@@ -86,6 +104,7 @@ const {
       @create-category="saveCategory"
     />
 
+    <!-- Modal restock untuk menambah jumlah stok. -->
     <AdminInventarisStokUlangModal
       :show="showRestockModal"
       :selected-suku-cadang="selectedSukuCadang"
@@ -98,7 +117,7 @@ const {
       @submit="restock"
     />
 
-    <!-- Delete Confirmation Modal -->
+    <!-- Modal konfirmasi hapus agar admin tidak tidak sengaja menghapus data. -->
     <ConfirmationModal
       :show="showDeleteConfirm"
       title="Hapus Suku Cadang"

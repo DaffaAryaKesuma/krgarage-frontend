@@ -1,5 +1,7 @@
 import { computed, ref } from "vue";
+// Axios dipakai untuk semua request pemesanan admin.
 import axios from "axios";
+// Toast untuk menampilkan feedback sukses/gagal.
 import { useToast } from "@/utils/useToast";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
@@ -20,26 +22,35 @@ import {
   type AdminPemesananFilterState,
 } from "@/pages/admin/AdminPemesanan/adminPemesananHelpers";
 
+// Opsi fetch agar refresh realtime bisa diam-diam.
 interface FetchOptions {
   silent?: boolean;
 }
 
+// Composable utama halaman kelola pemesanan admin.
 export function useAdminPemesananPage() {
   const toast = useToast();
 
+  // Data pemesanan dari API.
   const pemesanan = ref<Pemesanan[]>([]);
+  // Daftar mekanik untuk dropdown assign.
   const mekaniks = ref<MekanikProfile[]>([]);
+  // Filter cepat untuk menampilkan pemesanan hari ini saja.
   const showTodayOnly = ref(false);
+  // Helper pagination agar meta dari API mudah dipakai.
   const { pagination, updateFromApi } = useApiPagination(10);
 
+  // Loading dan error utama halaman.
   const isLoading = ref(true);
   const error = ref("");
+  // State filter pencarian dan status.
   const searchQuery = ref("");
   const monthFilter = ref("");
   const yearFilter = ref(new Date().getFullYear().toString());
   const statusFilter = ref<PemesananStatusFilter>("semua");
   const pembayaranFilter = ref<PembayaranStatusFilter>("all");
 
+  // Data yang ditampilkan setelah melewati semua filter frontend.
   const filteredPemesanan = computed(() => {
     const filters: AdminPemesananFilterState = {
       query: searchQuery.value,
@@ -55,12 +66,15 @@ export function useAdminPemesananPage() {
     );
   });
 
+  // Menyimpan mekanik pilihan berdasarkan id pemesanan.
   const selectedMekanikForPemesanan = ref<{ [pemesananId: number]: number }>({});
 
+  // Mengubah daftar mekanik menjadi option dropdown.
   const mekanikOptions = computed(() =>
     mekaniks.value.map((m) => ({ value: m.id, label: m.nama })),
   );
 
+  // Mengambil semua pemesanan dari backend dengan pagination.
   const fetchAllPemesanan = async (page = 1, options: FetchOptions = {}) => {
     if (!options.silent) {
       isLoading.value = true;
@@ -68,11 +82,13 @@ export function useAdminPemesananPage() {
     error.value = "";
 
     try {
+      // Query page dan per_page dikirim ke backend.
       const { data } = await axios.get(
         `${API_URL}/admin/pemesanan?page=${page}&per_page=${pagination.value.per_page}`,
         { headers: getAuthHeaders() },
       );
 
+      // Data list disimpan, meta pagination dipindahkan ke helper.
       pemesanan.value = data.data || [];
       updateFromApi(data.meta || data);
     } catch (err: any) {
@@ -90,23 +106,28 @@ export function useAdminPemesananPage() {
     }
   };
 
+  // Refresh data diam-diam saat ada halaman lain mengubah data KRGarage.
   useRealtimeRefresh(
     () => fetchAllPemesanan(pagination.value.current_page, { silent: true }),
   );
 
+  // Fungsi umum untuk mengubah status pemesanan.
   const changeStatus = async (pemesanan: Pemesanan, newStatus: string, catatan?: string) => {
     try {
       const payload: any = { status: newStatus };
+      // Catatan hanya dikirim saat status selesai membutuhkan catatan mekanik.
       if (catatan) {
         payload.catatan_mekanik = catatan;
       }
 
+      // Endpoint status dipakai untuk konfirmasi, batal, dikerjakan, dan selesai.
       const { data } = await axios.patch(
         `${API_URL}/admin/pemesanan/${pemesanan.id}/status`,
         payload,
         { headers: getAuthHeaders() },
       );
 
+      // Update status lokal dari response backend.
       pemesanan.status = data.pemesanan?.status ?? newStatus;
       toast.success("Status pemesanan berhasil diubah!");
       await fetchAllPemesanan(pagination.value.current_page);
@@ -118,6 +139,7 @@ export function useAdminPemesananPage() {
     }
   };
 
+  // Mengambil daftar mekanik dari backend.
   const fetchMekaniks = async () => {
     try {
       const { data } = await axios.get(`${API_URL}/admin/mekanik`, {
@@ -129,14 +151,17 @@ export function useAdminPemesananPage() {
     }
   };
 
+  // State modal konfirmasi pemesanan.
   const isConfirmModalOpen = ref(false);
   const pemesananToConfirm = ref<Pemesanan | null>(null);
 
+  // Saat tombol konfirmasi diklik, simpan pemesanan target lalu buka modal.
   const handleConfirmClick = (pemesanan: Pemesanan) => {
     pemesananToConfirm.value = pemesanan;
     isConfirmModalOpen.value = true;
   };
 
+  // Setelah user setuju di modal, jalankan confirmPemesanan.
   const handleConfirmConfirm = async () => {
     if (pemesananToConfirm.value) {
       await confirmPemesanan(pemesananToConfirm.value);
@@ -145,22 +170,27 @@ export function useAdminPemesananPage() {
     }
   };
 
+  // Mengubah status menjadi Dikonfirmasi.
   const confirmPemesanan = async (pemesanan: Pemesanan) => {
     await changeStatus(pemesanan, PEMESANAN_STATUS.DIKONFIRMASI);
   };
 
+  // Mengubah status menjadi Batal.
   const cancelPemesanan = async (pemesanan: Pemesanan) => {
     await changeStatus(pemesanan, PEMESANAN_STATUS.BATAL);
   };
 
+  // State modal batal.
   const isCancelModalOpen = ref(false);
   const pemesananToCancel = ref<Pemesanan | null>(null);
 
+  // Membuka modal batal untuk pemesanan tertentu.
   const handleCancelClick = (pemesanan: Pemesanan) => {
     pemesananToCancel.value = pemesanan;
     isCancelModalOpen.value = true;
   };
 
+  // Menjalankan batal setelah user mengonfirmasi.
   const handleCancelConfirm = async () => {
     if (pemesananToCancel.value) {
       await cancelPemesanan(pemesananToCancel.value);
@@ -169,9 +199,11 @@ export function useAdminPemesananPage() {
     }
   };
 
+  // State modal assign mekanik dan mulai servis.
   const isAssignStartModalOpen = ref(false);
   const pemesananToAssignStart = ref<Pemesanan | null>(null);
 
+  // Membuka modal assign/start setelah memastikan mekanik sudah dipilih.
   const handleAssignStartClick = (pemesanan: Pemesanan) => {
     const mekanikId = selectedMekanikForPemesanan.value[pemesanan.id];
     if (!mekanikId) {
@@ -182,6 +214,7 @@ export function useAdminPemesananPage() {
     isAssignStartModalOpen.value = true;
   };
 
+  // Menjalankan assign mekanik dan ubah status jadi dikerjakan.
   const handleAssignStartConfirm = async () => {
     if (pemesananToAssignStart.value) {
       await assignMekanikAndStart(pemesananToAssignStart.value);
@@ -190,14 +223,17 @@ export function useAdminPemesananPage() {
     }
   };
 
+  // State modal selesai.
   const isCompleteModalOpen = ref(false);
   const pemesananToComplete = ref<Pemesanan | null>(null);
 
+  // Membuka modal catatan saat admin ingin menandai selesai.
   const handleCompleteClick = (pemesanan: Pemesanan) => {
     pemesananToComplete.value = pemesanan;
     isCompleteModalOpen.value = true;
   };
 
+  // Setelah catatan diisi, ubah status menjadi Selesai.
   const handleCompleteConfirm = async (catatan: string) => {
     if (pemesananToComplete.value) {
       await changeStatus(pemesananToComplete.value, PEMESANAN_STATUS.SELESAI, catatan);
@@ -206,18 +242,22 @@ export function useAdminPemesananPage() {
     }
   };
 
+  // Wrapper agar event dari kartu tetap mudah dibaca.
   const completePemesanan = async (pemesanan: Pemesanan) => {
     handleCompleteClick(pemesanan);
   };
 
+  // State modal pembayaran lunas.
   const isPaidConfirmOpen = ref(false);
   const pemesananToMarkPaid = ref<Pemesanan | null>(null);
 
+  // Membuka modal konfirmasi lunas.
   const handleMarkPaidClick = (pemesanan: Pemesanan) => {
     pemesananToMarkPaid.value = pemesanan;
     isPaidConfirmOpen.value = true;
   };
 
+  // Menjalankan tandai lunas setelah user mengonfirmasi.
   const handleMarkPaidConfirm = async () => {
     if (!pemesananToMarkPaid.value) return;
     await markPemesananAsPaid(pemesananToMarkPaid.value);
@@ -225,14 +265,17 @@ export function useAdminPemesananPage() {
     pemesananToMarkPaid.value = null;
   };
 
+  // Mengubah status pembayaran pemesanan menjadi Lunas.
   const markPemesananAsPaid = async (pemesanan: Pemesanan) => {
     try {
+      // Endpoint khusus status pembayaran, terpisah dari status servis.
       const { data } = await axios.patch(
         `${API_URL}/admin/pemesanan/${pemesanan.id}/status-pembayaran`,
         { status_pembayaran: PEMBAYARAN_STATUS.PAID },
         { headers: getAuthHeaders() },
       );
 
+      // Update lokal lalu refresh list agar paid_at ikut terbaru.
       pemesanan.status_pembayaran =
         data.pemesanan?.status_pembayaran || PEMBAYARAN_STATUS.PAID;
       toast.success("Status pembayaran berhasil diperbarui menjadi lunas!");
@@ -245,6 +288,7 @@ export function useAdminPemesananPage() {
     }
   };
 
+  // Menugaskan mekanik terpilih dan langsung memulai servis.
   const assignMekanikAndStart = async (pemesanan: Pemesanan) => {
     const mekanikId = selectedMekanikForPemesanan.value[pemesanan.id];
 
@@ -254,12 +298,14 @@ export function useAdminPemesananPage() {
     }
 
     try {
+      // Request pertama menyimpan id mekanik.
       await axios.patch(
         `${API_URL}/admin/pemesanan/${pemesanan.id}/tugaskan-mekanik`,
         { id_mekanik: mekanikId },
         { headers: getAuthHeaders() },
       );
 
+      // Request kedua mengubah status servis menjadi Dikerjakan.
       await axios.patch(
         `${API_URL}/admin/pemesanan/${pemesanan.id}/status`,
         { status: PEMESANAN_STATUS.DIKERJAKAN },
@@ -267,6 +313,7 @@ export function useAdminPemesananPage() {
       );
 
       toast.success("Mekanik di-assign dan servis dimulai!");
+      // Beri sinyal ke halaman lain agar ikut refresh.
       notifyKrGarageDataChanged();
       await fetchAllPemesanan(pagination.value.current_page);
     } catch (err: any) {
@@ -275,6 +322,7 @@ export function useAdminPemesananPage() {
     }
   };
 
+  // Semua state dan handler yang dipakai oleh AdminPemesanan.vue.
   return {
     pemesanan,
     showTodayOnly,

@@ -1,3 +1,5 @@
+// File ini khusus berisi fungsi request API inventaris admin.
+// Tujuannya supaya composable halaman tidak penuh dengan detail endpoint.
 import axios from "axios";
 import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
@@ -7,14 +9,17 @@ import type {
   InventarisSukuCadangForm,
 } from "@/types/inventaris";
 
+// Mengambil daftar kategori suku cadang dari backend.
 export async function fetchAdminInventarisCategories() {
   const { data } = await axios.get(`${API_URL}/admin/inventori/kategori`, {
     headers: getAuthHeaders(),
   });
 
+  // Response backend dibungkus di data.data, fallback [] agar aman.
   return (data.data || []) as InventarisCategory[];
 }
 
+// Membuat kategori baru.
 export function createAdminInventarisCategory(namaKategori: string) {
   return axios.post(
     `${API_URL}/admin/inventori/kategori`,
@@ -23,6 +28,7 @@ export function createAdminInventarisCategory(namaKategori: string) {
   );
 }
 
+// Mengambil seluruh daftar suku cadang.
 export async function fetchAdminInventarisSukuCadang() {
   const { data } = await axios.get(`${API_URL}/admin/inventori`, {
     headers: getAuthHeaders(),
@@ -31,12 +37,14 @@ export async function fetchAdminInventarisSukuCadang() {
   return (data.data || []) as InventarisSukuCadang[];
 }
 
+// Menambah suku cadang baru.
 export function createAdminInventarisSukuCadang(dataSukuCadang: InventarisSukuCadangForm) {
   return axios.post(`${API_URL}/admin/inventori`, dataSukuCadang, {
     headers: getAuthHeaders(),
   });
 }
 
+// Mengubah data suku cadang berdasarkan id.
 export function updateAdminInventarisSukuCadang(
   idSukuCadang: number,
   dataSukuCadang: InventarisSukuCadangForm,
@@ -46,6 +54,7 @@ export function updateAdminInventarisSukuCadang(
   });
 }
 
+// Menambah stok suku cadang dan mencatat riwayat restock di backend.
 export function restockAdminInventarisSukuCadang(
   idSukuCadang: number,
   dataRestok: {
@@ -62,6 +71,7 @@ export function restockAdminInventarisSukuCadang(
   );
 }
 
+// Menghapus suku cadang berdasarkan id.
 export function deleteAdminInventarisSukuCadang(idSukuCadang: number) {
   return axios.delete(`${API_URL}/admin/inventori/${idSukuCadang}`, {
     headers: getAuthHeaders(),
