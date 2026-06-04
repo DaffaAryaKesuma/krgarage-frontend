@@ -35,7 +35,7 @@ const {
       <!-- Loading State -->
       <LoadingSpinner v-if="isLoading" message="Memuat data..." />
 
-      <div v-else class="space-y-4 sm:space-y-5 lg:space-y-6">
+      <div v-else class="space-y-3 sm:space-y-5 lg:space-y-6">
         <!-- Banner Pengingat Layanan -->
         <PelangganPengingatLayananBanner :vespas="vespasDueLayanan" />
 
@@ -47,7 +47,7 @@ const {
         />
 
         <!-- Second Row: Aksi Cepat + Tips -->
-        <div class="grid gap-4 lg:gap-6 xl:grid-cols-[1.5fr_1fr]">
+        <div class="grid gap-3 lg:gap-6 xl:grid-cols-[1.5fr_1fr]">
           <PelangganAksiCepat class="h-full" />
           <PelangganTipsWidget class="h-full" />
         </div>

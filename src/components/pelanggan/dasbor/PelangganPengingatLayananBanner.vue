@@ -5,6 +5,7 @@ import {
   getAlertIconClass,
   getChipBadgeClass,
 } from "@/utils/badgeVariants";
+import { formatPlatNomor } from "@/utils/format";
 
 interface VespaDueLayanan {
   id: number;
@@ -48,7 +49,7 @@ defineProps<Props>();
             :class="[getChipBadgeClass('warning'), 'block rounded p-3']"
           >
             <p class="font-semibold text-gray-800">
-              {{ vespa.model }} - {{ vespa.plat_nomor }}
+              {{ vespa.model }} - {{ formatPlatNomor(vespa.plat_nomor) }}
             </p>
             <p class="text-sm text-gray-600">
               Terakhir servis:

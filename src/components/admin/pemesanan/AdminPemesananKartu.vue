@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { formatDateShort, formatTimeShort } from "@/utils/date";
+import { formatDateShort, formatDateTimeShort, formatTimeShort } from "@/utils/date";
 import {
   getStatusBadgeClass,
   getStatusIcon,
@@ -10,6 +10,7 @@ import {
   getPembayaranStatusLabel,
 } from "@/utils/pembayaranStatus";
 import { META_LABEL_CLASS, getChipBadgeClass } from "@/utils/badgeVariants";
+import { formatPlatNomor } from "@/utils/format";
 import AdminPemesananAksiPanel from "./AdminPemesananAksiPanel.vue";
 import type { Pemesanan, MekanikOption } from "@/types/pemesanan";
 
@@ -74,7 +75,7 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
         <p
           :class="[getChipBadgeClass('neutral'), 'mt-1']"
         >
-          {{ pemesanan.vespa?.plat_nomor || "N/A" }}
+          {{ formatPlatNomor(pemesanan.vespa?.plat_nomor) }}
         </p>
       </div>
 
@@ -128,7 +129,7 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
         class="flex flex-row items-center justify-between gap-3 sm:justify-between"
       >
         <!-- Status Servis -->
-        <div>
+        <div class="min-w-0">
           <p :class="[META_LABEL_CLASS, 'mb-1.5']">
             Status Servis
           </p>
@@ -138,12 +139,15 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
               {{ getStatusLabel(pemesanan.status) }}
             </span>
           </div>
+          <p v-if="pemesanan.completed_at" class="mt-1.5 text-xs text-gray-600">
+            {{ formatDateTimeShort(pemesanan.completed_at) }}
+          </p>
         </div>
 
         <div class="w-px h-8 bg-slate-200"></div>
 
         <!-- Status Pembayaran -->
-        <div>
+        <div class="min-w-0 text-right">
           <p :class="[META_LABEL_CLASS, 'mb-1.5']">
             Pembayaran
           </p>
@@ -153,6 +157,9 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
             <i class="mdi mdi-cash-check mr-1"></i>
             {{ getPembayaranStatusLabel(pemesanan.status_pembayaran) }}
           </span>
+          <p v-if="pemesanan.paid_at" class="mt-1.5 text-xs text-gray-600">
+            {{ formatDateTimeShort(pemesanan.paid_at) }}
+          </p>
         </div>
       </div>
 

@@ -2,7 +2,6 @@
 import PelangganVespaKartu from "./PelangganVespaKartu.vue";
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
-import { getIconToneClass } from "@/utils/badgeVariants";
 import {
   ADD_ACTION_ICON_WRAPPER_CLASS,
   ADD_ACTION_SUBTITLE_CLASS,

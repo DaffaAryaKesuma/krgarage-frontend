@@ -12,64 +12,64 @@ defineProps<Props>();
 
 <template>
   <section
-    class="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 sm:gap-4 xl:grid-cols-3"
+    class="grid grid-cols-3 gap-2 sm:gap-4 xl:grid-cols-3"
   >
     <div
-      class="bg-white p-4 sm:p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow border-l-4 border-red-500"
+      class="rounded-lg border-l-4 border-red-500 bg-white p-3 shadow-sm transition-shadow hover:shadow-md sm:rounded-xl sm:p-6"
     >
-      <div class="flex items-center justify-between">
+      <div class="flex items-center justify-between gap-2">
         <div>
-          <h4 class="text-gray-500 font-medium text-xs sm:text-sm mb-1">
+          <h4 class="mb-0.5 text-[10px] font-medium leading-tight text-gray-500 sm:mb-1 sm:text-sm">
             Vespa Terdaftar
           </h4>
-          <p class="text-2xl sm:text-3xl font-bold text-gray-900">
+          <p class="text-xl font-bold text-gray-900 sm:text-3xl">
             {{ vespaCount }}
           </p>
         </div>
         <i
           :class="[
             getToneTextClass('primary'),
-            'mdi mdi-motorbike text-4xl opacity-20 sm:text-5xl',
+            'mdi mdi-motorbike hidden text-4xl opacity-20 min-[420px]:block sm:text-5xl',
           ]"
         ></i>
       </div>
     </div>
     <div
-      class="bg-white p-4 sm:p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow border-l-4 border-green-500"
+      class="rounded-lg border-l-4 border-green-500 bg-white p-3 shadow-sm transition-shadow hover:shadow-md sm:rounded-xl sm:p-6"
     >
-      <div class="flex items-center justify-between">
+      <div class="flex items-center justify-between gap-2">
         <div>
-          <h4 class="text-gray-500 font-medium text-xs sm:text-sm mb-1">
+          <h4 class="mb-0.5 text-[10px] font-medium leading-tight text-gray-500 sm:mb-1 sm:text-sm">
             Total Servis
           </h4>
-          <p class="text-2xl sm:text-3xl font-bold text-gray-900">
+          <p class="text-xl font-bold text-gray-900 sm:text-3xl">
             {{ totalPemesanan }}
           </p>
         </div>
         <i
           :class="[
             getToneTextClass('success'),
-            'mdi mdi-clipboard-list text-4xl opacity-20 sm:text-5xl',
+            'mdi mdi-clipboard-list hidden text-4xl opacity-20 min-[420px]:block sm:text-5xl',
           ]"
         ></i>
       </div>
     </div>
     <div
-      class="rounded-xl border-l-4 border-purple-500 bg-white p-4 shadow-md transition-shadow hover:shadow-lg min-[420px]:col-span-2 sm:p-6 xl:col-span-1"
+      class="rounded-lg border-l-4 border-purple-500 bg-white p-3 shadow-sm transition-shadow hover:shadow-md sm:rounded-xl sm:p-6"
     >
-      <div class="flex items-center justify-between">
+      <div class="flex items-center justify-between gap-2">
         <div>
-          <h4 class="text-gray-500 font-medium text-xs sm:text-sm mb-1">
+          <h4 class="mb-0.5 text-[10px] font-medium leading-tight text-gray-500 sm:mb-1 sm:text-sm">
             Pemesanan Aktif
           </h4>
-          <p class="text-2xl sm:text-3xl font-bold text-gray-900">
+          <p class="text-xl font-bold text-gray-900 sm:text-3xl">
             {{ activePemesanan }}
           </p>
         </div>
         <i
           :class="[
             getToneTextClass('owner'),
-            'mdi mdi-clock-outline text-4xl opacity-20 sm:text-5xl',
+            'mdi mdi-clock-outline hidden text-4xl opacity-20 min-[420px]:block sm:text-5xl',
           ]"
         ></i>
       </div>

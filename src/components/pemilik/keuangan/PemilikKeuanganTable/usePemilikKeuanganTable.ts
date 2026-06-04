@@ -55,7 +55,7 @@ export function usePemilikKeuanganTable(
   };
 
   const getPemesananDate = (pemesanan: KeuanganPemesanan) =>
-    pemesanan.updated_at || pemesanan.tanggal_pemesanan || "";
+    pemesanan.paid_at || pemesanan.updated_at || pemesanan.tanggal_pemesanan || "";
 
   const getPemesananPlateNumber = (pemesanan: KeuanganPemesanan) =>
     pemesanan.vespa?.plat_nomor || "-";

@@ -35,7 +35,7 @@ defineProps<Props>();
           Tanggal
         </p>
         <p class="text-sm text-gray-900">
-          {{ formatDateShort(pemesanan.updated_at) }}
+          {{ formatDateShort(pemesanan.paid_at || pemesanan.updated_at) }}
         </p>
       </div>
     </div>

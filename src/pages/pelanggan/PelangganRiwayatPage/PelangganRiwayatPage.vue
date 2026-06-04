@@ -26,7 +26,7 @@ const {
     <AppPageHeader
       title="Riwayat Servis"
       icon="mdi-history"
-      subtitle="Pantau semua riwayat pemesanan dan pembayaran Anda"
+      subtitle="Cek riwayat servis, jadwal, dan pembayaran"
       subtitle-class="text-sm sm:text-base text-red-100"
     />
 

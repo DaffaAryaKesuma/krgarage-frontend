@@ -27,7 +27,7 @@ const {
     <AppPageHeader
       title="Vespa Saya"
       icon="mdi-motorbike"
-      subtitle="Kelola semua Vespa Anda untuk pemesanan servis"
+      subtitle="Kelola vespa anda untuk pemesanan servis"
       subtitle-class="text-sm sm:text-base text-red-100"
     />
 

@@ -60,7 +60,7 @@ onMounted(() => {
     <AppPageHeader
       title="Laporan Keuangan"
       icon="mdi-chart-line"
-      subtitle="Ini adalah ringkasan performa keuangan bengkel"
+      subtitle="Ringkasan performa keuangan bengkel"
       subtitle-class="text-sm sm:text-base text-red-100"
     />
 

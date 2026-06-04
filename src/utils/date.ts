@@ -50,3 +50,21 @@ export function formatTimeShort(
     hour12: false,
   });
 }
+
+/**
+ * Format tanggal dan jam singkat.
+ * Format: Kamis, 4 Juni 2026, 14.30
+ */
+export function formatDateTimeShort(
+  dateTime: string | Date | null | undefined
+): string {
+  if (!dateTime) return "-";
+
+  const dateObj = typeof dateTime === "string" ? new Date(dateTime) : dateTime;
+
+  if (isNaN(dateObj.getTime())) {
+    return "-";
+  }
+
+  return `${formatDateShort(dateObj)}, ${formatTimeShort(dateObj).replace(/\./g, ":")}`;
+}

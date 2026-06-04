@@ -16,19 +16,19 @@ const currentTip = computed(
 
 <template>
   <section
-    :class="[getAlertBoxClass('neutral'), 'border-l-4 p-4 sm:p-6']"
+    :class="[getAlertBoxClass('neutral'), 'border-l-4 p-3 sm:p-6']"
   >
-    <div class="flex items-start gap-3 sm:gap-4">
+    <div class="flex items-start gap-2 sm:gap-4">
       <i
-        :class="[getAlertIconClass('neutral'), 'mdi mdi-lightbulb-on text-3xl sm:text-4xl']"
+        :class="[getAlertIconClass('neutral'), 'mdi mdi-lightbulb-on text-2xl sm:text-4xl']"
       ></i>
       <div>
-        <h3 class="text-lg font-bold text-gray-900 mb-2">Tips Perawatan</h3>
+        <h3 class="mb-1 text-base font-bold text-gray-900 sm:mb-2 sm:text-lg">Tips Perawatan</h3>
         <div class="flex items-start gap-2">
           <i
-            :class="[getAlertIconClass('neutral'), 'mdi mdi-wrench mt-0.5 flex-shrink-0 text-lg']"
+            :class="[getAlertIconClass('neutral'), 'mdi mdi-wrench mt-0.5 flex-shrink-0 text-base sm:text-lg']"
           ></i>
-          <p class="text-gray-700 text-sm">{{ currentTip }}</p>
+          <p class="text-xs text-gray-700 sm:text-sm">{{ currentTip }}</p>
         </div>
       </div>
     </div>

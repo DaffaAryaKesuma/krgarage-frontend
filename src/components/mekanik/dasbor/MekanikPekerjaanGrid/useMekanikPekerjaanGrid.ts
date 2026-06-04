@@ -1,4 +1,4 @@
-import { formatDateShort, formatTimeShort } from "@/utils/date";
+import { formatDateShort, formatDateTimeShort, formatTimeShort } from "@/utils/date";
 import {
   canMekanikAddSukuCadang,
   canMekanikUpdateStatus,
@@ -28,6 +28,7 @@ export const MEKANIK_PEKERJAAN_GRID_DEFAULTS = {
 export function useMekanikPekerjaanGrid() {
   return {
     formatDateShort,
+    formatDateTimeShort,
     formatTimeShort,
     canMekanikAddSukuCadang,
     canMekanikUpdateStatus,

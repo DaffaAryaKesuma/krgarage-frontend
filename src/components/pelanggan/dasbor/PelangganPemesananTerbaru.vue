@@ -44,7 +44,7 @@ const getLayananPrice = (pemesanan: PelangganPemesanan) =>
       </h2>
       <router-link
         to="/app/riwayat"
-        :class="getButtonClass('link', 'xs', 'no-underline')"
+        class="flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-red-600"
       >
         Lihat Semua
         <i class="mdi mdi-arrow-right text-lg"></i>

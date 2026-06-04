@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { formatDateShort, formatTimeShort } from "@/utils/date";
+import { formatDateShort, formatDateTimeShort, formatTimeShort } from "@/utils/date";
 import {
   canPelangganCancelPemesanan,
   getStatusBadgeClass,
@@ -15,6 +15,7 @@ import {
   getIconToneClass,
 } from "@/utils/badgeVariants";
 import { getButtonClass } from "@/utils/buttonVariants";
+import { formatPlatNomor } from "@/utils/format";
 import type { PelangganPemesanan } from "@/types/pemesanan";
 
 interface Props {
@@ -37,11 +38,11 @@ const handleCancel = () => {
 
 <template>
   <div
-    class="bg-white border border-gray-200 rounded-lg sm:rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-lg transition-all"
+    class="flex h-full flex-col bg-white border border-gray-200 rounded-lg sm:rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-lg transition-all"
   >
     <!-- Header -->
     <div
-      class="flex items-start justify-between gap-2 sm:gap-3 mb-4 sm:mb-5 pb-4 border-b border-gray-100"
+      class="flex items-start justify-between gap-2 sm:gap-3 mb-3 pb-2 border-b border-gray-100"
     >
       <div class="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
         <div
@@ -61,10 +62,23 @@ const handleCancel = () => {
           </p>
         </div>
       </div>
-      <div class="flex flex-col items-end gap-0.5 sm:gap-1 shrink-0">
+    </div>
+
+    <div
+      class="mb-4 grid grid-cols-2 gap-3 rounded-lg border border-gray-100 bg-gray-50 px-3 py-3"
+    >
+      <div>
+        <p :class="[META_LABEL_CLASS, 'mb-1.5']">Status Servis</p>
         <span :class="[getStatusBadgeClass(pemesanan.status), 'text-xs']">{{
           getStatusLabel(pemesanan.status || "Menunggu")
         }}</span>
+        <p v-if="pemesanan.completed_at" class="mt-1.5 text-xs text-gray-600">
+          {{ formatDateTimeShort(pemesanan.completed_at) }}
+        </p>
+      </div>
+
+      <div class="text-right">
+        <p :class="[META_LABEL_CLASS, 'mb-1.5']">Pembayaran</p>
         <span
           :class="[
             getPembayaranStatusBadgeClass(pemesanan.status_pembayaran),
@@ -72,6 +86,9 @@ const handleCancel = () => {
           ]"
           >{{ getPembayaranStatusLabel(pemesanan.status_pembayaran) }}</span
         >
+        <p v-if="pemesanan.paid_at" class="mt-1.5 text-xs text-gray-600">
+          {{ formatDateTimeShort(pemesanan.paid_at) }}
+        </p>
       </div>
     </div>
 
@@ -94,7 +111,7 @@ const handleCancel = () => {
             {{ pemesanan.vespa?.model || "N/A" }}
           </p>
           <p class="text-[11px] sm:text-xs text-gray-500 font-medium truncate">
-            {{ pemesanan.vespa?.plat_nomor || "N/A" }}
+            {{ formatPlatNomor(pemesanan.vespa?.plat_nomor) }}
           </p>
         </div>
       </div>
@@ -168,7 +185,7 @@ const handleCancel = () => {
     </div>
 
     <!-- Aksi -->
-    <div class="pt-3 sm:pt-4 border-t border-gray-200">
+    <div class="mt-auto pt-3 sm:pt-4 border-t border-gray-200">
       <div
         :class="
           canPelangganCancelPemesanan(pemesanan.status)

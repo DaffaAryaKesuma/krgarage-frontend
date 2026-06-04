@@ -39,7 +39,7 @@ onMounted(() => {
 <template>
   <div class="min-h-screen bg-gray-50">
     <AppPageHeader
-      title="Pemesanan Servis Vespa"
+      title="Pemesanan Servis"
       icon="mdi-calendar-check"
       subtitle="Pesan layanan dengan mudah"
       subtitle-class="text-sm sm:text-base text-red-100"

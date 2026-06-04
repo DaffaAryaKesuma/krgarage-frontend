@@ -3,6 +3,7 @@ import { onMounted } from "vue";
 import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
 import CatatanInputModal from "@/components/ui/CatatanInputModal.vue";
 import CustomSelect from "@/components/ui/CustomSelect.vue";
+import { formatDateTimeShort } from "@/utils/date";
 import {
   META_LABEL_CLASS,
   getAlertBoxClass,
@@ -21,6 +22,8 @@ const props = defineProps<{
   pemesananId: number;
   currentStatus: string;
   currentPembayaranStatus?: string | null;
+  completedAt?: string | null;
+  paidAt?: string | null;
   currentMekanikId: number | null;
   currentMekanikName?: string;
 }>();
@@ -166,29 +169,29 @@ onMounted(() => {
       <div v-else>
         <div
           v-if="isCompleted"
-          :class="[getAlertBoxClass('success'), 'flex items-center gap-3']"
+          :class="[getAlertBoxClass('success'), 'space-y-3']"
         >
-          <div
-            :class="[
-              getIconToneClass('success'),
-              'flex h-10 w-10 items-center justify-center rounded-full',
-            ]"
-          >
-            <i class="mdi mdi-check-all text-xl"></i>
-          </div>
-          <div>
-            <h4 class="text-sm font-bold">Servis Selesai</h4>
-            <p class="mt-1 text-xs">
-              Pemesanan ini telah selesai dikerjakan.
-            </p>
-
+          <div class="flex items-start gap-3">
             <div
-              class="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-green-200 bg-white px-3 py-2"
+              :class="[
+                getIconToneClass('success'),
+                'flex h-9 w-9 shrink-0 items-center justify-center rounded-full',
+              ]"
             >
+              <i class="mdi mdi-check-all text-lg"></i>
+            </div>
+            <div class="min-w-0">
+              <h4 class="text-sm font-bold">Servis Selesai</h4>
+              <p v-if="props.completedAt" class="mt-1 text-xs">
+                {{ formatDateTimeShort(props.completedAt) }}
+              </p>
+            </div>
+          </div>
+
+          <div class="rounded-lg border border-green-200 bg-white/70 px-3 py-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
               <div>
-                <p :class="META_LABEL_CLASS">
-                  Status Pembayaran
-                </p>
+                <p :class="META_LABEL_CLASS">Pembayaran</p>
                 <span :class="pembayaranStatusBadgeClass">
                   {{ pembayaranStatusLabel }}
                 </span>
@@ -204,6 +207,9 @@ onMounted(() => {
                 Tandai Lunas
               </button>
             </div>
+            <p v-if="props.paidAt" class="mt-2 text-xs text-gray-600">
+              {{ formatDateTimeShort(props.paidAt) }}
+            </p>
           </div>
         </div>
         <div

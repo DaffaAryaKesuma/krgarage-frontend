@@ -29,12 +29,12 @@ const TABLE_HEADERS = [
   "Pembayaran",
 ];
 
-const TABLE_COLUMN_WIDTHS = ["14%", "16%", "13%", "23%", "12%", "11%", "11%"];
+const TABLE_COLUMN_WIDTHS = ["14%", "16%", "13%", "20%", "12%", "11%", "13%"];
 </script>
 
 <template>
-  <div class="rounded-2xl bg-white p-6 shadow-lg mb-8">
-    <div class="mb-6 flex items-center justify-between">
+  <div class="rounded-2xl bg-white p-5 shadow-lg mb-8 sm:p-6">
+    <div class="mb-4 flex items-center justify-between">
       <div class="flex items-center gap-2">
         <i class="mdi mdi-calendar-clock text-2xl"></i>
         <h2 class="text-xl font-bold text-gray-900">

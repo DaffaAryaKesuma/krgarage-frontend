@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { formatDateShort, formatTimeShort } from "@/utils/date";
+import { formatPlatNomor } from "@/utils/format";
 import type { PemesananVespa } from "@/types/pemesanan";
 import type { UserProfile } from "@/types/user";
 
@@ -64,7 +65,7 @@ defineProps<Props>();
         </p>
         <p class="text-xs text-gray-500">Plat Nomor</p>
         <p class="break-words text-sm font-medium text-gray-900">
-          {{ vespa.plat_nomor || "-" }}
+          {{ formatPlatNomor(vespa.plat_nomor) }}
         </p>
       </div>
     </div>

@@ -33,6 +33,8 @@ export interface Pemesanan {
   id: number;
   kode_pemesanan: string;
   created_at?: string;
+  completed_at?: string | null;
+  paid_at?: string | null;
   tanggal_pemesanan: string;
   jam_pemesanan: string;
   status: string;
@@ -57,6 +59,8 @@ export interface PelangganPemesanan {
   id: number;
   kode_pemesanan: string;
   created_at?: string;
+  completed_at?: string | null;
+  paid_at?: string | null;
   tanggal_pemesanan: string;
   jam_pemesanan?: string;
   status: string;
@@ -83,6 +87,8 @@ export interface MekanikPemesanan {
   jam_pemesanan: string;
   status: string;
   status_pembayaran?: string | null;
+  completed_at?: string | null;
+  paid_at?: string | null;
   catatan_pelanggan?: string;
   catatan_mekanik?: string;
   item_pemesanan?: PemesananItem[];
@@ -99,6 +105,8 @@ export interface KeuanganPemesanan {
   id: number;
   kode_pemesanan: string;
   updated_at?: string;
+  completed_at?: string | null;
+  paid_at?: string | null;
   tanggal_pemesanan?: string;
   total_harga: number | null;
   status?: string;
@@ -119,6 +127,8 @@ export interface PemilikTerbaruPemesananActivity {
   id: number;
   kode_pemesanan: string;
   tanggal_pemesanan: string;
+  completed_at?: string | null;
+  paid_at?: string | null;
   nama_pelanggan: string;
   nama_layanan: string;
   total_harga: number;

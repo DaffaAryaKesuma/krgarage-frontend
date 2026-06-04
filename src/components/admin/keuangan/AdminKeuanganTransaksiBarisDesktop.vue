@@ -19,7 +19,7 @@ defineProps<Props>();
       {{ pemesanan.kode_pemesanan }}
     </td>
     <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-700 sm:px-6">
-      {{ formatDateShort(pemesanan.updated_at) }}
+      {{ formatDateShort(pemesanan.paid_at || pemesanan.updated_at) }}
     </td>
     <td class="px-4 py-4 text-sm text-gray-700 sm:px-6">
       <span class="capitalize">{{ pemesanan.pengguna.nama }}</span>

@@ -21,25 +21,25 @@ defineProps<Props>();
     class="text-sm hover:bg-gray-50/80 transition-colors align-middle border-b border-gray-100 last:border-0"
   >
     <!-- Kode Pemesanan -->
-    <td class="px-4 py-4 sm:px-6 align-middle">
+    <td class="px-4 py-3 sm:px-5 align-middle">
       <span class="text-gray-900">{{
         pemesanan.kode_pemesanan
       }}</span>
     </td>
 
     <!-- Tanggal -->
-    <td class="px-4 py-4 sm:px-6 align-middle text-gray-900">
+    <td class="px-4 py-3 sm:px-5 align-middle text-gray-900">
       {{ formatDateShort(pemesanan.tanggal_pemesanan) }}
     </td>
 
     <!-- Pelanggan -->
-    <td class="px-4 py-4 sm:px-6 align-middle text-gray-900">
+    <td class="px-4 py-3 sm:px-5 align-middle text-gray-900">
       {{ formatNama(pemesanan.nama_pelanggan) }}
     </td>
 
     <!-- Layanan -->
     <td
-      class="px-4 py-4 sm:px-6 align-middle text-gray-700 max-w-xs sm:max-w-sm"
+      class="px-4 py-3 sm:px-5 align-middle text-gray-700 max-w-xs sm:max-w-sm"
     >
       <div class="flex flex-wrap gap-1.5">
         <span
@@ -54,20 +54,20 @@ defineProps<Props>();
 
     <!-- Total -->
     <td
-      class="px-4 py-4 sm:px-6 align-middle text-gray-900"
+      class="px-4 py-3 sm:px-5 align-middle text-gray-900"
     >
       {{ toIDR(pemesanan.total_harga) }}
     </td>
 
     <!-- Status Servis -->
-    <td class="px-4 py-4 sm:px-6 align-middle whitespace-nowrap">
+    <td class="px-4 py-3 sm:px-5 align-middle whitespace-nowrap">
       <span :class="[getStatusBadgeClass(pemesanan.status), 'shadow-sm']">
         {{ getStatusLabel(pemesanan.status) }}
       </span>
     </td>
 
     <!-- Status Pembayaran -->
-    <td class="px-4 py-4 sm:px-6 align-middle whitespace-nowrap">
+    <td class="px-4 py-3 sm:px-5 align-middle whitespace-nowrap">
       <span
         :class="[
           getPembayaranStatusBadgeClass(pemesanan.status_pembayaran),

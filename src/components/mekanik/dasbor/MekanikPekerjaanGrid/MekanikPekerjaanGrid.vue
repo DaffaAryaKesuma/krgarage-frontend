@@ -28,6 +28,7 @@ const emit = defineEmits<{
 
 const {
   formatDateShort,
+  formatDateTimeShort,
   formatTimeShort,
   canMekanikAddSukuCadang,
   canMekanikUpdateStatus,
@@ -258,29 +259,29 @@ const {
           </div>
         </details>
 
-        <!-- Catatan Mekanik -->
-        <div
-          v-if="item.catatan_mekanik"
-          :class="[getAlertBoxClass('success'), 'flex items-start gap-2.5 p-3 shadow-none']"
-        >
-          <i
-            :class="[
-              getAlertIconClass('success'),
-              'mdi mdi-wrench-check mt-0.5 shrink-0 text-base',
-            ]"
-          ></i>
-          <div>
-            <p :class="[META_LABEL_CLASS, 'mb-0.5']">
-              Catatan Mekanik
-            </p>
-            <p class="whitespace-pre-line text-xs">
-              {{ item.catatan_mekanik }}
-            </p>
-          </div>
-        </div>
-
         <!-- Tombol Aksi -->
-        <div class="pt-1 mt-auto">
+        <div class="mt-auto space-y-3 pt-1">
+          <!-- Catatan Mekanik -->
+          <div
+            v-if="item.catatan_mekanik"
+            :class="[getAlertBoxClass('success'), 'flex items-start gap-2.5 p-3 shadow-none']"
+          >
+            <i
+              :class="[
+                getAlertIconClass('success'),
+                'mdi mdi-wrench-check mt-0.5 shrink-0 text-base',
+              ]"
+            ></i>
+            <div>
+              <p :class="[META_LABEL_CLASS, 'mb-0.5']">
+                Catatan Mekanik
+              </p>
+              <p class="whitespace-pre-line text-xs">
+                {{ item.catatan_mekanik }}
+              </p>
+            </div>
+          </div>
+
           <!-- Tombol Pekerjaan Aktif -->
           <div
             v-if="
@@ -309,12 +310,17 @@ const {
           <!-- Status Selesai -->
           <div
             v-if="isStatusSelesai(item.status)"
-            :class="[getAlertBoxClass('success'), 'flex items-center justify-center gap-2 p-3 shadow-none']"
+            :class="[getAlertBoxClass('success'), 'flex items-start gap-2.5 p-3 text-left shadow-none']"
           >
-            <i :class="[getAlertIconClass('success'), 'mdi mdi-check text-xl']"></i>
-            <p class="text-sm font-semibold">
-              Pekerjaan Selesai
-            </p>
+            <i :class="[getAlertIconClass('success'), 'mdi mdi-check mt-0.5 shrink-0 text-base']"></i>
+            <div>
+              <p class="text-sm font-semibold">
+                Pekerjaan Selesai
+              </p>
+              <p v-if="item.completed_at" class="mt-0.5 text-xs">
+                {{ formatDateTimeShort(item.completed_at) }}
+              </p>
+            </div>
           </div>
         </div>
       </div>

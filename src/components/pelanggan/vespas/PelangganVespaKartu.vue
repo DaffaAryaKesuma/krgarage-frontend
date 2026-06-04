@@ -41,7 +41,7 @@ const emit = defineEmits<{
             {{ vespa.model }}
           </h3>
           <p
-            class="mt-0.5 text-sm font-bold uppercase tracking-wider text-gray-500"
+            class="mt-0.5 text-sm font-bold uppercase text-gray-500"
           >
             {{ formatPlatNomor(vespa.plat_nomor) }}
           </p>
