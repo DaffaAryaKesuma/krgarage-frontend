@@ -1,5 +1,7 @@
 ﻿import { computed, ref, type Ref } from "vue";
+// Status pembayaran untuk aksi tandai lunas.
 import { PEMBAYARAN_STATUS } from "@/utils/pembayaranStatus";
+// Konfigurasi modal aksi status dari panel kontrol detail.
 import {
   AKSI_CONFIG,
   type AksiConfirmationConfig,
@@ -7,13 +9,16 @@ import {
 } from "@/components/admin/pemesanan-detail/AdminPemesananDetailControlPanel/adminPemesananControlPanelHelpers";
 import type { Pemesanan } from "@/types/pemesanan";
 
+// Aksi status di dasbor tidak termasuk markPaid karena markPaid memakai modal pembayaran sendiri.
 type DasborAksiType = Exclude<PemesananAksiType, "markPaid">;
 
+// Menyimpan pemesanan dan aksi status yang sedang menunggu konfirmasi.
 interface PendingStatusAksi {
   pemesanan: Pemesanan;
   aksi: DasborAksiType;
 }
 
+// Konfigurasi modal status yang dibutuhkan komponen dasbor.
 type StatusAksiConfig = Pick<
   AksiConfirmationConfig,
   "title" | "message" | "confirmText" | "variant"
@@ -21,6 +26,7 @@ type StatusAksiConfig = Pick<
   statusBaru: string;
 };
 
+// Opsi/callback yang dikirim komponen utama ke composable.
 interface UseAdminDasborTerbaruPemesananOptions {
   pemesanan: Ref<Pemesanan[]>;
   selectedMekaniks: Ref<Record<number, number>>;
@@ -29,6 +35,7 @@ interface UseAdminDasborTerbaruPemesananOptions {
   onSelectedMekaniksChange: (value: Record<number, number>) => void;
 }
 
+// Composable logic tabel pemesanan terbaru di dasbor admin.
 export function useAdminDasborTerbaruPemesanan({
   pemesanan,
   selectedMekaniks,
@@ -36,13 +43,17 @@ export function useAdminDasborTerbaruPemesanan({
   onPembayaranStatusChange,
   onSelectedMekaniksChange,
 }: UseAdminDasborTerbaruPemesananOptions) {
+  // State modal konfirmasi status servis.
   const showStatusConfirmModal = ref(false);
   const pendingStatusAksi = ref<PendingStatusAksi | null>(null);
+  // State modal konfirmasi pembayaran lunas.
   const showPembayaranConfirmModal = ref(false);
   const pendingPembayaranAksi = ref<Pemesanan | null>(null);
 
+  // true jika ada pemesanan yang perlu ditampilkan.
   const hasPemesanan = computed(() => pemesanan.value.length > 0);
 
+  // Konfigurasi modal aktif berdasarkan aksi yang dipilih.
   const activeStatusConfig = computed<StatusAksiConfig | null>(() => {
     if (!pendingStatusAksi.value) {
       return null;
@@ -63,6 +74,7 @@ export function useAdminDasborTerbaruPemesanan({
     };
   });
 
+  // Membuka modal konfirmasi status untuk pemesanan tertentu.
   const requestStatusConfirmation = (
     pemesanan: Pemesanan,
     aksi: DasborAksiType,
@@ -71,11 +83,13 @@ export function useAdminDasborTerbaruPemesanan({
     showStatusConfirmModal.value = true;
   };
 
+  // Menutup modal status dan reset pending action.
   const closeStatusConfirmModal = () => {
     showStatusConfirmModal.value = false;
     pendingStatusAksi.value = null;
   };
 
+  // Setelah modal dikonfirmasi, panggil callback parent untuk mengubah status.
   const applyStatusChange = (catatan?: string) => {
     const aksi = pendingStatusAksi.value;
     const config = activeStatusConfig.value;
@@ -89,24 +103,29 @@ export function useAdminDasborTerbaruPemesanan({
     closeStatusConfirmModal();
   };
 
+  // Handler tombol konfirmasi.
   const handleConfirm = (pemesanan: Pemesanan) => {
     requestStatusConfirmation(pemesanan, "confirm");
   };
 
+  // Handler tombol selesai.
   const handleComplete = (pemesanan: Pemesanan) => {
     requestStatusConfirmation(pemesanan, "complete");
   };
 
+  // Handler tombol batal.
   const handleCancel = (pemesanan: Pemesanan) => {
     requestStatusConfirmation(pemesanan, "cancel");
   };
 
+  // Handler tombol tandai lunas.
   const handleMarkPaid = (pemesanan: Pemesanan) => {
-    // Tampilkan konfirmasi sebelum tandai lunas
+    // Tampilkan konfirmasi sebelum tandai lunas.
     pendingPembayaranAksi.value = pemesanan;
     showPembayaranConfirmModal.value = true;
   };
 
+  // Mengirim perubahan pembayaran ke parent.
   const applyPembayaranChange = () => {
     if (!pendingPembayaranAksi.value) {
       closePembayaranConfirmModal();
@@ -116,11 +135,13 @@ export function useAdminDasborTerbaruPemesanan({
     closePembayaranConfirmModal();
   };
 
+  // Menutup modal pembayaran.
   const closePembayaranConfirmModal = () => {
     showPembayaranConfirmModal.value = false;
     pendingPembayaranAksi.value = null;
   };
 
+  // Menyimpan pilihan mekanik per id pemesanan.
   const handleMekanikChange = (
     idPemesanan: number,
     value: string | number | null,
@@ -129,6 +150,7 @@ export function useAdminDasborTerbaruPemesanan({
       return;
     }
 
+    // Buat object baru agar v-model parent terpicu reaktif.
     const updatedSelection = {
       ...selectedMekaniks.value,
       [idPemesanan]: value,
@@ -137,6 +159,7 @@ export function useAdminDasborTerbaruPemesanan({
     onSelectedMekaniksChange(updatedSelection);
   };
 
+  // State dan handler yang dipakai komponen utama.
   return {
     hasPemesanan,
     showStatusConfirmModal,

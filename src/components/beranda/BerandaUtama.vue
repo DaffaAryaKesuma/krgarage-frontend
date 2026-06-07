@@ -1,25 +1,28 @@
 <script setup lang="ts">
+// Highlight kecil yang tampil di hero.
 const FEATURE_HIGHLIGHTS = [
   { icon: "mdi-shield-check", label: "Garansi Resmi" },
 ];
 
+// Event order dikirim ke parent untuk membuka modal login.
 const emit = defineEmits<{
   (e: "order"): void;
 }>();
 </script>
 
 <template>
-  <!-- Hero Section -->
+  <!-- Hero section utama beranda. -->
   <main
     id="beranda"
     class="relative flex min-h-screen items-center justify-center bg-gray-900 bg-cover bg-center px-4 pt-24 pb-16 md:px-8 text-center text-white overflow-hidden"
     style="background-image: url('/homepage.png')"
   >
+    <!-- Overlay gelap agar teks tetap terbaca di atas gambar. -->
     <div
       class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80"
     ></div>
 
-    <!-- Animated BG Elements -->
+    <!-- Elemen background dekoratif. -->
     <div class="absolute inset-0 overflow-hidden">
       <div
         class="absolute top-20 right-10 w-72 h-72 bg-red-600/10 rounded-full blur-3xl animate-pulse"
@@ -30,6 +33,7 @@ const emit = defineEmits<{
       ></div>
     </div>
 
+    <!-- Konten utama hero. -->
     <div class="relative z-10 mx-auto max-w-4xl">
       <h1
         class="text-4xl font-extrabold md:text-6xl lg:text-7xl mb-6 leading-tight"
@@ -49,7 +53,7 @@ const emit = defineEmits<{
         garansi resmi. Berikan vespa Anda perawatan yang layak.
       </p>
 
-      <!-- Feature Highlights -->
+      <!-- Highlight singkat keunggulan. -->
       <div class="flex flex-wrap justify-center gap-4 mt-8 mb-10">
         <div
           v-for="feature in FEATURE_HIGHLIGHTS"
@@ -61,10 +65,11 @@ const emit = defineEmits<{
         </div>
       </div>
 
-      <!-- CTA Buttons -->
+      <!-- Tombol aksi utama. -->
       <div
         class="flex flex-col sm:flex-row gap-4 justify-center items-center mt-10"
       >
+        <!-- Karena user publik belum login, order akan membuka modal login. -->
         <button
           @click="emit('order')"
           class="group relative px-8 py-4 bg-red-600 text-white font-bold text-lg rounded-lg hover:bg-red-700 transition-all shadow-xl hover:shadow-2xl hover:scale-105 w-full sm:w-auto overflow-hidden"
@@ -77,6 +82,7 @@ const emit = defineEmits<{
           </span>
         </button>
 
+        <!-- Link anchor untuk turun ke section layanan. -->
         <a
           href="#layanan"
           class="px-8 py-4 bg-white/10 backdrop-blur-md text-white font-bold text-lg rounded-lg hover:bg-white/20 transition-all border-2 border-white/30 hover:border-white/50 w-full sm:w-auto flex items-center justify-center gap-2"

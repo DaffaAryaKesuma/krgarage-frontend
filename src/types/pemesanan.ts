@@ -1,14 +1,19 @@
+// Ringkasan suku cadang dipakai pada item pemesanan.
 import type { SukuCadangRingkasan } from "./inventaris";
+// Profil user dan mekanik dipakai pada relasi pemesanan.
 import type { MekanikProfile, UserProfile } from "./user";
 
+// Data Vespa yang menempel pada detail pemesanan.
 export interface PemesananVespa {
   model: string;
   plat_nomor: string;
   tahun_produksi?: number;
 }
 
+// Satu baris suku cadang yang dipakai dalam pemesanan.
 export interface PemesananItem {
   id: number;
+  // Snapshot nama saat suku cadang dipakai, agar tetap konsisten jika master berubah.
   nama_suku_cadang_saat_ini?: string;
   suku_cadang:
     | (Pick<SukuCadangRingkasan, "nama_suku_cadang" | "kategori"> & {
@@ -19,21 +24,28 @@ export interface PemesananItem {
   harga_saat_ini: number;
 }
 
+// Satu baris layanan yang dipilih dalam pemesanan.
 export interface PemesananLayananLine {
   id?: number;
   nama_layanan?: string;
   harga?: number;
+  // Pivot adalah data dari tabel layanan_pemesanan.
   pivot?: {
+    // Snapshot harga saat pelanggan membuat pemesanan.
     harga_saat_pesan?: number;
+    // Snapshot nama layanan saat pelanggan membuat pemesanan.
     nama_layanan_saat_ini?: string;
   };
 }
 
+// Bentuk data detail pemesanan lengkap.
 export interface Pemesanan {
   id: number;
   kode_pemesanan: string;
   created_at?: string;
+  // Waktu servis dinyatakan selesai.
   completed_at?: string | null;
+  // Waktu pembayaran dinyatakan lunas.
   paid_at?: string | null;
   tanggal_pemesanan: string;
   jam_pemesanan: string;
@@ -50,11 +62,13 @@ export interface Pemesanan {
   item_pemesanan?: PemesananItem[];
 }
 
+// Opsi mekanik untuk select/combobox admin.
 export interface MekanikOption {
   value: number;
   label: string;
 }
 
+// Bentuk data pemesanan pada halaman pelanggan.
 export interface PelangganPemesanan {
   id: number;
   kode_pemesanan: string;
@@ -72,11 +86,13 @@ export interface PelangganPemesanan {
   item_pemesanan?: PemesananItem[];
 }
 
+// Bentuk layanan yang ringkas untuk kartu mekanik.
 export interface MekanikPemesananLayanan {
   id: number;
   nama_layanan: string;
 }
 
+// Bentuk data pemesanan pada dashboard mekanik.
 export interface MekanikPemesanan {
   id: number;
   kode_pemesanan: string;
@@ -94,6 +110,7 @@ export interface MekanikPemesanan {
   item_pemesanan?: PemesananItem[];
 }
 
+// Layanan pemesanan yang dipakai di laporan keuangan.
 export interface KeuanganPemesananLayanan {
   nama_layanan: string;
   pivot: {
@@ -101,6 +118,7 @@ export interface KeuanganPemesananLayanan {
   };
 }
 
+// Bentuk pemesanan untuk laporan keuangan admin/pemilik.
 export interface KeuanganPemesanan {
   id: number;
   kode_pemesanan: string;
@@ -123,6 +141,7 @@ export interface KeuanganPemesanan {
   }>;
 }
 
+// Bentuk aktivitas terbaru di dashboard pemilik.
 export interface PemilikTerbaruPemesananActivity {
   id: number;
   kode_pemesanan: string;

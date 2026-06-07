@@ -1,12 +1,16 @@
 <script setup lang="ts">
+// Format tanggal servis terakhir.
 import { formatDateShort } from "@/utils/date";
+// Helper class alert/chip.
 import {
   getAlertBoxClass,
   getAlertIconClass,
   getChipBadgeClass,
 } from "@/utils/badgeVariants";
+// Format plat nomor uppercase.
 import { formatPlatNomor } from "@/utils/format";
 
+// Bentuk data Vespa yang perlu servis berkala.
 interface VespaDueLayanan {
   id: number;
   model: string;
@@ -14,6 +18,7 @@ interface VespaDueLayanan {
   tanggal_servis_terakhir?: string;
 }
 
+// Props daftar Vespa yang sudah waktunya servis.
 interface Props {
   vespas: VespaDueLayanan[];
 }
@@ -22,6 +27,7 @@ defineProps<Props>();
 </script>
 
 <template>
+  <!-- Banner hanya tampil jika ada Vespa yang perlu servis. -->
   <section
     v-if="vespas.length > 0"
     :class="[getAlertBoxClass('warning'), 'border-l-4 p-4 sm:p-6']"
@@ -43,6 +49,7 @@ defineProps<Props>();
           Vespa Anda sudah waktunya untuk servis berkala:
         </p>
         <div class="space-y-2">
+          <!-- List Vespa yang perlu servis. -->
           <div
             v-for="vespa in vespas"
             :key="vespa.id"
@@ -61,6 +68,7 @@ defineProps<Props>();
             </p>
           </div>
         </div>
+        <!-- CTA langsung ke halaman pemesanan. -->
         <router-link
           to="/app/pemesanan"
           class="inline-block mt-3 sm:mt-4 px-3 sm:px-4 py-2 bg-orange-600 text-white text-sm sm:text-base rounded-lg hover:bg-orange-700 transition"

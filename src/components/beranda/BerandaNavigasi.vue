@@ -1,7 +1,10 @@
 <script setup lang="ts">
+// ref dipakai untuk buka/tutup menu mobile.
 import { ref } from "vue";
+// Mengunci scroll body saat drawer mobile terbuka.
 import { scrollLock } from "@/composables/scrollLock";
 
+// Link navigasi anchor ke bagian-bagian di halaman beranda.
 const NAV_LINKS = [
   { label: "Beranda", href: "#beranda" },
   { label: "Layanan", href: "#layanan" },
@@ -9,31 +12,36 @@ const NAV_LINKS = [
   { label: "Kontak", href: "#kontak" },
 ];
 
+// Event dikirim ke parent untuk membuka modal login atau daftar.
 const emit = defineEmits<{
   (e: "openLogin"): void;
   (e: "openRegister"): void;
 }>();
 
+// State drawer mobile.
 const isMobileMenuOpen = ref(false);
 
+// Saat menu mobile terbuka, halaman belakang tidak bisa discroll.
 scrollLock(() => isMobileMenuOpen.value);
 
+// Menutup menu mobile.
 const closeMobileMenu = () => {
   isMobileMenuOpen.value = false;
 };
 </script>
 
 <template>
-  <!-- Header/Navbar -->
+  <!-- Header/navbar publik beranda. -->
   <header
     class="sticky top-0 z-50 flex items-center justify-between border-b border-gray-200 bg-white px-4 py-4 sm:px-8 md:px-20 shadow-sm"
   >
+    <!-- Logo dan nama brand. -->
     <div class="flex items-center text-2xl font-bold">
       <img src="@/assets/logo.png" alt="KRGarage Logo" class="mr-3 h-10" />
       <span>KRGarage</span>
     </div>
 
-    <!-- Desktop Menu -->
+    <!-- Menu desktop memakai anchor ke section di halaman yang sama. -->
     <nav class="hidden items-center gap-10 md:flex">
       <a
         v-for="link in NAV_LINKS"
@@ -45,7 +53,7 @@ const closeMobileMenu = () => {
       </a>
     </nav>
 
-    <!-- Auth Buttons -->
+    <!-- Tombol auth desktop membuka modal dari parent. -->
     <div class="hidden items-center gap-4 md:flex">
       <button
         @click="emit('openLogin')"
@@ -61,7 +69,7 @@ const closeMobileMenu = () => {
       </button>
     </div>
 
-    <!-- Mobile Menu Button -->
+    <!-- Tombol hamburger hanya tampil di mobile. -->
     <button
       v-if="!isMobileMenuOpen"
       @click="isMobileMenuOpen = true"
@@ -71,7 +79,7 @@ const closeMobileMenu = () => {
     </button>
   </header>
 
-  <!-- Mobile Menu Overlay -->
+  <!-- Overlay gelap di belakang drawer mobile. -->
   <transition
     enter-from-class="opacity-0"
     enter-active-class="transition-opacity duration-300"
@@ -87,7 +95,7 @@ const closeMobileMenu = () => {
     ></div>
   </transition>
 
-  <!-- Mobile Menu -->
+  <!-- Drawer menu mobile dari kanan. -->
   <transition
     enter-from-class="translate-x-full"
     enter-active-class="transition-transform duration-300 ease-out"
@@ -100,7 +108,7 @@ const closeMobileMenu = () => {
       v-if="isMobileMenuOpen"
       class="fixed inset-y-0 right-0 z-50 w-3/4 max-w-sm bg-white p-6 md:hidden shadow-2xl flex flex-col border-l border-gray-100"
     >
-      <!-- Mobile Menu Header with Close Icon -->
+      <!-- Header drawer mobile. -->
       <div class="flex items-center justify-between mb-6">
         <h2 class="text-xl font-bold">Menu</h2>
         <button
@@ -111,6 +119,7 @@ const closeMobileMenu = () => {
         </button>
       </div>
 
+      <!-- Link mobile menutup drawer setelah diklik. -->
       <nav class="flex flex-col gap-4 mb-8 border-b pb-6">
         <a
           v-for="link in NAV_LINKS"
@@ -122,6 +131,7 @@ const closeMobileMenu = () => {
           {{ link.label }}
         </a>
       </nav>
+      <!-- Tombol login mobile. -->
       <button
         @click="
           emit('openLogin');
@@ -131,6 +141,7 @@ const closeMobileMenu = () => {
       >
         Masuk
       </button>
+      <!-- Tombol daftar mobile. -->
       <button
         @click="
           emit('openRegister');

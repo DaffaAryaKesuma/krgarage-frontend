@@ -1,10 +1,12 @@
 <script setup lang="ts">
+// Tipe data prestasi balap.
 type AchievementItem = {
   rank: string;
   title: string;
   year: string;
 };
 
+// Daftar prestasi yang ditampilkan pada section tentang.
 const ACHIEVEMENTS: AchievementItem[] = [
   { rank: "1st", title: "Juara 1 - Sumatera Cup Prix Bengkulu", year: "2024" },
   { rank: "3rd", title: "Podium 3 - Sumatera Cup Prix Bengkulu", year: "2024" },
@@ -16,14 +18,14 @@ const ACHIEVEMENTS: AchievementItem[] = [
 </script>
 
 <template>
-  <!-- About Us / Racing Heritage Section -->
+  <!-- Section tentang KRGarage dan rekam jejak balap. -->
   <section
     id="tentang-kami"
     class="bg-gradient-to-br from-gray-900 via-gray-800 to-black py-16 md:py-24 px-4 md:px-8 lg:px-20"
   >
     <div class="mx-auto max-w-7xl">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <!-- Left: gambar -->
+        <!-- Gambar prestasi/tim. -->
         <div class="relative group">
           <div
             class="absolute inset-0 bg-red-600/20 rounded-3xl blur-2xl group-hover:bg-red-600/30 transition-all duration-500"
@@ -37,7 +39,7 @@ const ACHIEVEMENTS: AchievementItem[] = [
           </div>
         </div>
 
-        <!-- Right: Story & Achievements -->
+        <!-- Cerita singkat dan daftar prestasi. -->
         <div class="text-white">
           <h2 class="text-4xl md:text-5xl font-extrabold mb-6 leading-tight">
             Dari Garasi Rumah Menuju
@@ -61,11 +63,11 @@ const ACHIEVEMENTS: AchievementItem[] = [
             <p class="text-gray-300 mb-6">
               Bagi kami, performa bukan hanya teori. Keahlian yang kami asah di
               panasnya lintasan balap bersama KRTeam Garage kami terapkan
-              langsung pada Vespa Anda. Kami membawa DNA juara ke dalam setiap
-              servis harian.
-            </p>
+            langsung pada Vespa Anda. Kami membawa DNA juara ke dalam setiap
+            servis harian.
+          </p>
 
-            <!-- Achievement Daftar -->
+            <!-- Daftar prestasi balap. -->
             <div class="space-y-3">
               <div
                 v-for="achievement in ACHIEVEMENTS"
@@ -94,6 +96,7 @@ const ACHIEVEMENTS: AchievementItem[] = [
             </div>
           </div>
 
+          <!-- Link lokasi bengkel di Google Maps. -->
           <div class="flex flex-col sm:flex-row gap-4">
             <a
               href="https://maps.app.goo.gl/HtWgfMzQ9tzz55Pw6"

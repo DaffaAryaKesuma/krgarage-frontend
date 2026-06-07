@@ -2,14 +2,17 @@ import { PEMESANAN_STATUS } from "@/utils/statusBadge";
 import { PEMBAYARAN_STATUS } from "@/utils/pembayaranStatus";
 import { getButtonClass, getFullWidthButtonClass } from "@/utils/buttonVariants";
 
+// Bentuk data mekanik yang dibutuhkan panel kontrol.
 export interface Mekanik {
   id: number;
   nama: string;
   email: string;
 }
 
+// Jenis aksi yang bisa dikonfirmasi dari panel kontrol.
 export type PemesananAksiType = "confirm" | "complete" | "cancel" | "markPaid";
 
+// Bentuk konfigurasi modal konfirmasi untuk satu aksi.
 export interface AksiConfirmationConfig {
   title: string;
   message: string;
@@ -20,6 +23,7 @@ export interface AksiConfirmationConfig {
   successMessage: string;
 }
 
+// Konfigurasi semua aksi supaya judul, pesan, status target, dan pesan sukses konsisten.
 export const AKSI_CONFIG: Record<PemesananAksiType, AksiConfirmationConfig> = {
   confirm: {
     title: "Konfirmasi Pemesanan",
@@ -59,6 +63,7 @@ export const AKSI_CONFIG: Record<PemesananAksiType, AksiConfirmationConfig> = {
   },
 };
 
+// Class tombol dibangun di helper agar template panel lebih ringkas.
 export const CANCEL_BUTTON_CLASS =
   getFullWidthButtonClass("dangerOutline", "md");
 

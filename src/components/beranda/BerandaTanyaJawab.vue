@@ -1,15 +1,19 @@
 <script setup lang="ts">
+// ref dipakai untuk menyimpan status buka/tutup tiap FAQ.
 import { ref } from "vue";
 
+// Data dasar FAQ.
 type FaqItem = {
   question: string;
   answer: string;
 };
 
+// Data FAQ di UI ditambah property open untuk accordion.
 type FaqAnimatedItem = FaqItem & {
   open: boolean;
 };
 
+// Daftar pertanyaan dan jawaban bersifat statis.
 const FAQS: FaqItem[] = [
   {
     question: "Berapa lama waktu servis yang dibutuhkan?",
@@ -37,17 +41,20 @@ const FAQS: FaqItem[] = [
   },
 ];
 
+// Semua FAQ awalnya tertutup.
 const faqs = ref<FaqAnimatedItem[]>(FAQS.map((f) => ({ ...f, open: false })));
 
+// Membuka atau menutup satu item FAQ.
 const toggleFAQ = (index: number) => {
   faqs.value[index].open = !faqs.value[index].open;
 };
 </script>
 
 <template>
-  <!-- FAQ Section -->
+  <!-- Section pertanyaan yang sering diajukan. -->
   <section class="bg-white py-12 md:py-20 px-4 md:px-8 lg:px-20">
     <div class="mx-auto max-w-4xl">
+      <!-- Judul section. -->
       <h2 class="mb-4 text-center text-2xl md:text-4xl font-bold text-gray-800">
         Pertanyaan yang Sering Diajukan
       </h2>
@@ -55,11 +62,13 @@ const toggleFAQ = (index: number) => {
         Temukan jawaban untuk pertanyaan umum tentang layanan kami
       </p>
       <div class="space-y-4">
+        <!-- Item FAQ berbentuk accordion. -->
         <div
           v-for="(faq, i) in faqs"
           :key="i"
           class="border border-gray-200 rounded-lg overflow-hidden hover:border-red-300 transition-colors"
         >
+          <!-- Tombol pertanyaan mengubah status open. -->
           <button
             @click="toggleFAQ(i)"
             class="w-full px-6 py-4 text-left bg-white hover:bg-gray-50 transition-colors flex items-center justify-between gap-4"
@@ -74,6 +83,7 @@ const toggleFAQ = (index: number) => {
               ]"
             ></i>
           </button>
+          <!-- Jawaban tampil dengan transisi saat FAQ dibuka. -->
           <transition
             enter-active-class="transition-all duration-300 ease-out"
             leave-active-class="transition-all duration-300 ease-in"

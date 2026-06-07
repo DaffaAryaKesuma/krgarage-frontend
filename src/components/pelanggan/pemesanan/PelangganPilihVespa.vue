@@ -1,13 +1,19 @@
 <script setup lang="ts">
+// Helper class untuk badge pilihan dan warna ikon.
 import { getChipBadgeClass, getIconToneClass } from "@/utils/badgeVariants";
+// Helper class untuk kartu pilihan dan tanda centang.
 import {
   getSelectionCardClass,
   getSelectionCheckClass,
 } from "@/utils/selectionVariants";
+// Class error form dipakai saat Vespa belum dipilih.
 import { FORM_ERROR_CLASS } from "@/utils/formVariants";
+// Helper agar plat nomor selalu tampil rapi.
 import { formatPlatNomor } from "@/utils/format";
+// Tipe data Vespa sederhana untuk proses pemesanan.
 import type { VespaBasic } from "@/types/vespa";
 
+// Props menerima daftar Vespa, nilai pilihan, dan pesan validasi.
 interface Props {
   vespas: VespaBasic[];
   modelValue: number | null;
@@ -15,6 +21,7 @@ interface Props {
   touched?: boolean;
 }
 
+// Event update:modelValue membuat komponen ini bisa dipakai dengan v-model.
 interface Emits {
   (e: "update:modelValue", value: number | null): void;
 }
@@ -22,13 +29,16 @@ interface Emits {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
+// Jika Vespa yang sama diklik lagi, pilihan dibatalkan.
 const selectVespa = (id: number) => {
   emit("update:modelValue", props.modelValue === id ? null : id);
 };
 </script>
 
 <template>
+  <!-- Kartu utama step pilih Vespa. -->
   <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
+    <!-- Header step. -->
     <div class="flex items-center gap-3 mb-6">
       <div
         :class="[
@@ -44,6 +54,7 @@ const selectVespa = (id: number) => {
       </div>
     </div>
 
+    <!-- Kondisi kosong jika pelanggan belum punya Vespa. -->
     <div
       v-if="vespas.length === 0"
       class="p-6 text-center"
@@ -59,6 +70,7 @@ const selectVespa = (id: number) => {
       </router-link>
     </div>
 
+    <!-- Daftar Vespa yang bisa dipilih. -->
     <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       <div
         v-for="vespa in vespas"
@@ -71,6 +83,7 @@ const selectVespa = (id: number) => {
           extraClass: 'p-5',
         })"
       >
+        <!-- Vespa dengan pemesanan aktif dibuat disabled. -->
         <div class="flex items-start gap-3">
           <div
             :class="[
@@ -85,6 +98,7 @@ const selectVespa = (id: number) => {
             <p class="text-xs text-gray-600">
               {{ formatPlatNomor(vespa.plat_nomor) }}
             </p>
+            <!-- Badge memberi tahu Vespa sedang dipakai pada servis aktif. -->
             <span
               v-if="vespa.pemesanan_aktif"
               :class="[getChipBadgeClass('neutral'), 'mt-1 gap-1 px-2 py-0.5 text-xs font-semibold']"
@@ -93,6 +107,7 @@ const selectVespa = (id: number) => {
               Sedang dalam servis
             </span>
           </div>
+          <!-- Checkmark muncul pada Vespa yang dipilih. -->
           <div
             v-if="modelValue === vespa.id && !vespa.pemesanan_aktif"
             :class="getSelectionCheckClass('info', true, 'flex-shrink-0')"
@@ -103,6 +118,7 @@ const selectVespa = (id: number) => {
       </div>
     </div>
 
+    <!-- Pesan error muncul setelah field disentuh atau submit dicoba. -->
     <p
       v-if="error && touched"
       :class="[FORM_ERROR_CLASS, 'mt-4']"

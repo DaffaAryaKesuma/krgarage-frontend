@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import { toRef } from "vue";
+// Composable form berisi state input, validasi, dan submit payload.
 import {
   usePelangganVespaFormModal,
   type VespaFormInitialData,
   type VespaFormPayload,
 } from "./usePelangganVespaFormModal";
+// Mengunci scroll halaman saat modal terbuka.
 import { scrollLock } from "@/composables/scrollLock";
+// Helper class untuk alert dan ikon.
 import { getAlertBoxClass, getIconToneClass } from "@/utils/badgeVariants";
+// Helper class untuk tombol.
 import { getButtonClass } from "@/utils/buttonVariants";
+// Helper class untuk label, input, dan error form.
 import {
   FORM_LABEL_CLASS,
   FORM_REQUIRED_MARK_CLASS,
@@ -17,6 +22,7 @@ import {
   getFormInputWithIconClass,
 } from "@/utils/formVariants";
 
+// Props mengatur apakah modal tampil, mode tambah/edit, data awal, dan error backend.
 interface Props {
   show: boolean;
   mode: "add" | "edit";
@@ -24,19 +30,23 @@ interface Props {
   error?: string;
 }
 
+// Default membuat modal tertutup dan mode tambah jika parent tidak mengirim nilai.
 const props = withDefaults(defineProps<Props>(), {
   show: false,
   mode: "add",
   error: "",
 });
 
+// Saat modal dibuka, scroll body dikunci supaya fokus tetap di modal.
 scrollLock(() => props.show);
 
+// Event submit mengirim data form, close menutup modal.
 const emit = defineEmits<{
   submit: [data: VespaFormPayload];
   close: [];
 }>();
 
+// Ambil state dan handler dari composable form Vespa.
 const {
   form,
   errors,
@@ -46,6 +56,7 @@ const {
   handleSubmit,
 } = usePelangganVespaFormModal(toRef(props, "initialData"));
 
+// Submit hanya diteruskan jika composable mengembalikan payload valid.
 const onSubmit = () => {
   const payload = handleSubmit();
   if (!payload) return;
@@ -54,21 +65,22 @@ const onSubmit = () => {
 </script>
 
 <template>
+  <!-- Modal hanya muncul saat props show bernilai true. -->
   <div
     v-if="show"
     class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
   >
-    <!-- Backdrop -->
+    <!-- Backdrop untuk menutup modal saat area gelap diklik. -->
     <div
       class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"
       @click="emit('close')"
     ></div>
 
-    <!-- Modal Content -->
+    <!-- Konten utama modal. -->
     <section
       class="relative flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
     >
-      <!-- Header -->
+      <!-- Header menyesuaikan teks dan ikon berdasarkan mode tambah/edit. -->
       <div
         class="flex items-center justify-between border-b border-gray-100 bg-white px-6 py-5"
       >
@@ -92,10 +104,10 @@ const onSubmit = () => {
         </div>
       </div>
 
-      <!-- Body -->
+      <!-- Body berisi form yang bisa discroll jika layar kecil. -->
       <div class="overflow-y-auto flex-1 custom-scrollbar">
         <form @submit.prevent="onSubmit" id="vespa-form" class="space-y-5 p-6">
-          <!-- Model Field -->
+          <!-- Field model Vespa. -->
           <div>
             <label :class="FORM_LABEL_CLASS">
               Model Vespa <span :class="FORM_REQUIRED_MARK_CLASS">*</span>
@@ -126,7 +138,7 @@ const onSubmit = () => {
           </div>
 
           <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <!-- Tahun Field -->
+            <!-- Field tahun produksi Vespa. -->
             <div>
               <label :class="FORM_LABEL_CLASS">
                 Tahun Produksi <span :class="FORM_REQUIRED_MARK_CLASS">*</span>
@@ -158,7 +170,7 @@ const onSubmit = () => {
               </p>
             </div>
 
-            <!-- Plat Nomor Field -->
+            <!-- Field plat nomor Vespa. -->
             <div>
               <label :class="FORM_LABEL_CLASS">
                 Plat Nomor <span :class="FORM_REQUIRED_MARK_CLASS">*</span>
@@ -189,7 +201,7 @@ const onSubmit = () => {
             </div>
           </div>
 
-          <!-- Error Global -->
+          <!-- Error global biasanya berasal dari API saat submit gagal. -->
           <div
             v-if="error"
             :class="[getAlertBoxClass('error'), 'mt-2 flex gap-3 p-3 shadow-none']"
@@ -200,7 +212,7 @@ const onSubmit = () => {
         </form>
       </div>
 
-      <!-- Footer -->
+      <!-- Footer berisi tombol batal dan simpan. -->
       <div
         class="mt-auto flex gap-3 border-t border-gray-100 bg-gray-50 px-6 py-4 sm:justify-end"
       >

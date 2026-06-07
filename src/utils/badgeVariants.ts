@@ -1,12 +1,16 @@
+// Class dasar untuk badge kecil seperti status, role, dan pembayaran.
 export const BADGE_BASE_CLASS =
   "inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium";
 
+// Class label kecil untuk meta informasi.
 export const META_LABEL_CLASS =
   "text-[11px] font-medium uppercase tracking-wide text-gray-500";
 
+// Class dasar badge ranking angka.
 export const RANK_BADGE_BASE_CLASS =
   "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white";
 
+// Warna icon dengan background lembut.
 export const iconToneVariants = {
   primary: { bg: "bg-red-100", text: "text-red-600" },
   info: { bg: "bg-blue-100", text: "text-blue-600" },
@@ -18,6 +22,7 @@ export const iconToneVariants = {
   neutral: { bg: "bg-gray-100", text: "text-gray-600" },
 } as const;
 
+// Warna gradient untuk kartu/header statistik.
 export const gradientToneVariants = {
   primary: "from-red-500 to-red-600",
   info: "from-blue-500 to-blue-600",
@@ -29,6 +34,7 @@ export const gradientToneVariants = {
   neutral: "from-gray-500 to-gray-600",
 } as const;
 
+// Warna solid untuk elemen yang butuh background penuh.
 export const solidToneVariants = {
   primary: "bg-red-600 border-red-700",
   info: "bg-blue-600 border-blue-700",
@@ -40,6 +46,7 @@ export const solidToneVariants = {
   neutral: "bg-gray-600 border-gray-700",
 } as const;
 
+// Warna hover lembut.
 export const softHoverToneVariants = {
   primary: "hover:bg-red-50",
   info: "hover:bg-blue-50",
@@ -49,6 +56,7 @@ export const softHoverToneVariants = {
   neutral: "hover:bg-gray-50",
 } as const;
 
+// Variasi alert box untuk sukses, warning, error, info, dan netral.
 export const alertBoxVariants = {
   success: {
     box: "border-green-300 bg-green-50 text-green-700",
@@ -72,6 +80,7 @@ export const alertBoxVariants = {
   },
 } as const;
 
+// Variasi panel info dengan tone tertentu.
 export const tonePanelVariants = {
   primary: "border-red-100 bg-red-50 text-red-700",
   info: "border-blue-100 bg-blue-50 text-blue-700",
@@ -81,6 +90,7 @@ export const tonePanelVariants = {
   neutral: "border-gray-100 bg-gray-50 text-gray-700",
 } as const;
 
+// Kumpulan class badge berdasarkan konteks pemakaian.
 export const badgeVariants = {
   status: {
     menunggu: "border-gray-300 bg-gray-100 text-gray-600",
@@ -121,6 +131,7 @@ export const badgeVariants = {
   },
 } as const;
 
+// Type key membantu TypeScript membatasi variant yang boleh dipakai.
 export type RoleBadgeKey = keyof typeof badgeVariants.role;
 export type InventoryBadgeKey = keyof typeof badgeVariants.inventory;
 export type ChipBadgeKey = keyof typeof badgeVariants.chip;
@@ -132,12 +143,15 @@ export type SoftHoverToneKey = keyof typeof softHoverToneVariants;
 export type AlertBoxKey = keyof typeof alertBoxVariants;
 export type TonePanelKey = keyof typeof tonePanelVariants;
 
+// Menggabungkan class dasar badge dengan class warna tertentu.
 export function buildBadgeClass(variantClass: string): string {
   return `${BADGE_BASE_CLASS} ${variantClass}`;
 }
 
+// Mengambil class badge berdasarkan role user.
 export function getRoleBadgeClass(role: string | null | undefined): string {
   const key = role?.toLowerCase() as RoleBadgeKey | undefined;
+  // Jika role tidak dikenali, tampilkan seperti pelanggan.
   const variant = key && badgeVariants.role[key]
     ? badgeVariants.role[key]
     : badgeVariants.role.pelanggan;
@@ -145,47 +159,58 @@ export function getRoleBadgeClass(role: string | null | undefined): string {
   return buildBadgeClass(variant);
 }
 
+// Mengambil class badge inventaris.
 export function getInventoryBadgeClass(status: InventoryBadgeKey): string {
   return buildBadgeClass(badgeVariants.inventory[status]);
 }
 
+// Mengambil class chip kecil.
 export function getChipBadgeClass(variant: ChipBadgeKey = "neutral"): string {
   return buildBadgeClass(badgeVariants.chip[variant]);
 }
 
+// Mengambil class badge ranking.
 export function getRankBadgeClass(variant: RankBadgeKey = "neutral"): string {
   return `${RANK_BADGE_BASE_CLASS} ${badgeVariants.rank[variant]}`;
 }
 
+// Menggabungkan background dan warna teks icon.
 export function getIconToneClass(variant: IconToneKey): string {
   const tone = iconToneVariants[variant];
   return `${tone.bg} ${tone.text}`;
 }
 
+// Mengambil warna teks dari tone icon.
 export function getToneTextClass(variant: IconToneKey): string {
   return iconToneVariants[variant].text;
 }
 
+// Mengambil class gradient.
 export function getGradientToneClass(variant: GradientToneKey): string {
   return gradientToneVariants[variant];
 }
 
+// Mengambil class tone solid.
 export function getSolidToneClass(variant: SolidToneKey): string {
   return solidToneVariants[variant];
 }
 
+// Mengambil class hover lembut.
 export function getSoftHoverToneClass(variant: SoftHoverToneKey): string {
   return softHoverToneVariants[variant];
 }
 
+// Mengambil class lengkap alert box.
 export function getAlertBoxClass(variant: AlertBoxKey): string {
   return `rounded-xl border p-4 shadow-sm ${alertBoxVariants[variant].box}`;
 }
 
+// Mengambil warna icon alert.
 export function getAlertIconClass(variant: AlertBoxKey): string {
   return alertBoxVariants[variant].icon;
 }
 
+// Mengambil class panel tone lengkap.
 export function getTonePanelClass(variant: TonePanelKey): string {
   return `rounded-xl border p-4 ${tonePanelVariants[variant]}`;
 }

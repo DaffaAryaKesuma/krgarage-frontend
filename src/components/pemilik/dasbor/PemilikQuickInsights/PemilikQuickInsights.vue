@@ -1,10 +1,14 @@
 <script setup lang="ts">
+// Composable menyusun data kartu insight dari ringkasan dan statistik.
 import { usePemilikQuickInsights } from "@/components/pemilik/dasbor/PemilikQuickInsights/usePemilikQuickInsights";
 
+// Props dari dashboard pemilik.
 const props = defineProps<{ ringkasan: any; statistik: any }>();
 
+// INSIGHT_KARTU berisi kartu operasional, tim aktif, mekanik terbaik, dan unit masuk.
 const { INSIGHT_KARTU } = usePemilikQuickInsights(props);
 
+// Class warna untuk tiap tone kartu insight.
 const CARD_TONE_CLASS = {
   neutral: {
     card: "from-slate-600 to-slate-700 shadow-slate-200/70",
@@ -43,15 +47,19 @@ const CARD_TONE_CLASS = {
   },
 } as const;
 
+// Key tone yang tersedia.
 type CardTone = keyof typeof CARD_TONE_CLASS;
 
+// Mengambil class tone, fallback ke neutral jika tone tidak dikenal.
 const getCardToneClass = (tone: string) =>
   CARD_TONE_CLASS[tone as CardTone] ?? CARD_TONE_CLASS.neutral;
 </script>
 
 <template>
+  <!-- Grid quick insights dashboard pemilik. -->
   <div class="mb-4 sm:mb-6">
     <div class="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4 h-full">
+      <!-- Satu kartu insight. -->
       <div
         v-for="card in INSIGHT_KARTU"
         :key="card.title"
@@ -87,6 +95,7 @@ const getCardToneClass = (tone: string) =>
               {{ card.subtitle }}
             </p>
           </div>
+          <!-- Ikon kartu insight. -->
           <div
             :class="[
               'flex h-8 w-8 shrink-0 items-center justify-center rounded-full sm:h-9 sm:w-9',

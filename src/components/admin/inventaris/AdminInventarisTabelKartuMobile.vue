@@ -1,6 +1,8 @@
 <script setup lang="ts">
+// Format harga ke Rupiah.
 import { toIDR } from "@/utils/money";
 import type { InventarisSukuCadang } from "@/types/inventaris";
+// Helper class label, chip, dan tombol.
 import { META_LABEL_CLASS, getChipBadgeClass } from "@/utils/badgeVariants";
 import {
   TABLE_MOBILE_CARD_CLASS,
@@ -10,6 +12,7 @@ import {
 } from "@/utils/tableVariants";
 import { getIconButtonClass } from "@/utils/buttonVariants";
 
+// Props kartu mobile inventaris.
 interface Props {
   sukucadang: InventarisSukuCadang;
   hasStockAlert: boolean;
@@ -20,6 +23,7 @@ interface Props {
 
 defineProps<Props>();
 
+// Event aksi diteruskan ke tabel utama.
 const emit = defineEmits<{
   restock: [sukucadang: InventarisSukuCadang];
   edit: [sukucadang: InventarisSukuCadang];
@@ -28,7 +32,9 @@ const emit = defineEmits<{
 </script>
 
 <template>
+  <!-- Kartu mobile untuk satu suku cadang. -->
   <div :class="TABLE_MOBILE_CARD_CLASS">
+    <!-- Header nama, deskripsi, dan kategori. -->
     <div :class="TABLE_MOBILE_CARD_HEADER_CLASS">
       <div>
         <p class="text-sm font-semibold text-gray-900">
@@ -43,6 +49,7 @@ const emit = defineEmits<{
       </span>
     </div>
 
+    <!-- Grid stok dan harga. -->
     <div :class="TABLE_MOBILE_CARD_GRID_CLASS">
       <div>
         <p :class="META_LABEL_CLASS">
@@ -78,6 +85,7 @@ const emit = defineEmits<{
       </div>
     </div>
 
+    <!-- Tombol aksi restock, edit, hapus. -->
     <div :class="[TABLE_MOBILE_CARD_FOOTER_CLASS, 'flex flex-wrap gap-2']">
       <button
         @click="emit('restock', sukucadang)"

@@ -1,11 +1,18 @@
+// computed untuk validasi, reactive untuk form, ref untuk state loading/error.
 import { computed, reactive, ref } from "vue";
+// Axios dipakai untuk request daftar akun.
 import axios from "axios";
+// Helper error agar pesan backend mudah ditampilkan.
 import { handleApiError, logError } from "@/utils/errorHandler";
+// Base URL API backend.
 import { API_URL } from "@/utils/api";
+// Helper class input form.
 import { getFormInputClass } from "@/utils/formVariants";
 
+// Field yang dipakai pada form daftar.
 type RegisterFieldKey = "name" | "email" | "no_telepon" | "password";
 
+// Konfigurasi satu field form daftar.
 interface RegisterFieldConfig {
   key: RegisterFieldKey;
   label: string;
@@ -14,6 +21,7 @@ interface RegisterFieldConfig {
   hint?: string;
 }
 
+// Daftar field dibuat array agar template bisa memakai v-for.
 const FORM_FIELDS: RegisterFieldConfig[] = [
   {
     key: "name",
@@ -42,6 +50,7 @@ const FORM_FIELDS: RegisterFieldConfig[] = [
   },
 ];
 
+// Aturan validasi untuk setiap field daftar.
 const VALIDATION_RULES = {
   name: [
     { test: (val: string) => val.trim() !== "", msg: "Nama harus diisi" },
@@ -77,7 +86,9 @@ const VALIDATION_RULES = {
   ],
 };
 
+// Composable khusus modal daftar akun.
 export function useRegisterModal(onClose: () => void) {
+  // State input form daftar.
   const form = reactive({
     name: "",
     email: "",
@@ -85,6 +96,7 @@ export function useRegisterModal(onClose: () => void) {
     password: "",
   });
 
+  // Pesan error per field.
   const errors = reactive({
     name: "",
     email: "",
@@ -92,6 +104,7 @@ export function useRegisterModal(onClose: () => void) {
     password: "",
   });
 
+  // Status field sudah disentuh atau belum.
   const touched = reactive({
     name: false,
     email: false,
@@ -99,10 +112,14 @@ export function useRegisterModal(onClose: () => void) {
     password: false,
   });
 
+  // Error global dari backend.
   const error = ref("");
+  // Pesan sukses setelah akun berhasil dibuat.
   const successMessage = ref("");
+  // Loading tombol submit.
   const isLoading = ref(false);
 
+  // Validasi satu field sesuai aturan VALIDATION_RULES.
   const validate = (fieldKey: RegisterFieldKey) => {
     const rules = VALIDATION_RULES[fieldKey] || [];
     const value = form[fieldKey];
@@ -117,6 +134,7 @@ export function useRegisterModal(onClose: () => void) {
     errors[fieldKey] = "";
   };
 
+  // Form valid jika tidak ada field kosong dan tidak ada error.
   const isFormValid = computed(() => {
     const hasEmptyFields = Object.keys(form).some(
       (key) => form[key as RegisterFieldKey] === "",
@@ -127,6 +145,7 @@ export function useRegisterModal(onClose: () => void) {
     return !hasEmptyFields && !hasErrors;
   });
 
+  // Handler input mengubah nilai field dan langsung memvalidasi.
   const handleInput = (event: Event, key: string) => {
     const val = (event.target as HTMLInputElement).value;
     const fieldKey = key as RegisterFieldKey;
@@ -135,12 +154,14 @@ export function useRegisterModal(onClose: () => void) {
     validate(fieldKey);
   };
 
+  // Handler blur menandai field sudah disentuh.
   const handleBlur = (key: string) => {
     const fieldKey = key as RegisterFieldKey;
     touched[fieldKey] = true;
     validate(fieldKey);
   };
 
+  // Mengambil class input berdasarkan kondisi error.
   const getInputClass = (key: string) => {
     const fieldKey = key as RegisterFieldKey;
     return getFormInputClass(
@@ -149,6 +170,7 @@ export function useRegisterModal(onClose: () => void) {
     );
   };
 
+  // Reset seluruh isi form, touched, dan error field.
   const resetFormState = () => {
     (Object.keys(form) as RegisterFieldKey[]).forEach((key) => {
       form[key] = "";
@@ -157,6 +179,7 @@ export function useRegisterModal(onClose: () => void) {
     });
   };
 
+  // Mengirim data daftar akun ke backend.
   const handleRegister = async () => {
     if (!isFormValid.value) return;
 
@@ -165,6 +188,7 @@ export function useRegisterModal(onClose: () => void) {
     isLoading.value = true;
 
     try {
+      // Backend memakai nama field "nama", bukan "name".
       const payload = {
         nama: form.name,
         email: form.email,
@@ -172,22 +196,29 @@ export function useRegisterModal(onClose: () => void) {
         password: form.password,
       };
 
+      // Endpoint /daftar membuat akun pelanggan baru.
       const response = await axios.post(`${API_URL}/daftar`, payload);
+      // Tampilkan pesan sukses dari backend atau fallback default.
       successMessage.value = response.data.message || "Registrasi berhasil!";
 
+      // Setelah sukses, kosongkan form.
       resetFormState();
 
+      // Tutup modal setelah beberapa detik agar user sempat membaca pesan sukses.
       setTimeout(() => {
         onClose();
       }, 3000);
     } catch (err: any) {
+      // Jika gagal, tampilkan pesan error dari API.
       logError(err, "handleRegister");
       error.value = handleApiError(err);
     } finally {
+      // Matikan loading setelah request selesai.
       isLoading.value = false;
     }
   };
 
+  // Nilai dan fungsi ini dipakai oleh komponen modal daftar.
   return {
     FORM_FIELDS,
     form,

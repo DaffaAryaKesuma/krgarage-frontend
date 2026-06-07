@@ -1,8 +1,10 @@
 <script setup lang="ts">
+// Format tanggal dan uang.
 import { formatDateShort } from "@/utils/date";
 import { toIDR } from "@/utils/money";
 import type { KeuanganPemesanan } from "@/types/pemesanan";
 
+// Props baris desktop transaksi.
 interface Props {
   pemesanan: KeuanganPemesanan;
   pemesananLayanan: string[];
@@ -14,7 +16,9 @@ defineProps<Props>();
 </script>
 
 <template>
+  <!-- Baris desktop untuk satu transaksi. -->
   <tr class="transition-colors hover:bg-gray-50 align-top">
+    <!-- Kode pemesanan. -->
     <td class="px-4 py-4 text-sm  text-gray-700 sm:px-6 break-all">
       {{ pemesanan.kode_pemesanan }}
     </td>
@@ -44,3 +48,8 @@ defineProps<Props>();
     </td>
   </tr>
 </template>
+    <!-- Tanggal pembayaran/update. -->
+    <!-- Pelanggan. -->
+    <!-- Layanan. -->
+    <!-- Suku cadang. -->
+    <!-- Total. -->

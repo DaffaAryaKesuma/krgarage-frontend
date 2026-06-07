@@ -1,24 +1,31 @@
 <script setup lang="ts">
+// Kartu untuk menampilkan satu Vespa milik pelanggan.
 import PelangganVespaKartu from "./PelangganVespaKartu.vue";
+// Komponen umum untuk kondisi loading dan data kosong.
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
+// Class kartu tambah Vespa diambil dari helper agar konsisten.
 import {
   ADD_ACTION_ICON_WRAPPER_CLASS,
   ADD_ACTION_SUBTITLE_CLASS,
   ADD_ACTION_TITLE_CLASS,
   getAddActionCardClass,
 } from "@/utils/selectionVariants";
+// Tipe data Vespa dari folder types.
 import type { VespaDetail } from "@/types/vespa";
 
+// Props berisi daftar Vespa dan status loading dari halaman induk.
 interface Props {
   vespas: VespaDetail[];
   isLoading?: boolean;
 }
 
+// Default loading false supaya komponen tetap aman meskipun parent tidak mengirim isLoading.
 withDefaults(defineProps<Props>(), {
   isLoading: false,
 });
 
+// Event dikirim ke parent untuk edit, hapus, dan tambah Vespa.
 const emit = defineEmits<{
   edit: [vespa: VespaDetail];
   delete: [vespa: VespaDetail];
@@ -27,13 +34,16 @@ const emit = defineEmits<{
 </script>
 
 <template>
+  <!-- Section pembungkus daftar Vespa. -->
   <section class="mb-8">
     <div class="flex items-center justify-between mb-2">
       <div class="flex items-center gap-3"></div>
     </div>
 
     <div class="bg-transparent">
+      <!-- Tampilkan spinner saat data sedang dimuat. -->
       <LoadingSpinner v-if="isLoading" message="Memuat data..." />
+      <!-- Jika pelanggan belum punya Vespa, tampilkan empty state. -->
       <div
         v-else-if="vespas.length === 0"
         class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8"
@@ -47,7 +57,7 @@ const emit = defineEmits<{
         />
       </div>
 
-      <!-- Vespa Kartu Grid -->
+      <!-- Grid daftar Vespa yang sudah terdaftar. -->
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <PelangganVespaKartu
           v-for="vespa in vespas"
@@ -57,7 +67,7 @@ const emit = defineEmits<{
           @delete="emit('delete', $event)"
         />
 
-        <!-- Add New Vespa Kartu -->
+        <!-- Kartu tambah Vespa dibuat satu grid dengan kartu lain. -->
         <button
           @click="emit('addNew')"
           :class="

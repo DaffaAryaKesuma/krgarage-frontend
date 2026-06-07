@@ -1,20 +1,27 @@
 <script setup lang="ts">
+// Helper untuk menampilkan tanggal pendek dan plat nomor rapi.
 import { formatDateShort } from "@/utils/date";
 import { formatPlatNomor } from "@/utils/format";
+// Helper class untuk badge, alert, ikon, dan label kecil.
 import {
   META_LABEL_CLASS,
   getAlertBoxClass,
   getAlertIconClass,
   getIconToneClass,
 } from "@/utils/badgeVariants";
+// Helper class untuk tombol aksi.
 import { getButtonClass, getIconButtonClass } from "@/utils/buttonVariants";
+// Tipe data Vespa yang diterima komponen.
 import type { VespaDetail } from "@/types/vespa";
 
+// Props menerima satu data Vespa.
 interface Props {
   vespa: VespaDetail;
 }
 
+// Props didaftarkan supaya bisa dipakai langsung di template.
 defineProps<Props>();
+// Event dikirim ke parent saat tombol edit atau hapus diklik.
 const emit = defineEmits<{
   edit: [vespa: VespaDetail];
   delete: [vespa: VespaDetail];
@@ -22,10 +29,11 @@ const emit = defineEmits<{
 </script>
 
 <template>
+  <!-- Kartu utama satu Vespa. -->
   <div
     class="group flex h-full flex-col rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-gray-200 hover:shadow-xl hover:shadow-gray-500/5 sm:p-5"
   >
-    <!-- Kartu Header -->
+    <!-- Header kartu berisi ikon, model, dan plat nomor. -->
     <div class="mb-4 flex items-start justify-between gap-3">
       <div class="flex min-w-0 items-center gap-3">
         <div
@@ -49,7 +57,7 @@ const emit = defineEmits<{
       </div>
     </div>
 
-    <!-- Layanan Status -->
+    <!-- Alert merah muncul jika Vespa sudah melewati jadwal servis. -->
     <div
       v-if="vespa.perlu_servis"
       :class="[getAlertBoxClass('error'), 'mb-4 flex items-center gap-3 p-3 shadow-none']"
@@ -71,6 +79,7 @@ const emit = defineEmits<{
         </p>
       </div>
     </div>
+    <!-- Alert kuning muncul jika jadwal servis tinggal 7 hari atau kurang. -->
     <div
       v-else-if="
         vespa.hari_hingga_servis &&
@@ -97,9 +106,9 @@ const emit = defineEmits<{
       </div>
     </div>
 
-    <!-- Info Kartu -->
+    <!-- Bagian informasi tambahan Vespa. -->
     <div class="mb-5 grid flex-1 grid-cols-1 gap-3">
-      <!-- Tahun (Full Width) -->
+      <!-- Tahun produksi Vespa. -->
       <div
         class="flex items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 p-3"
       >
@@ -120,7 +129,7 @@ const emit = defineEmits<{
         </div>
       </div>
 
-      <!-- Servis Terakhir -->
+      <!-- Tanggal servis terakhir, tampil '-' jika belum ada. -->
       <div
         class="flex items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 p-3"
       >
@@ -153,7 +162,7 @@ const emit = defineEmits<{
       </div>
     </div>
 
-    <!-- Aksi Buttons -->
+    <!-- Tombol edit dan hapus Vespa. -->
     <div class="mt-auto flex gap-3 border-t border-gray-100 pt-4">
       <button
         @click="emit('edit', vespa)"

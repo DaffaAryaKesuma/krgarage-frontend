@@ -1,7 +1,11 @@
 <script setup lang="ts">
+// Helper format rupiah.
 import { toIDR } from "@/utils/money";
+// Helper format tanggal pendek.
 import { formatDateShort } from "@/utils/date";
+// Helper format plat nomor.
 import { formatPlatNomor } from "@/utils/format";
+// Helper class untuk alert, badge, ikon, dan panel.
 import {
   getAlertBoxClass,
   getAlertIconClass,
@@ -9,11 +13,14 @@ import {
   getIconToneClass,
   getTonePanelClass,
 } from "@/utils/badgeVariants";
+// Helper class tombol lebar penuh.
 import { getFullWidthButtonClass } from "@/utils/buttonVariants";
 
+// Tipe data layanan dan Vespa yang dipilih.
 import type { LayananCatalogItem } from "@/types/layanan";
 import type { VespaBasic } from "@/types/vespa";
 
+// Props berisi hasil pilihan pelanggan sebelum dikonfirmasi.
 interface Props {
   selectedLayanan: LayananCatalogItem[];
   totalPrice: number;
@@ -23,17 +30,19 @@ interface Props {
   isSubmitting?: boolean;
 }
 
+// Default isSubmitting false supaya tombol normal saat belum submit.
 withDefaults(defineProps<Props>(), {
   isSubmitting: false,
 });
 </script>
 
 <template>
+  <!-- Kartu ringkasan sebelum pemesanan dikirim ke API. -->
   <div
     class="relative bg-white rounded-2xl shadow-[0_4px_20px_rgb(0,0,0,0.06)] border border-gray-100 overflow-hidden"
   >
     <div class="p-5 sm:p-7">
-      <!-- Header -->
+      <!-- Header ringkasan. -->
       <div class="text-center mb-6">
         <div
           :class="[
@@ -51,7 +60,7 @@ withDefaults(defineProps<Props>(), {
         </p>
       </div>
 
-      <!-- Receipt Dashed Divider -->
+      <!-- Garis putus-putus sebagai pemisah visual ala struk. -->
       <div class="relative flex items-center justify-center mb-6">
         <div
           class="absolute w-full border-t-2 border-dashed border-gray-200"
@@ -60,8 +69,9 @@ withDefaults(defineProps<Props>(), {
         <div class="absolute w-5 h-5 bg-gray-50 rounded-full -right-8"></div>
       </div>
 
-      <!-- Detail Items -->
+      <!-- Detail pilihan yang akan dikirim sebagai pemesanan. -->
       <div class="space-y-4 mb-6 px-1">
+        <!-- Daftar layanan yang dipilih. -->
         <div class="flex items-start justify-between">
           <div class="flex items-start gap-2.5 text-gray-600 shrink-0">
             <i class="mdi mdi-wrench text-lg"></i>
@@ -80,6 +90,7 @@ withDefaults(defineProps<Props>(), {
           </div>
         </div>
 
+        <!-- Vespa yang akan diservis. -->
         <div v-if="selectedVespa" class="flex items-center justify-between">
           <div class="flex items-center gap-2.5 text-gray-600">
             <i class="mdi mdi-motorbike text-lg"></i>
@@ -98,6 +109,7 @@ withDefaults(defineProps<Props>(), {
           </div>
         </div>
 
+        <!-- Jadwal tanggal dan jam servis. -->
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2.5 text-gray-600">
             <i class="mdi mdi-calendar-clock text-lg"></i>
@@ -116,7 +128,7 @@ withDefaults(defineProps<Props>(), {
         </div>
       </div>
 
-      <!-- Total Price Banner -->
+      <!-- Total estimasi biaya dari layanan yang dipilih. -->
       <div
         :class="[getTonePanelClass('primary'), 'mb-6 flex items-center justify-between px-5 py-4 shadow-inner']"
       >
@@ -129,7 +141,7 @@ withDefaults(defineProps<Props>(), {
         >
       </div>
 
-      <!-- Disclaimer Info Box -->
+      <!-- Catatan bahwa total masih estimasi sebelum mekanik mengecek kondisi Vespa. -->
       <div
         :class="[getAlertBoxClass('warning'), 'mb-6 flex items-start gap-3 p-3.5 shadow-none']"
       >
@@ -145,7 +157,7 @@ withDefaults(defineProps<Props>(), {
         </p>
       </div>
 
-      <!-- Submit Button -->
+      <!-- Tombol submit final pemesanan. -->
       <button
         type="submit"
         :disabled="isSubmitting"

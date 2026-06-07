@@ -1,17 +1,24 @@
 <script setup lang="ts">
+// Format harga suku cadang ke Rupiah.
 import { toIDR } from "@/utils/money";
+// Helper class tombol.
 import {
   getButtonClass,
   getFullWidthButtonClass,
   getIconButtonClass,
 } from "@/utils/buttonVariants";
+// Helper gradient header.
 import { getGradientToneClass } from "@/utils/badgeVariants";
+// Helper input dengan icon.
 import { getFormInputWithIconClass } from "@/utils/formVariants";
 import type { SukuCadangRingkasan } from "@/types/inventaris";
+// Komponen state loading/kosong.
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
+// Logic modal dipisah ke composable.
 import { useTambahSukuCadangModal } from "@/components/ui/TambahSukuCadangModal/useTambahSukuCadangModal";
 
+// Props modal: show, list suku cadang, dan state loading/submitting.
 const props = withDefaults(
   defineProps<{
     show: boolean;
@@ -22,11 +29,13 @@ const props = withDefaults(
   { isLoading: false, isSubmitting: false },
 );
 
+// Event close dan submit dikirim ke parent.
 const emit = defineEmits<{
   close: [];
   submit: [items: { sukucadangId: number; quantity: number }[]];
 }>();
 
+// Ambil state dan aksi dari composable.
 const {
   searchQuery,
   keranjang,
@@ -46,16 +55,18 @@ const {
 </script>
 
 <template>
+  <!-- Overlay modal tambah suku cadang. -->
   <div
     v-if="show"
     class="fixed inset-0 backdrop-blur-sm bg-black/50 flex items-center justify-center z-50 p-4"
     @click.self="handleClose"
   >
+    <!-- Card modal utama. -->
     <div
       class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl flex flex-col"
       style="max-height: 92vh"
     >
-      <!-- Header -->
+      <!-- Header modal. -->
       <div
         :class="[
           'bg-gradient-to-br px-5 py-4 rounded-t-2xl flex items-center justify-between shrink-0',
@@ -76,9 +87,9 @@ const {
         </button>
       </div>
 
-      <!-- Body -->
+      <!-- Body modal berisi search, grid item, dan keranjang. -->
       <div class="flex flex-col flex-1 overflow-hidden">
-        <!-- Search Bar -->
+        <!-- Search bar untuk filter nama/kategori. -->
         <div class="px-4 pt-4 pb-2 shrink-0">
           <div class="relative">
             <i
@@ -93,15 +104,15 @@ const {
           </div>
         </div>
 
-        <!-- Product Grid -->
+        <!-- Grid/list suku cadang. -->
         <div class="flex-1 overflow-y-auto px-4 pb-2 custom-scrollbar">
-          <!-- Loading -->
+          <!-- Loading saat daftar suku cadang belum siap. -->
           <LoadingSpinner
             v-if="isLoading"
             message="Memuat suku cadang..."
           />
 
-          <!-- Empty -->
+          <!-- Empty state saat tidak ada hasil/filter kosong. -->
           <EmptyState
             v-else-if="filteredSukuCadang.length === 0"
             icon="mdi mdi-package-variant"
@@ -113,7 +124,7 @@ const {
             "
           />
 
-          <!-- Grid -->
+          <!-- Grid item suku cadang. -->
           <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-3 py-1">
             <div
               v-for="sukuCadang in filteredSukuCadang"
@@ -153,7 +164,7 @@ const {
                 {{ toIDR(sukuCadang.harga_jual) }}
               </p>
 
-              <!-- Quantity Stepper (muncul saat dipilih) -->
+              <!-- Quantity stepper muncul saat card sedang aktif. -->
               <div
                 v-if="activeCardId === sukuCadang.id"
                 class="mt-3 space-y-2"
@@ -197,8 +208,9 @@ const {
           </div>
         </div>
 
-        <!-- Keranjang -->
+        <!-- Keranjang item terpilih. -->
         <div class="shrink-0 border-t border-gray-100 px-4 pt-3 pb-1">
+          <!-- List keranjang jika ada item. -->
           <div v-if="keranjang.length > 0">
             <p
               class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2"
@@ -236,19 +248,21 @@ const {
             <div
               class="flex justify-between items-center mt-2 pt-2 border-t border-gray-200"
             >
+              <!-- Total semua item keranjang. -->
               <span class="font-bold">Total</span>
               <span class="font-bold">{{
                 toIDR(grandTotal)
               }}</span>
             </div>
           </div>
+          <!-- Hint jika keranjang masih kosong. -->
           <div v-else class="text-center py-2 text-gray-400">
             <p class="text-xs">Pilih suku cadang di atas untuk ditambahkan</p>
           </div>
         </div>
       </div>
 
-      <!-- Footer -->
+      <!-- Footer tombol batal dan submit. -->
       <div class="px-4 py-3 flex gap-3 border-t border-gray-100 shrink-0">
         <button
           @click="handleClose"

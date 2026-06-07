@@ -1,16 +1,23 @@
 <script setup lang="ts">
+// Format nama untuk avatar inisial.
 import { formatNama } from "@/utils/format";
+// Composable logic profil.
 import { useProfilModal } from "@/components/ui/ProfilModal/useProfilModal";
+// Helper tombol.
 import { getButtonClass, getIconButtonClass } from "@/utils/buttonVariants";
+// Helper warna dan badge role.
 import {
   getGradientToneClass,
   getRoleBadgeClass,
   getToneTextClass,
 } from "@/utils/badgeVariants";
 
+// show menentukan modal terbuka/tutup.
 const props = defineProps<{ show: boolean }>();
+// close dikirim ke parent saat modal ditutup.
 const emit = defineEmits<{ close: [] }>();
 
+// Ambil state dan handler dari composable.
 const {
   loading,
   user,
@@ -24,15 +31,17 @@ const {
 </script>
 
 <template>
+  <!-- Overlay modal profil. -->
   <div
     v-if="show"
     class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
     @click.self="emit('close')"
   >
+    <!-- Card modal profil. -->
     <div
       class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white shadow-2xl animate-in fade-in zoom-in duration-200 custom-scrollbar"
     >
-      <!-- Header -->
+      <!-- Header modal. -->
       <div
         class="sticky top-0 z-10 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between"
       >
@@ -48,10 +57,11 @@ const {
         </button>
       </div>
 
+      <!-- Konten hanya tampil jika data user tersedia. -->
       <div v-if="user" class="p-6 space-y-8">
-        <!-- Profile Info Section -->
+        <!-- Section profil utama. -->
         <div class="flex flex-col md:flex-row gap-8 items-start">
-          <!-- Avatar -->
+          <!-- Avatar inisial dari nama user. -->
           <div
             class="flex flex-col items-center gap-3 shrink-0 mx-auto md:mx-0"
           >
@@ -77,7 +87,7 @@ const {
             </div>
           </div>
 
-          <!-- Form Info -->
+          <!-- Form update profil. -->
           <form
             @submit.prevent="handleUpdateProfil"
             class="flex-1 w-full space-y-4"
@@ -94,6 +104,7 @@ const {
               </div>
               <div>
                 <label :class="labelClass">Nomor Telepon</label>
+                <!-- Input telepon hanya mengizinkan angka. -->
                 <input
                   v-model="profilForm.no_telepon"
                   type="tel"
@@ -120,6 +131,7 @@ const {
             </div>
 
             <div class="flex justify-end pt-2">
+              <!-- Tombol submit profil. -->
               <button
                 type="submit"
                 :disabled="loading"
@@ -132,7 +144,7 @@ const {
           </form>
         </div>
 
-        <!-- Password Section -->
+        <!-- Section ganti password. -->
         <div>
           <h3
             class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2"
@@ -140,6 +152,7 @@ const {
             <i :class="['mdi mdi-shield-lock', getToneTextClass('primary')]"></i>
             Ganti Password
           </h3>
+          <!-- Form ganti password. -->
           <form @submit.prevent="handleGantiPassword" class="space-y-4">
             <div>
               <label :class="labelClass">Password Saat Ini</label>
@@ -176,6 +189,7 @@ const {
             </div>
 
             <div class="flex justify-end pt-2">
+              <!-- Tombol submit ganti password. -->
               <button
                 type="submit"
                 :disabled="loading"

@@ -62,12 +62,31 @@ export function restockAdminInventarisSukuCadang(
     harga_beli_satuan: number;
     update_harga_beli: boolean;
     catatan?: string;
+    foto_struk?: File | null;
   },
 ) {
+  const formData = new FormData();
+  formData.append("jumlah", String(dataRestok.jumlah));
+  formData.append("harga_beli_satuan", String(dataRestok.harga_beli_satuan));
+  formData.append("update_harga_beli", dataRestok.update_harga_beli ? "1" : "0");
+
+  if (dataRestok.catatan) {
+    formData.append("catatan", dataRestok.catatan);
+  }
+
+  if (dataRestok.foto_struk) {
+    formData.append("foto_struk", dataRestok.foto_struk);
+  }
+
   return axios.post(
     `${API_URL}/admin/inventori/${idSukuCadang}/tambah-stok`,
-    dataRestok,
-    { headers: getAuthHeaders() },
+    formData,
+    {
+      headers: {
+        ...getAuthHeaders(),
+        "Content-Type": "multipart/form-data",
+      },
+    },
   );
 }
 

@@ -1,15 +1,21 @@
 <script setup lang="ts">
+// onMounted dipakai untuk mengambil daftar mekanik saat panel tampil.
 import { onMounted } from "vue";
+// Modal konfirmasi umum dan modal catatan selesai.
 import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
 import CatatanInputModal from "@/components/ui/CatatanInputModal.vue";
+// Select mekanik.
 import CustomSelect from "@/components/ui/CustomSelect.vue";
+// Format completed_at dan paid_at.
 import { formatDateTimeShort } from "@/utils/date";
+// Helper class tampilan.
 import {
   META_LABEL_CLASS,
   getAlertBoxClass,
   getIconToneClass,
   getToneTextClass,
 } from "@/utils/badgeVariants";
+// Class tombol dan logic panel berasal dari composable.
 import {
   CANCEL_BUTTON_CLASS,
   COMPLETE_BUTTON_CLASS,
@@ -18,6 +24,7 @@ import {
   useAdminPemesananControlPanel,
 } from "./useAdminPemesananControlPanel";
 
+// Props panel kontrol berasal dari detail pemesanan.
 const props = defineProps<{
   pemesananId: number;
   currentStatus: string;
@@ -28,7 +35,9 @@ const props = defineProps<{
   currentMekanikName?: string;
 }>();
 
+// refresh dikirim ke parent setelah aksi berhasil.
 const emit = defineEmits(["refresh"]);
+// Ambil state dan handler panel dari composable.
 const {
   mekanikOptionsDaftar,
   isProcessing,
@@ -55,12 +64,14 @@ const {
   assignMekanikAndStart,
 } = useAdminPemesananControlPanel(props, () => emit("refresh"));
 
+// Ambil mekanik untuk dropdown setelah komponen mounted.
 onMounted(() => {
   void fetchMekaniks();
 });
 </script>
 
 <template>
+  <!-- Panel kontrol pemesanan di halaman detail admin. -->
   <div
     class="flex h-full flex-col rounded-xl border border-gray-100 bg-white p-4 shadow-sm sm:p-5"
   >
@@ -68,6 +79,7 @@ onMounted(() => {
       Kontrol Pemesanan
     </h3>
 
+    <!-- Informasi mekanik yang sudah ditugaskan. -->
     <div
       :class="[
         getAlertBoxClass(assignedMekanikName ? 'info' : 'neutral'),
@@ -83,7 +95,9 @@ onMounted(() => {
       </p>
     </div>
 
+    <!-- Area aksi berubah sesuai status pemesanan. -->
     <div class="space-y-4 flex-1">
+      <!-- Status Menunggu: bisa konfirmasi atau batal. -->
       <div v-if="canConfirm" class="space-y-3">
         <button
           @click="handleConfirm"
@@ -107,6 +121,7 @@ onMounted(() => {
         </button>
       </div>
 
+      <!-- Status Dikonfirmasi: pilih mekanik lalu mulai servis. -->
       <div v-else-if="canAssignAndStart" class="space-y-4">
         <div :class="getAlertBoxClass('info')">
           <p class="mb-3 flex items-center gap-2 text-sm font-medium">
@@ -142,6 +157,7 @@ onMounted(() => {
         </button>
       </div>
 
+      <!-- Status Dikerjakan: tandai selesai. -->
       <div v-else-if="canComplete" class="space-y-3">
         <div :class="[getAlertBoxClass('warning'), 'mb-3']">
           <p class="flex items-center gap-2 text-sm">
@@ -166,6 +182,7 @@ onMounted(() => {
         </button>
       </div>
 
+      <!-- Status akhir: tampilkan selesai/batal dan pembayaran. -->
       <div v-else>
         <div
           v-if="isCompleted"
@@ -237,6 +254,7 @@ onMounted(() => {
       </div>
     </div>
 
+    <!-- Jika aksi selesai, pakai modal catatan wajib. -->
     <CatatanInputModal
       v-if="aksiConfirmationConfig?.value === 'Selesai'"
       :show="showAksiConfirmation"
@@ -248,6 +266,7 @@ onMounted(() => {
       @confirm="confirmAksi"
       @cancel="closeAksiConfirmation"
     />
+    <!-- Aksi lain pakai modal konfirmasi biasa. -->
     <ConfirmationModal
       v-else
       :show="showAksiConfirmation"

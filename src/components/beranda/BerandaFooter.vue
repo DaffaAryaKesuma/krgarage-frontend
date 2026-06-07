@@ -1,6 +1,8 @@
 <script setup lang="ts">
+// Tahun otomatis mengikuti tahun saat aplikasi dibuka.
 const currentYear = new Date().getFullYear();
 
+// Link sosial/kontak yang ditampilkan di footer.
 const socialLinks = [
   {
     name: "Instagram",
@@ -14,10 +16,12 @@ const socialLinks = [
 </script>
 
 <template>
+  <!-- Footer sekaligus section kontak. -->
   <footer id="kontak" class="bg-red-800 pt-16 text-white print:hidden">
     <div
       class="mx-auto grid max-w-7xl gap-8 px-8 sm:grid-cols-2 lg:grid-cols-3"
     >
+      <!-- Deskripsi singkat bengkel. -->
       <div class="px-4">
         <h3 class="mb-4 text-lg font-semibold text-white">KRGarage</h3>
         <p class="mb-4 text-sm leading-relaxed">
@@ -27,6 +31,7 @@ const socialLinks = [
         </p>
       </div>
 
+      <!-- Informasi alamat dan nomor kontak. -->
       <div class="px-4">
         <h3 class="mb-4 text-lg font-semibold text-white">Kontak Kami</h3>
         <p class="mb-4 text-sm leading-relaxed">
@@ -39,6 +44,7 @@ const socialLinks = [
         </p>
       </div>
 
+      <!-- Link sosial media atau kontak eksternal. -->
       <div class="px-4">
         <h3 class="mb-4 text-lg font-semibold text-white">Ikuti Kami</h3>
         <div class="flex flex-col gap-2">
@@ -56,6 +62,7 @@ const socialLinks = [
       </div>
     </div>
 
+    <!-- Copyright. -->
     <div class="mt-12 border-t border-white/20 py-8 text-center">
       <p class="text-xs">
         &copy; {{ currentYear }} KRGarage. All Rights Reserved.

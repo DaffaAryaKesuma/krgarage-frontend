@@ -1,14 +1,19 @@
 <script setup lang="ts">
+// computed untuk menyusun kartu ringkasan.
 import { computed } from "vue";
+// Helper opsi bulan untuk subtitle periode.
 import { getMonthOptions } from "@/utils/dateFilters";
+// Helper tone ikon.
 import { getIconToneClass, type IconToneKey } from "@/utils/badgeVariants";
 
+// Ringkasan analisa inventaris dari halaman induk.
 interface Ringkasan {
   totalLayanan: number;
   totalSukuCadang: number;
   lowStockCount: number;
 }
 
+// Props ringkasan dan periode aktif.
 interface Props {
   ringkasan: Ringkasan;
   selectedMonth: number;
@@ -19,6 +24,7 @@ const props = defineProps<Props>();
 
 const MONTH_OPTIONS = getMonthOptions();
 
+// Susun data kartu ringkasan agar template cukup v-for.
 const RINGKASAN_KARTU = computed(() => [
   {
     title: "Total Layanan Terjual",
@@ -45,7 +51,9 @@ const RINGKASAN_KARTU = computed(() => [
 </script>
 
 <template>
+  <!-- Kartu ringkasan analisa inventaris. -->
   <div class="mb-5 space-y-3 md:space-y-0 md:grid md:grid-cols-3 md:gap-3">
+    <!-- Satu kartu metrik. -->
     <div
       v-for="card in RINGKASAN_KARTU"
       :key="card.key"
@@ -69,11 +77,13 @@ const RINGKASAN_KARTU = computed(() => [
           </div>
         </div>
 
+        <!-- Nilai ringkasan diambil dari key kartu. -->
         <div class="shrink-0 text-xl font-bold leading-tight text-gray-900 sm:text-2xl">
           {{ ringkasan[card.key] }}
         </div>
       </div>
 
+      <!-- Dekorasi background kartu. -->
       <div
         class="absolute -bottom-8 -right-8 h-28 w-28 rounded-full bg-gray-50 opacity-80"
       ></div>

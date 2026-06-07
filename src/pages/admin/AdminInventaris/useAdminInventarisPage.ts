@@ -59,6 +59,8 @@ export function useAdminInventarisPage() {
   const restockUpdateMasterPrice = ref(false);
   // Catatan opsional untuk riwayat restock.
   const restockNote = ref("");
+  // Foto struk pembelian saat restock.
+  const restockReceiptFile = ref<File | null>(null);
   // Nama kategori baru saat admin membuat kategori dari modal form.
   const categoryName = ref("");
 
@@ -157,6 +159,7 @@ export function useAdminInventarisPage() {
     restockUnitPrice.value = Math.trunc(toMoneyNumber(itemSukuCadang.harga_beli));
     restockUpdateMasterPrice.value = false;
     restockNote.value = "";
+    restockReceiptFile.value = null;
     showRestockModal.value = true;
   };
 
@@ -167,6 +170,12 @@ export function useAdminInventarisPage() {
     restockUnitPrice.value = 0;
     restockUpdateMasterPrice.value = false;
     restockNote.value = "";
+    restockReceiptFile.value = null;
+  };
+
+  // Menyimpan file foto struk yang dipilih dari modal restock.
+  const handleRestockReceiptChange = (file: File | null) => {
+    restockReceiptFile.value = file;
   };
 
   // Menyimpan id item yang akan dihapus lalu menampilkan modal konfirmasi.
@@ -287,6 +296,7 @@ export function useAdminInventarisPage() {
           harga_beli_satuan: restockUnitPrice.value,
           update_harga_beli: restockUpdateMasterPrice.value,
           catatan: restockNote.value.trim() || undefined,
+          foto_struk: restockReceiptFile.value,
         },
       );
       toast.success("Stok berhasil ditambahkan!");
@@ -345,6 +355,7 @@ export function useAdminInventarisPage() {
     restockUnitPrice,
     restockUpdateMasterPrice,
     restockNote,
+    restockReceiptFile,
     categoryName,
     form,
     filteredSukuCadang,
@@ -354,6 +365,7 @@ export function useAdminInventarisPage() {
     closeModal,
     openRestockModal,
     closeRestockModal,
+    handleRestockReceiptChange,
     showDeleteConfirmModal,
     fetchSukuCadang,
     saveCategory,

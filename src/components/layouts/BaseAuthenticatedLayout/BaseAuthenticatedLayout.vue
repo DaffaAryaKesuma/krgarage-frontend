@@ -1,23 +1,33 @@
 <script setup lang="ts">
+// Modal konfirmasi untuk logout.
 import ConfirmationModal from "@/components/ui/ConfirmationModal.vue";
+// Lonceng notifikasi di navbar.
 import NotificationBell from "@/components/ui/NotificationBell/NotificationBell.vue";
+// Modal profil pengguna.
 import ProfilModal from "@/components/ui/ProfilModal/ProfilModal.vue";
+// Composable berisi state dan aksi umum layout login.
 import { useAuthenticatedLayoutShell } from "./useAuthenticatedLayoutShell";
+// Mengunci scroll saat drawer mobile terbuka.
 import { scrollLock } from "@/composables/scrollLock";
+// Helper format nama user.
 import { formatNama } from "@/utils/format";
+// Helper badge role.
 import { getRoleBadgeClass } from "@/utils/badgeVariants";
+// Helper class tombol.
 import {
   getButtonClass,
   getFullWidthButtonClass,
   getIconButtonClass,
 } from "@/utils/buttonVariants";
 
+// Struktur item navigasi yang dikirim dari layout role.
 interface NavItem {
   label: string;
   to: string;
   icon: string;
 }
 
+// Props membuat layout ini bisa dipakai ulang oleh pelanggan/admin/mekanik/pemilik.
 interface Props {
   berandaPath: string;
   roleLabel: string;
@@ -29,6 +39,7 @@ interface Props {
   navClass?: string;
 }
 
+// Default props untuk tampilan layout.
 const props = withDefaults(defineProps<Props>(), {
   appTitle: "KRGarage",
   appSubtitle: "",
@@ -38,6 +49,7 @@ const props = withDefaults(defineProps<Props>(), {
   navItems: () => [],
 });
 
+// Ambil state menu, user, logout, dan helper route dari composable.
 const {
   isMobileMenuOpen,
   showLogoutConfirm,
@@ -51,13 +63,17 @@ const {
   route,
 } = useAuthenticatedLayoutShell(props.desktopBreakpoint);
 
+// Saat menu mobile terbuka, body tidak bisa discroll.
 scrollLock(() => isMobileMenuOpen.value);
 
+// Class avatar profil di navbar dan drawer.
 const PROFILE_AVATAR_CLASS =
   "flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-red-600 to-red-700 text-sm font-bold text-white shadow-md transition-all hover:ring-4 hover:ring-red-100";
 
+// Mengambil class badge berdasarkan role layout.
 const roleBadgeClass = () => getRoleBadgeClass(props.roleLabel);
 
+// Class link navigasi desktop, aktif jika route sesuai.
 const navItemClass = (to: string) =>
   [
     "group whitespace-nowrap no-underline duration-200 lg:px-3 xl:px-4",
@@ -67,6 +83,7 @@ const navItemClass = (to: string) =>
       : "text-gray-700 hover:text-red-600",
   ].join(" ");
 
+// Class ikon navigasi desktop.
 const navIconClass = (to: string, icon: string) =>
   [
     "mdi shrink-0 text-base transition-colors duration-200",
@@ -74,6 +91,7 @@ const navIconClass = (to: string, icon: string) =>
     isActive(to) ? "text-white" : "text-gray-500 group-hover:text-red-600",
   ].join(" ");
 
+// Class link navigasi mobile.
 const mobileNavItemClass = (to: string) =>
   [
     "group w-full justify-start gap-3 rounded-lg px-4 py-3 no-underline duration-200",
@@ -83,6 +101,7 @@ const mobileNavItemClass = (to: string) =>
       : "text-gray-700 hover:text-red-600",
   ].join(" ");
 
+// Class ikon navigasi mobile.
 const mobileNavIconClass = (to: string, icon: string) =>
   [
     "mdi text-xl transition-colors duration-200",
@@ -92,11 +111,13 @@ const mobileNavIconClass = (to: string, icon: string) =>
 </script>
 
 <template>
+  <!-- Root layout untuk semua halaman yang sudah login. -->
   <div :class="rootClass">
+    <!-- Navbar atas. -->
     <nav :class="navClass">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between gap-2 lg:gap-4">
-          <!-- Left: Logo Link -->
+          <!-- Logo mengarah ke dashboard role. -->
           <router-link
             :to="berandaPath"
             class="flex min-w-0 items-center gap-2 no-underline"
@@ -116,13 +137,14 @@ const mobileNavIconClass = (to: string, icon: string) =>
             </div>
           </router-link>
 
-          <!-- Desktop Menu & Profile Tools -->
+          <!-- Menu desktop dan area profil. -->
           <div
             :class="[
               breakpointClasses.desktopMenu,
               'min-w-0 flex-1 items-center justify-end gap-1',
             ]"
           >
+            <!-- Link navigasi desktop. -->
             <router-link
               v-for="item in navItems"
               :key="item.to"
@@ -133,6 +155,7 @@ const mobileNavIconClass = (to: string, icon: string) =>
               <span>{{ item.label }}</span>
             </router-link>
 
+            <!-- Garis pemisah menu dengan area profil. -->
             <div
               v-if="navItems.length"
               class="mx-1 hidden h-8 w-px bg-gray-300 xl:block"
@@ -142,8 +165,10 @@ const mobileNavIconClass = (to: string, icon: string) =>
               class="flex items-center gap-2 sm:gap-3"
               :class="{ 'ml-1 lg:ml-2': navItems.length }"
             >
+              <!-- Notifikasi user. -->
               <NotificationBell />
 
+              <!-- Nama dan role hanya tampil di layar lebar. -->
               <div class="hidden flex-col items-end justify-center text-right xl:flex">
                 <span class="text-sm font-bold text-gray-900 leading-tight">
                   {{ formatNama(user.nama) }}
@@ -158,6 +183,7 @@ const mobileNavIconClass = (to: string, icon: string) =>
                 </span>
               </div>
 
+              <!-- Avatar membuka modal profil. -->
               <button
                 type="button"
                 :class="PROFILE_AVATAR_CLASS"
@@ -167,6 +193,7 @@ const mobileNavIconClass = (to: string, icon: string) =>
                 {{ userInitials }}
               </button>
 
+              <!-- Tombol logout membuka modal konfirmasi. -->
               <button
                 @click="showLogoutConfirm = true"
                 :class="getIconButtonClass('neutral', 'md', 'shrink-0')"
@@ -177,7 +204,7 @@ const mobileNavIconClass = (to: string, icon: string) =>
             </div>
           </div>
 
-          <!-- Mobile Menu Button (Hamburger) -->
+          <!-- Tombol hamburger untuk menu mobile. -->
           <button
             @click="isMobileMenuOpen = !isMobileMenuOpen"
             :class="[
@@ -197,7 +224,7 @@ const mobileNavIconClass = (to: string, icon: string) =>
       </div>
     </nav>
 
-    <!-- Mobile Menu Overlay -->
+    <!-- Overlay gelap di belakang drawer mobile. -->
     <transition
       enter-from-class="opacity-0"
       enter-active-class="transition-opacity duration-300"
@@ -213,7 +240,7 @@ const mobileNavIconClass = (to: string, icon: string) =>
       ></div>
     </transition>
 
-    <!-- Mobile Menu Drawer -->
+    <!-- Drawer menu mobile dari kanan. -->
     <transition
       enter-from-class="translate-x-full"
       enter-active-class="transition-transform duration-300 ease-out"
@@ -229,7 +256,7 @@ const mobileNavIconClass = (to: string, icon: string) =>
           'fixed inset-y-0 right-0 z-50 w-3/4 max-w-sm bg-white p-6 shadow-2xl flex flex-col border-l border-gray-100'
         ]"
       >
-        <!-- Mobile Menu Header with Close Icon -->
+        <!-- Header drawer mobile. -->
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-xl font-bold">Menu</h2>
           <button
@@ -240,7 +267,7 @@ const mobileNavIconClass = (to: string, icon: string) =>
           </button>
         </div>
 
-        <!-- User Profile Card -->
+        <!-- Kartu profil user di drawer mobile. -->
         <div
           class="flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-lg mb-6 border border-gray-100"
         >
@@ -270,7 +297,7 @@ const mobileNavIconClass = (to: string, icon: string) =>
           <NotificationBell />
         </div>
 
-        <!-- Navigation Items -->
+        <!-- Link navigasi mobile. -->
         <nav class="flex flex-col gap-2 mb-6 flex-1 overflow-y-auto">
           <router-link
             v-for="item in navItems"
@@ -286,7 +313,7 @@ const mobileNavIconClass = (to: string, icon: string) =>
           </router-link>
         </nav>
 
-        <!-- Logout button at the bottom -->
+        <!-- Tombol logout di bagian bawah drawer. -->
         <div class="pt-4">
           <button
             @click="
@@ -302,10 +329,12 @@ const mobileNavIconClass = (to: string, icon: string) =>
       </div>
     </transition>
 
+    <!-- Konten halaman aktif milik role saat ini. -->
     <main class="content-safe">
       <router-view :key="route.fullPath" />
     </main>
 
+    <!-- Modal konfirmasi sebelum logout. -->
     <ConfirmationModal
       :show="showLogoutConfirm"
       title="Konfirmasi Keluar"
@@ -317,6 +346,7 @@ const mobileNavIconClass = (to: string, icon: string) =>
       @cancel="showLogoutConfirm = false"
     />
 
+    <!-- Modal profil user. -->
     <ProfilModal
       :show="showProfilModal"
       @close="showProfilModal = false"

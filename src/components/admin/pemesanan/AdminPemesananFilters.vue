@@ -1,23 +1,29 @@
 <script setup lang="ts">
 import { computed } from "vue";
+// Select reusable untuk filter bulan/tahun/status.
 import CustomSelect from "@/components/ui/CustomSelect.vue";
+// Helper opsi bulan dan tahun.
 import {
   getMonthOptionsStringWithAll,
   getYearOptionsString,
 } from "@/utils/dateFilters";
+// Opsi filter status servis.
 import {
   PEMESANAN_STATUS_FILTER_OPTIONS,
   type PemesananStatusFilter,
 } from "@/utils/statusBadge";
+// Opsi filter status pembayaran.
 import {
   PEMBAYARAN_STATUS_FILTER_OPTIONS,
   type PembayaranStatusFilter,
 } from "@/utils/pembayaranStatus";
+// Helper class input dan checkbox.
 import {
   getFormCheckboxClass,
   getFormInputWithIconClass,
 } from "@/utils/formVariants";
 
+// Props filter berasal dari parent halaman pemesanan admin.
 interface Props {
   searchQuery: string;
   monthFilter: string;
@@ -31,6 +37,7 @@ interface Props {
 
 defineProps<Props>();
 
+// Event v-model untuk setiap filter.
 const emit = defineEmits<{
   "update:searchQuery": [value: string];
   "update:monthFilter": [value: string];
@@ -40,21 +47,27 @@ const emit = defineEmits<{
   "update:showTodayOnly": [value: boolean];
 }>();
 
+// Opsi bulan dengan "Semua Bulan".
 const MONTH_OPTIONS = getMonthOptionsStringWithAll();
+// Opsi tahun dibuat computed agar mengikuti tahun saat ini.
 const YEAR_OPTIONS = computed(() => getYearOptionsString(6));
 
+// Ubah bulan lalu kirim ke parent.
 const handleMonthChange = (value: string | number | null) => {
   emit("update:monthFilter", String(value || ""));
 };
 
+// Ubah tahun lalu kirim ke parent.
 const handleYearChange = (value: string | number | null) => {
   emit("update:yearFilter", String(value || ""));
 };
 
+// Ubah status servis lalu kirim ke parent.
 const handleStatusChange = (value: string | number | null) => {
   emit("update:statusFilter", (value || "all") as PemesananStatusFilter);
 };
 
+// Ubah status pembayaran lalu kirim ke parent.
 const handlePembayaranChange = (value: string | number | null) => {
   emit("update:pembayaranFilter", (value || "all") as PembayaranStatusFilter);
 };
@@ -62,7 +75,7 @@ const handlePembayaranChange = (value: string | number | null) => {
 
 <template>
   <div>
-    <!-- Search Input (full width) -->
+    <!-- Input pencarian full width. -->
     <div class="relative mb-3">
       <input
         :value="searchQuery"
@@ -78,7 +91,7 @@ const handlePembayaranChange = (value: string | number | null) => {
       ></i>
     </div>
 
-    <!-- Filter Grid: 2 kolom di mobile, 4 kolom di desktop -->
+    <!-- Grid filter: 2 kolom di mobile, sejajar di desktop. -->
     <div class="grid grid-cols-2 gap-2 md:flex md:gap-4 mb-3">
       <CustomSelect
         :model-value="monthFilter"
@@ -106,7 +119,7 @@ const handlePembayaranChange = (value: string | number | null) => {
       />
     </div>
 
-    <!-- Show Today Only Checkbox -->
+    <!-- Checkbox filter pemesanan hari ini. -->
     <div class="mb-3">
       <label class="inline-flex items-center gap-2">
         <input

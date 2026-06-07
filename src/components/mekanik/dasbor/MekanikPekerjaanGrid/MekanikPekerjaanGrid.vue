@@ -1,6 +1,8 @@
 <script setup lang="ts">
+// Komponen umum untuk loading dan data kosong.
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
+// Helper class badge, alert, chip, dan ikon.
 import {
   META_LABEL_CLASS,
   getAlertBoxClass,
@@ -8,24 +10,29 @@ import {
   getChipBadgeClass,
   getIconToneClass,
 } from "@/utils/badgeVariants";
+// Default props dan helper grid pekerjaan.
 import {
   MEKANIK_PEKERJAAN_GRID_DEFAULTS,
   useMekanikPekerjaanGrid,
   type MekanikPekerjaanGridProps,
 } from "./useMekanikPekerjaanGrid";
+// Helper class tombol.
 import { getButtonClass, getIconButtonClass } from "@/utils/buttonVariants";
 
+// Props dengan default untuk empty/loading state.
 withDefaults(
   defineProps<MekanikPekerjaanGridProps>(),
   MEKANIK_PEKERJAAN_GRID_DEFAULTS,
 );
 
+// Event aksi pekerjaan dikirim ke halaman mekanik.
 const emit = defineEmits<{
   updateStatus: [pemesananId: number];
   addSukuCadang: [pemesananId: number];
   deleteSukuCadang: [pemesananId: number, itemId: number];
 }>();
 
+// Helper status, format tanggal, dan permission aksi diambil dari composable.
 const {
   formatDateShort,
   formatDateTimeShort,
@@ -40,8 +47,10 @@ const {
 </script>
 
 <template>
+  <!-- Loading saat data pekerjaan diambil dari API. -->
   <LoadingSpinner v-if="loading" :message="loadingMessage" />
 
+  <!-- Empty state saat tidak ada pekerjaan sesuai tab/filter. -->
   <EmptyState
     v-else-if="pemesanan.length === 0"
     :icon="emptyIcon"
@@ -49,13 +58,14 @@ const {
     :message="emptyMessage"
   />
 
+  <!-- Grid kartu pekerjaan mekanik. -->
   <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-2">
     <div
       v-for="item in pemesanan"
       :key="item.id"
       class="flex flex-col h-full bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200"
     >
-      <!-- Header -->
+      <!-- Header kartu: kode pemesanan dan status servis. -->
       <div class="bg-white px-5 pt-4 pb-4 flex items-start justify-between">
         <div>
           <p :class="META_LABEL_CLASS">
@@ -70,11 +80,11 @@ const {
         </span>
       </div>
 
-      <!-- Body -->
+      <!-- Body kartu berisi informasi pekerjaan. -->
       <div class="flex-grow flex flex-col px-5 py-4 space-y-3">
-        <!-- Info Grid (2 kolom) -->
+        <!-- Info utama dibuat 2 kolom. -->
         <div class="grid grid-cols-2 gap-x-4 gap-y-3">
-          <!-- Pelanggan -->
+          <!-- Nama pelanggan. -->
           <div class="flex items-center gap-2.5">
             <div
               :class="[
@@ -94,7 +104,7 @@ const {
             </div>
           </div>
 
-          <!-- Vespa -->
+          <!-- Informasi Vespa dan plat nomor. -->
           <div class="flex items-center gap-2.5">
             <div
               :class="[
@@ -120,7 +130,7 @@ const {
             </div>
           </div>
 
-          <!-- Tanggal -->
+          <!-- Tanggal servis. -->
           <div class="flex items-center gap-2.5">
             <div
               :class="[
@@ -140,7 +150,7 @@ const {
             </div>
           </div>
 
-          <!-- Jam -->
+          <!-- Jam servis. -->
           <div class="flex items-center gap-2.5">
             <div
               :class="[
@@ -161,7 +171,7 @@ const {
           </div>
         </div>
 
-        <!-- Layanan (full width) -->
+        <!-- Daftar layanan yang dikerjakan mekanik. -->
         <div class="flex items-start gap-2.5">
           <div
             :class="[
@@ -190,7 +200,7 @@ const {
           </div>
         </div>
 
-        <!-- Catatan Pelanggan -->
+        <!-- Catatan pelanggan tampil jika pelanggan mengisi catatan saat booking. -->
         <div
           v-if="item.catatan_pelanggan"
           :class="[getAlertBoxClass('neutral'), 'flex items-start gap-2.5 p-3 shadow-none']"
@@ -209,7 +219,7 @@ const {
           </div>
         </div>
 
-        <!-- Suku Cadang -->
+        <!-- Daftar suku cadang yang sudah dipakai pada pekerjaan ini. -->
         <details
           v-if="item.item_pemesanan?.length"
           class="group bg-gray-50/60 border border-gray-100 rounded-xl"
@@ -230,6 +240,7 @@ const {
             ></i>
           </summary>
 
+          <!-- Item suku cadang dapat dihapus jika status masih mengizinkan tambah suku cadang. -->
           <div class="space-y-1.5 border-t border-gray-100 px-3 pb-3 pt-2">
             <div
               v-for="subItem in item.item_pemesanan"
@@ -259,9 +270,9 @@ const {
           </div>
         </details>
 
-        <!-- Tombol Aksi -->
+        <!-- Area bawah kartu dibuat mt-auto agar posisi aksi sejajar. -->
         <div class="mt-auto space-y-3 pt-1">
-          <!-- Catatan Mekanik -->
+          <!-- Catatan mekanik ditampilkan dekat status selesai/aksi pekerjaan. -->
           <div
             v-if="item.catatan_mekanik"
             :class="[getAlertBoxClass('success'), 'flex items-start gap-2.5 p-3 shadow-none']"
@@ -282,7 +293,7 @@ const {
             </div>
           </div>
 
-          <!-- Tombol Pekerjaan Aktif -->
+          <!-- Tombol aksi pekerjaan aktif. -->
           <div
             v-if="
               canMekanikUpdateStatus(item.status) ||
@@ -290,6 +301,7 @@ const {
             "
             class="grid grid-cols-2 gap-2"
           >
+            <!-- Tombol update status hanya muncul jika status masih bisa dinaikkan oleh mekanik. -->
             <button
               v-if="canMekanikUpdateStatus(item.status)"
               @click="emit('updateStatus', item.id)"
@@ -298,6 +310,7 @@ const {
               {{ getMekanikAksiButtonText(item.status) }}
             </button>
 
+            <!-- Tombol tambah suku cadang hanya muncul pada status yang diizinkan. -->
             <button
               v-if="canMekanikAddSukuCadang(item.status)"
               @click="emit('addSukuCadang', item.id)"
@@ -307,7 +320,7 @@ const {
             </button>
           </div>
 
-          <!-- Status Selesai -->
+          <!-- Status selesai dan waktu completed_at. -->
           <div
             v-if="isStatusSelesai(item.status)"
             :class="[getAlertBoxClass('success'), 'flex items-start gap-2.5 p-3 text-left shadow-none']"

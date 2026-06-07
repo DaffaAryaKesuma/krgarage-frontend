@@ -1,13 +1,17 @@
 <script setup lang="ts">
+// Helper format uang dan tanggal.
 import { toIDR } from "@/utils/money";
 import { formatDateShort } from "@/utils/date";
+// Helper badge pembayaran.
 import {
   getPembayaranStatusBadgeClass,
   getPembayaranStatusLabel,
 } from "@/utils/pembayaranStatus";
 import { toMoneyNumber } from "@/utils/money";
+// Komponen loading dan empty.
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
+// Helper tombol dan tampilan.
 import { getButtonClass } from "@/utils/buttonVariants";
 import {
   META_LABEL_CLASS,
@@ -17,6 +21,7 @@ import {
 } from "@/utils/badgeVariants";
 import type { PelangganPemesanan } from "@/types/pemesanan";
 
+// Props daftar riwayat terakhir pelanggan.
 interface Props {
   pemesanan: PelangganPemesanan[];
   isLoading?: boolean;
@@ -26,6 +31,7 @@ withDefaults(defineProps<Props>(), {
   isLoading: false,
 });
 
+// Hitung total layanan sebagai fallback jika total_harga belum tersedia.
 const getLayananPrice = (pemesanan: PelangganPemesanan) =>
   pemesanan.layanan.reduce(
     (sum, layanan) =>
@@ -36,7 +42,9 @@ const getLayananPrice = (pemesanan: PelangganPemesanan) =>
 </script>
 
 <template>
+  <!-- Section riwayat terakhir di dashboard pelanggan. -->
   <section class="rounded-xl bg-white p-4 shadow-md sm:p-6">
+    <!-- Header dan link lihat semua. -->
     <div class="mb-5 flex flex-wrap items-center justify-between gap-2 sm:mb-6">
       <h2 class="text-xl font-bold text-gray-900 sm:text-2xl">
       <i class="mdi mdi-clipboard-text text-2xl"></i>
@@ -50,7 +58,9 @@ const getLayananPrice = (pemesanan: PelangganPemesanan) =>
         <i class="mdi mdi-arrow-right text-lg"></i>
       </router-link>
     </div>
+    <!-- Loading state. -->
     <LoadingSpinner v-if="isLoading" message="Memuat riwayat..." />
+    <!-- Empty state. -->
     <EmptyState
       v-else-if="pemesanan.length === 0"
       icon="mdi mdi-clipboard-outline"
@@ -60,12 +70,14 @@ const getLayananPrice = (pemesanan: PelangganPemesanan) =>
       aksi-icon="mdi mdi-arrow-right"
       aksi-link="/app/pemesanan"
     />
+    <!-- Grid kartu riwayat. -->
     <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
       <div
         v-for="item in pemesanan"
         :key="item.id"
         class="group rounded-2xl border border-gray-200 bg-white p-4 transition-all duration-300 hover:-translate-y-1 hover:border-gray-200 hover:shadow-xl hover:shadow-gray-500/5 sm:p-5 flex flex-col h-full"
       >
+        <!-- Header kode pemesanan dan status pembayaran. -->
         <div class="mb-3 flex flex-wrap items-start justify-between gap-3">
           <div class="flex min-w-0 items-center gap-3">
             <i
@@ -88,6 +100,7 @@ const getLayananPrice = (pemesanan: PelangganPemesanan) =>
             <span :class="[getPembayaranStatusBadgeClass(item.status_pembayaran), 'whitespace-nowrap']">{{ getPembayaranStatusLabel(item.status_pembayaran) }}</span>
           </div>
         </div>
+        <!-- Info Vespa dan layanan. -->
         <div
           class="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-2"
         >
@@ -120,6 +133,7 @@ const getLayananPrice = (pemesanan: PelangganPemesanan) =>
             </div>
           </div>
         </div>
+        <!-- Catatan mekanik jika ada. -->
         <div
           v-if="item.catatan_mekanik"
           :class="[getAlertBoxClass('success'), 'mb-4 w-full px-3 py-2 shadow-none']"
@@ -129,6 +143,7 @@ const getLayananPrice = (pemesanan: PelangganPemesanan) =>
           </p>
           <p class="text-xs">{{ item.catatan_mekanik }}</p>
         </div>
+        <!-- Total biaya dan tombol detail. -->
         <div
           class="flex items-center justify-between pt-4 border-t border-gray-200 mt-auto"
         >

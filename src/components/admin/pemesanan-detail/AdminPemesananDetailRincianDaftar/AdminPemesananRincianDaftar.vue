@@ -1,9 +1,12 @@
 <script setup lang="ts">
+// Format harga menjadi Rupiah.
 import { toIDR } from "@/utils/money";
 import type { Pemesanan, PemesananItem } from "@/types/pemesanan";
+// Helper alert dan tombol.
 import { getAlertBoxClass, getAlertIconClass } from "@/utils/badgeVariants";
 import { getButtonClass, getIconButtonClass } from "@/utils/buttonVariants";
 
+// Props berisi layanan, suku cadang, dan status apakah masih bisa diedit.
 interface Props {
   layanan?: Pemesanan["layanan"];
   pemesananItems?: PemesananItem[];
@@ -12,6 +15,7 @@ interface Props {
 
 defineProps<Props>();
 
+// Event tambah/hapus suku cadang dikirim ke parent detail pemesanan.
 const emit = defineEmits<{
   addSukuCadang: [];
   deleteItem: [itemId: number];
@@ -19,8 +23,9 @@ const emit = defineEmits<{
 </script>
 
 <template>
+  <!-- Rincian layanan dan suku cadang. -->
   <section class="grid grid-cols-1 gap-4 xl:grid-cols-2">
-    <!-- Layanan -->
+    <!-- Daftar layanan pada pemesanan. -->
     <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
       <h3
         class="font-semibold text-gray-900 tracking-wide mb-3 flex items-center gap-2"
@@ -46,7 +51,7 @@ const emit = defineEmits<{
       </div>
     </div>
 
-    <!-- Suku Cadang -->
+    <!-- Daftar suku cadang yang digunakan. -->
     <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
       <div class="flex justify-between items-center mb-3">
         <h3
@@ -65,7 +70,7 @@ const emit = defineEmits<{
         </button>
       </div>
 
-      <!-- SukuCadang Daftar -->
+      <!-- List suku cadang jika ada item. -->
       <div v-if="pemesananItems?.length" class="space-y-2">
         <div
           v-for="item in pemesananItems"
@@ -97,7 +102,7 @@ const emit = defineEmits<{
         </div>
       </div>
 
-      <!-- Empty State -->
+      <!-- Empty state jika belum ada suku cadang. -->
       <div v-else :class="[getAlertBoxClass('info'), 'text-center']">
         <i
           :class="[getAlertIconClass('info'), 'mdi mdi-package-variant mb-2 text-3xl']"

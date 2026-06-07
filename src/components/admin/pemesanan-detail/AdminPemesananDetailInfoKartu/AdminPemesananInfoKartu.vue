@@ -1,9 +1,11 @@
 <script setup lang="ts">
+// Helper format tanggal/jam dan plat nomor.
 import { formatDateShort, formatTimeShort } from "@/utils/date";
 import { formatPlatNomor } from "@/utils/format";
 import type { PemesananVespa } from "@/types/pemesanan";
 import type { UserProfile } from "@/types/user";
 
+// Props berisi info utama detail pemesanan.
 interface Props {
   user: UserProfile;
   vespa: PemesananVespa;
@@ -15,8 +17,9 @@ defineProps<Props>();
 </script>
 
 <template>
+  <!-- Grid info utama: pelanggan, Vespa, jadwal, dan slot kontrol. -->
   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-    <!-- Pelanggan Kartu -->
+    <!-- Kartu pelanggan. -->
     <div
       class="flex h-full flex-col rounded-xl border border-gray-100 bg-white p-4 shadow-sm transition hover:shadow-md sm:p-5"
     >
@@ -45,7 +48,7 @@ defineProps<Props>();
       </div>
     </div>
 
-    <!-- Vespa Kartu -->
+    <!-- Kartu Vespa. -->
     <div
       class="flex h-full flex-col rounded-xl border border-gray-100 bg-white p-4 shadow-sm transition hover:shadow-md sm:p-5"
     >
@@ -70,7 +73,7 @@ defineProps<Props>();
       </div>
     </div>
 
-    <!-- Tanggal Kartu -->
+    <!-- Kartu tanggal dan jam servis. -->
     <div
       class="flex h-full flex-col rounded-xl border border-gray-100 bg-white p-4 shadow-sm transition hover:shadow-md sm:p-5"
     >
@@ -95,7 +98,7 @@ defineProps<Props>();
       </div>
     </div>
 
-    <!-- Render panel/komponen kontrol yang disejajarkan di kolom keempat -->
+    <!-- Slot untuk panel kontrol agar sejajar sebagai kolom keempat. -->
     <slot></slot>
   </div>
 </template>

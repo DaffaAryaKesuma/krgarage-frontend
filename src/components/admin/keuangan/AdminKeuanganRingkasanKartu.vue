@@ -1,14 +1,18 @@
 <script setup lang="ts">
+// Format uang ke Rupiah.
 import { toIDR } from "@/utils/money";
+// Helper warna icon.
 import { getIconToneClass } from "@/utils/badgeVariants";
 import type { IconToneKey } from "@/utils/badgeVariants";
 
+// Bentuk ringkasan dari laporan keuangan.
 interface Ringkasan {
   total_pendapatan: number;
   total_pemesanan: number;
   rata_rata_nilai_pesan: number;
 }
 
+// Konfigurasi satu kartu ringkasan.
 interface RingkasanKartu {
   title: string;
   key: keyof Ringkasan;
@@ -17,12 +21,14 @@ interface RingkasanKartu {
   format: (value: number) => string;
 }
 
+// Props ringkasan keuangan.
 interface Props {
   ringkasan: Ringkasan;
 }
 
 defineProps<Props>();
 
+// Daftar kartu ringkasan yang ditampilkan.
 const RINGKASAN_KARTU: RingkasanKartu[] = [
   {
     title: "Total Pendapatan",
@@ -42,7 +48,9 @@ const RINGKASAN_KARTU: RingkasanKartu[] = [
 </script>
 
 <template>
+  <!-- Grid kartu ringkasan laporan keuangan. -->
   <div class="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+    <!-- Satu kartu untuk tiap metrik ringkasan. -->
     <div 
       v-for="kartu in RINGKASAN_KARTU" 
       :key="kartu.key"

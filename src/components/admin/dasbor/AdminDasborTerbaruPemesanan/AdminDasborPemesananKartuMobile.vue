@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// Helper format tanggal dan status.
 import { formatDateShort } from "@/utils/date";
 import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
 import {
@@ -6,8 +7,10 @@ import {
   getPembayaranStatusLabel,
 } from "@/utils/pembayaranStatus";
 import type { Pemesanan, MekanikOption } from "@/types/pemesanan";
+// Komponen aksi dan cell mekanik dipakai ulang.
 import AdminDasborPemesananAksi from "./AdminDasborPemesananAksi.vue";
 import AdminDasborPemesananMekanikCell from "./AdminDasborPemesananSelMekanik.vue";
+// Class responsive table mobile.
 import { META_LABEL_CLASS } from "@/utils/badgeVariants";
 import {
   TABLE_MOBILE_CARD_CLASS,
@@ -15,16 +18,19 @@ import {
   TABLE_MOBILE_CARD_SINGLE_GRID_CLASS,
 } from "@/utils/tableVariants";
 
+// Props kartu mobile pemesanan dasbor.
 interface Props {
   pemesanan: Pemesanan;
   mekanikOptions: MekanikOption[];
   selectedMekanikId?: number | null;
 }
 
+// Default selectedMekanikId null.
 const props = withDefaults(defineProps<Props>(), {
   selectedMekanikId: null,
 });
 
+// Event aksi diteruskan ke komponen utama.
 const emit = defineEmits<{
   confirm: [pemesanan: Pemesanan];
   complete: [pemesanan: Pemesanan];
@@ -36,7 +42,9 @@ const emit = defineEmits<{
 </script>
 
 <template>
+  <!-- Kartu mobile untuk satu pemesanan terbaru. -->
   <div :class="TABLE_MOBILE_CARD_CLASS">
+    <!-- Header kode pemesanan dan status servis. -->
     <div :class="TABLE_MOBILE_CARD_HEADER_CLASS">
       <div>
         <p :class="META_LABEL_CLASS">
@@ -51,6 +59,7 @@ const emit = defineEmits<{
       </span>
     </div>
 
+    <!-- Status pembayaran. -->
     <div class="mt-2 flex items-center justify-between gap-2">
       <p :class="META_LABEL_CLASS">
         Pembayaran
@@ -62,6 +71,7 @@ const emit = defineEmits<{
       </span>
     </div>
 
+    <!-- Info tanggal dan pelanggan. -->
     <div :class="TABLE_MOBILE_CARD_SINGLE_GRID_CLASS">
       <div>
         <p :class="META_LABEL_CLASS">
@@ -81,6 +91,7 @@ const emit = defineEmits<{
       </div>
     </div>
 
+    <!-- Dropdown/nama mekanik. -->
     <div class="mt-3">
       <AdminDasborPemesananMekanikCell
         :pemesanan="props.pemesanan"
@@ -92,6 +103,7 @@ const emit = defineEmits<{
       />
     </div>
 
+    <!-- Tombol aksi mobile. -->
     <AdminDasborPemesananAksi
       :pemesanan="props.pemesanan"
       variant="mobile"

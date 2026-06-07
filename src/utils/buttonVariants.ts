@@ -1,6 +1,8 @@
+// Class dasar semua tombol biasa.
 export const BUTTON_BASE_CLASS =
   "inline-flex items-center justify-center gap-2 rounded-lg text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60";
 
+// Ukuran tombol biasa.
 export const BUTTON_SIZE_CLASS = {
   xs: "px-3 py-1.5 text-xs",
   sm: "px-3 py-2 text-xs",
@@ -8,6 +10,7 @@ export const BUTTON_SIZE_CLASS = {
   lg: "px-5 py-3 text-sm",
 } as const;
 
+// Variasi warna tombol biasa.
 export const BUTTON_VARIANT_CLASS = {
   primary: "bg-red-600 text-white hover:bg-red-700",
   secondary: "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50",
@@ -24,15 +27,18 @@ export const BUTTON_VARIANT_CLASS = {
   link: "text-red-600 hover:text-red-700",
 } as const;
 
+// Class dasar tombol icon-only.
 export const ICON_BUTTON_BASE_CLASS =
   "inline-flex items-center justify-center rounded-lg transition disabled:cursor-not-allowed disabled:opacity-60";
 
+// Ukuran tombol icon.
 export const ICON_BUTTON_SIZE_CLASS = {
   sm: "h-8 w-8 text-sm",
   md: "h-9 w-9 text-base",
   lg: "h-10 w-10 text-lg",
 } as const;
 
+// Variasi warna tombol icon.
 export const ICON_BUTTON_VARIANT_CLASS = {
   neutral: "text-gray-600 hover:bg-gray-100",
   primary: "text-red-600 hover:bg-red-50",
@@ -42,11 +48,13 @@ export const ICON_BUTTON_VARIANT_CLASS = {
   subtle: "text-gray-400 hover:text-red-600",
 } as const;
 
+// Type ini membuat parameter variant/size hanya boleh value yang tersedia.
 export type ButtonSize = keyof typeof BUTTON_SIZE_CLASS;
 export type ButtonVariant = keyof typeof BUTTON_VARIANT_CLASS;
 export type IconButtonSize = keyof typeof ICON_BUTTON_SIZE_CLASS;
 export type IconButtonVariant = keyof typeof ICON_BUTTON_VARIANT_CLASS;
 
+// Menggabungkan class tombol berdasarkan variant, size, dan tambahan class.
 export function getButtonClass(
   variant: ButtonVariant = "primary",
   size: ButtonSize = "md",
@@ -62,6 +70,7 @@ export function getButtonClass(
     .join(" ");
 }
 
+// Versi tombol full width, biasanya untuk tombol modal/card.
 export function getFullWidthButtonClass(
   variant: ButtonVariant = "primary",
   size: ButtonSize = "md",
@@ -70,6 +79,7 @@ export function getFullWidthButtonClass(
   return getButtonClass(variant, size, `w-full ${extraClass}`.trim());
 }
 
+// Menggabungkan class tombol icon-only.
 export function getIconButtonClass(
   variant: IconButtonVariant = "neutral",
   size: IconButtonSize = "md",

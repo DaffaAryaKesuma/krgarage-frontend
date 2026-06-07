@@ -1,9 +1,12 @@
 <script setup lang="ts">
+// TableShell menyediakan mode table desktop dan kartu mobile.
 import TableShell from "@/components/ui/TableShell.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
+// Komponen baris mobile dan desktop.
 import AdminInventarisTabelKartuMobile from "@/components/admin/inventaris/AdminInventarisTabelKartuMobile.vue";
 import AdminInventarisTabelBarisDesktop from "@/components/admin/inventaris/AdminInventarisTabelBarisDesktop.vue";
 import type { InventarisSukuCadang } from "@/types/inventaris";
+// Helper badge stok.
 import { getInventoryBadgeClass, getToneTextClass } from "@/utils/badgeVariants";
 import {
   TABLE_BODY_CLASS,
@@ -14,18 +17,21 @@ import {
   buildTableHeaderCellClass,
 } from "@/utils/tableVariants";
 
+// Props daftar suku cadang yang sudah difilter.
 interface Props {
   sukucadang: InventarisSukuCadang[];
 }
 
 const props = defineProps<Props>();
 
+// Event aksi diteruskan ke halaman inventaris.
 const emit = defineEmits<{
   restock: [sukucadang: InventarisSukuCadang];
   edit: [sukucadang: InventarisSukuCadang];
   delete: [id: number];
 }>();
 
+// Header tabel desktop.
 const TABLE_HEADERS = [
   "Suku Cadang",
   "Kategori",
@@ -35,13 +41,17 @@ const TABLE_HEADERS = [
   "Aksi",
 ];
 
+// Lebar kolom tabel desktop.
 const TABLE_COLUMN_WIDTHS = ["38%", "14%", "10%", "14%", "14%", "10%"];
 
+// Stok alert true jika item stok menipis/habis.
 const hasStockAlert = (sukucadang: InventarisSukuCadang) => sukucadang.stok_menipis;
 
+// Habis jika stok 0.
 const isOutOfStock = (sukucadang: InventarisSukuCadang) =>
   sukucadang.jumlah_stok === 0;
 
+// Class angka stok berubah jika stok kritis/habis.
 const getStockValueClass = (sukucadang: InventarisSukuCadang) => {
   if (!hasStockAlert(sukucadang)) {
     return "text-gray-900";
@@ -52,21 +62,27 @@ const getStockValueClass = (sukucadang: InventarisSukuCadang) => {
     : `${getToneTextClass("warning")} font-bold`;
 };
 
+// Label badge stok.
 const getStockAlertLabel = (sukucadang: InventarisSukuCadang) =>
   isOutOfStock(sukucadang) ? "Habis" : "Kritis";
 
+// Class badge stok.
 const getStockAlertBadgeClass = (sukucadang: InventarisSukuCadang) =>
   isOutOfStock(sukucadang)
     ? getInventoryBadgeClass("habis")
     : getInventoryBadgeClass("kritis");
 
+// Class tabel desktop.
 const TABLE_CLASS = buildFixedTableClass();
 
+// Class header cell.
 const TABLE_HEADER_CELL_CLASS = buildTableHeaderCellClass();
 </script>
 
 <template>
+  <!-- Wrapper tabel inventaris. -->
   <div :class="TABLE_WRAPPER_CLASS">
+    <!-- Tabel responsive jika ada data. -->
     <TableShell
       v-if="sukucadang.length > 0"
       :headers="TABLE_HEADERS"
@@ -79,6 +95,7 @@ const TABLE_HEADER_CELL_CLASS = buildTableHeaderCellClass();
       :header-cell-class="TABLE_HEADER_CELL_CLASS"
       :body-class="TABLE_BODY_CLASS"
     >
+      <!-- Slot kartu mobile. -->
       <template #mobile>
         <AdminInventarisTabelKartuMobile
           v-for="item in sukucadang"
@@ -94,6 +111,7 @@ const TABLE_HEADER_CELL_CLASS = buildTableHeaderCellClass();
         />
       </template>
 
+      <!-- Baris desktop. -->
       <AdminInventarisTabelBarisDesktop
         v-for="item in sukucadang"
         :key="item.id"
@@ -108,7 +126,7 @@ const TABLE_HEADER_CELL_CLASS = buildTableHeaderCellClass();
       />
     </TableShell>
 
-    <!-- Empty State -->
+    <!-- Empty state jika daftar suku cadang kosong. -->
     <EmptyState
       v-else
       icon="mdi mdi-package-variant"

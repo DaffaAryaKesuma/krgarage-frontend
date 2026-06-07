@@ -1,24 +1,33 @@
 <script setup lang="ts">
+// toRef membuat props modelValue bisa dipantau composable.
 import { toRef } from "vue";
+// Logic kalender dipisah ke composable.
 import { usePemilihTanggal } from "./usePemilihTanggal";
+// Helper class tombol.
 import { getButtonClass, getIconButtonClass } from "@/utils/buttonVariants";
+// Helper warna icon.
 import { getToneTextClass } from "@/utils/badgeVariants";
+// Helper class form.
 import { FORM_LABEL_CLASS, getFormInputClass } from "@/utils/formVariants";
 
+// Props pemilih tanggal.
 interface Props {
   modelValue: string;
   label: string;
   alignRight?: boolean;
 }
 
+// Default align popup.
 const props = withDefaults(defineProps<Props>(), {
   alignRight: false,
 });
 
+// Event v-model tanggal.
 const emit = defineEmits<{
   (e: "update:modelValue", value: string): void;
 }>();
 
+// Ambil semua state dan handler kalender dari composable.
 const {
   showPemilih,
   currentMonth,
@@ -35,15 +44,19 @@ const {
   handleBlur,
   setToday,
 } = usePemilihTanggal(toRef(props, "modelValue"), (value) => {
+  // Saat composable memilih tanggal, teruskan ke parent lewat v-model.
   emit("update:modelValue", value);
 });
 </script>
 
 <template>
+  <!-- Wrapper pemilih tanggal. -->
   <div class="w-full sm:w-auto relative">
+    <!-- Label field. -->
     <label :class="[FORM_LABEL_CLASS, 'text-xs']">
       {{ label }}
     </label>
+    <!-- Tombol yang membuka popup kalender. -->
     <button
       @click="showPemilih = !showPemilih"
       @blur="handleBlur"
@@ -53,6 +66,7 @@ const {
       <i :class="['mdi mdi-calendar', getToneTextClass('primary')]"></i>
     </button>
 
+    <!-- Popup kalender. -->
     <div
       v-if="showPemilih"
       @mousedown.prevent
@@ -61,6 +75,7 @@ const {
         alignRight ? 'right-0 sm:right-auto sm:left-0' : '',
       ]"
     >
+      <!-- Header navigasi bulan/tahun. -->
       <div class="flex items-center justify-between mb-3">
         <div class="flex gap-1">
           <button
@@ -97,6 +112,7 @@ const {
         </div>
       </div>
 
+      <!-- Nama hari. -->
       <div class="grid grid-cols-7 gap-1 mb-2">
         <div
           v-for="day in DAYS"
@@ -107,6 +123,7 @@ const {
         </div>
       </div>
 
+      <!-- Grid tanggal. -->
       <div class="grid grid-cols-7 gap-1">
         <button
           v-for="(day, index) in calendarDays"
@@ -128,6 +145,7 @@ const {
         </button>
       </div>
 
+      <!-- Aksi cepat hari ini dan tutup. -->
       <div class="flex gap-2 mt-3 pt-3 border-t">
         <button
           @click="setToday"

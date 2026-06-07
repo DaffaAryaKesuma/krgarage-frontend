@@ -1,11 +1,14 @@
 <script setup lang="ts">
+// Format uang ke Rupiah.
 import { toIDR } from "@/utils/money";
+// Helper class badge, icon, dan warna teks.
 import {
   META_LABEL_CLASS,
   getIconToneClass,
   getInventoryBadgeClass,
   getToneTextClass,
 } from "@/utils/badgeVariants";
+// Class dan logic modal restock.
 import {
   buttonPrimaryClass,
   buttonSecondaryClass,
@@ -23,18 +26,23 @@ import {
 const props = defineProps<AdminInventarisStokUlangModalProps>();
 const emit = defineEmits<AdminInventarisStokUlangModalEmit>();
 
-const { totalPengeluaran } = useAdminInventarisStokUlangModal(props);
+// Total pengeluaran dihitung di composable.
+const { totalPengeluaran, handleReceiptSelected } =
+  useAdminInventarisStokUlangModal(props);
 </script>
 
 <template>
+  <!-- Overlay modal tambah stok. -->
   <div
     v-if="show"
     class="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/40 p-4 backdrop-blur-sm sm:items-center"
     @click.self="emit('close')"
   >
+    <!-- Card modal restock. -->
     <div
       class="my-4 flex max-h-[calc(100vh-2rem)] w-full max-w-md flex-col overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-black/5 sm:my-0"
     >
+      <!-- Header modal. -->
       <div class="shrink-0 border-b border-gray-200 px-6 py-5">
         <div class="flex items-center gap-3">
           <div
@@ -53,6 +61,7 @@ const { totalPengeluaran } = useAdminInventarisStokUlangModal(props);
         </div>
       </div>
 
+      <!-- Form restock. -->
       <form
         @submit.prevent="emit('submit')"
         class="flex min-h-0 flex-1 flex-col"
@@ -167,6 +176,27 @@ const { totalPengeluaran } = useAdminInventarisStokUlangModal(props);
             placeholder="Opsional"
             :class="textareaClass"
           ></textarea>
+        </div>
+
+        <div :class="modalKartuClass">
+          <label :class="labelClass">
+            Foto Struk Pembelian
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            :class="inputClass"
+            @change="emit('receiptChange', handleReceiptSelected($event))"
+          />
+          <p :class="hintClass">
+            Opsional, format gambar maksimal 2MB.
+          </p>
+          <p
+            v-if="restockReceiptFile"
+            class="mt-2 truncate text-xs font-semibold text-gray-700"
+          >
+            {{ restockReceiptFile.name }}
+          </p>
         </div>
 
         <div

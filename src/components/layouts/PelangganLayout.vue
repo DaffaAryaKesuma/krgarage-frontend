@@ -1,6 +1,8 @@
 <script setup lang="ts">
+// Layout dasar yang dipakai untuk semua halaman setelah login.
 import BaseAuthenticatedLayout from "@/components/layouts/BaseAuthenticatedLayout/BaseAuthenticatedLayout.vue";
 
+// Menu khusus pelanggan.
 const navItems = [
   { label: "Dasbor", to: "/app/dasbor", icon: "mdi-view-dashboard" },
   { label: "Vespa Saya", to: "/app/vespa-saya", icon: "mdi-motorbike" },
@@ -10,6 +12,7 @@ const navItems = [
 </script>
 
 <template>
+  <!-- Konfigurasi layout untuk role pelanggan. -->
   <BaseAuthenticatedLayout
     beranda-path="/app/dasbor"
     role-label="Pelanggan"

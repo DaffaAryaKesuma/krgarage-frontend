@@ -1,10 +1,12 @@
 <script setup lang="ts">
+// Layout dasar yang dipakai untuk semua halaman setelah login.
 import BaseAuthenticatedLayout from "@/components/layouts/BaseAuthenticatedLayout/BaseAuthenticatedLayout.vue";
 
 
 </script>
 
 <template>
+  <!-- Konfigurasi layout untuk role mekanik. -->
   <BaseAuthenticatedLayout
     beranda-path="/mekanik/dasbor"
     role-label="Mekanik"

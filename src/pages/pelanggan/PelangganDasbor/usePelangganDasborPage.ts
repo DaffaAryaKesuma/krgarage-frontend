@@ -47,6 +47,13 @@ export function usePelangganDasborPage() {
   // Menyimpan data user yang sedang login, default sementara adalah Guest.
   const user = ref({ nama: "Guest" });
 
+  // Timeout dipakai agar loading tidak muter terus jika backend tidak membalas.
+  const REQUEST_TIMEOUT_MS = 15000;
+
+  // Helper untuk mengambil isi data dari response API yang kadang dibungkus properti data.
+  const ambilDataResponse = (response: any) =>
+    response.data.data || response.data;
+
   // Fungsi untuk mengambil semua data yang dibutuhkan dashboard pelanggan.
   const fetchDasborData = async (options: FetchOptions = {}) => {
     // Mengambil header token dari localStorage.
@@ -62,25 +69,53 @@ export function usePelangganDasborPage() {
     }
 
     try {
-      // Memanggil tiga API sekaligus agar proses lebih cepat.
-      const [pemesananResponse, vespaResponse, dueLayananResponse] =
-        await Promise.all([
+      // Konfigurasi request dipakai ulang untuk semua endpoint dashboard.
+      const requestConfig = { headers, timeout: REQUEST_TIMEOUT_MS };
+
+      // Memanggil tiga API sekaligus, tetapi hasilnya diproses satu per satu.
+      const [pemesananResult, vespaResult, dueLayananResult] =
+        await Promise.allSettled([
           // Mengambil daftar pemesanan milik pelanggan.
-          axios.get(`${API_URL}/pemesanan`, { headers }),
+          axios.get(`${API_URL}/pemesanan`, requestConfig),
           // Mengambil daftar Vespa milik pelanggan.
-          axios.get(`${API_URL}/vespa-saya`, { headers }),
+          axios.get(`${API_URL}/vespa-saya`, requestConfig),
           // Mengambil daftar Vespa yang sudah waktunya servis.
-          axios.get(`${API_URL}/vespa-saya/perlu-servis`, { headers }),
+          axios.get(`${API_URL}/vespa-saya/perlu-servis`, requestConfig),
         ]);
 
-      // Menyimpan data pemesanan; beberapa API membungkus data dalam properti data.
-      pemesananDaftar.value =
-        pemesananResponse.data.data || pemesananResponse.data;
-      // Menyimpan data Vespa.
-      vespaDaftar.value = vespaResponse.data.data || vespaResponse.data;
-      // Menyimpan data Vespa yang perlu servis.
-      vespasDueLayanan.value =
-        dueLayananResponse.data.data || dueLayananResponse.data;
+      // Jika request pemesanan sukses, simpan datanya.
+      if (pemesananResult.status === "fulfilled") {
+        pemesananDaftar.value = ambilDataResponse(pemesananResult.value);
+      } else {
+        // Kalau gagal, catat error tetapi jangan tahan dashboard di loading.
+        logError(pemesananResult.reason, "fetchDasborData:pemesanan");
+      }
+
+      // Jika request Vespa sukses, simpan datanya.
+      if (vespaResult.status === "fulfilled") {
+        vespaDaftar.value = ambilDataResponse(vespaResult.value);
+      } else {
+        // Kalau gagal, dashboard tetap tampil dengan jumlah Vespa 0.
+        logError(vespaResult.reason, "fetchDasborData:vespa");
+      }
+
+      // Jika request pengingat servis sukses, simpan datanya.
+      if (dueLayananResult.status === "fulfilled") {
+        vespasDueLayanan.value = ambilDataResponse(dueLayananResult.value);
+      } else {
+        // Pengingat servis sifatnya tambahan, jadi gagal di sini tidak boleh mengunci dashboard.
+        logError(dueLayananResult.reason, "fetchDasborData:perluServis");
+      }
+
+      // Kumpulkan request yang gagal untuk menentukan apakah perlu menampilkan toast.
+      const gagal = [pemesananResult, vespaResult, dueLayananResult].filter(
+        (result) => result.status === "rejected",
+      );
+
+      // Jika semua request gagal, tampilkan pesan error utama ke pengguna.
+      if (gagal.length === 3 && !options.silent) {
+        toast.error(handleApiError(gagal[0].reason));
+      }
     } catch (error: any) {
       // Mencatat error ke console untuk membantu debugging.
       logError(error, "fetchDasborData");

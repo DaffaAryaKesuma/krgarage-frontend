@@ -1,8 +1,12 @@
 <script setup lang="ts">
+// computed dipakai untuk menyusun kartu statistik dari props.
 import { computed } from "vue";
+// Helper format rupiah.
 import { toIDR } from "@/utils/money";
+// Helper class ikon berdasarkan tone warna.
 import { getIconToneClass, type IconToneKey } from "@/utils/badgeVariants";
 
+// Statistik cepat dari dashboard pemilik.
 interface Statistik {
   pendapatanHariIni: number;
   pendapatanBulanIni: number;
@@ -11,6 +15,7 @@ interface Statistik {
   loading: boolean;
 }
 
+// Ringkasan finansial dari API laporan.
 interface Ringkasan {
   finansial?: {
     pendapatan_kotor: number;
@@ -19,6 +24,7 @@ interface Ringkasan {
   };
 }
 
+// Props menerima statistik harian dan ringkasan bulanan.
 interface Props {
   statistik: Statistik;
   ringkasan: Ringkasan | null;
@@ -26,6 +32,7 @@ interface Props {
 
 const props = defineProps<Props>();
 
+// Susun data kartu agar template cukup melakukan v-for.
 const STAT_KARTU = computed(() => [
   {
     title: "Pendapatan Hari Ini",
@@ -55,10 +62,12 @@ const STAT_KARTU = computed(() => [
 </script>
 
 <template>
+  <!-- Grid kartu statistik finansial pemilik. -->
   <div class="mb-4 sm:mb-6">
     <div
       class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4"
     >
+      <!-- Satu kartu menampilkan satu metrik finansial. -->
       <div
         v-for="card in STAT_KARTU"
         :key="card.title"
@@ -77,7 +86,7 @@ const STAT_KARTU = computed(() => [
             </h3>
           </div>
 
-          <!-- Icon -->
+          <!-- Ikon kartu mengikuti tone tiap metrik. -->
           <div
             :class="[
               'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg sm:h-12 sm:w-12 sm:rounded-xl',
@@ -91,7 +100,7 @@ const STAT_KARTU = computed(() => [
           </div>
         </div>
 
-        <!-- Decorative Element -->
+        <!-- Elemen dekoratif di pojok kartu. -->
         <div
           class="absolute -right-10 -bottom-10 h-20 w-20 rounded-full bg-gradient-to-br from-gray-50 to-gray-100 opacity-50 sm:-right-8 sm:-bottom-8 sm:h-32 sm:w-32"
         ></div>

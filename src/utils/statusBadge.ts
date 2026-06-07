@@ -1,3 +1,5 @@
+// File ini menjadi pintu ekspor status.
+// Komponen cukup import dari statusBadge tanpa perlu tahu statusCore/statusRules.
 export {
   PEMESANAN_STATUS,
   STATUS_MAP,

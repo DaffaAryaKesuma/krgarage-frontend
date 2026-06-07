@@ -1,5 +1,7 @@
 <script setup lang="ts">
+// Select kategori.
 import CustomSelect from "@/components/ui/CustomSelect.vue";
+// Class, type props/event, dan helper form berasal dari composable.
 import {
   buttonPrimaryClass,
   buttonSecondaryClass,
@@ -21,15 +23,17 @@ const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
 </script>
 
 <template>
+  <!-- Overlay modal tambah/edit suku cadang. -->
   <div
     v-if="show"
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
     @click.self="emit('close')"
   >
+    <!-- Card modal. -->
     <div
       class="w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-black/5"
     >
-      <!-- Header -->
+      <!-- Header berubah antara tambah dan edit. -->
       <div class="border-b border-slate-200 px-6 py-5">
         <div class="flex items-center gap-3">
           <div
@@ -50,12 +54,12 @@ const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
         </div>
       </div>
 
-      <!-- Form -->
+      <!-- Form tambah/edit suku cadang. -->
       <form
         @submit.prevent="emit('submit')"
         class="max-h-[calc(90vh-5.5rem)] space-y-4 overflow-y-auto p-6 custom-scrollbar"
       >
-        <!-- Nama Suku Cadang -->
+        <!-- Nama suku cadang. -->
         <div :class="formKartuClass">
           <label :class="labelClass">
             Nama Suku Cadang <span :class="requiredMarkClass">*</span>
@@ -70,7 +74,7 @@ const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
           />
         </div>
 
-        <!-- Kategori + Stok Awal -->
+        <!-- Kategori dan stok awal. -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div :class="formKartuClass">
             <label :class="labelClass">
@@ -84,6 +88,7 @@ const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
               :options="kategoriOptions"
               placeholder="Pilih kategori"
             />
+            <!-- Input kategori baru. -->
             <div class="mt-3 flex gap-2">
               <input
                 :value="categoryName"
@@ -119,7 +124,7 @@ const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
           </div>
         </div>
 
-        <!-- Harga Beli + Harga Jual -->
+        <!-- Harga beli dan harga jual. -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div :class="formKartuClass">
             <label :class="labelClass">
@@ -156,7 +161,7 @@ const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
           </div>
         </div>
 
-        <!-- Batas Minimal Stok -->
+        <!-- Batas minimal stok untuk peringatan stok menipis. -->
         <div :class="formKartuClass">
           <label :class="labelClass">
             Batas Minimal Stok <span :class="requiredMarkClass">*</span>
@@ -180,7 +185,7 @@ const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
           </p>
         </div>
 
-        <!-- Deskripsi -->
+        <!-- Deskripsi opsional. -->
         <div :class="formKartuClass">
           <label :class="labelClass">Deskripsi</label>
           <textarea
@@ -192,7 +197,7 @@ const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
           ></textarea>
         </div>
 
-        <!-- Footer -->
+        <!-- Footer tombol batal dan simpan. -->
         <div
           class="grid grid-cols-2 gap-3 border-t border-slate-200 pt-5 sm:flex-row sm:justify-end"
         >

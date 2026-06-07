@@ -1,19 +1,26 @@
 <script setup lang="ts">
+// Helper format tanggal, tanggal+jam, dan jam.
 import { formatDateShort, formatDateTimeShort, formatTimeShort } from "@/utils/date";
+// Helper status servis.
 import {
   getStatusBadgeClass,
   getStatusIcon,
   getStatusLabel,
 } from "@/utils/statusBadge";
+// Helper status pembayaran.
 import {
   getPembayaranStatusBadgeClass,
   getPembayaranStatusLabel,
 } from "@/utils/pembayaranStatus";
+// Helper class badge/chip.
 import { META_LABEL_CLASS, getChipBadgeClass } from "@/utils/badgeVariants";
+// Format plat nomor menjadi uppercase.
 import { formatPlatNomor } from "@/utils/format";
+// Panel aksi dipisah agar kartu tidak terlalu penuh.
 import AdminPemesananAksiPanel from "./AdminPemesananAksiPanel.vue";
 import type { Pemesanan, MekanikOption } from "@/types/pemesanan";
 
+// Props kartu pemesanan admin.
 interface Props {
   pemesanan: Pemesanan;
   mekanikOptions: MekanikOption[];
@@ -22,6 +29,7 @@ interface Props {
 
 defineProps<Props>();
 
+// Event dari panel aksi diteruskan ke parent halaman.
 const emit = defineEmits<{
   confirm: [pemesanan: Pemesanan];
   cancel: [pemesanan: Pemesanan];
@@ -31,14 +39,16 @@ const emit = defineEmits<{
   "update:selectedMekanikId": [mekanikId: number | null];
 }>();
 
+// Ambil inisial nama pelanggan untuk avatar.
 const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
 </script>
 
 <template>
+  <!-- Kartu satu pemesanan admin. -->
   <div
     class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all duration-200 flex flex-col"
   >
-    <!-- Header -->
+    <!-- Header pelanggan dan kode pemesanan. -->
 
     <div class="mb-4 flex items-center gap-4">
       <div
@@ -57,9 +67,9 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
     </div>
 
 
-    <!-- Info Grid -->
+    <!-- Grid informasi vespa dan jadwal. -->
     <div class="mb-4 grid grid-cols-2 gap-3 sm:gap-4">
-      <!-- Vespa -->
+      <!-- Info Vespa. -->
       <div
         class="rounded-xl bg-gray-50/80 p-3 sm:p-4 border border-gray-100 shadow-sm transition hover:bg-gray-100"
       >
@@ -79,7 +89,7 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
         </p>
       </div>
 
-      <!-- Jadwal -->
+      <!-- Info jadwal servis. -->
       <div
         class="rounded-xl bg-gray-50/80 p-3 sm:p-4 border border-gray-100 shadow-sm transition hover:bg-gray-100"
       >
@@ -99,7 +109,7 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
       </div>
     </div>
 
-    <!-- Layanan -->
+    <!-- Daftar layanan yang dipilih pada pemesanan. -->
     <div class="mb-4">
       <p
         :class="[META_LABEL_CLASS, 'mb-2 flex items-center gap-1.5']"
@@ -121,14 +131,14 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
       </div>
     </div>
 
-    <!-- Status Display -->
+    <!-- Status servis dan pembayaran. -->
     <div
       class="mb-4 rounded-xl border border-gray-100 bg-slate-50 p-4 shadow-inner"
     >
       <div
         class="flex flex-row items-center justify-between gap-3 sm:justify-between"
       >
-        <!-- Status Servis -->
+        <!-- Status servis dan completed_at jika ada. -->
         <div class="min-w-0">
           <p :class="[META_LABEL_CLASS, 'mb-1.5']">
             Status Servis
@@ -146,7 +156,7 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
 
         <div class="w-px h-8 bg-slate-200"></div>
 
-        <!-- Status Pembayaran -->
+        <!-- Status pembayaran dan paid_at jika ada. -->
         <div class="min-w-0 text-right">
           <p :class="[META_LABEL_CLASS, 'mb-1.5']">
             Pembayaran
@@ -163,7 +173,7 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
         </div>
       </div>
 
-      <!-- Mekanik Info -->
+      <!-- Mekanik yang ditugaskan. -->
       <div
         v-if="pemesanan.mekanik"
         class="mt-4 pt-3 border-t border-slate-200 flex items-center gap-2"
@@ -180,6 +190,7 @@ const getUserInitial = (name?: string) => name?.charAt(0).toUpperCase() || "?";
       </div>
     </div>
 
+    <!-- Panel tombol aksi pemesanan. -->
     <AdminPemesananAksiPanel
       class="mt-auto"
       :pemesanan="pemesanan"

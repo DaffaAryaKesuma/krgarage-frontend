@@ -1,9 +1,11 @@
 <script setup lang="ts">
-// No props needed - just navigation links
+// Komponen ini tidak butuh props karena hanya berisi link navigasi cepat.
 </script>
 
 <template>
+  <!-- Dua aksi utama pelanggan: buat pemesanan dan kelola Vespa. -->
   <section class="grid grid-cols-2 gap-2 sm:gap-4">
+    <!-- Link ke halaman pemesanan baru. -->
     <router-link
       to="/app/pemesanan"
       class="group relative overflow-hidden rounded-lg bg-gradient-to-br from-red-600 to-red-700 p-3 text-white transition-all duration-300 hover:shadow-2xl sm:rounded-xl sm:p-4 md:p-6"
@@ -30,6 +32,7 @@
         <i class="mdi mdi-arrow-right text-xl sm:text-2xl"></i>
       </div>
     </router-link>
+    <!-- Link ke halaman Vespa Saya. -->
     <router-link
       to="/app/vespa-saya"
       class="group relative overflow-hidden rounded-lg bg-gradient-to-br from-gray-600 to-gray-700 p-3 text-white transition-all duration-300 hover:shadow-2xl sm:rounded-xl sm:p-4 md:p-6"

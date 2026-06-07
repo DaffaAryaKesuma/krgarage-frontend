@@ -34,6 +34,7 @@ const {
   restockUnitPrice,
   restockUpdateMasterPrice,
   restockNote,
+  restockReceiptFile,
   categoryName,
   categoryLoading,
   form,
@@ -44,6 +45,7 @@ const {
   closeModal,
   openRestockModal,
   closeRestockModal,
+  handleRestockReceiptChange,
   showDeleteConfirmModal,
   saveCategory,
   saveSukuCadang,
@@ -112,9 +114,11 @@ const {
       v-model:restock-unit-price="restockUnitPrice"
       v-model:restock-update-master-price="restockUpdateMasterPrice"
       v-model:restock-note="restockNote"
+      :restock-receipt-file="restockReceiptFile"
       :loading="loading"
       @close="closeRestockModal"
       @submit="restock"
+      @receipt-change="handleRestockReceiptChange"
     />
 
     <!-- Modal konfirmasi hapus agar admin tidak tidak sengaja menghapus data. -->

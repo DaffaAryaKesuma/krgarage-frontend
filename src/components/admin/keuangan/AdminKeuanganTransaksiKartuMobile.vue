@@ -1,6 +1,8 @@
 <script setup lang="ts">
+// Format tanggal dan uang.
 import { formatDateShort } from "@/utils/date";
 import { toIDR } from "@/utils/money";
+// Helper label dan class kartu mobile.
 import { META_LABEL_CLASS } from "@/utils/badgeVariants";
 import {
   TABLE_MOBILE_CARD_CLASS,
@@ -9,6 +11,7 @@ import {
 } from "@/utils/tableVariants";
 import type { KeuanganPemesanan } from "@/types/pemesanan";
 
+// Props kartu mobile transaksi.
 interface Props {
   pemesanan: KeuanganPemesanan;
   pemesananLayanan: string[];
@@ -20,7 +23,9 @@ defineProps<Props>();
 </script>
 
 <template>
+  <!-- Kartu mobile untuk satu transaksi. -->
   <div :class="TABLE_MOBILE_CARD_CLASS">
+    <!-- Header kode dan tanggal. -->
     <div :class="TABLE_MOBILE_CARD_HEADER_CLASS">
       <div>
         <p :class="META_LABEL_CLASS">
@@ -40,6 +45,7 @@ defineProps<Props>();
       </div>
     </div>
 
+    <!-- Detail pelanggan, layanan, suku cadang, dan total. -->
     <div :class="TABLE_MOBILE_CARD_STACK_CLASS">
       <div>
         <p :class="META_LABEL_CLASS">

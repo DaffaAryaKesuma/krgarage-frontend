@@ -1,6 +1,8 @@
 <script setup lang="ts">
+// Layout dasar yang dipakai untuk semua halaman setelah login.
 import BaseAuthenticatedLayout from "@/components/layouts/BaseAuthenticatedLayout/BaseAuthenticatedLayout.vue";
 
+// Menu khusus admin.
 const menuItems = [
   { label: "Dasbor", to: "/admin/dasbor", icon: "mdi-view-dashboard" },
   { label: "Pemesanan", to: "/admin/pemesanan", icon: "mdi-clipboard-list" },
@@ -12,6 +14,7 @@ const menuItems = [
 </script>
 
 <template>
+  <!-- Konfigurasi layout untuk role admin. -->
   <BaseAuthenticatedLayout
     beranda-path="/admin/dasbor"
     role-label="Admin"

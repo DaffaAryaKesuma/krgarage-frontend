@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { computed } from "vue";
+// Helper class alert.
 import { getAlertBoxClass, getAlertIconClass } from "@/utils/badgeVariants";
 
+// Daftar tips statis yang akan dipilih secara acak.
 const TIPS = [
   "Servis rutin setiap 3 bulan untuk performa optimal",
   "Ganti oli mesin setiap 2000 km atau 6 bulan",
@@ -9,12 +11,14 @@ const TIPS = [
   "Gunakan oli 2-tak berkualitas untuk mesin awet",
 ];
 
+// Tip dipilih acak saat komponen dirender.
 const currentTip = computed(
   () => TIPS[Math.floor(Math.random() * TIPS.length)],
 );
 </script>
 
 <template>
+  <!-- Widget tips perawatan Vespa. -->
   <section
     :class="[getAlertBoxClass('neutral'), 'border-l-4 p-3 sm:p-6']"
   >

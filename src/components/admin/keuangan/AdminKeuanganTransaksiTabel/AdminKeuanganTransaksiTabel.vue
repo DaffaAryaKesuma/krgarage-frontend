@@ -1,9 +1,12 @@
 <script setup lang="ts">
+// Tabel responsive, pagination, dan empty state.
 import TableShell from "@/components/ui/TableShell.vue";
 import Pagination from "@/components/ui/Pagination.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
+// Tampilan mobile dan desktop transaksi.
 import AdminKeuanganTransaksiKartuMobile from "@/components/admin/keuangan/AdminKeuanganTransaksiKartuMobile.vue";
 import AdminKeuanganTransaksiBarisDesktop from "@/components/admin/keuangan/AdminKeuanganTransaksiBarisDesktop.vue";
+// Logic dan konstanta tabel transaksi.
 import {
   useAdminKeuanganTransaksiTabel,
   TABLE_HEADERS,
@@ -19,8 +22,10 @@ import {
 } from "@/utils/tableVariants";
 import type { KeuanganPemesanan } from "@/types/pemesanan";
 
+// Props transaksi dari laporan keuangan.
 const props = defineProps<{ pemesanan: KeuanganPemesanan[] }>();
 
+// Ambil pagination dan helper tampilan dari composable.
 const {
   currentPage,
   totalPages,
@@ -36,10 +41,12 @@ const {
 </script>
 
 <template>
+  <!-- Wrapper tabel detail transaksi. -->
   <div :class="TABLE_WRAPPER_CLASS_WITH_MARGIN">
     <div class="px-6 py-4 border-b border-gray-200">
       <h2 class="text-lg font-semibold text-gray-900">Detail Transaksi</h2>
     </div>
+    <!-- Tabel transaksi responsive jika ada data. -->
     <TableShell
       v-if="pemesanan.length > 0"
       :headers="TABLE_HEADERS"
@@ -52,6 +59,7 @@ const {
       :header-cell-class="TABLE_HEADER_CELL_CLASS"
       :body-class="TABLE_BODY_CLASS"
     >
+      <!-- Slot kartu mobile. -->
       <template #mobile>
         <AdminKeuanganTransaksiKartuMobile
           v-for="pemesanan in paginatedPemesanan"
@@ -63,6 +71,7 @@ const {
         />
       </template>
 
+      <!-- Baris desktop. -->
       <AdminKeuanganTransaksiBarisDesktop
         v-for="pemesanan in paginatedPemesanan"
         :key="pemesanan.id"
@@ -72,6 +81,7 @@ const {
         :pemesanan-total="getPemesananTotal(pemesanan)"
       />
 
+      <!-- Footer pagination. -->
       <template #footer>
         <div class="px-4 pb-3 sm:px-6">
           <Pagination
@@ -87,6 +97,7 @@ const {
       </template>
     </TableShell>
 
+    <!-- Empty state jika tidak ada transaksi. -->
     <EmptyState
       v-else
       icon="mdi mdi-cash-multiple"

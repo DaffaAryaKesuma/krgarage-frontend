@@ -1,20 +1,28 @@
 <script setup lang="ts">
+// Helper format tanggal, tanggal+jam, dan jam.
 import { formatDateShort, formatDateTimeShort, formatTimeShort } from "@/utils/date";
+// Helper status servis.
 import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
+// Helper status pembayaran.
 import {
   getPembayaranStatusBadgeClass,
   getPembayaranStatusLabel,
 } from "@/utils/pembayaranStatus";
+// Helper format plat nomor.
 import { formatPlatNomor } from "@/utils/format";
+// Tipe lengkap detail pemesanan.
 import type { Pemesanan } from "@/types/pemesanan";
 
+// Props menerima data detail pemesanan dari halaman induk.
 defineProps<{
   pemesanan: Pemesanan;
 }>();
 </script>
 
 <template>
+  <!-- Tiga kartu info utama: pemesanan, Vespa, dan mekanik/status. -->
   <section class="grid grid-cols-1 gap-4 md:grid-cols-3">
+    <!-- Informasi jadwal dan kode pemesanan. -->
     <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-5">
       <div class="mb-3 flex items-center gap-2">
         <i class="mdi mdi-clipboard-text text-xl text-gray-600"></i>
@@ -36,6 +44,7 @@ defineProps<{
       </p>
     </div>
 
+    <!-- Informasi Vespa yang diservis. -->
     <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-5">
       <div class="mb-3 flex items-center gap-2">
         <i class="mdi mdi-motorbike text-xl text-gray-600"></i>
@@ -53,6 +62,7 @@ defineProps<{
       </p>
     </div>
 
+    <!-- Informasi mekanik, status servis, dan status pembayaran. -->
     <div class="rounded-xl border border-gray-200 bg-white p-4 sm:p-5">
       <div class="mb-3 flex items-center gap-2">
         <i class="mdi mdi-account-wrench text-xl text-gray-600"></i>
@@ -64,6 +74,7 @@ defineProps<{
       </p>
 
       <p class="mt-3 text-sm text-gray-600">Status Servis</p>
+      <!-- completed_at ditaruh di sebelah badge agar mudah dibaca. -->
       <div class="mt-1 flex flex-wrap items-center gap-2">
         <span :class="[getStatusBadgeClass(pemesanan.status), 'whitespace-nowrap']">{{ getStatusLabel(pemesanan.status || "Menunggu") }}</span>
         <span v-if="pemesanan.completed_at" class="text-sm text-gray-600">
@@ -72,6 +83,7 @@ defineProps<{
       </div>
 
       <p class="mt-3 text-sm text-gray-600">Pembayaran</p>
+      <!-- paid_at ditaruh di sebelah badge pembayaran. -->
       <div class="mt-1 flex flex-wrap items-center gap-2">
         <span :class="[getPembayaranStatusBadgeClass(pemesanan.status_pembayaran), 'whitespace-nowrap']">{{ getPembayaranStatusLabel(pemesanan.status_pembayaran) }}</span>
         <span v-if="pemesanan.paid_at" class="text-sm text-gray-600">

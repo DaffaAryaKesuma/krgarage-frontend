@@ -1,6 +1,8 @@
 <script setup lang="ts">
+// Format harga dan gambar/durasi.
 import { toIDR } from "@/utils/money";
 import { getImageUrl, formatWaktu } from "@/utils/format";
+// Helper class tampilan.
 import {
   META_LABEL_CLASS,
   getAlertBoxClass,
@@ -9,29 +11,34 @@ import {
 import { getButtonClass } from "@/utils/buttonVariants";
 import type { LayananCatalogItem } from "@/types/layanan";
 
+// Props kartu layanan.
 interface Props {
   layanan: LayananCatalogItem;
 }
 
 defineProps<Props>();
 
+// Event edit/hapus dikirim ke halaman layanan.
 const emit = defineEmits<{
   edit: [layanan: LayananCatalogItem];
   delete: [layanan: LayananCatalogItem];
 }>();
 
+// Placeholder jika gambar gagal dimuat.
 const DEFAULT_IMAGE = "https://placehold.co/600x400?text=Tanpa+Gambar";
 
+// Fallback gambar jika URL gambar error.
 const handleImageError = (e: Event) => {
   (e.target as HTMLImageElement).src = DEFAULT_IMAGE;
 };
 </script>
 
 <template>
+  <!-- Kartu satu layanan. -->
   <div
     class="group bg-white rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 h-full flex flex-col"
   >
-    <!-- Gambar -->
+    <!-- Gambar layanan. -->
     <div
       class="relative h-56 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200"
     >
@@ -46,7 +53,7 @@ const handleImageError = (e: Event) => {
       ></div>
     </div>
 
-    <!-- Content -->
+    <!-- Konten layanan. -->
     <div class="p-6 flex flex-col flex-1">
       <div class="flex items-start gap-2 mb-3">
         <i class="mdi mdi-wrench text-2xl text-gray-600 flex-shrink-0"></i>
@@ -59,7 +66,7 @@ const handleImageError = (e: Event) => {
         {{ layanan.deskripsi }}
       </p>
 
-      <!-- Info Box -->
+      <!-- Info harga dan durasi. -->
       <div class="mb-4 mt-auto grid grid-cols-2 gap-2">
         <div :class="[getAlertBoxClass('info'), 'rounded p-2 shadow-none']">
           <p :class="META_LABEL_CLASS">Harga</p>
@@ -75,7 +82,7 @@ const handleImageError = (e: Event) => {
         </div>
       </div>
 
-      <!-- Aksi -->
+      <!-- Tombol edit dan hapus. -->
       <div class="flex gap-3">
         <button
           @click="emit('edit', layanan)"

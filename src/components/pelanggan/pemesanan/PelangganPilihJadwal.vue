@@ -1,10 +1,12 @@
 <script setup lang="ts">
+// Helper class untuk alert, ikon, dan warna teks.
 import {
   getAlertBoxClass,
   getAlertIconClass,
   getIconToneClass,
   getToneTextClass,
 } from "@/utils/badgeVariants";
+// Helper class untuk label, hint, input, textarea, dan error.
 import {
   FORM_ERROR_CLASS,
   FORM_HINT_CLASS,
@@ -13,8 +15,10 @@ import {
   getFormInputClass,
   getFormTextareaClass,
 } from "@/utils/formVariants";
+// Helper class untuk slot jam yang tersedia, dipilih, atau sudah dibooking.
 import { getTimeSlotClass } from "@/utils/selectionVariants";
 
+// Props menerima daftar jam, slot penuh, nilai form, dan error validasi.
 interface Props {
   timeSlots: string[];
   bookedSlots: string[];
@@ -27,6 +31,7 @@ interface Props {
   timeTouched?: boolean;
 }
 
+// Event update:* membuat komponen ini bisa dipakai dengan v-model terpisah.
 interface Emits {
   (e: "update:dateValue", value: string): void;
   (e: "update:timeValue", value: string): void;
@@ -38,11 +43,13 @@ interface Emits {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
+// Saat tanggal berubah, parent diberi sinyal untuk mengambil slot jam terbaru.
 const handleDateChange = () => {
   emit("update:dateValue", props.dateValue);
   emit("dateChange");
 };
 
+// Saat jam dipilih, update nilai jam dan beri tahu parent.
 const selectTime = (slot: string) => {
   emit("update:timeValue", slot);
   emit("timeSelect", slot);
@@ -50,7 +57,9 @@ const selectTime = (slot: string) => {
 </script>
 
 <template>
+  <!-- Kartu utama step pilih jadwal. -->
   <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
+    <!-- Header step. -->
     <div class="flex items-center gap-3 mb-6">
       <div
         :class="[
@@ -69,7 +78,7 @@ const selectTime = (slot: string) => {
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-      <!-- Date -->
+      <!-- Input tanggal pemesanan. -->
       <div>
         <label :class="FORM_LABEL_CLASS">
           <i :class="['mdi mdi-calendar mr-1', getToneTextClass('success')]"></i>Tanggal Pemesanan
@@ -85,6 +94,7 @@ const selectTime = (slot: string) => {
           :min="new Date().toISOString().split('T')[0]"
           :class="getFormInputClass(!!(dateError && dateTouched), 'px-4 py-3')"
         />
+        <!-- Error tanggal muncul setelah field disentuh. -->
         <p
           v-if="dateError && dateTouched"
           :class="FORM_ERROR_CLASS"
@@ -93,7 +103,7 @@ const selectTime = (slot: string) => {
         </p>
       </div>
 
-      <!-- Time -->
+      <!-- Pilihan jam pemesanan. -->
       <div>
         <label :class="FORM_LABEL_CLASS">
           <i :class="['mdi mdi-clock-outline mr-1', getToneTextClass('success')]"></i>Jam Pemesanan
@@ -117,6 +127,7 @@ const selectTime = (slot: string) => {
             {{ slot }}
           </button>
         </div>
+        <!-- Hint menjelaskan arti warna slot. -->
         <p :class="FORM_HINT_CLASS">
           <i class="mdi mdi-information-outline"></i> Merah = Sudah dipesan
         </p>
@@ -132,6 +143,7 @@ const selectTime = (slot: string) => {
             Semua mekanik sedang sibuk di tanggal ini
           </p>
         </div>
+        <!-- Error jam muncul setelah field disentuh. -->
         <p
           v-if="timeError && timeTouched"
           :class="FORM_ERROR_CLASS"
@@ -141,7 +153,7 @@ const selectTime = (slot: string) => {
       </div>
     </div>
 
-    <!-- Catatan -->
+    <!-- Catatan tambahan dari pelanggan, sifatnya opsional. -->
     <div>
       <label :class="FORM_LABEL_CLASS">
         <i :class="['mdi mdi-note-text mr-1', getToneTextClass('success')]"></i>Catatan Tambahan

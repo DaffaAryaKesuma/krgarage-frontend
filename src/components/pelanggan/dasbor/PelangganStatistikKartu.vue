@@ -1,6 +1,8 @@
 <script setup lang="ts">
+// Helper warna teks icon.
 import { getToneTextClass } from "@/utils/badgeVariants";
 
+// Props angka statistik pelanggan.
 interface Props {
   vespaCount: number;
   totalPemesanan: number;
@@ -11,9 +13,11 @@ defineProps<Props>();
 </script>
 
 <template>
+  <!-- Grid statistik ringkas dashboard pelanggan. -->
   <section
     class="grid grid-cols-3 gap-2 sm:gap-4 xl:grid-cols-3"
   >
+    <!-- Jumlah Vespa milik pelanggan. -->
     <div
       class="rounded-lg border-l-4 border-red-500 bg-white p-3 shadow-sm transition-shadow hover:shadow-md sm:rounded-xl sm:p-6"
     >
@@ -34,6 +38,7 @@ defineProps<Props>();
         ></i>
       </div>
     </div>
+    <!-- Total servis yang pernah dibuat pelanggan. -->
     <div
       class="rounded-lg border-l-4 border-green-500 bg-white p-3 shadow-sm transition-shadow hover:shadow-md sm:rounded-xl sm:p-6"
     >
@@ -54,6 +59,7 @@ defineProps<Props>();
         ></i>
       </div>
     </div>
+    <!-- Pemesanan yang masih aktif. -->
     <div
       class="rounded-lg border-l-4 border-purple-500 bg-white p-3 shadow-sm transition-shadow hover:shadow-md sm:rounded-xl sm:p-6"
     >

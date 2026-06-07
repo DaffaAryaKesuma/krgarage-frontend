@@ -1,16 +1,24 @@
 <script setup lang="ts">
+// Helper format tanggal pendek.
 import { formatDateShort } from "@/utils/date";
+// Komponen pagination, tabel responsif, dan empty state.
 import Pagination from "@/components/ui/Pagination.vue";
 import TableShell from "@/components/ui/TableShell.vue";
 import EmptyState from "@/components/ui/EmptyState.vue";
+// Helper format rupiah.
 import { toIDR } from "@/utils/money";
+// Helper status servis.
 import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
+// Helper status pembayaran.
 import {
   getPembayaranStatusBadgeClass,
   getPembayaranStatusLabel,
 } from "@/utils/pembayaranStatus";
+// Helper format nama pelanggan.
 import { formatNama } from "@/utils/format";
+// Class label kecil.
 import { META_LABEL_CLASS } from "@/utils/badgeVariants";
+// Helper class tabel.
 import {
   TABLE_BODY_CLASS,
   TABLE_COMFORTABLE_HEADER_CELL_CLASS,
@@ -22,19 +30,23 @@ import {
   TABLE_WRAPPER_CLASS,
   buildFixedTableClass,
 } from "@/utils/tableVariants";
+// Header tabel dan composable pagination/helper.
 import {
   TABLE_HEADERS,
   usePemilikKeuanganTable,
   type PemilikKeuanganTableProps,
 } from "./usePemilikKeuanganTable";
 
+// Event update currentPage dikirim saat pagination berubah.
 interface Emits {
   (e: "update:currentPage", value: number): void;
 }
 
+// Props mengikuti interface dari composable.
 const props = defineProps<PemilikKeuanganTableProps>();
 const emit = defineEmits<Emits>();
 
+// Ambil helper tabel dari composable.
 const {
   totalPages,
   from,
@@ -47,13 +59,18 @@ const {
   getPemesananTotal,
 } = usePemilikKeuanganTable(props, emit);
 
+// Lebar kolom desktop.
 const TABLE_COLUMN_WIDTHS = ["16%", "17%", "13%", "13%", "15%", "13%", "13%"];
+// Class cell umum.
 const TABLE_CELL_CLASS = "px-6 py-4 align-middle text-sm text-gray-900";
+// Class cell khusus badge agar tidak wrap.
 const TABLE_BADGE_CELL_CLASS = "px-6 py-4 align-middle whitespace-nowrap";
 </script>
 
 <template>
+  <!-- Kartu tabel pemasukan dari pemesanan lunas. -->
   <div class="bg-white rounded-2xl shadow-lg p-4 sm:p-6 lg:p-8">
+    <!-- Header tabel. -->
     <div class="mb-6 flex items-start justify-between">
       <div>
         <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
@@ -63,6 +80,7 @@ const TABLE_BADGE_CELL_CLASS = "px-6 py-4 align-middle whitespace-nowrap";
       </div>
     </div>
 
+    <!-- TableShell membuat tampilan desktop table dan mobile card. -->
     <TableShell
       v-if="pemesanan.length > 0"
       :headers="TABLE_HEADERS"
@@ -77,6 +95,7 @@ const TABLE_BADGE_CELL_CLASS = "px-6 py-4 align-middle whitespace-nowrap";
       :body-class="TABLE_BODY_CLASS"
       :column-widths="TABLE_COLUMN_WIDTHS"
     >
+      <!-- Tampilan mobile untuk pemasukan. -->
       <template #mobile>
         <div
           v-for="pemesanan in paginatedPemesanan"
@@ -110,6 +129,7 @@ const TABLE_BADGE_CELL_CLASS = "px-6 py-4 align-middle whitespace-nowrap";
               <p :class="META_LABEL_CLASS">
                 Tanggal
               </p>
+              <!-- Tanggal pemasukan memakai paid_at jika tersedia. -->
               <p class="font-medium text-gray-900">
                 {{ formatDateShort(getPemesananDate(pemesanan)) }}
               </p>
@@ -138,6 +158,7 @@ const TABLE_BADGE_CELL_CLASS = "px-6 py-4 align-middle whitespace-nowrap";
               <p :class="META_LABEL_CLASS">
                 Total Biaya
               </p>
+              <!-- Total fallback dihitung dari layanan jika total_harga kosong. -->
               <p class="font-semibold text-gray-900">
                 {{ toIDR(getPemesananTotal(pemesanan)) }}
               </p>
@@ -146,6 +167,7 @@ const TABLE_BADGE_CELL_CLASS = "px-6 py-4 align-middle whitespace-nowrap";
         </div>
       </template>
 
+      <!-- Tampilan desktop untuk pemasukan. -->
       <tr
         v-for="pemesanan in paginatedPemesanan"
         :key="pemesanan.id"
@@ -180,6 +202,7 @@ const TABLE_BADGE_CELL_CLASS = "px-6 py-4 align-middle whitespace-nowrap";
         </td>
       </tr>
 
+      <!-- Pagination tabel pemasukan. -->
       <template #footer>
         <div class="px-4 pb-3 sm:px-6">
           <Pagination
@@ -195,6 +218,7 @@ const TABLE_BADGE_CELL_CLASS = "px-6 py-4 align-middle whitespace-nowrap";
       </template>
     </TableShell>
 
+    <!-- Empty state jika tidak ada pemasukan pada periode filter. -->
     <EmptyState
       v-else
       icon="mdi mdi-calendar-search"

@@ -1,3 +1,4 @@
+// Bentuk ringkas layanan untuk tampilan umum atau relasi sederhana.
 export interface LayananRingkasan {
   id: number;
   nama_layanan: string;
@@ -7,6 +8,7 @@ export interface LayananRingkasan {
   gambar?: string | null;
 }
 
+// Bentuk layanan katalog, misalnya untuk halaman pemesanan pelanggan.
 export interface LayananCatalogItem {
   id: number;
   nama_layanan: string;
@@ -16,6 +18,7 @@ export interface LayananCatalogItem {
   gambar: string | null;
 }
 
+// Metrik layanan teratas untuk dashboard/laporan pemilik.
 export interface TeratasLayananMetric {
   id: number;
   nama_layanan: string;

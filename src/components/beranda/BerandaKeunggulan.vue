@@ -1,10 +1,12 @@
 <script setup lang="ts">
+// Tipe item keunggulan.
 type WhyChooseUsItem = {
   icon: string;
   title: string;
   desc: string;
 };
 
+// Data keunggulan bersifat statis untuk landing page.
 const WHY_CHOOSE_US: WhyChooseUsItem[] = [
   {
     icon: "mdi-trophy",
@@ -40,9 +42,10 @@ const WHY_CHOOSE_US: WhyChooseUsItem[] = [
 </script>
 
 <template>
-  <!-- Why Choose Us Section -->
+  <!-- Section alasan memilih KRGarage. -->
   <section class="bg-gray-50 py-12 md:py-20 px-4 md:px-8 lg:px-20">
     <div class="mx-auto max-w-7xl">
+      <!-- Judul section. -->
       <h2 class="mb-4 text-center text-2xl md:text-4xl font-bold text-gray-800">
         Mengapa Memilih KRGarage?
       </h2>
@@ -50,6 +53,7 @@ const WHY_CHOOSE_US: WhyChooseUsItem[] = [
         Kami tidak hanya servis Vespa, tapi merawat passion Anda dengan dedikasi
         penuh
       </p>
+      <!-- Grid kartu keunggulan. -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <div
           v-for="item in WHY_CHOOSE_US"

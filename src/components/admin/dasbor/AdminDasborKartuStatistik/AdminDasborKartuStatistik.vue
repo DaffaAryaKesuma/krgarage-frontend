@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { computed } from "vue";
+// Helper warna icon dan teks.
 import { getIconToneClass, getToneTextClass } from "@/utils/badgeVariants";
 import type { IconToneKey } from "@/utils/badgeVariants";
 
+// Bentuk statistik dari endpoint dasbor admin.
 interface Statistik {
   pemesanan_hari_ini: number;
   sedang_dikerjakan: number;
   selesai_hari_ini: number;
 }
 
+// Bentuk konfigurasi satu kartu statistik.
 interface StatKartu {
   label: string;
   key: keyof Statistik | "lowStock";
@@ -19,6 +22,7 @@ interface StatKartu {
   suffix?: (value: number) => string;
 }
 
+// Props berisi statistik dan jumlah stok menipis/habis.
 interface Props {
   statistik: Statistik;
   lowStockCount: number;
@@ -26,6 +30,7 @@ interface Props {
 
 const props = defineProps<Props>();
 
+// Konfigurasi semua kartu dibuat computed karena kartu stok tergantung lowStockCount.
 const STAT_KARTU = computed<StatKartu[]>(() => [
   {
     label: "Pemesanan Hari Ini",
@@ -65,13 +70,16 @@ const STAT_KARTU = computed<StatKartu[]>(() => [
   },
 ]);
 
+// Mengambil nilai kartu berdasarkan key.
 const getStatValue = (key: StatKartu["key"]) => {
   return key === "lowStock" ? props.lowStockCount : props.statistik[key];
 };
 </script>
 
 <template>
+  <!-- Grid kartu statistik admin. -->
   <div class="mb-6 grid grid-cols-2 gap-3 sm:mb-8 sm:gap-6 lg:grid-cols-4">
+    <!-- Setiap kartu bisa diklik ke halaman terkait. -->
     <router-link
       v-for="card in STAT_KARTU"
       :key="card.key"
@@ -81,12 +89,15 @@ const getStatValue = (key: StatKartu["key"]) => {
     >
       <div class="flex items-center justify-between">
         <div>
+          <!-- Label statistik. -->
           <p class="text-xs leading-tight text-gray-600 font-medium sm:text-sm">
             {{ card.label }}
           </p>
+          <!-- Nilai statistik. -->
           <h3 class="mt-1 text-2xl font-bold text-gray-900 sm:mt-2 sm:text-3xl">
             {{ getStatValue(card.key) }}
           </h3>
+          <!-- Suffix/keterangan kecil. -->
           <p
             class="mt-1 text-[11px] sm:text-xs"
             :class="
@@ -100,6 +111,7 @@ const getStatValue = (key: StatKartu["key"]) => {
             {{ card.suffix ? card.suffix(getStatValue(card.key)) : "" }}
           </p>
         </div>
+        <!-- Icon sesuai jenis statistik. -->
         <div
           class="rounded-full p-2 sm:p-3"
           :class="getIconToneClass(card.color)"

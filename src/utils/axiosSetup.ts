@@ -6,6 +6,7 @@
 import axios from "axios";
 import type { Router } from "vue-router";
 
+// Flag ini mencegah toast 401 muncul berkali-kali saat banyak request gagal bersamaan.
 let hasShownError401 = false;
 
 /**
@@ -14,17 +15,21 @@ let hasShownError401 = false;
  * App instance digunakan untuk akses composable setelah mount
  */
 export function setupAxiosInterceptors401(router: Router) {
+  // Interceptor response akan memeriksa semua response axios secara global.
   axios.interceptors.response.use(
+    // Jika response sukses, langsung kembalikan tanpa diubah.
     (response) => response,
+    // Jika response error, cek apakah error karena sesi habis.
     (error) => {
       const requestUrl = String(error.config?.url || "");
+      // Request auth dikecualikan supaya login/register/logout tidak memicu redirect aneh.
       const isAuthRequest =
         requestUrl.includes("/masuk") ||
         requestUrl.includes("/daftar") ||
         requestUrl.includes("/keluar");
       const hasToken = !!localStorage.getItem("token");
 
-      // Handle 401 - session expired
+      // Handle 401 - session expired.
       if (
         error.response?.status === 401 &&
         !hasShownError401 &&
@@ -33,11 +38,11 @@ export function setupAxiosInterceptors401(router: Router) {
       ) {
         hasShownError401 = true;
 
-        // Clear auth data
+        // Hapus data login lokal karena token sudah tidak valid.
         localStorage.removeItem("token");
         localStorage.removeItem("user");
 
-        // Try to show toast if available
+        // Coba tampilkan toast global jika fungsi toast sudah tersedia di window.
         const tryShowToast = () => {
           try {
             if ((window as any).__krg_showToast) {
@@ -50,21 +55,22 @@ export function setupAxiosInterceptors401(router: Router) {
           }
         };
 
-        // Try immediately and then retry after a delay
+        // Dicoba langsung dan diulang sebentar agar tidak kalah cepat dari proses mount app.
         tryShowToast();
         setTimeout(tryShowToast, 100);
 
-        // Redirect ke beranda after toast has time to show (2500ms)
+        // Redirect ke beranda setelah toast sempat terlihat.
         setTimeout(() => {
           router.push("/").catch(() => {});
         }, 2500);
 
-        // Reset flag
+        // Reset flag agar 401 berikutnya tetap bisa ditangani.
         setTimeout(() => {
           hasShownError401 = false;
         }, 3000);
       }
 
+      // Error tetap dilempar agar caller lokal masih bisa catch error juga.
       return Promise.reject(error);
     },
   );

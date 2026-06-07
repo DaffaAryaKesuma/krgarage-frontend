@@ -1,8 +1,10 @@
 <script setup lang="ts">
+// Logic dan type form layanan.
 import {
   useAdminLayananFormModal,
   type LayananFormData,
 } from "@/components/admin/layanan/AdminLayananFormModal/useAdminLayananFormModal";
+// Helper class form.
 import {
   FORM_HINT_CLASS,
   FORM_LABEL_CLASS,
@@ -10,11 +12,14 @@ import {
   getFormInputClass,
   getFormTextareaClass,
 } from "@/utils/formVariants";
+// Helper class tombol.
 import { getButtonClass } from "@/utils/buttonVariants";
 
+// Class input dan textarea standar.
 const inputClass = getFormInputClass();
 const textareaClass = getFormTextareaClass();
 
+// Props modal layanan.
 const props = defineProps<{
   show: boolean;
   mode: "add" | "edit";
@@ -22,6 +27,7 @@ const props = defineProps<{
   previewImage: string | null;
 }>();
 
+// Event v-model form, preview gambar, dan file change.
 const emit = defineEmits<{
   close: [];
   submit: [];
@@ -30,19 +36,22 @@ const emit = defineEmits<{
   fileChange: [file: File];
 }>();
 
+// Ambil title modal dan handler file dari composable.
 const { formTitle, handleFileChange, FILE_INPUT_ID } =
   useAdminLayananFormModal(props, emit);
 </script>
 
 <template>
+  <!-- Overlay modal form layanan. -->
   <div
     v-if="show"
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
   >
+    <!-- Card modal. -->
     <div
       class="bg-white w-full max-w-lg rounded-xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
     >
-      <!-- Modal Header -->
+      <!-- Header modal. -->
       <div
         class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 flex-shrink-0"
       >
@@ -56,9 +65,9 @@ const { formTitle, handleFileChange, FILE_INPUT_ID } =
         </button>
       </div>
 
-      <!-- Modal Form -->
+      <!-- Form layanan. -->
       <form @submit.prevent="emit('submit')" class="p-6 space-y-4 overflow-y-auto flex-1 custom-scrollbar">
-        <!-- Image Upload -->
+        <!-- Upload gambar layanan. -->
         <div>
           <label :class="FORM_LABEL_CLASS">
             Foto Layanan
@@ -94,7 +103,7 @@ const { formTitle, handleFileChange, FILE_INPUT_ID } =
           </div>
         </div>
 
-        <!-- Nama Layanan -->
+        <!-- Nama layanan. -->
         <div>
           <label :class="FORM_LABEL_CLASS">
             Nama Layanan <span :class="FORM_REQUIRED_MARK_CLASS">*</span>
@@ -113,7 +122,7 @@ const { formTitle, handleFileChange, FILE_INPUT_ID } =
           />
         </div>
 
-        <!-- Deskripsi -->
+        <!-- Deskripsi layanan. -->
         <div>
           <label :class="FORM_LABEL_CLASS">
             Deskripsi <span :class="FORM_REQUIRED_MARK_CLASS">*</span>
@@ -132,7 +141,7 @@ const { formTitle, handleFileChange, FILE_INPUT_ID } =
           ></textarea>
         </div>
 
-        <!-- Harga -->
+        <!-- Estimasi harga layanan. -->
         <div>
           <label :class="FORM_LABEL_CLASS">
             Estimasi Harga (Rp) <span :class="FORM_REQUIRED_MARK_CLASS">*</span>
@@ -151,7 +160,7 @@ const { formTitle, handleFileChange, FILE_INPUT_ID } =
           />
         </div>
 
-        <!-- Waktu -->
+        <!-- Estimasi durasi layanan dalam menit. -->
         <div>
           <label :class="FORM_LABEL_CLASS">
             Estimasi Waktu (menit)
@@ -176,7 +185,7 @@ const { formTitle, handleFileChange, FILE_INPUT_ID } =
           </p>
         </div>
 
-        <!-- Buttons -->
+        <!-- Tombol batal dan simpan. -->
         <div class="flex gap-3 pt-4">
           <button
             type="button"

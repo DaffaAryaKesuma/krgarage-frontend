@@ -1,46 +1,58 @@
 <script setup lang="ts">
+// Helper format tanggal, tanggal+jam, dan jam.
 import { formatDateShort, formatDateTimeShort, formatTimeShort } from "@/utils/date";
+// Helper status servis pelanggan.
 import {
   canPelangganCancelPemesanan,
   getStatusBadgeClass,
   getStatusLabel,
 } from "@/utils/statusBadge";
+// Helper status pembayaran.
 import {
   getPembayaranStatusBadgeClass,
   getPembayaranStatusLabel,
 } from "@/utils/pembayaranStatus";
+// Helper class label, alert box, dan ikon.
 import {
   META_LABEL_CLASS,
   getAlertBoxClass,
   getIconToneClass,
 } from "@/utils/badgeVariants";
+// Helper class tombol.
 import { getButtonClass } from "@/utils/buttonVariants";
+// Helper format plat nomor agar kapital dan rapi.
 import { formatPlatNomor } from "@/utils/format";
+// Tipe data pemesanan milik pelanggan.
 import type { PelangganPemesanan } from "@/types/pemesanan";
 
+// Props menerima satu pemesanan dan status proses pembatalan.
 interface Props {
   pemesanan: PelangganPemesanan;
   isCancelling?: boolean;
 }
 
+// Default pembatalan false.
 const props = withDefaults(defineProps<Props>(), {
   isCancelling: false,
 });
 
+// Event cancel dikirim ke parent dengan id pemesanan.
 const emit = defineEmits<{
   cancel: [pemesananId: number];
 }>();
 
+// Handler tombol batal.
 const handleCancel = () => {
   emit("cancel", props.pemesanan.id);
 };
 </script>
 
 <template>
+  <!-- Kartu satu riwayat pemesanan. -->
   <div
     class="flex h-full flex-col bg-white border border-gray-200 rounded-lg sm:rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-lg transition-all"
   >
-    <!-- Header -->
+    <!-- Header berisi kode pemesanan. -->
     <div
       class="flex items-start justify-between gap-2 sm:gap-3 mb-3 pb-2 border-b border-gray-100"
     >
@@ -64,6 +76,7 @@ const handleCancel = () => {
       </div>
     </div>
 
+    <!-- Ringkasan status servis dan pembayaran. -->
     <div
       class="mb-4 grid grid-cols-2 gap-3 rounded-lg border border-gray-100 bg-gray-50 px-3 py-3"
     >
@@ -72,6 +85,7 @@ const handleCancel = () => {
         <span :class="[getStatusBadgeClass(pemesanan.status), 'text-xs']">{{
           getStatusLabel(pemesanan.status || "Menunggu")
         }}</span>
+        <!-- completed_at tampil jika servis sudah selesai. -->
         <p v-if="pemesanan.completed_at" class="mt-1.5 text-xs text-gray-600">
           {{ formatDateTimeShort(pemesanan.completed_at) }}
         </p>
@@ -86,15 +100,16 @@ const handleCancel = () => {
           ]"
           >{{ getPembayaranStatusLabel(pemesanan.status_pembayaran) }}</span
         >
+        <!-- paid_at tampil jika pembayaran sudah lunas. -->
         <p v-if="pemesanan.paid_at" class="mt-1.5 text-xs text-gray-600">
           {{ formatDateTimeShort(pemesanan.paid_at) }}
         </p>
       </div>
     </div>
 
-    <!-- Info Grid -->
+    <!-- Grid informasi utama pemesanan. -->
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-5">
-      <!-- Vespa Info -->
+      <!-- Informasi Vespa yang diservis. -->
       <div
         :class="[getAlertBoxClass('neutral'), 'flex gap-2 p-2.5 shadow-none sm:p-3']"
       >
@@ -116,7 +131,7 @@ const handleCancel = () => {
         </div>
       </div>
 
-      <!-- Layanan -->
+      <!-- Layanan yang dipilih saat pemesanan. -->
       <div
         :class="[getAlertBoxClass('neutral'), 'flex gap-2 p-2.5 shadow-none sm:p-3']"
       >
@@ -145,7 +160,7 @@ const handleCancel = () => {
         </div>
       </div>
 
-      <!-- Tanggal Pemesanan -->
+      <!-- Tanggal servis. -->
       <div
         :class="[getAlertBoxClass('neutral'), 'flex gap-2 p-2.5 shadow-none sm:p-3']"
       >
@@ -164,7 +179,7 @@ const handleCancel = () => {
         </div>
       </div>
 
-      <!-- Jam Pemesanan -->
+      <!-- Jam servis. -->
       <div
         :class="[getAlertBoxClass('neutral'), 'flex gap-2 p-2.5 shadow-none sm:p-3']"
       >
@@ -184,7 +199,7 @@ const handleCancel = () => {
       </div>
     </div>
 
-    <!-- Aksi -->
+    <!-- Area aksi dibuat mt-auto agar tombol detail sejajar antar kartu. -->
     <div class="mt-auto pt-3 sm:pt-4 border-t border-gray-200">
       <div
         :class="
@@ -193,6 +208,7 @@ const handleCancel = () => {
             : 'block'
         "
       >
+        <!-- Tombol batal hanya muncul untuk status yang masih boleh dibatalkan pelanggan. -->
         <template v-if="canPelangganCancelPemesanan(pemesanan.status)">
           <button
             @click="handleCancel"
@@ -205,6 +221,7 @@ const handleCancel = () => {
           </button>
         </template>
 
+        <!-- Link menuju halaman detail riwayat. -->
         <router-link
           :to="`/app/riwayat/${pemesanan.id}`"
           :class="getButtonClass('neutralOutline', 'sm', 'w-full')"
@@ -214,6 +231,7 @@ const handleCancel = () => {
         </router-link>
       </div>
 
+      <!-- Keterangan aturan pembatalan. -->
       <p
         v-if="canPelangganCancelPemesanan(pemesanan.status)"
         class="text-[11px] sm:text-xs text-gray-500 text-center mt-2.5 sm:mt-3 leading-relaxed"

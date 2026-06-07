@@ -1,5 +1,7 @@
 <script setup lang="ts">
+// Select role admin/mekanik.
 import CustomSelect from "@/components/ui/CustomSelect.vue";
+// Logic dan class form karyawan.
 import {
   useKaryawanFormModal,
   FIELD_WRAPPER_CLASS,
@@ -8,40 +10,45 @@ import {
   LABEL_CLASS,
   type FormData,
 } from "@/components/admin/karyawan/KaryawanFormModal/useKaryawanFormModal";
+// Helper warna icon dan tombol.
 import { getToneTextClass } from "@/utils/badgeVariants";
 import { getButtonClass } from "@/utils/buttonVariants";
 
+// Props modal form.
 const props = defineProps<{
   show: boolean;
   isEditMode: boolean;
   initialData?: Partial<FormData>;
 }>();
 
+// Event close dan submit.
 const emit = defineEmits<{
   close: [];
   submit: [data: FormData];
 }>();
 
+// Ambil state form dan submit handler dari composable.
 const { formData, handleSubmit } = useKaryawanFormModal(props, emit);
 </script>
 
 <template>
+  <!-- Teleport modal ke body agar tidak terpotong layout parent. -->
   <Teleport to="body">
     <div v-if="show" class="fixed inset-0 z-50 overflow-y-auto">
       <div
         class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0"
       >
-        <!-- Backdrop -->
+        <!-- Backdrop modal. -->
         <div
           class="fixed inset-0 transition-opacity bg-gray-900/60 backdrop-blur-sm"
           @click="emit('close')"
         ></div>
 
-        <!-- Modal Panel -->
+        <!-- Panel modal. -->
         <div
           class="relative w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-2xl rounded-2xl sm:my-8"
         >
-          <!-- Modal Header -->
+          <!-- Header modal. -->
           <div
             class="flex items-center justify-between pb-4 border-b border-gray-100"
           >
@@ -57,13 +64,13 @@ const { formData, handleSubmit } = useKaryawanFormModal(props, emit);
             </h3>
           </div>
 
-          <!-- Form -->
+          <!-- Form tambah/edit karyawan. -->
           <form
             @submit.prevent="handleSubmit"
             autocomplete="off"
             class="mt-5 space-y-4"
           >
-            <!-- Nama -->
+            <!-- Nama lengkap, hanya huruf dan spasi. -->
             <div>
               <label :class="LABEL_CLASS">Nama Lengkap</label>
               <div :class="FIELD_WRAPPER_CLASS">
@@ -84,7 +91,7 @@ const { formData, handleSubmit } = useKaryawanFormModal(props, emit);
               </div>
             </div>
 
-            <!-- Email -->
+            <!-- Email dengan validasi pattern sederhana. -->
             <div>
               <label :class="LABEL_CLASS">Email</label>
               <div :class="FIELD_WRAPPER_CLASS">
@@ -104,7 +111,7 @@ const { formData, handleSubmit } = useKaryawanFormModal(props, emit);
               </div>
             </div>
 
-            <!-- No. Telepon -->
+            <!-- Nomor telepon. -->
             <div>
               <label :class="LABEL_CLASS">Nomor Telepon</label>
               <div :class="FIELD_WRAPPER_CLASS">
@@ -126,7 +133,7 @@ const { formData, handleSubmit } = useKaryawanFormModal(props, emit);
               </div>
             </div>
 
-            <!-- Role + Password -->
+            <!-- Role dan password. -->
             <div class="grid gap-4 grid-cols-2">
               <div>
                 <CustomSelect
@@ -165,6 +172,7 @@ const { formData, handleSubmit } = useKaryawanFormModal(props, emit);
               </div>
             </div>
 
+            <!-- Footer tombol batal dan simpan. -->
             <div
               class="grid grid-cols-2 gap-3 pt-5 mt-2 sm:flex-row sm:justify-end border-t border-gray-100"
             >

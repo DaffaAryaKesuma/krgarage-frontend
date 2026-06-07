@@ -1,6 +1,9 @@
 import { computed, ref, watch } from "vue";
+// Mengirim sinyal refresh ke halaman lain setelah status berubah.
 import { notifyKrGarageDataChanged } from "@/composables/useRealtimeRefresh";
+// Toast untuk feedback sukses/gagal.
 import { useToast } from "@/utils/useToast";
+// Helper aturan status pemesanan.
 import {
   PEMESANAN_STATUS,
   canAdminAssignAndStart,
@@ -10,11 +13,13 @@ import {
   isStatusBatal,
   isStatusSelesai,
 } from "@/utils/statusBadge";
+// Helper tampilan dan pengecekan status pembayaran.
 import {
   getPembayaranStatusBadgeClass,
   getPembayaranStatusLabel,
   isPaidStatus,
 } from "@/utils/pembayaranStatus";
+// Konfigurasi tombol, modal konfirmasi, dan type panel kontrol.
 import {
   AKSI_CONFIG,
   CANCEL_BUTTON_CLASS,
@@ -25,6 +30,7 @@ import {
   type PemesananAksiType,
   type Mekanik,
 } from "@/components/admin/pemesanan-detail/AdminPemesananDetailControlPanel/adminPemesananControlPanelHelpers";
+// Fungsi API khusus panel kontrol.
 import {
   assignMekanikToPemesanan,
   fetchAdminMekaniks,
@@ -32,6 +38,7 @@ import {
   patchAdminPembayaranStatus,
 } from "@/components/admin/pemesanan-detail/AdminPemesananDetailControlPanel/adminPemesananControlPanelApi";
 
+// Re-export class tombol agar file .vue bisa import dari composable ini.
 export {
   CANCEL_BUTTON_CLASS,
   COMPLETE_BUTTON_CLASS,
@@ -39,6 +46,7 @@ export {
   MARK_PAID_BUTTON_CLASS,
 };
 
+// Props yang dibutuhkan composable panel kontrol.
 export interface PropertiAdminPemesananControlPanel {
   pemesananId: number;
   currentStatus: string;
@@ -47,18 +55,25 @@ export interface PropertiAdminPemesananControlPanel {
   currentMekanikName?: string;
 }
 
+// Composable utama panel kontrol detail pemesanan admin.
 export function useAdminPemesananControlPanel(
   properti: PropertiAdminPemesananControlPanel,
   onRefresh: () => void,
 ) {
   const toast = useToast();
 
+  // Daftar mekanik untuk dropdown assign.
   const availableMekaniks = ref<Mekanik[]>([]);
+  // Loading proses aksi status/pembayaran.
   const isProcessing = ref(false);
+  // Mekanik terpilih, default dari mekanik yang sudah ditugaskan.
   const selectedMekanikId = ref<number | null>(properti.currentMekanikId);
+  // State modal konfirmasi aksi.
   const showAksiConfirmation = ref(false);
+  // Aksi yang sedang menunggu konfirmasi.
   const pendingAksi = ref<PemesananAksiType | null>(null);
 
+  // Sinkronkan selectedMekanikId jika props currentMekanikId berubah setelah refresh.
   watch(
     () => properti.currentMekanikId,
     (idMekanikBerikutnya) => {
@@ -66,6 +81,7 @@ export function useAdminPemesananControlPanel(
     },
   );
 
+  // Ubah daftar mekanik dari API menjadi option dropdown.
   const mekanikOptionsDaftar = computed(() =>
     availableMekaniks.value.map((mekanik) => ({
       value: mekanik.id,
@@ -73,6 +89,7 @@ export function useAdminPemesananControlPanel(
     })),
   );
 
+  // Computed aturan tombol berdasarkan status sekarang.
   const canConfirm = computed(() =>
     canAdminConfirmPemesanan(properti.currentStatus),
   );
@@ -90,6 +107,7 @@ export function useAdminPemesananControlPanel(
     () => isCompleted.value && !isCancelled.value && !isPaid.value,
   );
 
+  // Label dan class badge pembayaran.
   const pembayaranStatusLabel = computed(() =>
     getPembayaranStatusLabel(properti.currentPembayaranStatus),
   );
@@ -97,6 +115,7 @@ export function useAdminPemesananControlPanel(
     getPembayaranStatusBadgeClass(properti.currentPembayaranStatus),
   );
 
+  // Nama mekanik bisa dari props eksplisit atau dicari dari daftar mekanik.
   const assignedMekanikName = computed(() => {
     const namaEksplisit = properti.currentMekanikName?.trim();
     if (namaEksplisit) {
@@ -114,20 +133,24 @@ export function useAdminPemesananControlPanel(
     return mekanikCocok?.nama || null;
   });
 
+  // Konfigurasi modal sesuai aksi yang sedang dipilih.
   const aksiConfirmationConfig = computed<AksiConfirmationConfig | null>(
     () => (pendingAksi.value ? AKSI_CONFIG[pendingAksi.value] : null),
   );
 
+  // Membuka modal konfirmasi untuk aksi tertentu.
   const requestAksiConfirmation = (aksi: PemesananAksiType) => {
     pendingAksi.value = aksi;
     showAksiConfirmation.value = true;
   };
 
+  // Menutup modal dan menghapus pending action.
   const closeAksiConfirmation = () => {
     showAksiConfirmation.value = false;
     pendingAksi.value = null;
   };
 
+  // Mengubah status servis pemesanan.
   async function updateStatus(statusBaru: string, pesanSukses: string, catatan?: string) {
     isProcessing.value = true;
     try {
@@ -142,6 +165,7 @@ export function useAdminPemesananControlPanel(
     }
   }
 
+  // Mengubah status pembayaran pemesanan.
   async function updatePembayaranStatus(
     statusPembayaranBaru: string,
     pesanSukses: string,
@@ -164,6 +188,7 @@ export function useAdminPemesananControlPanel(
     }
   }
 
+  // Menjalankan aksi setelah user konfirmasi di modal.
   const confirmAksi = (catatan?: string) => {
     const config = aksiConfirmationConfig.value;
     if (!config || isProcessing.value) {
@@ -180,6 +205,7 @@ export function useAdminPemesananControlPanel(
     void updateStatus(config.value, config.successMessage, catatan);
   };
 
+  // Mengambil daftar mekanik untuk dropdown.
   async function fetchMekaniks() {
     try {
       availableMekaniks.value = await fetchAdminMekaniks();
@@ -188,6 +214,7 @@ export function useAdminPemesananControlPanel(
     }
   }
 
+  // Assign mekanik terpilih lalu ubah status menjadi Dikerjakan.
   async function assignMekanikAndStart() {
     if (!selectedMekanikId.value) {
       toast.error("Silakan pilih mekanik terlebih dahulu");
@@ -213,11 +240,13 @@ export function useAdminPemesananControlPanel(
     }
   }
 
+  // Handler singkat untuk tombol-tombol di template.
   const handleConfirm = () => requestAksiConfirmation("confirm");
   const handleComplete = () => requestAksiConfirmation("complete");
   const handleCancel = () => requestAksiConfirmation("cancel");
   const handleMarkAsPaid = () => requestAksiConfirmation("markPaid");
 
+  // State dan aksi yang digunakan panel kontrol .vue.
   return {
     mekanikOptionsDaftar,
     isProcessing,
