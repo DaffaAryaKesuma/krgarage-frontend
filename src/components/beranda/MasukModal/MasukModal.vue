@@ -4,7 +4,7 @@ import { FORM_FIELDS, useMasukModal } from "@/components/beranda/MasukModal/useM
 // Helper class alert error.
 import { getAlertBoxClass } from "@/utils/badgeVariants";
 // Helper class tombol.
-import { getButtonClass, getFullWidthButtonClass } from "@/utils/buttonVariants";
+import { getFullWidthButtonClass } from "@/utils/buttonVariants";
 // Helper class label, required mark, dan error form.
 import {
   FORM_ERROR_CLASS,
@@ -117,7 +117,7 @@ const {
           <button
             type="button"
             @click="emit('openRegister')"
-            :class="getButtonClass('link', 'xs', 'inline p-0 align-baseline hover:underline')"
+            class="inline align-baseline font-semibold text-red-600 hover:text-red-700 hover:underline"
           >
             Daftar di sini
           </button>
