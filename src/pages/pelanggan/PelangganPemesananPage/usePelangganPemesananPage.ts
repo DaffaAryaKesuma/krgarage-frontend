@@ -209,6 +209,43 @@ export function usePelangganPemesananPage() {
         router.push("/app/riwayat");
       }, 1500);
     } catch (error: any) {
+      const payload = buildPelangganPemesananPayload(form.value);
+
+      if (error.code === "ECONNABORTED") {
+        try {
+          const headers = getAuthHeaders();
+          const { data } = await axios.get(`${API_URL}/pemesanan`, {
+            headers,
+            timeout: 10000,
+          });
+
+          const daftarPemesanan = data.data ?? data;
+          const pemesananTersimpan = Array.isArray(daftarPemesanan)
+            ? daftarPemesanan.some((pemesanan: any) => {
+                const jamPemesanan = String(
+                  pemesanan.jam_pemesanan || pemesanan.waktu_pemesanan || "",
+                ).substring(0, 5);
+
+                return (
+                  Number(pemesanan.id_vespa) === payload.id_vespa &&
+                  pemesanan.tanggal_pemesanan === payload.tanggal_pemesanan &&
+                  jamPemesanan === payload.jam_pemesanan
+                );
+              })
+            : false;
+
+          if (pemesananTersimpan) {
+            toast.success("Pemesanan berhasil dibuat. Email konfirmasi diproses terpisah.");
+            setTimeout(() => {
+              router.push("/app/riwayat");
+            }, 1200);
+            return;
+          }
+        } catch (cekError: any) {
+          logError(cekError, "kirimData:cekPemesananSetelahTimeout");
+        }
+      }
+
       // Catat dan tampilkan error submit.
       logError(error, "kirimData");
       toast.error(handleApiError(error));
