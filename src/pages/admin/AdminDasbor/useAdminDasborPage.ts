@@ -55,6 +55,8 @@ export function useAdminDasborPage() {
   const mekaniks = ref<MekanikProfile[]>([]);
   // Menyimpan mekanik terpilih per id pemesanan.
   const selectedMekanikForPemesanan = ref<Record<number, number>>({});
+  // Batas waktu request dashboard agar loading tidak menggantung terlalu lama.
+  const REQUEST_TIMEOUT_MS = 15000;
 
   // Mengubah data mekanik mentah menjadi option untuk dropdown/select.
   const mekanikOptions = computed<MekanikOption[]>(() =>
@@ -69,6 +71,7 @@ export function useAdminDasborPage() {
     try {
       const { data } = await axios.get(`${API_URL}/admin/dashboard/statistik`, {
         headers: getAuthHeaders(),
+        timeout: REQUEST_TIMEOUT_MS,
       });
 
       // Data langsung dimasukkan ke state agar kartu statistik ikut berubah.
@@ -86,6 +89,7 @@ export function useAdminDasborPage() {
     try {
       const { data } = await axios.get(`${API_URL}/admin/mekanik`, {
         headers: getAuthHeaders(),
+        timeout: REQUEST_TIMEOUT_MS,
       });
       // Backend mengembalikan data di dalam properti data.
       mekaniks.value = data.data || [];
@@ -101,18 +105,33 @@ export function useAdminDasborPage() {
       isLoading.value = true;
     }
     try {
-      // Promise.all membuat dua request berjalan bersamaan agar lebih cepat.
-      const [pemesananRes, lowStockRes] = await Promise.all([
+      const requestConfig = {
+        headers: getAuthHeaders(),
+        timeout: REQUEST_TIMEOUT_MS,
+      };
+
+      // Promise.allSettled membuat halaman tetap tampil walau salah satu endpoint lambat/gagal.
+      const [pemesananResult, lowStockResult] = await Promise.allSettled([
         axios.get(`${API_URL}/admin/dashboard/pemesanan-terbaru`, {
-          headers: getAuthHeaders(),
+          ...requestConfig,
         }),
         axios.get(`${API_URL}/admin/inventori/stok-menipis`, {
-          headers: getAuthHeaders(),
+          ...requestConfig,
         }),
       ]);
 
-      terbaruPemesanan.value = pemesananRes.data;
-      lowStockCount.value = lowStockRes.data.data?.length || 0;
+      if (pemesananResult.status === "fulfilled") {
+        terbaruPemesanan.value = pemesananResult.value.data;
+      } else {
+        logError(pemesananResult.reason, "fetchDasborData:pemesananTerbaru");
+      }
+
+      if (lowStockResult.status === "fulfilled") {
+        lowStockCount.value = lowStockResult.value.data.data?.length || 0;
+      } else {
+        logError(lowStockResult.reason, "fetchDasborData:stokMenipis");
+      }
+
       // Statistik juga disegarkan setelah data utama berhasil.
       await fetchDasborStatistik(false);
     } catch (error: any) {
