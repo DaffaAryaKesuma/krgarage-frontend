@@ -15,6 +15,8 @@ import PelangganPemesananDetailCatatanGrid from "@/components/pelanggan/pemesana
 import PelangganPemesananDetailTotalRingkasan from "@/components/pelanggan/pemesanan-detail/PelangganPemesananDetailTotalRingkasan.vue";
 // Helper class untuk alert error.
 import { getAlertBoxClass } from "@/utils/badgeVariants";
+// Helper class tombol halaman.
+import { getButtonClass } from "@/utils/buttonVariants";
 // Mengambil logika halaman detail pemesanan.
 import { usePelangganPemesananDetailPage } from "./usePelangganPemesananDetailPage";
 
@@ -46,7 +48,7 @@ const {
 <template>
   <!-- Wrapper utama halaman detail pemesanan. -->
   <div class="min-h-screen bg-gray-50">
-    <!-- Header detail pemesanan dengan tombol kembali. -->
+    <!-- Header detail pemesanan. -->
     <AppPageHeader
       title="Detail Pemesanan"
       icon="mdi-clipboard-text"
@@ -56,18 +58,7 @@ const {
           : 'Lihat rincian lengkap pemesanan servis Anda'
       "
       subtitle-class="text-sm sm:text-base text-red-100"
-    >
-      <template #aksi>
-        <!-- Tombol kembali ke halaman riwayat. -->
-        <router-link
-          to="/app/riwayat"
-          class="inline-flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2 text-white no-underline backdrop-blur-sm transition hover:bg-white/20"
-        >
-          <i class="mdi mdi-arrow-left"></i>
-          <span class="font-medium">Kembali</span>
-        </router-link>
-      </template>
-    </AppPageHeader>
+    />
 
     <!-- Area konten detail. -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
@@ -75,10 +66,7 @@ const {
       <LoadingSpinner v-if="isLoading" message="Memuat detail pemesanan..." />
 
       <!-- Tampilkan pesan error jika API detail gagal. -->
-      <div
-        v-else-if="errorMessage"
-        :class="getAlertBoxClass('error')"
-      >
+      <div v-else-if="errorMessage" :class="getAlertBoxClass('error')">
         <p class="font-semibold mb-1">Gagal memuat detail pemesanan</p>
         <p class="text-sm">{{ errorMessage }}</p>
       </div>
@@ -99,10 +87,39 @@ const {
           :total-layanan="totalLayanan"
           :total-suku-cadang="totalSukuCadang"
           :total-biaya="totalBiaya"
-          :can-cancel="canCancel"
-          :is-cancelling="isCancelling"
-          @cancel="showCancelConfirm = true"
         />
+
+        <!-- Aksi utama sejajar dengan tepi kiri dan kanan grid kartu. -->
+        <div
+          class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <!-- Tombol kembali ke halaman riwayat. -->
+          <router-link
+            to="/app/riwayat"
+            :class="getButtonClass('secondary', 'md', 'w-fit no-underline')"
+          >
+            <i class="mdi mdi-arrow-left"></i>
+            <span>Kembali</span>
+          </router-link>
+
+          <!-- Tombol batal hanya muncul jika status pemesanan masih boleh dibatalkan. -->
+          <button
+            v-if="canCancel"
+            @click="showCancelConfirm = true"
+            :disabled="isCancelling"
+            :class="
+              getButtonClass(
+                'dangerOutline',
+                'md',
+                'w-fit disabled:cursor-not-allowed disabled:opacity-60',
+              )
+            "
+          >
+            <i v-if="isCancelling" class="mdi mdi-loading mdi-spin"></i>
+            <i v-else class="mdi mdi-close-circle"></i>
+            <span>Batalkan Pemesanan</span>
+          </button>
+        </div>
       </div>
     </div>
 

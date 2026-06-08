@@ -128,10 +128,10 @@ const getLayananTotal = (pemesanan: PelangganPemesanan) =>
           </div>
           <router-link
             :to="`/app/riwayat/${item.id}`"
-            :class="getButtonClass('neutralOutline', 'sm', 'w-full sm:w-auto')"
+            :class="getButtonClass('secondary', 'xs', 'gap-1.5 shadow-sm no-underline hover:text-red-600')"
           >
-            <i class="mdi mdi-text-box-search-outline text-base"></i>
-            <span>Lihat Detail</span>
+            <i class="mdi mdi-eye-outline text-sm"></i>
+            <span>Detail</span>
           </router-link>
         </div>
       </div>

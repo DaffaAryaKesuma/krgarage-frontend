@@ -7,24 +7,15 @@ import {
   getAlertIconClass,
   getToneTextClass,
 } from "@/utils/badgeVariants";
-// Helper class tombol.
-import { getButtonClass } from "@/utils/buttonVariants";
 
 // Props menerima subtotal, total, dan status tombol batal.
 interface Props {
   totalLayanan: number;
   totalSukuCadang: number;
   totalBiaya: number;
-  canCancel: boolean;
-  isCancelling: boolean;
 }
 
 defineProps<Props>();
-
-// Event cancel dikirim ke parent saat tombol batal ditekan.
-const emit = defineEmits<{
-  cancel: [];
-}>();
 </script>
 
 <template>
@@ -58,22 +49,6 @@ const emit = defineEmits<{
         ></i>
         <p>Pembayaran dilakukan di tempat setelah layanan selesai</p>
       </div>
-    </div>
-
-    <!-- Tombol batal hanya muncul jika status pemesanan masih boleh dibatalkan. -->
-    <div
-      v-if="canCancel"
-      class="mt-4 flex flex-wrap gap-3 border-t border-gray-200 pt-4"
-    >
-      <button
-        @click="emit('cancel')"
-        :disabled="isCancelling"
-        :class="getButtonClass('dangerOutline', 'md', 'disabled:cursor-not-allowed disabled:opacity-60')"
-      >
-        <i v-if="isCancelling" class="mdi mdi-loading mdi-spin"></i>
-        <i v-else class="mdi mdi-close-circle"></i>
-        Batalkan Pemesanan
-      </button>
     </div>
   </section>
 </template>

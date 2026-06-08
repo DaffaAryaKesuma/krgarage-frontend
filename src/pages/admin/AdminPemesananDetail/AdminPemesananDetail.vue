@@ -23,6 +23,8 @@ import AdminPemesananCatatan from "@/components/admin/pemesanan-detail/AdminPeme
 import TambahSukuCadangModal from "@/components/ui/TambahSukuCadangModal/TambahSukuCadangModal.vue";
 // Class alert reusable.
 import { getAlertBoxClass, getAlertIconClass } from "@/utils/badgeVariants";
+// Helper class tombol halaman.
+import { getButtonClass } from "@/utils/buttonVariants";
 // Composable logic detail pemesanan admin.
 import { useAdminPemesananDetailPage } from "./useAdminPemesananDetailPage";
 
@@ -70,18 +72,7 @@ onMounted(async () => {
           : 'Kelola rincian lengkap pemesanan pelanggan'
       "
       subtitle-class="text-sm sm:text-base text-red-100"
-    >
-      <!-- Slot aksi berisi tombol kembali. -->
-      <template #aksi>
-        <router-link
-          to="/admin/pemesanan"
-          class="inline-flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2 text-white no-underline backdrop-blur-sm transition hover:bg-white/20"
-        >
-          <i class="mdi mdi-arrow-left"></i>
-          <span class="font-medium">Kembali</span>
-        </router-link>
-      </template>
-    </AppPageHeader>
+    />
 
     <!-- Area konten detail. -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
@@ -155,6 +146,17 @@ onMounted(async () => {
             @close="closeAddSukuCadangModal"
           />
         </section>
+
+        <!-- Aksi kembali diletakkan di bawah detail agar konsisten dengan halaman pelanggan. -->
+        <div class="flex">
+          <router-link
+            to="/admin/pemesanan"
+            :class="getButtonClass('secondary', 'md', 'w-fit no-underline')"
+          >
+            <i class="mdi mdi-arrow-left"></i>
+            <span>Kembali</span>
+          </router-link>
+        </div>
       </div>
 
       <!-- Konfirmasi hapus item suku cadang dari pemesanan. -->
