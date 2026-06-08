@@ -22,6 +22,7 @@ import { getTimeSlotClass } from "@/utils/selectionVariants";
 interface Props {
   timeSlots: string[];
   bookedSlots: string[];
+  unavailableSlots: string[];
   dateValue: string;
   timeValue: string;
   catatan: string;
@@ -51,9 +52,23 @@ const handleDateChange = () => {
 
 // Saat jam dipilih, update nilai jam dan beri tahu parent.
 const selectTime = (slot: string) => {
+  if (props.bookedSlots.includes(slot) || props.unavailableSlots.includes(slot)) {
+    return;
+  }
+
   emit("update:timeValue", slot);
   emit("timeSelect", slot);
 };
+
+const formatLocalDate = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
+
+const todayDate = formatLocalDate(new Date());
 </script>
 
 <template>
@@ -91,7 +106,7 @@ const selectTime = (slot: string) => {
           "
           @change="handleDateChange"
           type="date"
-          :min="new Date().toISOString().split('T')[0]"
+          :min="todayDate"
           :class="getFormInputClass(!!(dateError && dateTouched), 'px-4 py-3')"
         />
         <!-- Error tanggal muncul setelah field disentuh. -->
@@ -115,11 +130,12 @@ const selectTime = (slot: string) => {
             :key="slot"
             type="button"
             @click="selectTime(slot)"
-            :disabled="bookedSlots.includes(slot)"
+            :disabled="bookedSlots.includes(slot) || unavailableSlots.includes(slot)"
             :class="[
               'py-2 px-2 rounded-lg font-semibold text-sm transition border-2',
               getTimeSlotClass({
                 booked: bookedSlots.includes(slot),
+                unavailable: unavailableSlots.includes(slot),
                 selected: timeValue === slot,
               }),
             ]"
@@ -129,7 +145,7 @@ const selectTime = (slot: string) => {
         </div>
         <!-- Hint menjelaskan arti warna slot. -->
         <p :class="FORM_HINT_CLASS">
-          <i class="mdi mdi-information-outline"></i> Merah = Sudah dipesan
+          <i class="mdi mdi-information-outline"></i> Merah = Sudah dipesan, abu-abu = Jam sudah lewat
         </p>
         <!-- Pesan khusus jika semua slot penuh karena mekanik sibuk -->
         <div

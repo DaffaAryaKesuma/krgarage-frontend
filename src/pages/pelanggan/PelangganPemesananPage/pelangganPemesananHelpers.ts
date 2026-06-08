@@ -71,6 +71,7 @@ export function validatePelangganPemesananField(
   touched: PelangganPemesananTouched,
   errors: PelangganPemesananErrors,
   bookedSlots: string[],
+  unavailableSlots: string[] = [],
 ) {
   // Jika field belum disentuh, jangan tampilkan error dulu.
   if (!touched[field]) return;
@@ -107,6 +108,11 @@ export function validatePelangganPemesananField(
   // Validasi jam wajib dipilih.
   if (!form.jam_pemesanan || form.jam_pemesanan.trim() === "") {
     errors.jam_pemesanan = "Jam pemesanan harus dipilih";
+    return;
+  }
+
+  if (unavailableSlots.includes(form.jam_pemesanan)) {
+    errors.jam_pemesanan = "Jam ini sudah lewat";
     return;
   }
 

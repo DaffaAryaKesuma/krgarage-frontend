@@ -32,6 +32,7 @@ const {
   isSubmitting,
   // Jam yang sudah dipesan pada tanggal terpilih.
   bookedSlots,
+  unavailableSlots,
   // Data form pemesanan.
   form,
   // Error validasi setiap field form.
@@ -88,6 +89,7 @@ onMounted(() => {
           :form="form"
           :errors="errors"
           :booked-slots="bookedSlots"
+          :unavailable-slots="unavailableSlots"
           :validate-required-fields="validateRequiredFields"
         >
           <template #default="{ currentStep }">
@@ -116,6 +118,7 @@ onMounted(() => {
               v-if="currentStep === 3"
               :time-slots="TIME_SLOTS"
               :booked-slots="bookedSlots"
+              :unavailable-slots="unavailableSlots"
               v-model:date-value="form.tanggal_pemesanan"
               v-model:time-value="form.jam_pemesanan"
               v-model:catatan="form.catatan_pelanggan"

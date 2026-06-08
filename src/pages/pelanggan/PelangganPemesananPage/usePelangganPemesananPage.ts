@@ -1,5 +1,5 @@
 // Mengambil computed untuk data turunan dan ref untuk data reaktif.
-import { computed, ref } from "vue";
+import { computed, onUnmounted, ref } from "vue";
 // Mengambil axios untuk memanggil API backend.
 import axios from "axios";
 // Mengambil router untuk pindah halaman setelah pemesanan berhasil.
@@ -55,6 +55,11 @@ export function usePelangganPemesananPage() {
   const sedangMengirim = ref(false);
   // Daftar jam yang sudah terpakai pada tanggal tertentu.
   const slotTerpakai = ref<string[]>([]);
+  // Waktu sekarang dipakai untuk menutup slot yang sudah lewat pada hari ini.
+  const waktuSekarang = ref(new Date());
+  const intervalWaktuSekarang = window.setInterval(() => {
+    waktuSekarang.value = new Date();
+  }, 30000);
 
   // State utama form pemesanan.
   const form = ref(createPelangganPemesananFormState());
@@ -80,6 +85,18 @@ export function usePelangganPemesananPage() {
     layananTerpilih.value.reduce((sum, layanan) => sum + layanan.harga, 0),
   );
 
+  const slotSudahLewat = computed(() => {
+    if (!form.value.tanggal_pemesanan) return [];
+
+    return TIME_SLOTS.filter((slot) =>
+      isSlotPemesananSudahLewat(
+        form.value.tanggal_pemesanan,
+        slot,
+        waktuSekarang.value,
+      ),
+    );
+  });
+
   // Validasi satu field tertentu.
   const validasiBidang = (field: PemesananFormField) => {
     validatePelangganPemesananField(
@@ -88,6 +105,7 @@ export function usePelangganPemesananPage() {
       touched.value,
       errors.value,
       slotTerpakai.value,
+      slotSudahLewat.value,
     );
   };
 
@@ -155,6 +173,7 @@ export function usePelangganPemesananPage() {
     await cekKetersediaan();
     touched.value.tanggal_pemesanan = true;
     validasiBidang("tanggal_pemesanan");
+    validasiBidang("jam_pemesanan");
   };
 
   // Handler saat pelanggan memilih jam.
@@ -286,6 +305,10 @@ export function usePelangganPemesananPage() {
     }
   };
 
+  onUnmounted(() => {
+    window.clearInterval(intervalWaktuSekarang);
+  });
+
   // Kembalikan state dan fungsi ke file .vue.
   return {
     TIME_SLOTS,
@@ -294,6 +317,7 @@ export function usePelangganPemesananPage() {
     isLoading: sedangMemuat,
     isSubmitting: sedangMengirim,
     bookedSlots: slotTerpakai,
+    unavailableSlots: slotSudahLewat,
     form,
     errors,
     touched,
@@ -308,4 +332,18 @@ export function usePelangganPemesananPage() {
     submit: kirimData,
     loadInitialData: muatDataAwal,
   };
+}
+
+function isSlotPemesananSudahLewat(
+  tanggalPemesanan: string,
+  slot: string,
+  now: Date,
+) {
+  const slotDate = new Date(`${tanggalPemesanan}T${slot}:00`);
+
+  if (Number.isNaN(slotDate.getTime())) {
+    return false;
+  }
+
+  return slotDate.getTime() <= now.getTime();
 }

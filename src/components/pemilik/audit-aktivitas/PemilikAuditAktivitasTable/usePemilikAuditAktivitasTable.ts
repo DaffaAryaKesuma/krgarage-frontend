@@ -2,11 +2,11 @@ import { toIDR } from "@/utils/money";
 import { formatNama } from "@/utils/format";
 import { getChipBadgeClass, getRoleBadgeClass } from "@/utils/badgeVariants";
 import { getStatusBadgeClass, getStatusLabel } from "@/utils/statusBadge";
-import type { LogAktivitasAdmin } from "@/types/inventaris";
+import type { LogAktivitas } from "@/types/inventaris";
 import { computed } from "vue";
 
 export interface PemilikAuditAktivitasTableProps {
-  logs: LogAktivitasAdmin[];
+  logs: LogAktivitas[];
   loading: boolean;
   currentPage: number;
   itemsPerPage: number;
@@ -148,25 +148,25 @@ export const getAuditActorRoleClass = (role?: string | null) => {
   return getRoleBadgeClass(role);
 };
 
-export const getAuditActorName = (log: LogAktivitasAdmin) =>
-  log.aktor?.nama || log.admin?.nama || "-";
+export const getAuditActorName = (log: LogAktivitas) =>
+  log.aktor?.nama || "-";
 
-export const getAuditActorRole = (log: LogAktivitasAdmin) =>
-  log.role_pengguna || log.aktor?.role || log.admin?.role || "admin";
+export const getAuditActorRole = (log: LogAktivitas) =>
+  log.role || log.aktor?.role || "-";
 
-export const getChangedFields = (log: LogAktivitasAdmin) => {
+export const getChangedFields = (log: LogAktivitas) => {
   const before = log.data_sebelum || {};
   const after = log.data_sesudah || {};
 
   return Array.from(new Set([...Object.keys(before), ...Object.keys(after)]));
 };
 
-export const getVisibleChangedFields = (log: LogAktivitasAdmin) => {
+export const getVisibleChangedFields = (log: LogAktivitas) => {
   const changedFields = getChangedFields(log);
   const preferredFields =
     ACTION_VISIBLE_FIELDS[log.aksi] ||
     TARGET_VISIBLE_FIELDS[log.target_tipe || ""] ||
-    (log.role_pengguna === "pelanggan" && log.aksi === "tambah"
+    (log.role === "pelanggan" && log.aksi === "tambah"
       ? ["status"]
       : DEFAULT_VISIBLE_FIELDS);
 
@@ -180,7 +180,7 @@ export const getVisibleChangedFields = (log: LogAktivitasAdmin) => {
 const isEmptyAuditValue = (value: unknown) =>
   value === null || value === undefined || value === "";
 
-export const shouldShowAuditArrow = (log: LogAktivitasAdmin, field: string) => {
+export const shouldShowAuditArrow = (log: LogAktivitas, field: string) => {
   const before = log.data_sebelum?.[field];
   const after = log.data_sesudah?.[field];
 
@@ -190,7 +190,7 @@ export const shouldShowAuditArrow = (log: LogAktivitasAdmin, field: string) => {
   return !isEmptyAuditValue(before) && !isEmptyAuditValue(after);
 };
 
-export const getSingleAuditValue = (log: LogAktivitasAdmin, field: string) => {
+export const getSingleAuditValue = (log: LogAktivitas, field: string) => {
   const before = log.data_sebelum?.[field];
   const after = log.data_sesudah?.[field];
   const value = isEmptyAuditValue(after) ? before : after;

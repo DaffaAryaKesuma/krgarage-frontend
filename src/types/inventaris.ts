@@ -73,10 +73,10 @@ export interface RiwayatRestokSukuCadang {
 }
 
 // Log aktivitas penting untuk audit pemilik.
-export interface LogAktivitasAdmin {
+export interface LogAktivitas {
   id: number;
   id_pengguna?: number | null;
-  role_pengguna?: AuditActorRole | string | null;
+  role?: AuditActorRole | string | null;
   aksi: "tambah" | "edit" | "hapus" | "restok" | "batal" | string;
   modul: string;
   target_tipe?: string | null;
@@ -86,11 +86,6 @@ export interface LogAktivitasAdmin {
   data_sebelum?: Record<string, unknown> | null;
   data_sesudah?: Record<string, unknown> | null;
   created_at: string;
-  admin?: {
-    id: number;
-    nama: string;
-    role?: string;
-  } | null;
   aktor?: {
     id: number;
     nama: string;

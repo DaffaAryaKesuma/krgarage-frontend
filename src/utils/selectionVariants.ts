@@ -118,14 +118,20 @@ export function getSelectionCheckClass(
 // Membuat class slot jam pemesanan.
 export function getTimeSlotClass({
   booked,
+  unavailable = false,
   selected,
 }: {
   booked: boolean;
+  unavailable?: boolean;
   selected: boolean;
 }): string {
   // Slot yang sudah dibooking dibuat disabled dan dicoret.
   if (booked) {
     return `cursor-not-allowed opacity-50 line-through ${selectionToneVariants.success.unavailable}`;
+  }
+
+  if (unavailable) {
+    return "cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400 opacity-70 line-through";
   }
 
   // Slot yang dipilih diberi warna hijau.

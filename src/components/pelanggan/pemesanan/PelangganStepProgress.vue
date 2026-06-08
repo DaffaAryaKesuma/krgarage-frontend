@@ -16,6 +16,7 @@ interface Props {
   form: PelangganPemesananFormState;
   errors: PelangganPemesananErrors;
   bookedSlots: string[];
+  unavailableSlots: string[];
   validateRequiredFields: (fields: PemesananFormField[]) => boolean;
 }
 
@@ -66,6 +67,7 @@ const isStepComplete = (stepId: PemesananStep): boolean => {
       !!props.form.tanggal_pemesanan &&
       !!props.form.jam_pemesanan &&
       !props.bookedSlots.includes(props.form.jam_pemesanan) &&
+      !props.unavailableSlots.includes(props.form.jam_pemesanan) &&
       !props.errors.tanggal_pemesanan &&
       !props.errors.jam_pemesanan
     );

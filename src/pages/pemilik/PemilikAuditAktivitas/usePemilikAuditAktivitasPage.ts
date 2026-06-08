@@ -4,7 +4,7 @@ import { API_URL } from "@/utils/api";
 import { getAuthHeaders } from "@/utils/auth";
 import { getYearOptions } from "@/utils/dateFilters";
 import { logError } from "@/utils/errorHandler";
-import type { AuditActorRole, AuditModulKey, LogAktivitasAdmin } from "@/types/inventaris";
+import type { AuditActorRole, AuditModulKey, LogAktivitas } from "@/types/inventaris";
 
 export function usePemilikAuditAktivitasPage() {
   const YEAR_OPTIONS = computed(() =>
@@ -15,7 +15,7 @@ export function usePemilikAuditAktivitasPage() {
   const selectedYear = ref(new Date().getFullYear());
   const selectedModul = ref<AuditModulKey>("semua");
   const selectedRole = ref<AuditActorRole>("semua");
-  const logs = ref<LogAktivitasAdmin[]>([]);
+  const logs = ref<LogAktivitas[]>([]);
   const loading = ref(true);
   const auditCurrentPage = ref(1);
   const auditItemsPerPage = 10;
@@ -29,7 +29,7 @@ export function usePemilikAuditAktivitasPage() {
         month: selectedMonth.value,
         year: selectedYear.value,
         modul: selectedModul.value,
-        role_pengguna: selectedRole.value,
+        role: selectedRole.value,
       };
 
       const response = await axios.get(`${API_URL}/pemilik/log-aktivitas`, {
