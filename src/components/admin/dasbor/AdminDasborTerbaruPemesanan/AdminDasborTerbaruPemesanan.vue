@@ -70,15 +70,19 @@ const {
   showStatusConfirmModal,
   activeStatusConfig,
   showPembayaranConfirmModal,
+  showAssignStartConfirmModal,
   handleConfirm,
   handleComplete,
   handleCancel,
   handleMarkPaid,
   handleMekanikChange,
+  requestAssignStartConfirmation,
   closeStatusConfirmModal,
   applyStatusChange,
   applyPembayaranChange,
   closePembayaranConfirmModal,
+  applyAssignStart,
+  closeAssignStartConfirmModal,
 } = useAdminDasborTerbaruPemesanan({
   pemesanan: toRef(props, "pemesanan"),
   selectedMekaniks: toRef(props, "selectedMekaniks"),
@@ -86,6 +90,7 @@ const {
     emit("statusChange", pemesanan, newStatus, catatan),
   onPembayaranStatusChange: (pemesanan, newStatus) =>
     emit("pembayaranStatusChange", pemesanan, newStatus),
+  onAssignAndStart: (pemesanan) => emit("assignAndStart", pemesanan),
   onSelectedMekaniksChange: (value) => emit("update:selectedMekaniks", value),
 });
 </script>
@@ -139,7 +144,7 @@ const {
           :mekanik-options="mekanikOptions"
           :selected-mekanik-id="selectedMekaniks[item.id] ?? null"
           @update:selected-mekanik-id="handleMekanikChange(item.id, $event)"
-          @assign-and-start="emit('assignAndStart', $event)"
+          @assign-and-start="requestAssignStartConfirmation"
           @confirm="handleConfirm"
           @complete="handleComplete"
           @cancel="handleCancel"
@@ -155,7 +160,7 @@ const {
         :mekanik-options="mekanikOptions"
         :selected-mekanik-id="selectedMekaniks[item.id] ?? null"
         @update:selected-mekanik-id="handleMekanikChange(item.id, $event)"
-        @assign-and-start="emit('assignAndStart', $event)"
+        @assign-and-start="requestAssignStartConfirmation"
         @confirm="handleConfirm"
         @complete="handleComplete"
         @cancel="handleCancel"
@@ -199,6 +204,18 @@ const {
       variant="success"
       @confirm="applyPembayaranChange"
       @cancel="closePembayaranConfirmModal"
+    />
+
+    <!-- Modal konfirmasi assign mekanik dan mulai servis. -->
+    <ConfirmationModal
+      :show="showAssignStartConfirmModal"
+      title="Mulai Pekerjaan Servis"
+      message="Apakah Anda yakin ingin menugaskan mekanik yang dipilih dan memulai pekerjaan servis ini?"
+      confirm-text="Ya, Mulai Servis"
+      cancel-text="Batal"
+      variant="info"
+      @confirm="applyAssignStart"
+      @cancel="closeAssignStartConfirmModal"
     />
   </div>
 </template>

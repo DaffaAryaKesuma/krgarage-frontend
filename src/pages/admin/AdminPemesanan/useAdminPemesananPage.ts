@@ -130,7 +130,8 @@ export function useAdminPemesananPage() {
       // Update status lokal dari response backend.
       pemesanan.status = data.pemesanan?.status ?? newStatus;
       toast.success("Status pemesanan berhasil diubah!");
-      await fetchAllPemesanan(pagination.value.current_page);
+      notifyKrGarageDataChanged();
+      await fetchAllPemesanan(pagination.value.current_page, { silent: true });
     } catch (err: any) {
       console.error("Gagal mengubah status:", err);
       toast.error(
@@ -163,10 +164,11 @@ export function useAdminPemesananPage() {
 
   // Setelah user setuju di modal, jalankan confirmPemesanan.
   const handleConfirmConfirm = async () => {
-    if (pemesananToConfirm.value) {
-      await confirmPemesanan(pemesananToConfirm.value);
+    const targetPemesanan = pemesananToConfirm.value;
+    if (targetPemesanan) {
       isConfirmModalOpen.value = false;
       pemesananToConfirm.value = null;
+      await confirmPemesanan(targetPemesanan);
     }
   };
 
@@ -192,10 +194,11 @@ export function useAdminPemesananPage() {
 
   // Menjalankan batal setelah user mengonfirmasi.
   const handleCancelConfirm = async () => {
-    if (pemesananToCancel.value) {
-      await cancelPemesanan(pemesananToCancel.value);
+    const targetPemesanan = pemesananToCancel.value;
+    if (targetPemesanan) {
       isCancelModalOpen.value = false;
       pemesananToCancel.value = null;
+      await cancelPemesanan(targetPemesanan);
     }
   };
 
@@ -216,10 +219,11 @@ export function useAdminPemesananPage() {
 
   // Menjalankan assign mekanik dan ubah status jadi dikerjakan.
   const handleAssignStartConfirm = async () => {
-    if (pemesananToAssignStart.value) {
-      await assignMekanikAndStart(pemesananToAssignStart.value);
+    const targetPemesanan = pemesananToAssignStart.value;
+    if (targetPemesanan) {
       isAssignStartModalOpen.value = false;
       pemesananToAssignStart.value = null;
+      await assignMekanikAndStart(targetPemesanan);
     }
   };
 
@@ -235,10 +239,11 @@ export function useAdminPemesananPage() {
 
   // Setelah catatan diisi, ubah status menjadi Selesai.
   const handleCompleteConfirm = async (catatan: string) => {
-    if (pemesananToComplete.value) {
-      await changeStatus(pemesananToComplete.value, PEMESANAN_STATUS.SELESAI, catatan);
+    const targetPemesanan = pemesananToComplete.value;
+    if (targetPemesanan) {
       isCompleteModalOpen.value = false;
       pemesananToComplete.value = null;
+      await changeStatus(targetPemesanan, PEMESANAN_STATUS.SELESAI, catatan);
     }
   };
 
@@ -259,10 +264,11 @@ export function useAdminPemesananPage() {
 
   // Menjalankan tandai lunas setelah user mengonfirmasi.
   const handleMarkPaidConfirm = async () => {
-    if (!pemesananToMarkPaid.value) return;
-    await markPemesananAsPaid(pemesananToMarkPaid.value);
+    const targetPemesanan = pemesananToMarkPaid.value;
+    if (!targetPemesanan) return;
     isPaidConfirmOpen.value = false;
     pemesananToMarkPaid.value = null;
+    await markPemesananAsPaid(targetPemesanan);
   };
 
   // Mengubah status pembayaran pemesanan menjadi Lunas.
@@ -312,10 +318,15 @@ export function useAdminPemesananPage() {
         { headers: getAuthHeaders() },
       );
 
+      const mekanikTerpilih =
+        mekaniks.value.find((mekanik) => mekanik.id === mekanikId) || null;
+      pemesanan.status = PEMESANAN_STATUS.DIKERJAKAN;
+      pemesanan.id_mekanik = mekanikId;
+      pemesanan.mekanik = mekanikTerpilih;
       toast.success("Mekanik di-assign dan servis dimulai!");
       // Beri sinyal ke halaman lain agar ikut refresh.
       notifyKrGarageDataChanged();
-      await fetchAllPemesanan(pagination.value.current_page);
+      await fetchAllPemesanan(pagination.value.current_page, { silent: true });
     } catch (err: any) {
       console.error("Gagal assign mekanik dan mulai servis:", err);
       toast.error(err.response?.data?.message || "Gagal memproses pemesanan.");

@@ -54,12 +54,16 @@ const {
   assignedMekanikName,
   showAksiConfirmation,
   aksiConfirmationConfig,
+  showStartServiceConfirmation,
   handleConfirm,
   handleComplete,
   handleCancel,
   handleMarkAsPaid,
   closeAksiConfirmation,
   confirmAksi,
+  requestStartServiceConfirmation,
+  closeStartServiceConfirmation,
+  confirmStartService,
   fetchMekaniks,
   assignMekanikAndStart,
 } = useAdminPemesananControlPanel(props, () => emit("refresh"));
@@ -135,7 +139,7 @@ onMounted(() => {
             class="mb-3"
           />
           <button
-            @click="assignMekanikAndStart"
+            @click="requestStartServiceConfirmation"
             :disabled="!selectedMekanikId || isProcessing"
             :class="CONFIRM_BUTTON_CLASS"
           >
@@ -277,6 +281,17 @@ onMounted(() => {
       :variant="aksiConfirmationConfig?.variant || 'info'"
       @confirm="confirmAksi()"
       @cancel="closeAksiConfirmation"
+    />
+
+    <ConfirmationModal
+      :show="showStartServiceConfirmation"
+      title="Mulai Pekerjaan Servis"
+      message="Apakah Anda yakin ingin menugaskan mekanik yang dipilih dan memulai pekerjaan servis ini?"
+      confirm-text="Ya, Mulai Servis"
+      cancel-text="Batal"
+      variant="info"
+      @confirm="confirmStartService"
+      @cancel="closeStartServiceConfirmation"
     />
   </div>
 </template>

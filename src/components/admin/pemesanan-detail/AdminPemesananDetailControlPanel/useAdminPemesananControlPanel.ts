@@ -72,6 +72,8 @@ export function useAdminPemesananControlPanel(
   const showAksiConfirmation = ref(false);
   // Aksi yang sedang menunggu konfirmasi.
   const pendingAksi = ref<PemesananAksiType | null>(null);
+  // State modal khusus mulai servis setelah mekanik dipilih.
+  const showStartServiceConfirmation = ref(false);
 
   // Sinkronkan selectedMekanikId jika props currentMekanikId berubah setelah refresh.
   watch(
@@ -150,6 +152,19 @@ export function useAdminPemesananControlPanel(
     pendingAksi.value = null;
   };
 
+  const requestStartServiceConfirmation = () => {
+    if (!selectedMekanikId.value) {
+      toast.error("Silakan pilih mekanik terlebih dahulu");
+      return;
+    }
+
+    showStartServiceConfirmation.value = true;
+  };
+
+  const closeStartServiceConfirmation = () => {
+    showStartServiceConfirmation.value = false;
+  };
+
   // Mengubah status servis pemesanan.
   async function updateStatus(statusBaru: string, pesanSukses: string, catatan?: string) {
     isProcessing.value = true;
@@ -162,6 +177,7 @@ export function useAdminPemesananControlPanel(
       toast.error(error.response?.data?.message || "Gagal memperbarui status");
     } finally {
       isProcessing.value = false;
+      closeStartServiceConfirmation();
     }
   }
 
@@ -185,6 +201,7 @@ export function useAdminPemesananControlPanel(
       );
     } finally {
       isProcessing.value = false;
+      closeStartServiceConfirmation();
     }
   }
 
@@ -240,6 +257,11 @@ export function useAdminPemesananControlPanel(
     }
   }
 
+  const confirmStartService = () => {
+    closeStartServiceConfirmation();
+    void assignMekanikAndStart();
+  };
+
   // Handler singkat untuk tombol-tombol di template.
   const handleConfirm = () => requestAksiConfirmation("confirm");
   const handleComplete = () => requestAksiConfirmation("complete");
@@ -264,12 +286,16 @@ export function useAdminPemesananControlPanel(
     assignedMekanikName,
     showAksiConfirmation,
     aksiConfirmationConfig,
+    showStartServiceConfirmation,
     handleConfirm,
     handleComplete,
     handleCancel,
     handleMarkAsPaid,
     closeAksiConfirmation,
     confirmAksi,
+    requestStartServiceConfirmation,
+    closeStartServiceConfirmation,
+    confirmStartService,
     fetchMekaniks,
     assignMekanikAndStart,
   };

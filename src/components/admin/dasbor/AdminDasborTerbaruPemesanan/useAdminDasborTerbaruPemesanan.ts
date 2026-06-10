@@ -32,6 +32,7 @@ interface UseAdminDasborTerbaruPemesananOptions {
   selectedMekaniks: Ref<Record<number, number>>;
   onStatusChange: (pemesanan: Pemesanan, statusBaru: string, catatan?: string) => void;
   onPembayaranStatusChange: (pemesanan: Pemesanan, statusBaru: string) => void;
+  onAssignAndStart: (pemesanan: Pemesanan) => void;
   onSelectedMekaniksChange: (value: Record<number, number>) => void;
 }
 
@@ -41,6 +42,7 @@ export function useAdminDasborTerbaruPemesanan({
   selectedMekaniks,
   onStatusChange,
   onPembayaranStatusChange,
+  onAssignAndStart,
   onSelectedMekaniksChange,
 }: UseAdminDasborTerbaruPemesananOptions) {
   // State modal konfirmasi status servis.
@@ -49,6 +51,9 @@ export function useAdminDasborTerbaruPemesanan({
   // State modal konfirmasi pembayaran lunas.
   const showPembayaranConfirmModal = ref(false);
   const pendingPembayaranAksi = ref<Pemesanan | null>(null);
+  // State modal konfirmasi assign mekanik dan mulai servis.
+  const showAssignStartConfirmModal = ref(false);
+  const pendingAssignStartAksi = ref<Pemesanan | null>(null);
 
   // true jika ada pemesanan yang perlu ditampilkan.
   const hasPemesanan = computed(() => pemesanan.value.length > 0);
@@ -99,8 +104,8 @@ export function useAdminDasborTerbaruPemesanan({
       return;
     }
 
-    onStatusChange(aksi.pemesanan, config.statusBaru, catatan);
     closeStatusConfirmModal();
+    onStatusChange(aksi.pemesanan, config.statusBaru, catatan);
   };
 
   // Handler tombol konfirmasi.
@@ -131,14 +136,39 @@ export function useAdminDasborTerbaruPemesanan({
       closePembayaranConfirmModal();
       return;
     }
-    onPembayaranStatusChange(pendingPembayaranAksi.value, PEMBAYARAN_STATUS.PAID);
+    const targetPemesanan = pendingPembayaranAksi.value;
     closePembayaranConfirmModal();
+    onPembayaranStatusChange(targetPemesanan, PEMBAYARAN_STATUS.PAID);
   };
 
   // Menutup modal pembayaran.
   const closePembayaranConfirmModal = () => {
     showPembayaranConfirmModal.value = false;
     pendingPembayaranAksi.value = null;
+  };
+
+  // Membuka modal konfirmasi sebelum assign mekanik dan mulai servis.
+  const requestAssignStartConfirmation = (pemesanan: Pemesanan) => {
+    pendingAssignStartAksi.value = pemesanan;
+    showAssignStartConfirmModal.value = true;
+  };
+
+  // Menjalankan assign/start setelah admin mengonfirmasi modal.
+  const applyAssignStart = () => {
+    if (!pendingAssignStartAksi.value) {
+      closeAssignStartConfirmModal();
+      return;
+    }
+
+    const targetPemesanan = pendingAssignStartAksi.value;
+    closeAssignStartConfirmModal();
+    onAssignAndStart(targetPemesanan);
+  };
+
+  // Menutup modal assign/start.
+  const closeAssignStartConfirmModal = () => {
+    showAssignStartConfirmModal.value = false;
+    pendingAssignStartAksi.value = null;
   };
 
   // Menyimpan pilihan mekanik per id pemesanan.
@@ -165,15 +195,19 @@ export function useAdminDasborTerbaruPemesanan({
     showStatusConfirmModal,
     activeStatusConfig,
     showPembayaranConfirmModal,
+    showAssignStartConfirmModal,
     handleConfirm,
     handleComplete,
     handleCancel,
     handleMarkPaid,
     handleMekanikChange,
+    requestAssignStartConfirmation,
     closeStatusConfirmModal,
     applyStatusChange,
     applyPembayaranChange,
     closePembayaranConfirmModal,
+    applyAssignStart,
+    closeAssignStartConfirmModal,
   };
 }
 

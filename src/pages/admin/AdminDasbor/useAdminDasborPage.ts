@@ -162,9 +162,10 @@ export function useAdminDasborPage() {
         { headers: getAuthHeaders() },
       );
 
-      // Update state lokal supaya UI langsung ikut berubah.
       pemesanan.status = statusBaru;
       toast.success("Status pemesanan berhasil diubah!");
+      notifyKrGarageDataChanged();
+      await fetchDasborData({ silent: true });
       await fetchDasborStatistik(false);
     } catch (error: any) {
       logError(error, "changeStatus");
@@ -196,15 +197,15 @@ export function useAdminDasborPage() {
         { headers: getAuthHeaders() },
       );
 
-      // Update object lokal agar tabel tidak perlu menunggu reload penuh.
+      const mekanikTerpilih =
+        mekaniks.value.find((mekanik) => mekanik.id === mekanikId) || null;
       pemesanan.status = PEMESANAN_STATUS.DIKERJAKAN;
       pemesanan.id_mekanik = mekanikId;
-      pemesanan.mekanik =
-        mekaniks.value.find((mekanik) => mekanik.id === mekanikId) || null;
-
+      pemesanan.mekanik = mekanikTerpilih;
       toast.success("Mekanik di-assign dan servis dimulai!");
       // Memberi tahu halaman lain bahwa data KRGarage berubah.
       notifyKrGarageDataChanged();
+      await fetchDasborData({ silent: true });
       await fetchDasborStatistik(false);
     } catch (error: any) {
       logError(error, "assignMekanikAndStart");
