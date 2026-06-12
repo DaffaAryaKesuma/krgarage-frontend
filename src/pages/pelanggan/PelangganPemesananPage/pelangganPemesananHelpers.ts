@@ -33,6 +33,37 @@ export interface PelangganPemesananTouched {
   jam_pemesanan: boolean;
 }
 
+export function isBengkelLiburJumat(tanggal: string): boolean {
+  if (!tanggal) return false;
+
+  const selectedDate = dayjs(tanggal);
+  if (!selectedDate.isValid()) return false;
+
+  return selectedDate.day() === 5;
+}
+
+function getJakartaTodayDate(): string {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Jakarta",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+
+  const value = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((part) => part.type === type)?.value;
+
+  const year = value("year");
+  const month = value("month");
+  const day = value("day");
+
+  if (!year || !month || !day) {
+    return dayjs().format("YYYY-MM-DD");
+  }
+
+  return `${year}-${month}-${day}`;
+}
+
 // Membuat state awal form pemesanan.
 export function createPelangganPemesananFormState(): PelangganPemesananFormState {
   return {
@@ -98,10 +129,22 @@ export function validatePelangganPemesananField(
     }
 
     const selectedDate = dayjs(form.tanggal_pemesanan);
-    const today = dayjs().startOf("day");
-    errors.tanggal_pemesanan = selectedDate.isBefore(today)
-      ? "Tanggal tidak boleh di masa lalu"
-      : "";
+    if (selectedDate.format("YYYY-MM-DD") < getJakartaTodayDate()) {
+      errors.tanggal_pemesanan = "Tanggal tidak boleh di masa lalu";
+      return;
+    }
+
+    if (isBengkelLiburJumat(form.tanggal_pemesanan)) {
+      errors.tanggal_pemesanan = "Bengkel libur setiap hari Jumat";
+      return;
+    }
+
+    errors.tanggal_pemesanan = "";
+    return;
+  }
+
+  if (isBengkelLiburJumat(form.tanggal_pemesanan)) {
+    errors.jam_pemesanan = "Bengkel libur setiap hari Jumat";
     return;
   }
 

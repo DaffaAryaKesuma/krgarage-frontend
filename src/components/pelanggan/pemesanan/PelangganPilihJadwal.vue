@@ -68,7 +68,38 @@ const formatLocalDate = (date: Date) => {
   return `${year}-${month}-${day}`;
 };
 
-const todayDate = formatLocalDate(new Date());
+const formatJakartaDate = (date: Date) => {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Jakarta",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+
+  const value = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((part) => part.type === type)?.value;
+
+  const year = value("year");
+  const month = value("month");
+  const day = value("day");
+
+  if (!year || !month || !day) {
+    return formatLocalDate(date);
+  }
+
+  return `${year}-${month}-${day}`;
+};
+
+const isFridayDate = (dateValue: string) => {
+  if (!dateValue) return false;
+
+  const date = new Date(`${dateValue}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return false;
+
+  return date.getDay() === 5;
+};
+
+const todayDate = formatJakartaDate(new Date());
 </script>
 
 <template>
@@ -145,11 +176,22 @@ const todayDate = formatLocalDate(new Date());
         </div>
         <!-- Hint menjelaskan arti warna slot. -->
         <p :class="FORM_HINT_CLASS">
-          <i class="mdi mdi-information-outline"></i> Merah = Sudah dipesan, abu-abu = Jam sudah lewat
+          <i class="mdi mdi-information-outline"></i> Merah = Sudah dipesan, abu-abu = Tidak tersedia
         </p>
+        <div
+          v-if="isFridayDate(dateValue)"
+          :class="[getAlertBoxClass('warning'), 'mt-3 flex items-start gap-2 px-3 py-2 shadow-none']"
+        >
+          <i
+            :class="[getAlertIconClass('warning'), 'mdi mdi-calendar-remove mt-0.5 flex-shrink-0']"
+          ></i>
+          <p class="text-xs font-medium">
+            Bengkel libur setiap hari Jumat. Silakan pilih tanggal lain.
+          </p>
+        </div>
         <!-- Pesan khusus jika semua slot penuh karena mekanik sibuk -->
         <div
-          v-if="bookedSlots.length === timeSlots.length"
+          v-else-if="bookedSlots.length === timeSlots.length"
           :class="[getAlertBoxClass('warning'), 'mt-3 flex items-start gap-2 px-3 py-2 shadow-none']"
         >
           <i

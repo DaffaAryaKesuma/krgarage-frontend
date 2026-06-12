@@ -23,6 +23,7 @@ import {
   createPelangganPemesananFormState,
   createPelangganPemesananTouched,
   hasPelangganPemesananErrors,
+  isBengkelLiburJumat,
   validatePelangganPemesananField,
   type PemesananFormField,
 } from "@/pages/pelanggan/PelangganPemesananPage/pelangganPemesananHelpers";
@@ -88,13 +89,19 @@ export function usePelangganPemesananPage() {
   const slotSudahLewat = computed(() => {
     if (!form.value.tanggal_pemesanan) return [];
 
-    return TIME_SLOTS.filter((slot) =>
+    const slotsSudahLewat = TIME_SLOTS.filter((slot) =>
       isSlotPemesananSudahLewat(
         form.value.tanggal_pemesanan,
         slot,
         waktuSekarang.value,
       ),
     );
+
+    if (isBengkelLiburJumat(form.value.tanggal_pemesanan)) {
+      return Array.from(new Set([...slotsSudahLewat, ...TIME_SLOTS]));
+    }
+
+    return slotsSudahLewat;
   });
 
   // Validasi satu field tertentu.
@@ -133,6 +140,12 @@ export function usePelangganPemesananPage() {
 
     // Reset jam karena tanggal berubah.
     form.value.jam_pemesanan = "";
+
+    if (isBengkelLiburJumat(form.value.tanggal_pemesanan)) {
+      slotTerpakai.value = TIME_SLOTS;
+      return;
+    }
+
     try {
       // Panggil API cek slot berdasarkan tanggal.
       const { data } = await axios.get(
@@ -339,11 +352,60 @@ function isSlotPemesananSudahLewat(
   slot: string,
   now: Date,
 ) {
-  const slotDate = new Date(`${tanggalPemesanan}T${slot}:00`);
+  const jakartaNow = getJakartaDateTimeParts(now);
+  const slotMinutes = timeToMinutes(slot);
 
-  if (Number.isNaN(slotDate.getTime())) {
+  if (!jakartaNow || slotMinutes === null) {
     return false;
   }
 
-  return slotDate.getTime() <= now.getTime();
+  if (tanggalPemesanan < jakartaNow.date) {
+    return true;
+  }
+
+  if (tanggalPemesanan > jakartaNow.date) {
+    return false;
+  }
+
+  return slotMinutes <= jakartaNow.minutes;
+}
+
+function getJakartaDateTimeParts(date: Date): { date: string; minutes: number } | null {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Jakarta",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(date);
+
+  const value = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((part) => part.type === type)?.value;
+
+  const year = value("year");
+  const month = value("month");
+  const day = value("day");
+  const hour = value("hour");
+  const minute = value("minute");
+
+  if (!year || !month || !day || !hour || !minute) {
+    return null;
+  }
+
+  return {
+    date: `${year}-${month}-${day}`,
+    minutes: Number(hour) * 60 + Number(minute),
+  };
+}
+
+function timeToMinutes(time: string): number | null {
+  const [hour, minute] = time.split(":").map((part) => Number(part));
+
+  if (!Number.isFinite(hour) || !Number.isFinite(minute)) {
+    return null;
+  }
+
+  return hour * 60 + minute;
 }
