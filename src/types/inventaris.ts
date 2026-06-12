@@ -61,6 +61,8 @@ export interface RiwayatRestokSukuCadang {
   stok_sesudah: number;
   catatan?: string | null;
   foto_struk?: string | null;
+  foto_struk_url?: string | null;
+  foto_struk_tersedia?: boolean;
   created_at: string;
   suku_cadang?: {
     id: number;

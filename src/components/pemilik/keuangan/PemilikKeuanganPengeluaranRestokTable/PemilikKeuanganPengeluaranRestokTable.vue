@@ -29,6 +29,7 @@ import {
   usePemilikKeuanganPengeluaranRestokTable,
   type PemilikKeuanganPengeluaranRestokTableProps,
 } from "./usePemilikKeuanganPengeluaranRestokTable";
+import type { RiwayatRestokSukuCadang } from "@/types/inventaris";
 
 // Event update currentPage dikirim saat pagination berubah.
 interface Emits {
@@ -62,17 +63,32 @@ const TABLE_TOTAL_CELL_CLASS =
 const RECEIPT_BUTTON_CLASS = getButtonClass("infoOutline", "xs", "h-8");
 
 const selectedReceiptUrl = ref<string | null>(null);
+const receiptLoadFailed = ref(false);
 
 const selectedReceiptImage = computed(() =>
   selectedReceiptUrl.value ? getImageUrl(selectedReceiptUrl.value) : "",
 );
 
+const getReceiptSource = (item: RiwayatRestokSukuCadang) => {
+  if (item.foto_struk_url) {
+    return item.foto_struk_url;
+  }
+
+  if (item.foto_struk && item.foto_struk_tersedia !== false) {
+    return item.foto_struk;
+  }
+
+  return "";
+};
+
 const openReceiptModal = (url: string) => {
   selectedReceiptUrl.value = url;
+  receiptLoadFailed.value = false;
 };
 
 const closeReceiptModal = () => {
   selectedReceiptUrl.value = null;
+  receiptLoadFailed.value = false;
 };
 </script>
 
@@ -152,13 +168,16 @@ const closeReceiptModal = () => {
             <div>
               <p :class="META_LABEL_CLASS">Struk</p>
               <button
-                v-if="item.foto_struk"
+                v-if="getReceiptSource(item)"
                 type="button"
                 :class="RECEIPT_BUTTON_CLASS"
-                @click="openReceiptModal(item.foto_struk)"
+                @click="openReceiptModal(getReceiptSource(item))"
               >
                 Lihat
               </button>
+              <p v-else-if="item.foto_struk" class="font-medium text-gray-500">
+                File tidak tersedia
+              </p>
               <p v-else class="font-medium text-gray-500">-</p>
             </div>
           </div>
@@ -192,13 +211,16 @@ const closeReceiptModal = () => {
         </td>
         <td :class="TABLE_CELL_CLASS">
           <button
-            v-if="item.foto_struk"
+            v-if="getReceiptSource(item)"
             type="button"
             :class="RECEIPT_BUTTON_CLASS"
-            @click="openReceiptModal(item.foto_struk)"
+            @click="openReceiptModal(getReceiptSource(item))"
           >
             Lihat
           </button>
+          <span v-else-if="item.foto_struk" class="text-gray-500">
+            File tidak tersedia
+          </span>
           <span v-else class="text-gray-500">-</span>
         </td>
       </tr>
@@ -249,10 +271,24 @@ const closeReceiptModal = () => {
           </button>
         </div>
         <div class="max-h-[calc(90vh-4.5rem)] overflow-auto bg-gray-100 p-4">
+          <div
+            v-if="receiptLoadFailed"
+            class="flex min-h-44 flex-col items-center justify-center rounded-xl border border-dashed border-gray-300 bg-white px-4 py-8 text-center text-gray-600"
+          >
+            <i class="mdi mdi-image-off-outline mb-2 text-4xl text-gray-400"></i>
+            <p class="text-sm font-semibold text-gray-800">
+              Foto struk tidak tersedia
+            </p>
+            <p class="mt-1 max-w-sm text-xs">
+              File struk lama kemungkinan tidak ada di storage server production.
+            </p>
+          </div>
           <img
+            v-else
             :src="selectedReceiptImage"
             alt="Foto struk restok"
             class="mx-auto max-h-[calc(90vh-7rem)] max-w-full rounded-xl object-contain shadow-sm"
+            @error="receiptLoadFailed = true"
           />
         </div>
       </div>
