@@ -1,5 +1,5 @@
 // Mengambil computed untuk data turunan, ref untuk state, dan onBeforeUnmount untuk membersihkan timer.
-import { computed, onBeforeUnmount, ref, type Ref } from "vue";
+import { computed, ref, type Ref } from "vue";
 // Mengambil axios untuk memanggil API backend.
 import axios from "axios";
 // Mengambil router untuk redirect jika token tidak valid.
@@ -49,8 +49,8 @@ export function useMekanikPemesanan(activeTab: Ref<MekanikTab>) {
   const loading = ref(false);
   // Filter status pekerjaan aktif.
   const statusFilter = ref<MekanikStatusFilter>("semua");
-  // Timer refresh ulang setelah event realtime.
-  let delayedRealtimeRefresh: ReturnType<typeof setTimeout> | null = null;
+  const REQUEST_TIMEOUT_MS = 25000;
+  const ACTIVE_JOBS_PER_PAGE = 50;
 
   // Filter tahun riwayat; 0 berarti semua tahun.
   const selectedYear = ref(0);
@@ -89,8 +89,8 @@ export function useMekanikPemesanan(activeTab: Ref<MekanikTab>) {
 
       // Ambil semua pemesanan mekanik.
       const response = await axios.get(
-        `${API_URL}/mekanik/pemesanan?per_page=1000`,
-        { headers },
+        `${API_URL}/mekanik/pemesanan?per_page=${ACTIVE_JOBS_PER_PAGE}`,
+        { headers, timeout: REQUEST_TIMEOUT_MS },
       );
 
       // Simpan hanya pemesanan yang belum selesai/batal.
@@ -144,7 +144,7 @@ export function useMekanikPemesanan(activeTab: Ref<MekanikTab>) {
       // Ambil data pemesanan mekanik berdasarkan filter.
       const response = await axios.get(
         `${API_URL}/mekanik/pemesanan?${params.toString()}`,
-        { headers },
+        { headers, timeout: REQUEST_TIMEOUT_MS },
       );
 
       // Simpan hanya pemesanan yang sudah selesai atau dibatalkan.
@@ -186,28 +186,10 @@ export function useMekanikPemesanan(activeTab: Ref<MekanikTab>) {
       await fetchRiwayat(riwayatPagination.value.current_page, { silent: true });
     }
 
-    // Bersihkan timer refresh lama agar tidak menumpuk.
-    if (delayedRealtimeRefresh) {
-      clearTimeout(delayedRealtimeRefresh);
-    }
-
-    // Refresh ulang setelah jeda untuk memastikan data backend sudah benar-benar tersimpan.
-    delayedRealtimeRefresh = setTimeout(() => {
-      void (activeTab.value === "active"
-        ? fetchActiveJobs({ silent: true })
-        : fetchRiwayat(riwayatPagination.value.current_page, { silent: true }));
-    }, 1200);
   };
 
   // Pasang listener refresh realtime.
   useRealtimeRefresh(refreshFromRealtime);
-
-  // Saat komponen dilepas, bersihkan timer agar tidak berjalan terus.
-  onBeforeUnmount(() => {
-    if (delayedRealtimeRefresh) {
-      clearTimeout(delayedRealtimeRefresh);
-    }
-  });
 
   // Data yang ditampilkan di grid, tergantung tab dan filter status.
   const filteredPemesanan = computed(() => {

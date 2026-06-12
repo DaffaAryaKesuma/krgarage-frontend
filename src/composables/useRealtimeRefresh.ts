@@ -48,20 +48,22 @@ export function useRealtimeRefresh(
   const allowedEvents = options.events ?? ["pemesanan.changed"];
   // Flag agar refresh tidak dobel saat event datang berdekatan.
   let isRefreshing = false;
+  // Timer debounce agar event realtime beruntun digabung menjadi satu refresh.
+  let pendingRefreshTimer: ReturnType<typeof setTimeout> | null = null;
   // Pusher bisa null jika key belum dikonfigurasi.
   const pusher = getPusherClient();
   // Subscribe ke channel status jika Pusher aktif.
   const pusherChannel = pusher?.subscribe("krgarage-status");
   // Handler event Pusher untuk perubahan pemesanan.
   const handlePusherPemesananChanged = (payload: Record<string, unknown>) => {
-    void runRefresh({
+    runRefresh({
       event: "pemesanan.changed",
       payload,
     });
   };
 
   // Menjalankan refresh dengan proteksi anti-double-call dan filter event.
-  const runRefresh = async (message: RealtimeMessage) => {
+  const runRefreshNow = async (message: RealtimeMessage) => {
     if (isRefreshing) return;
     // Jika event tidak termasuk allowedEvents, abaikan.
     if (message.event && !allowedEvents.includes(message.event)) return;
@@ -74,22 +76,33 @@ export function useRealtimeRefresh(
     }
   };
 
+  const runRefresh = (message: RealtimeMessage) => {
+    if (pendingRefreshTimer) {
+      clearTimeout(pendingRefreshTimer);
+    }
+
+    pendingRefreshTimer = setTimeout(() => {
+      pendingRefreshTimer = null;
+      void runRefreshNow(message);
+    }, 350);
+  };
+
   // Handler untuk custom event dalam tab yang sama.
   const handleDataChanged = (event: Event) => {
     const detail = (event as CustomEvent<RealtimeMessage>).detail;
-    void runRefresh(detail || { event: "pemesanan.changed" });
+    runRefresh(detail || { event: "pemesanan.changed" });
   };
 
   // Handler untuk perubahan localStorage dari tab lain.
   const handleStorageChanged = (event: StorageEvent) => {
     if (event.key === "krg_data_changed_at") {
-      void runRefresh({ event: "pemesanan.changed" });
+      runRefresh({ event: "pemesanan.changed" });
     }
   };
 
   // Saat tab mendapat focus lagi, refresh agar data tidak basi.
   const handleFocus = () => {
-    void runRefresh({ event: "pemesanan.changed" });
+    runRefresh({ event: "pemesanan.changed" });
   };
 
   // Pasang semua listener saat komponen memakai composable ini sudah mounted.
@@ -107,5 +120,8 @@ export function useRealtimeRefresh(
     window.removeEventListener("storage", handleStorageChanged);
     window.removeEventListener("focus", handleFocus);
     pusherChannel?.unbind("pemesanan.changed", handlePusherPemesananChanged);
+    if (pendingRefreshTimer) {
+      clearTimeout(pendingRefreshTimer);
+    }
   });
 }
