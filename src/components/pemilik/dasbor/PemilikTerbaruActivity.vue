@@ -46,7 +46,7 @@ const TABLE_COLUMN_WIDTHS = ["14%", "16%", "13%", "20%", "12%", "11%", "13%"];
     <!-- Header section dan link ke laporan lengkap. -->
     <div class="mb-4 flex items-center justify-between">
       <div class="flex items-center gap-2">
-        <i class="mdi mdi-calendar-clock text-2xl"></i>
+        <i class="mdi mdi-calendar-clock text-xl"></i>
         <h2 class="text-xl font-bold text-gray-900">
           Aktivitas Terbaru
         </h2>

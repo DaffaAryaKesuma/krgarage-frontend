@@ -50,7 +50,7 @@ export function useMekanikPemesanan(activeTab: Ref<MekanikTab>) {
   // Filter status pekerjaan aktif.
   const statusFilter = ref<MekanikStatusFilter>("semua");
   const REQUEST_TIMEOUT_MS = 25000;
-  const ACTIVE_JOBS_PER_PAGE = 50;
+  const MEKANIK_PEMESANAN_PER_PAGE = 15;
 
   // Filter tahun riwayat; 0 berarti semua tahun.
   const selectedYear = ref(0);
@@ -62,7 +62,7 @@ export function useMekanikPemesanan(activeTab: Ref<MekanikTab>) {
     pagination: riwayatPagination,
     setCurrentPage: setRiwayatCurrentPage,
     updateFromApi: updateRiwayatPagination,
-  } = useApiPagination(10);
+  } = useApiPagination(MEKANIK_PEMESANAN_PER_PAGE);
 
   // Mengambil header token dan redirect jika token tidak tersedia.
   const getValidAuthHeaders = () => {
@@ -89,7 +89,7 @@ export function useMekanikPemesanan(activeTab: Ref<MekanikTab>) {
 
       // Ambil semua pemesanan mekanik.
       const response = await axios.get(
-        `${API_URL}/mekanik/pemesanan?per_page=${ACTIVE_JOBS_PER_PAGE}`,
+        `${API_URL}/mekanik/pemesanan?per_page=${MEKANIK_PEMESANAN_PER_PAGE}`,
         { headers, timeout: REQUEST_TIMEOUT_MS },
       );
 

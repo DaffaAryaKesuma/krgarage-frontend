@@ -3,12 +3,8 @@
 import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
 // Komponen banner untuk menampilkan Vespa yang sudah waktunya servis.
 import PelangganPengingatLayananBanner from "@/components/pelanggan/dasbor/PelangganPengingatLayananBanner.vue";
-// Komponen tombol aksi cepat, seperti buat pemesanan dan kelola Vespa.
-import PelangganAksiCepat from "@/components/pelanggan/dasbor/PelangganAksiCepat.vue";
-// Komponen kartu statistik ringkas dashboard pelanggan.
-import PelangganStatistikKartu from "@/components/pelanggan/dasbor/PelangganStatistikKartu.vue";
-// Komponen tips perawatan Vespa.
-import PelangganTipsWidget from "@/components/pelanggan/dasbor/PelangganTipsWidget.vue";
+// Komponen grid ringkas berisi statistik, aksi cepat, dan tips.
+import PelangganDasborCards from "@/components/pelanggan/dasbor/PelangganDasborCards.vue";
 // Komponen daftar pemesanan yang masih aktif atau akan datang.
 import PelangganPemesananMendatang from "@/components/pelanggan/dasbor/PelangganPemesananMendatang.vue";
 // Komponen daftar riwayat pemesanan terbaru.
@@ -32,8 +28,6 @@ const {
   upcomingPemesanan,
   // Daftar riwayat pemesanan terbaru.
   terbaruPemesanan,
-  // Semua data pemesanan pelanggan.
-  pemesananDaftar,
 } = usePelangganDasborPage();
 </script>
 
@@ -59,20 +53,11 @@ const {
         <!-- Banner peringatan jika ada Vespa yang sudah waktunya servis. -->
         <PelangganPengingatLayananBanner :vespas="vespasDueLayanan" />
 
-        <!-- Kartu statistik: jumlah Vespa, total servis, dan pemesanan aktif. -->
-        <PelangganStatistikKartu
+        <!-- Grid ringkas: statistik, aksi cepat, dan tips perawatan. -->
+        <PelangganDasborCards
           :vespa-count="vespaDaftar.length"
-          :total-pemesanan="pemesananDaftar.length"
           :active-pemesanan="upcomingPemesanan.length"
         />
-
-        <!-- Baris aksi cepat dan tips perawatan. -->
-        <div class="grid gap-3 lg:gap-6 xl:grid-cols-[1.5fr_1fr]">
-          <!-- Tombol cepat untuk membuat pemesanan atau mengelola Vespa. -->
-          <PelangganAksiCepat class="h-full" />
-          <!-- Tips perawatan Vespa. -->
-          <PelangganTipsWidget class="h-full" />
-        </div>
 
         <!-- Daftar pemesanan aktif/mendatang. Hanya tampil jika ada data. -->
         <PelangganPemesananMendatang

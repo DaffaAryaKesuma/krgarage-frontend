@@ -61,8 +61,9 @@ const TABLE_COLUMN_WIDTHS = ["15%", "16%", "12%", "12%", "12%", "20%", "13%"];
 const TABLE_CLASS = buildFixedTableClass("min-w-[1200px]");
 
 // Class header cell.
-const TABLE_HEADER_CELL_CLASS =
-  buildTableHeaderCellClass("text-gray-900 sm:px-4");
+const TABLE_HEADER_CELL_CLASS = buildTableHeaderCellClass(
+  "text-gray-900 sm:px-4",
+);
 
 // Ambil state dan handler dari composable.
 const {
@@ -107,10 +108,10 @@ const {
       </h2>
       <router-link
         to="/admin/pemesanan"
-        class="text-red-600 hover:text-red-700 font-medium text-sm no-underline"
+        class="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-red-600"
       >
         Lihat Semua
-        <i class="mdi mdi-arrow-right text-lg"></i>
+        <i class="mdi mdi-arrow-right"></i>
       </router-link>
     </div>
 

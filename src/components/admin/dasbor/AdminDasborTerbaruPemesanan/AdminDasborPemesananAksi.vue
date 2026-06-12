@@ -44,15 +44,13 @@ const canShowMarkPaidAksi = computed(
     isStatusSelesai(props.pemesanan.status) &&
     isUnpaidStatus(props.pemesanan.status_pembayaran),
 );
-// Di mobile, detail dipasangkan dengan tombol aksi jika ada aksi lain.
-const shouldPairDetailOnMobile = computed(
+const visibleActionCount = computed(
   () =>
-    canShowCancelAksi.value ||
-    canShowMarkPaidAksi.value ||
-    canAdminCompletePemesanan(props.pemesanan.status) ||
-    canAdminConfirmPemesanan(props.pemesanan.status),
+    Number(canAdminConfirmPemesanan(props.pemesanan.status)) +
+    Number(canAdminCompletePemesanan(props.pemesanan.status)) +
+    Number(canShowCancelAksi.value) +
+    Number(canShowMarkPaidAksi.value),
 );
-
 // Layout wrapper beda antara mobile dan desktop.
 const wrapperClass = computed(() =>
   isMobileVariant.value
@@ -67,12 +65,16 @@ const aksiButtonClass = computed(() =>
     : "h-8",
 );
 
-// Class tombol detail menyesuaikan apakah sendirian atau berpasangan di mobile.
+// Class tombol detail dibuat melebar penuh di mobile agar mudah ditekan.
 const detailClass = computed(() =>
   isMobileVariant.value
-    ? shouldPairDetailOnMobile.value
-      ? getButtonClass("infoOutline", "xs", "h-9 no-underline")
-      : getButtonClass("infoOutline", "xs", "col-span-2 h-9 no-underline")
+    ? getButtonClass(
+        "infoOutline",
+        "xs",
+        visibleActionCount.value === 1
+          ? "h-9 no-underline"
+          : "col-span-2 h-9 no-underline",
+      )
     : getButtonClass("infoOutline", "xs", "h-8 shrink-0 no-underline"),
 );
 </script>
