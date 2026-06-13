@@ -142,7 +142,7 @@ export function usePelangganPemesananPage() {
     form.value.jam_pemesanan = "";
 
     if (isBengkelLiburJumat(form.value.tanggal_pemesanan)) {
-      slotTerpakai.value = TIME_SLOTS;
+      slotTerpakai.value = [];
       return;
     }
 
@@ -155,10 +155,13 @@ export function usePelangganPemesananPage() {
       // Data dari Laravel mengembalikan jam dengan format "15:00:00" (HH:mm:ss)
       // Kita perlu mengambil "HH:mm" (5 karakter pertama) agar cocok dengan TIME_SLOTS
       const slots = data.data ?? data;
-      // Ubah format jam dari HH:mm:ss menjadi HH:mm.
-      slotTerpakai.value = (slots as string[]).map((time) =>
-        time.substring(0, 5),
-      );
+      // Ubah format jam dari HH:mm:ss menjadi HH:mm, lalu simpan hanya slot
+      // yang benar-benar penuh oleh pemesanan. Slot yang sudah lewat ditangani
+      // terpisah oleh slotSudahLewat agar pesannya tidak tertukar.
+      const slotTidakTersedia = new Set(slotSudahLewat.value);
+      slotTerpakai.value = (slots as string[])
+        .map((time) => time.substring(0, 5))
+        .filter((slot) => !slotTidakTersedia.has(slot));
     } catch (error: any) {
       // Catat dan tampilkan error cek slot.
       logError(error, "cekKetersediaan");

@@ -99,6 +99,14 @@ const isFridayDate = (dateValue: string) => {
   return date.getDay() === 5;
 };
 
+const isAllSlotsBooked = () =>
+  props.timeSlots.length > 0 &&
+  props.timeSlots.every((slot) => props.bookedSlots.includes(slot));
+
+const isAllSlotsUnavailable = () =>
+  props.timeSlots.length > 0 &&
+  props.timeSlots.every((slot) => props.unavailableSlots.includes(slot));
+
 const todayDate = formatJakartaDate(new Date());
 </script>
 
@@ -189,9 +197,21 @@ const todayDate = formatJakartaDate(new Date());
             Bengkel libur setiap hari Jumat. Silakan pilih tanggal lain.
           </p>
         </div>
-        <!-- Pesan khusus jika semua slot penuh karena mekanik sibuk -->
+        <!-- Pesan khusus jika semua slot tidak tersedia karena operasional sudah berakhir. -->
         <div
-          v-else-if="bookedSlots.length === timeSlots.length"
+          v-else-if="isAllSlotsUnavailable()"
+          :class="[getAlertBoxClass('warning'), 'mt-3 flex items-start gap-2 px-3 py-2 shadow-none']"
+        >
+          <i
+            :class="[getAlertIconClass('warning'), 'mdi mdi-store-clock mt-0.5 flex-shrink-0']"
+          ></i>
+          <p class="text-xs font-medium">
+            Bengkel sudah tutup untuk tanggal ini. Silakan pilih tanggal lain.
+          </p>
+        </div>
+        <!-- Pesan khusus jika semua slot penuh karena mekanik sibuk. -->
+        <div
+          v-else-if="isAllSlotsBooked()"
           :class="[getAlertBoxClass('warning'), 'mt-3 flex items-start gap-2 px-3 py-2 shadow-none']"
         >
           <i
