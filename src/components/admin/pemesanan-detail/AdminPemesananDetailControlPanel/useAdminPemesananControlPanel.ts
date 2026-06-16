@@ -87,7 +87,11 @@ export function useAdminPemesananControlPanel(
   const mekanikOptionsDaftar = computed(() =>
     availableMekaniks.value.map((mekanik) => ({
       value: mekanik.id,
-      label: mekanik.nama,
+      label:
+        mekanik.tersedia === false
+          ? `${mekanik.nama} - sedang bertugas`
+          : mekanik.nama,
+      disabled: mekanik.tersedia === false,
     })),
   );
 
@@ -155,6 +159,15 @@ export function useAdminPemesananControlPanel(
   const requestStartServiceConfirmation = () => {
     if (!selectedMekanikId.value) {
       toast.error("Silakan pilih mekanik terlebih dahulu");
+      return;
+    }
+
+    const mekanikTerpilih = availableMekaniks.value.find(
+      (mekanik) => mekanik.id === selectedMekanikId.value,
+    );
+
+    if (mekanikTerpilih?.tersedia === false) {
+      toast.error("Mekanik ini masih memiliki penugasan aktif");
       return;
     }
 
@@ -235,6 +248,15 @@ export function useAdminPemesananControlPanel(
   async function assignMekanikAndStart() {
     if (!selectedMekanikId.value) {
       toast.error("Silakan pilih mekanik terlebih dahulu");
+      return;
+    }
+
+    const mekanikTerpilih = availableMekaniks.value.find(
+      (mekanik) => mekanik.id === selectedMekanikId.value,
+    );
+
+    if (mekanikTerpilih?.tersedia === false) {
+      toast.error("Mekanik ini masih memiliki penugasan aktif");
       return;
     }
 

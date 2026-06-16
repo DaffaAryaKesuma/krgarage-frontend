@@ -103,6 +103,14 @@ const isAllSlotsBooked = () =>
   props.timeSlots.length > 0 &&
   props.timeSlots.every((slot) => props.bookedSlots.includes(slot));
 
+const isAllSelectableSlotsBooked = () =>
+  props.timeSlots.length > 0 &&
+  props.timeSlots.some((slot) => props.bookedSlots.includes(slot)) &&
+  props.timeSlots.every(
+    (slot) =>
+      props.bookedSlots.includes(slot) || props.unavailableSlots.includes(slot),
+  );
+
 const isAllSlotsUnavailable = () =>
   props.timeSlots.length > 0 &&
   props.timeSlots.every((slot) => props.unavailableSlots.includes(slot));
@@ -197,6 +205,18 @@ const todayDate = formatJakartaDate(new Date());
             Bengkel libur setiap hari Jumat. Silakan pilih tanggal lain.
           </p>
         </div>
+        <!-- Pesan khusus jika semua slot penuh karena mekanik sibuk. -->
+        <div
+          v-else-if="isAllSlotsBooked() || isAllSelectableSlotsBooked()"
+          :class="[getAlertBoxClass('warning'), 'mt-3 flex items-start gap-2 px-3 py-2 shadow-none']"
+        >
+          <i
+            :class="[getAlertIconClass('warning'), 'mdi mdi-wrench-clock mt-0.5 flex-shrink-0']"
+          ></i>
+          <p class="text-xs font-medium">
+            Semua mekanik sedang sibuk di tanggal ini. Silakan pilih tanggal lain.
+          </p>
+        </div>
         <!-- Pesan khusus jika semua slot tidak tersedia karena operasional sudah berakhir. -->
         <div
           v-else-if="isAllSlotsUnavailable()"
@@ -207,18 +227,6 @@ const todayDate = formatJakartaDate(new Date());
           ></i>
           <p class="text-xs font-medium">
             Bengkel sudah tutup untuk tanggal ini. Silakan pilih tanggal lain.
-          </p>
-        </div>
-        <!-- Pesan khusus jika semua slot penuh karena mekanik sibuk. -->
-        <div
-          v-else-if="isAllSlotsBooked()"
-          :class="[getAlertBoxClass('warning'), 'mt-3 flex items-start gap-2 px-3 py-2 shadow-none']"
-        >
-          <i
-            :class="[getAlertIconClass('warning'), 'mdi mdi-wrench-clock mt-0.5 flex-shrink-0']"
-          ></i>
-          <p class="text-xs font-medium">
-            Semua mekanik sedang sibuk di tanggal ini
           </p>
         </div>
         <!-- Error jam muncul setelah field disentuh. -->

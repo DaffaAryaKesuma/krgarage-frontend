@@ -3,10 +3,16 @@ import { ref, computed, onMounted, onUnmounted, nextTick, watch } from "vue";
 // Class form select dan label.
 import { FORM_LABEL_CLASS, getFormSelectClass } from "@/utils/formVariants";
 
+interface SelectOption {
+  value: string | number;
+  label: string;
+  disabled?: boolean;
+}
+
 // Props untuk custom dropdown/select.
 interface Props {
   modelValue: string | number | null;
-  options: Array<{ value: string | number; label: string }>;
+  options: SelectOption[];
   label?: string;
   placeholder?: string;
   disabled?: boolean;
@@ -44,9 +50,13 @@ const selectedLabel = computed(() => {
 });
 
 // Saat opsi dipilih, update v-model, kirim change, lalu tutup dropdown.
-const handleSelect = (value: string | number | null) => {
-  emit("update:modelValue", value);
-  emit("change", value);
+const handleSelect = (option: SelectOption) => {
+  if (option.disabled) {
+    return;
+  }
+
+  emit("update:modelValue", option.value);
+  emit("change", option.value);
   isOpen.value = false;
 };
 
@@ -177,12 +187,15 @@ onUnmounted(() => {
           <div
             v-for="option in options"
             :key="option.value"
-            @click="handleSelect(option.value)"
+            @click="handleSelect(option)"
             :class="[
-              'px-4 py-3 cursor-pointer text-sm sm:text-base transition-colors capitalize',
+              'px-4 py-3 text-sm sm:text-base transition-colors capitalize',
+              option.disabled ? 'cursor-not-allowed opacity-55' : 'cursor-pointer',
               modelValue === option.value
                 ? 'bg-red-600 text-white font-medium'
-                : 'text-gray-900 hover:bg-gray-100',
+                : option.disabled
+                  ? 'text-gray-500 bg-gray-50'
+                  : 'text-gray-900 hover:bg-gray-100',
             ]"
           >
             {{ option.label }}

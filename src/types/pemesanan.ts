@@ -66,6 +66,7 @@ export interface Pemesanan {
 export interface MekanikOption {
   value: number;
   label: string;
+  disabled?: boolean;
 }
 
 // Bentuk data pemesanan pada halaman pelanggan.

@@ -71,7 +71,11 @@ export function useAdminPemesananPage() {
 
   // Mengubah daftar mekanik menjadi option dropdown.
   const mekanikOptions = computed(() =>
-    mekaniks.value.map((m) => ({ value: m.id, label: m.nama })),
+    mekaniks.value.map((m) => ({
+      value: m.id,
+      label: m.tersedia === false ? `${m.nama} - sedang bertugas` : m.nama,
+      disabled: m.tersedia === false,
+    })),
   );
 
   // Mengambil semua pemesanan dari backend dengan pagination.
@@ -213,6 +217,13 @@ export function useAdminPemesananPage() {
       toast.error("Pilih mekanik terlebih dahulu");
       return;
     }
+
+    const mekanikTerpilih = mekaniks.value.find((mekanik) => mekanik.id === mekanikId);
+    if (mekanikTerpilih?.tersedia === false) {
+      toast.error("Mekanik ini masih memiliki penugasan aktif");
+      return;
+    }
+
     pemesananToAssignStart.value = pemesanan;
     isAssignStartModalOpen.value = true;
   };
@@ -303,6 +314,14 @@ export function useAdminPemesananPage() {
       return;
     }
 
+    const mekanikTerpilih =
+      mekaniks.value.find((mekanik) => mekanik.id === mekanikId) || null;
+
+    if (mekanikTerpilih?.tersedia === false) {
+      toast.error("Mekanik ini masih memiliki penugasan aktif");
+      return;
+    }
+
     try {
       // Request pertama menyimpan id mekanik.
       await axios.patch(
@@ -318,8 +337,6 @@ export function useAdminPemesananPage() {
         { headers: getAuthHeaders() },
       );
 
-      const mekanikTerpilih =
-        mekaniks.value.find((mekanik) => mekanik.id === mekanikId) || null;
       pemesanan.status = PEMESANAN_STATUS.DIKERJAKAN;
       pemesanan.id_mekanik = mekanikId;
       pemesanan.mekanik = mekanikTerpilih;

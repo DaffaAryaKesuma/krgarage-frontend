@@ -62,7 +62,11 @@ export function useAdminDasborPage() {
   const mekanikOptions = computed<MekanikOption[]>(() =>
     mekaniks.value.map((mekanik) => ({
       value: mekanik.id,
-      label: mekanik.nama,
+      label:
+        mekanik.tersedia === false
+          ? `${mekanik.nama} - sedang bertugas`
+          : mekanik.nama,
+      disabled: mekanik.tersedia === false,
     })),
   );
 
@@ -182,6 +186,14 @@ export function useAdminDasborPage() {
       return;
     }
 
+    const mekanikTerpilih =
+      mekaniks.value.find((mekanik) => mekanik.id === mekanikId) || null;
+
+    if (mekanikTerpilih?.tersedia === false) {
+      toast.error("Mekanik ini masih memiliki penugasan aktif");
+      return;
+    }
+
     try {
       // Request pertama: simpan mekanik yang ditugaskan.
       await axios.patch(
@@ -197,8 +209,6 @@ export function useAdminDasborPage() {
         { headers: getAuthHeaders() },
       );
 
-      const mekanikTerpilih =
-        mekaniks.value.find((mekanik) => mekanik.id === mekanikId) || null;
       pemesanan.status = PEMESANAN_STATUS.DIKERJAKAN;
       pemesanan.id_mekanik = mekanikId;
       pemesanan.mekanik = mekanikTerpilih;
