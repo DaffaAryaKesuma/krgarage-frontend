@@ -214,7 +214,7 @@ const todayDate = formatJakartaDate(new Date());
             :class="[getAlertIconClass('warning'), 'mdi mdi-wrench-clock mt-0.5 flex-shrink-0']"
           ></i>
           <p class="text-xs font-medium">
-            Semua mekanik sedang sibuk di tanggal ini. Silakan pilih tanggal lain.
+            Saat ini belum ada mekanik yang tersedia. Silakan coba kembali beberapa saat lagi atau pilih tanggal lain.
           </p>
         </div>
         <!-- Pesan khusus jika semua slot tidak tersedia karena operasional sudah berakhir. -->

@@ -12,6 +12,7 @@ import { handleApiError, logError } from "@/utils/errorHandler";
 import { API_URL } from "@/utils/api";
 // Mengambil header token login.
 import { getAuthHeaders } from "@/utils/auth";
+import { useRealtimeRefresh } from "@/composables/useRealtimeRefresh";
 // Mengambil tipe data layanan.
 import type { LayananCatalogItem } from "@/types/layanan";
 // Mengambil tipe data Vespa sederhana.
@@ -39,6 +40,10 @@ export const TIME_SLOTS = [
   "17:00",
 ];
 
+interface CekKetersediaanOptions {
+  resetJamTerpilih?: boolean;
+}
+
 // Fungsi utama logika halaman pemesanan pelanggan.
 export function usePelangganPemesananPage() {
   // Router dipakai untuk pindah ke halaman riwayat setelah berhasil.
@@ -60,6 +65,12 @@ export function usePelangganPemesananPage() {
   const waktuSekarang = ref(new Date());
   const intervalWaktuSekarang = window.setInterval(() => {
     waktuSekarang.value = new Date();
+  }, 30000);
+  // Polling menjaga kapasitas slot tetap terbaru ketika halaman dibiarkan terbuka.
+  const intervalCekKetersediaan = window.setInterval(() => {
+    if (form.value.tanggal_pemesanan) {
+      void cekKetersediaan();
+    }
   }, 30000);
 
   // State utama form pemesanan.
@@ -129,7 +140,9 @@ export function usePelangganPemesananPage() {
   };
 
   // Mengecek jam yang sudah terpakai untuk tanggal yang dipilih.
-  const cekKetersediaan = async () => {
+  const cekKetersediaan = async (
+    options: CekKetersediaanOptions = {},
+  ) => {
     // Jika tanggal belum dipilih, tidak perlu cek slot.
     if (!form.value.tanggal_pemesanan) return;
 
@@ -138,8 +151,10 @@ export function usePelangganPemesananPage() {
     // Jika token tidak ada, hentikan proses.
     if (!Object.keys(headers).length) return;
 
-    // Reset jam karena tanggal berubah.
-    form.value.jam_pemesanan = "";
+    const jamTerpilihSebelumnya = form.value.jam_pemesanan;
+    if (options.resetJamTerpilih) {
+      form.value.jam_pemesanan = "";
+    }
 
     if (isBengkelLiburJumat(form.value.tanggal_pemesanan)) {
       slotTerpakai.value = [];
@@ -162,6 +177,21 @@ export function usePelangganPemesananPage() {
       slotTerpakai.value = (slots as string[])
         .map((time) => time.substring(0, 5))
         .filter((slot) => !slotTidakTersedia.has(slot));
+
+      // Pada refresh otomatis, pertahankan jam selama masih tersedia.
+      // Jika slot yang dipilih baru saja ditutup, kosongkan agar tidak tersubmit.
+      if (
+        !options.resetJamTerpilih &&
+        jamTerpilihSebelumnya &&
+        (
+          slotTerpakai.value.includes(jamTerpilihSebelumnya) ||
+          slotSudahLewat.value.includes(jamTerpilihSebelumnya)
+        )
+      ) {
+        form.value.jam_pemesanan = "";
+        touched.value.jam_pemesanan = true;
+        validasiBidang("jam_pemesanan");
+      }
     } catch (error: any) {
       // Catat dan tampilkan error cek slot.
       logError(error, "cekKetersediaan");
@@ -186,7 +216,7 @@ export function usePelangganPemesananPage() {
   // Handler saat tanggal pemesanan berubah.
   const tanganiPerubahanTanggal = async () => {
     // Cek ulang slot jam pada tanggal baru.
-    await cekKetersediaan();
+    await cekKetersediaan({ resetJamTerpilih: true });
     touched.value.tanggal_pemesanan = true;
     validasiBidang("tanggal_pemesanan");
     validasiBidang("jam_pemesanan");
@@ -321,8 +351,13 @@ export function usePelangganPemesananPage() {
     }
   };
 
+  // Perubahan status pekerjaan dapat membuka/menutup kapasitas tanggal.
+  // Composable ini juga mengecek ulang saat tab browser kembali aktif.
+  useRealtimeRefresh(() => cekKetersediaan());
+
   onUnmounted(() => {
     window.clearInterval(intervalWaktuSekarang);
+    window.clearInterval(intervalCekKetersediaan);
   });
 
   // Kembalikan state dan fungsi ke file .vue.
