@@ -9,6 +9,7 @@ import PemilikLayout from "../components/layouts/PemilikLayout.vue";
 
 // Helper role dipakai untuk redirect sesuai role login.
 import { getRedirectPathForRole, normalizeUserRole } from "@/utils/roleRoutes";
+import { clearAuth, fetchAuthenticatedUser } from "@/utils/auth";
 
 // Halaman Publik
 import Beranda from "../pages/Beranda.vue";
@@ -184,7 +185,7 @@ const router = createRouter({
 });
 
 // Navigation guard berjalan setiap kali pengguna berpindah halaman.
-router.beforeEach((to, _from, next) => {
+router.beforeEach(async (to, _from, next) => {
   // Token dan user disimpan saat login berhasil.
   const token = localStorage.getItem("token");
   const userString = localStorage.getItem("user");
@@ -211,7 +212,18 @@ router.beforeEach((to, _from, next) => {
     return next({ name: "beranda" });
   }
 
-  // User dianggap login hanya jika token dan data user sama-sama ada.
+  // Untuk route terlindungi, identitas wajib diverifikasi dari token di backend.
+  // localStorage hanya cache tampilan dan tidak boleh menjadi sumber otorisasi.
+  if (to.meta.requiresAuth && token) {
+    try {
+      user = await fetchAuthenticatedUser();
+    } catch {
+      clearAuth();
+      return next({ name: "beranda" });
+    }
+  }
+
+  // User dianggap login hanya jika token dan data user terverifikasi sama-sama ada.
   const isLoggedIn = !!token && !!user;
   // Role dinormalisasi agar variasi tulisan role tetap terbaca.
   const normalizedRole = normalizeUserRole(user?.role);

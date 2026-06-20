@@ -2,6 +2,9 @@
  * Authentication utility functions
  */
 
+import axios from "axios";
+import { API_URL } from "@/utils/api";
+
 /**
  * Get authentication headers with Bearer token
  * @returns Headers object with Authorization token or empty if no token
@@ -33,6 +36,23 @@ export function getCurrentUser() {
     // Jika data rusak/tidak valid, anggap tidak ada user.
     return null;
   }
+}
+
+/**
+ * Ambil identitas yang benar dari token aktif, bukan dari localStorage.
+ */
+export async function fetchAuthenticatedUser() {
+  const response = await axios.get(`${API_URL}/profil`, {
+    headers: getAuthHeaders(),
+  });
+  const user = response.data?.data;
+
+  if (!user || typeof user !== "object" || !user.role) {
+    throw new Error("Data pengguna dari server tidak valid.");
+  }
+
+  localStorage.setItem("user", JSON.stringify(user));
+  return user;
 }
 
 /**
