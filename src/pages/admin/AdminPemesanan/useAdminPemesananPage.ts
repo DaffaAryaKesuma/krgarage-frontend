@@ -110,11 +110,6 @@ export function useAdminPemesananPage() {
     }
   };
 
-  // Refresh data diam-diam saat ada halaman lain mengubah data KRGarage.
-  useRealtimeRefresh(
-    () => fetchAllPemesanan(pagination.value.current_page, { silent: true }),
-  );
-
   // Fungsi umum untuk mengubah status pemesanan.
   const changeStatus = async (pemesanan: Pemesanan, newStatus: string, catatan?: string) => {
     try {
@@ -151,10 +146,30 @@ export function useAdminPemesananPage() {
         headers: getAuthHeaders(),
       });
       mekaniks.value = data.data || [];
+
+      // Hapus pilihan lama jika mekanik baru saja menjadi tidak tersedia.
+      const mekanikTersedia = new Set(
+        mekaniks.value
+          .filter((mekanik) => mekanik.tersedia !== false)
+          .map((mekanik) => mekanik.id),
+      );
+      selectedMekanikForPemesanan.value = Object.fromEntries(
+        Object.entries(selectedMekanikForPemesanan.value).filter(([, mekanikId]) =>
+          mekanikTersedia.has(mekanikId),
+        ),
+      );
     } catch (err: any) {
       console.error("Gagal mengambil data mekanik:", err);
     }
   };
+
+  // Segarkan pemesanan dan ketersediaan mekanik saat data berubah.
+  useRealtimeRefresh(() =>
+    Promise.all([
+      fetchAllPemesanan(pagination.value.current_page, { silent: true }),
+      fetchMekaniks(),
+    ]).then(() => undefined),
+  );
 
   // State modal konfirmasi pemesanan.
   const isConfirmModalOpen = ref(false);
@@ -343,7 +358,10 @@ export function useAdminPemesananPage() {
       toast.success("Mekanik di-assign dan servis dimulai!");
       // Beri sinyal ke halaman lain agar ikut refresh.
       notifyKrGarageDataChanged();
-      await fetchAllPemesanan(pagination.value.current_page, { silent: true });
+      await Promise.all([
+        fetchAllPemesanan(pagination.value.current_page, { silent: true }),
+        fetchMekaniks(),
+      ]);
     } catch (err: any) {
       console.error("Gagal assign mekanik dan mulai servis:", err);
       toast.error(err.response?.data?.message || "Gagal memproses pemesanan.");

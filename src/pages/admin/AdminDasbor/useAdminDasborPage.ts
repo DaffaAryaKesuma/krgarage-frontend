@@ -97,6 +97,18 @@ export function useAdminDasborPage() {
       });
       // Backend mengembalikan data di dalam properti data.
       mekaniks.value = data.data || [];
+
+      // Bersihkan pilihan lama jika mekanik sudah mendapat tugas aktif.
+      const mekanikTersedia = new Set(
+        mekaniks.value
+          .filter((mekanik) => mekanik.tersedia !== false)
+          .map((mekanik) => mekanik.id),
+      );
+      selectedMekanikForPemesanan.value = Object.fromEntries(
+        Object.entries(selectedMekanikForPemesanan.value).filter(([, mekanikId]) =>
+          mekanikTersedia.has(mekanikId),
+        ),
+      );
     } catch (error: any) {
       logError(error, "fetchMekaniks");
       toast.error(handleApiError(error));
@@ -150,8 +162,13 @@ export function useAdminDasborPage() {
     }
   };
 
-  // Saat ada sinyal data berubah dari halaman lain, dasbor refresh diam-diam.
-  useRealtimeRefresh(() => fetchDasborData({ silent: true }));
+  // Saat data berubah, segarkan pemesanan sekaligus ketersediaan mekanik.
+  useRealtimeRefresh(() =>
+    Promise.all([
+      fetchDasborData({ silent: true }),
+      fetchMekaniks(),
+    ]).then(() => undefined),
+  );
 
   // Mengubah status servis dari pemesanan tertentu.
   const changeStatus = async (pemesanan: Pemesanan, statusBaru: string, catatan?: string) => {
@@ -215,8 +232,10 @@ export function useAdminDasborPage() {
       toast.success("Mekanik di-assign dan servis dimulai!");
       // Memberi tahu halaman lain bahwa data KRGarage berubah.
       notifyKrGarageDataChanged();
-      await fetchDasborData({ silent: true });
-      await fetchDasborStatistik(false);
+      await Promise.all([
+        fetchDasborData({ silent: true }),
+        fetchMekaniks(),
+      ]);
     } catch (error: any) {
       logError(error, "assignMekanikAndStart");
       toast.error(handleApiError(error));
