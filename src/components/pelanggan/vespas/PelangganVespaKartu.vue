@@ -82,7 +82,8 @@ const emit = defineEmits<{
     <!-- Alert kuning muncul jika jadwal servis tinggal 7 hari atau kurang. -->
     <div
       v-else-if="
-        vespa.hari_hingga_servis &&
+        vespa.hari_hingga_servis != null &&
+        vespa.hari_hingga_servis >= 0 &&
         vespa.hari_hingga_servis <= 7 &&
         !vespa.perlu_servis
       "
