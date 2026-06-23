@@ -1,10 +1,11 @@
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 // Lock scroll saat modal restock terbuka.
 import { scrollLock } from "@/composables/scrollLock";
 import { getButtonClass } from "@/utils/buttonVariants";
 import {
   FORM_HINT_CLASS,
   FORM_LABEL_CLASS,
+  FORM_ERROR_CLASS,
   getFormCheckboxClass,
   getFormInputClass,
   getFormTextareaClass,
@@ -12,6 +13,7 @@ import {
 import type { InventarisSukuCadang } from "@/types/inventaris";
 
 const MAX_RECEIPT_SIZE = 2 * 1024 * 1024;
+const ALLOWED_RECEIPT_TYPES = ["image/jpeg", "image/png", "image/gif"];
 
 // Props modal tambah stok.
 export interface AdminInventarisStokUlangModalProps {
@@ -45,6 +47,7 @@ export const inputClass = getFormInputClass(false, "rounded-xl px-4 py-3");
 export const textareaClass = getFormTextareaClass(false, "rounded-xl px-4 py-3");
 export const labelClass = FORM_LABEL_CLASS;
 export const hintClass = FORM_HINT_CLASS;
+export const errorClass = FORM_ERROR_CLASS;
 export const checkboxClass = getFormCheckboxClass("mt-1");
 
 // Class tombol modal.
@@ -55,6 +58,7 @@ export const buttonSecondaryClass = getButtonClass("secondary", "lg", "rounded-x
 // Composable logic modal tambah stok.
 export function useAdminInventarisStokUlangModal(
   props: AdminInventarisStokUlangModalProps,
+  emit: AdminInventarisStokUlangModalEmit,
 ) {
   // Lock scroll halaman saat modal terbuka.
   scrollLock(() => props.show);
@@ -63,27 +67,73 @@ export function useAdminInventarisStokUlangModal(
   const totalPengeluaran = computed(
     () => props.restockQuantity * props.restockUnitPrice,
   );
+  const errors = ref({ quantity: "", unitPrice: "", receipt: "" });
+  const touched = ref({ quantity: false, unitPrice: false });
+
+  watch(() => props.show, (show) => {
+    if (!show) return;
+    errors.value = { quantity: "", unitPrice: "", receipt: "" };
+    touched.value = { quantity: false, unitPrice: false };
+  });
+
+  const validateQuantity = () => {
+    errors.value.quantity =
+      !Number.isInteger(props.restockQuantity) || props.restockQuantity < 1
+        ? "Jumlah tambahan minimal 1."
+        : "";
+    return !errors.value.quantity;
+  };
+
+  const validateUnitPrice = () => {
+    errors.value.unitPrice =
+      !Number.isInteger(props.restockUnitPrice) || props.restockUnitPrice < 0
+        ? "Harga beli harus berupa bilangan bulat dan tidak boleh negatif."
+        : "";
+    return !errors.value.unitPrice;
+  };
+
+  const handleSubmit = () => {
+    touched.value = { quantity: true, unitPrice: true };
+    if (!validateQuantity() || !validateUnitPrice()) return;
+    emit("submit");
+  };
+
+  const quantityInputClass = computed(() =>
+    getFormInputClass(
+      touched.value.quantity && Boolean(errors.value.quantity),
+      "rounded-xl px-4 py-3",
+    ),
+  );
+  const unitPriceInputClass = computed(() =>
+    getFormInputClass(
+      touched.value.unitPrice && Boolean(errors.value.unitPrice),
+      "rounded-xl px-4 py-3",
+    ),
+  );
 
   const handleReceiptSelected = (event: Event) => {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0] ?? null;
 
     if (!file) {
+      errors.value.receipt = "";
       return null;
     }
 
-    if (!file.type.startsWith("image/")) {
-      alert("File struk harus berupa gambar");
+    if (!ALLOWED_RECEIPT_TYPES.includes(file.type)) {
+      errors.value.receipt =
+        "Format foto struk harus JPG, JPEG, PNG, atau GIF.";
       input.value = "";
       return null;
     }
 
     if (file.size > MAX_RECEIPT_SIZE) {
-      alert("Ukuran foto struk terlalu besar (maksimal 2MB)");
+      errors.value.receipt = "Ukuran foto struk maksimal 2MB.";
       input.value = "";
       return null;
     }
 
+    errors.value.receipt = "";
     return file;
   };
 
@@ -91,5 +141,12 @@ export function useAdminInventarisStokUlangModal(
   return {
     totalPengeluaran,
     handleReceiptSelected,
+    errors,
+    touched,
+    validateQuantity,
+    validateUnitPrice,
+    handleSubmit,
+    quantityInputClass,
+    unitPriceInputClass,
   };
 }

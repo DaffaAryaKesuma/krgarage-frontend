@@ -106,7 +106,12 @@ const onSubmit = () => {
 
       <!-- Body berisi form yang bisa discroll jika layar kecil. -->
       <div class="overflow-y-auto flex-1 custom-scrollbar">
-        <form @submit.prevent="onSubmit" id="vespa-form" class="space-y-5 p-6">
+        <form
+          @submit.prevent="onSubmit"
+          id="vespa-form"
+          novalidate
+          class="space-y-5 p-6"
+        >
           <!-- Field model Vespa. -->
           <div>
             <label :class="FORM_LABEL_CLASS">

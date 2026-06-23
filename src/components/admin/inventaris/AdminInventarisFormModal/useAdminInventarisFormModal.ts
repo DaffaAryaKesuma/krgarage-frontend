@@ -1,9 +1,11 @@
 // Composable dan konstanta untuk form tambah/edit suku cadang.
+import { ref, watch } from "vue";
 import { scrollLock } from "@/composables/scrollLock";
 import { getButtonClass } from "@/utils/buttonVariants";
 import {
   FORM_LABEL_CLASS,
   FORM_REQUIRED_MARK_CLASS,
+  FORM_ERROR_CLASS,
   getFormInputClass,
   getFormTextareaClass,
 } from "@/utils/formVariants";
@@ -41,6 +43,15 @@ export const inputClass = getFormInputClass();
 export const textareaClass = getFormTextareaClass();
 export const labelClass = FORM_LABEL_CLASS;
 export const requiredMarkClass = FORM_REQUIRED_MARK_CLASS;
+export const errorClass = FORM_ERROR_CLASS;
+
+type RequiredField =
+  | "nama_suku_cadang"
+  | "id_kategori"
+  | "jumlah_stok"
+  | "harga_beli"
+  | "harga_jual"
+  | "batas_minimal_stok";
 
 // Class tombol modal.
 export const buttonPrimaryClass = getButtonClass("primary", "lg", "rounded-xl");
@@ -54,6 +65,62 @@ export function useAdminInventarisFormModal(
 ) {
   // Lock scroll halaman saat modal terbuka.
   scrollLock(() => props.show);
+  const errors = ref<Record<RequiredField, string>>({
+    nama_suku_cadang: "",
+    id_kategori: "",
+    jumlah_stok: "",
+    harga_beli: "",
+    harga_jual: "",
+    batas_minimal_stok: "",
+  });
+  const touched = ref<Record<RequiredField, boolean>>({
+    nama_suku_cadang: false,
+    id_kategori: false,
+    jumlah_stok: false,
+    harga_beli: false,
+    harga_jual: false,
+    batas_minimal_stok: false,
+  });
+
+  watch(() => props.show, (show) => {
+    if (!show) return;
+    Object.keys(errors.value).forEach((key) => {
+      errors.value[key as RequiredField] = "";
+      touched.value[key as RequiredField] = false;
+    });
+  });
+
+  const validateField = (field: RequiredField) => {
+    const value = props.form[field];
+    if (field === "nama_suku_cadang") {
+      errors.value[field] = String(value).trim() ? "" : "Nama suku cadang wajib diisi.";
+    } else if (field === "id_kategori") {
+      errors.value[field] = value ? "" : "Kategori wajib dipilih.";
+    } else if (value === null || value === undefined || Number.isNaN(Number(value))) {
+      errors.value[field] = "Kolom ini wajib diisi.";
+    } else {
+      errors.value[field] = Number(value) < 0 ? "Nilai tidak boleh kurang dari 0." : "";
+    }
+    return !errors.value[field];
+  };
+
+  const handleBlur = (field: RequiredField) => {
+    touched.value[field] = true;
+    validateField(field);
+  };
+
+  const getInputClass = (field: RequiredField) =>
+    getFormInputClass(touched.value[field] && Boolean(errors.value[field]));
+
+  const handleSubmit = () => {
+    const fields = Object.keys(errors.value) as RequiredField[];
+    fields.forEach((field) => {
+      touched.value[field] = true;
+      validateField(field);
+    });
+    if (fields.some((field) => errors.value[field])) return;
+    emit("submit");
+  };
 
   // Update satu field form dengan cara immutable agar v-model parent reaktif.
   const updateField = <FieldKey extends keyof InventarisSukuCadangForm>(
@@ -64,7 +131,10 @@ export function useAdminInventarisFormModal(
   };
 
   // Helper mengambil angka dari input event.
-  const toNum = (e: Event) => Number((e.target as HTMLInputElement).value);
+  const toNum = (e: Event) => {
+    const value = (e.target as HTMLInputElement).value;
+    return value === "" ? Number.NaN : Number(value);
+  };
   // Helper mengambil string dari input event.
   const toStr = (e: Event) => (e.target as HTMLInputElement).value;
 
@@ -73,5 +143,11 @@ export function useAdminInventarisFormModal(
     updateField,
     toNum,
     toStr,
+    errors,
+    touched,
+    validateField,
+    handleBlur,
+    getInputClass,
+    handleSubmit,
   };
 }

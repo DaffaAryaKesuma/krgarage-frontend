@@ -84,7 +84,7 @@ onMounted(() => {
       <LoadingSpinner v-if="isLoading" message="Memuat data layanan..." />
 
       <!-- Form pemesanan; submit dicegah reload halaman dan diarahkan ke fungsi submit. -->
-      <form v-else @submit.prevent="submit" class="space-y-6">
+      <form v-else @submit.prevent="submit" novalidate class="space-y-6">
         <PelangganStepProgress
           :form="form"
           :errors="errors"

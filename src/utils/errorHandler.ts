@@ -22,15 +22,18 @@ export interface ApiError {
 export function handleApiError(error: any): string {
   // Validation error (422), biasanya dari Laravel validation.
   if (error.response?.status === 422 && error.response?.data?.errors) {
-    return Object.entries(error.response.data.errors)
-      .map(([key, value]: [string, any]) => {
-        // Ubah nama field dari snake_case menjadi teks lebih enak dibaca.
-        const fieldName = key.replace(/_/g, " ");
-        // Laravel kadang mengirim array error per field.
-        const errorMsg = Array.isArray(value) ? value[0] : value;
-        return `${fieldName}: ${errorMsg}`;
-      })
-      .join("\n");
+    // Pesan backend sudah menyebut nama field secara ramah, jadi tidak perlu
+    // ditambahi key database seperti "no_telepon:" atau "id_layanan:".
+    const messages = Object.values(error.response.data.errors)
+      .flatMap((value) => (Array.isArray(value) ? value : [value]))
+      .filter(
+        (message): message is string =>
+          typeof message === "string" && message.trim() !== "",
+      )
+      .map((message) => message.trim());
+
+    // Hindari pesan sama tampil dua kali, misalnya pada layanan duplikat.
+    return [...new Set(messages)].join("\n");
   }
 
   // Server error (500), berarti masalah terjadi di backend.

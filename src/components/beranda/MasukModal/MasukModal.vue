@@ -53,7 +53,7 @@ const {
       </button>
 
       <!-- Submit form menjalankan handleLogin. -->
-      <form @submit.prevent="handleLogin" class="space-y-4">
+      <form @submit.prevent="handleLogin" novalidate class="space-y-4">
         <h2 class="text-2xl font-bold text-center mb-6">Login Akun</h2>
 
         <!-- Field login di-loop dari FORM_FIELDS. -->

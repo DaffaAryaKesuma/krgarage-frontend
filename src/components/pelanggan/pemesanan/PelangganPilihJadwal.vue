@@ -252,8 +252,12 @@ const todayDate = formatJakartaDate(new Date());
         "
         :class="getFormTextareaClass(false, 'px-4 py-3')"
         rows="4"
+        maxlength="1000"
         placeholder="Contoh: Vespa terasa kurang responsif, mohon dicek karburator dan kampas rem..."
       ></textarea>
+      <p :class="[FORM_HINT_CLASS, 'mt-1 text-right']">
+        {{ catatan.length }}/1000
+      </p>
     </div>
   </div>
 </template>

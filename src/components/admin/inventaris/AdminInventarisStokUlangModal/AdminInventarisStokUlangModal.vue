@@ -13,6 +13,7 @@ import {
   buttonPrimaryClass,
   buttonSecondaryClass,
   checkboxClass,
+  errorClass,
   hintClass,
   inputClass,
   labelClass,
@@ -27,8 +28,17 @@ const props = defineProps<AdminInventarisStokUlangModalProps>();
 const emit = defineEmits<AdminInventarisStokUlangModalEmit>();
 
 // Total pengeluaran dihitung di composable.
-const { totalPengeluaran, handleReceiptSelected } =
-  useAdminInventarisStokUlangModal(props);
+const {
+  totalPengeluaran,
+  handleReceiptSelected,
+  errors,
+  touched,
+  validateQuantity,
+  validateUnitPrice,
+  handleSubmit,
+  quantityInputClass,
+  unitPriceInputClass,
+} = useAdminInventarisStokUlangModal(props, emit);
 </script>
 
 <template>
@@ -63,7 +73,8 @@ const { totalPengeluaran, handleReceiptSelected } =
 
       <!-- Form restock. -->
       <form
-        @submit.prevent="emit('submit')"
+        @submit.prevent="handleSubmit"
+        novalidate
         class="flex min-h-0 flex-1 flex-col"
       >
         <div class="min-h-0 flex-1 space-y-4 overflow-y-auto p-5 sm:p-6">
@@ -100,14 +111,18 @@ const { totalPengeluaran, handleReceiptSelected } =
               emit(
                 'update:restockQuantity',
                 Number(($event.target as HTMLInputElement).value),
-              )
+              );
+              touched.quantity && validateQuantity();
             "
+            @blur="touched.quantity = true; validateQuantity()"
             type="number"
             min="1"
-            required
             placeholder="Masukkan jumlah tambahan"
-            :class="inputClass"
+            :class="quantityInputClass"
           />
+          <p v-if="touched.quantity && errors.quantity" :class="errorClass">
+            <i class="mdi mdi-alert-circle text-xs"></i>{{ errors.quantity }}
+          </p>
         </div>
 
         <div :class="modalKartuClass">
@@ -120,14 +135,18 @@ const { totalPengeluaran, handleReceiptSelected } =
               emit(
                 'update:restockUnitPrice',
                 Number(($event.target as HTMLInputElement).value),
-              )
+              );
+              touched.unitPrice && validateUnitPrice();
             "
+            @blur="touched.unitPrice = true; validateUnitPrice()"
             type="number"
             min="0"
-            required
             placeholder="Masukkan harga beli per unit"
-            :class="inputClass"
+            :class="unitPriceInputClass"
           />
+          <p v-if="touched.unitPrice && errors.unitPrice" :class="errorClass">
+            <i class="mdi mdi-alert-circle text-xs"></i>{{ errors.unitPrice }}
+          </p>
           <p :class="hintClass">
             Harga master saat ini:
             <span class="font-semibold text-gray-700">
@@ -173,9 +192,13 @@ const { totalPengeluaran, handleReceiptSelected } =
               )
             "
             rows="2"
+            maxlength="1000"
             placeholder="Opsional"
             :class="textareaClass"
           ></textarea>
+          <p :class="[hintClass, 'text-right']">
+            {{ restockNote.length }}/1000
+          </p>
         </div>
 
         <div :class="modalKartuClass">
@@ -184,12 +207,15 @@ const { totalPengeluaran, handleReceiptSelected } =
           </label>
           <input
             type="file"
-            accept="image/*"
+            accept=".jpg,.jpeg,.png,.gif,image/jpeg,image/png,image/gif"
             :class="inputClass"
             @change="emit('receiptChange', handleReceiptSelected($event))"
           />
           <p :class="hintClass">
             Opsional, format gambar maksimal 2MB.
+          </p>
+          <p v-if="errors.receipt" :class="errorClass">
+            <i class="mdi mdi-alert-circle text-xs"></i>{{ errors.receipt }}
           </p>
           <p
             v-if="restockReceiptFile"

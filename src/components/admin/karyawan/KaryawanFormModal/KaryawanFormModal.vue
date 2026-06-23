@@ -8,6 +8,7 @@ import {
   ICON_PREFIX_CLASS,
   INPUT_CLASS,
   LABEL_CLASS,
+  FORM_ERROR_CLASS,
   type FormData,
 } from "@/components/admin/karyawan/KaryawanFormModal/useKaryawanFormModal";
 // Helper warna icon dan tombol.
@@ -28,7 +29,16 @@ const emit = defineEmits<{
 }>();
 
 // Ambil state form dan submit handler dari composable.
-const { formData, handleSubmit } = useKaryawanFormModal(props, emit);
+const {
+  formData,
+  errors,
+  touched,
+  handleBlur,
+  handleInput,
+  handlePhoneInput,
+  getInputClass,
+  handleSubmit,
+} = useKaryawanFormModal(props, emit);
 </script>
 
 <template>
@@ -68,6 +78,7 @@ const { formData, handleSubmit } = useKaryawanFormModal(props, emit);
           <form
             @submit.prevent="handleSubmit"
             autocomplete="off"
+            novalidate
             class="mt-5 space-y-4"
           >
             <!-- Nama lengkap, hanya huruf dan spasi. -->
@@ -81,14 +92,15 @@ const { formData, handleSubmit } = useKaryawanFormModal(props, emit);
                   v-model="formData.nama"
                   autocomplete="off"
                   type="text"
-                  required
-                  minlength="3"
-                  pattern="^[a-zA-Z\s]*$"
-                  title="Nama hanya boleh berisi huruf dan spasi, minimal 3 karakter"
                   placeholder="Masukkan nama lengkap"
-                  :class="INPUT_CLASS"
+                  :class="getInputClass('nama')"
+                  @input="handleInput('nama')"
+                  @blur="handleBlur('nama')"
                 />
               </div>
+              <p v-if="touched.nama && errors.nama" :class="FORM_ERROR_CLASS">
+                <i class="mdi mdi-alert-circle text-xs"></i>{{ errors.nama }}
+              </p>
             </div>
 
             <!-- Email dengan validasi pattern sederhana. -->
@@ -101,14 +113,17 @@ const { formData, handleSubmit } = useKaryawanFormModal(props, emit);
                 <input
                   v-model="formData.email"
                   autocomplete="new-password"
-                  type="email"
-                  required
-                  pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$"
-                  title="Masukkan alamat email yang valid (contoh: nama@domain.com)"
+                  type="text"
+                  inputmode="email"
                   placeholder="nama@email.com"
-                  :class="INPUT_CLASS"
+                  :class="getInputClass('email')"
+                  @input="handleInput('email')"
+                  @blur="handleBlur('email')"
                 />
               </div>
+              <p v-if="touched.email && errors.email" :class="FORM_ERROR_CLASS">
+                <i class="mdi mdi-alert-circle text-xs"></i>{{ errors.email }}
+              </p>
             </div>
 
             <!-- Nomor telepon. -->
@@ -122,15 +137,20 @@ const { formData, handleSubmit } = useKaryawanFormModal(props, emit);
                   v-model="formData.no_telepon"
                   autocomplete="off"
                   type="tel"
-                  required
-                  minlength="10"
-                  maxlength="15"
-                  pattern="^[0-9+]*$"
-                  title="Nomor telepon hanya boleh berisi angka (opsional awalan +), minimal 10 digit"
+                  maxlength="17"
+                  inputmode="tel"
                   placeholder="08xxxxxxxxxx"
-                  :class="INPUT_CLASS"
+                  :class="getInputClass('no_telepon')"
+                  @input="handlePhoneInput"
+                  @blur="handleBlur('no_telepon')"
                 />
               </div>
+              <p
+                v-if="touched.no_telepon && errors.no_telepon"
+                :class="FORM_ERROR_CLASS"
+              >
+                <i class="mdi mdi-alert-circle text-xs"></i>{{ errors.no_telepon }}
+              </p>
             </div>
 
             <!-- Role dan password. -->
@@ -161,14 +181,18 @@ const { formData, handleSubmit } = useKaryawanFormModal(props, emit);
                     v-model="formData.password"
                     autocomplete="new-password"
                     type="password"
-                    :required="!isEditMode"
-                    minlength="8"
-                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                    title="Harus 8+ karakter, berisi huruf besar, huruf kecil, dan angka"
                     placeholder="Minimal 8 karakter"
-                    :class="INPUT_CLASS"
+                    :class="getInputClass('password')"
+                    @input="handleInput('password')"
+                    @blur="handleBlur('password')"
                   />
                 </div>
+                <p
+                  v-if="touched.password && errors.password"
+                  :class="FORM_ERROR_CLASS"
+                >
+                  <i class="mdi mdi-alert-circle text-xs"></i>{{ errors.password }}
+                </p>
               </div>
             </div>
 

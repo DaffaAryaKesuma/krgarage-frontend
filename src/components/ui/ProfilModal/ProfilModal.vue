@@ -11,6 +11,7 @@ import {
   getRoleBadgeClass,
   getToneTextClass,
 } from "@/utils/badgeVariants";
+import { FORM_ERROR_CLASS } from "@/utils/formVariants";
 
 // show menentukan modal terbuka/tutup.
 const props = defineProps<{ show: boolean }>();
@@ -23,7 +24,17 @@ const {
   user,
   profilForm,
   passwordForm,
-  inputClass,
+  profilErrors,
+  passwordErrors,
+  profilTouched,
+  passwordTouched,
+  handleProfileBlur,
+  handlePasswordBlur,
+  handleProfileInput,
+  handlePasswordInput,
+  handleProfilePhoneInput,
+  getProfileInputClass,
+  getPasswordInputClass,
   labelClass,
   handleUpdateProfil,
   handleGantiPassword,
@@ -90,6 +101,7 @@ const {
           <!-- Form update profil. -->
           <form
             @submit.prevent="handleUpdateProfil"
+            novalidate
             class="flex-1 w-full space-y-4"
           >
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -98,9 +110,13 @@ const {
                 <input
                   v-model="profilForm.nama"
                   type="text"
-                  :class="inputClass"
-                  required
+                  :class="getProfileInputClass('nama')"
+                  @input="handleProfileInput('nama')"
+                  @blur="handleProfileBlur('nama')"
                 />
+                <p v-if="profilTouched.nama && profilErrors.nama" :class="FORM_ERROR_CLASS">
+                  <i class="mdi mdi-alert-circle text-xs"></i>{{ profilErrors.nama }}
+                </p>
               </div>
               <div>
                 <label :class="labelClass">Nomor Telepon</label>
@@ -108,15 +124,18 @@ const {
                 <input
                   v-model="profilForm.no_telepon"
                   type="tel"
-                  @input="
-                    profilForm.no_telepon = profilForm.no_telepon.replace(
-                      /[^0-9]/g,
-                      '',
-                    )
-                  "
-                  :class="inputClass"
-                  required
+                  maxlength="17"
+                  inputmode="tel"
+                  :class="getProfileInputClass('no_telepon')"
+                  @input="handleProfilePhoneInput"
+                  @blur="handleProfileBlur('no_telepon')"
                 />
+                <p
+                  v-if="profilTouched.no_telepon && profilErrors.no_telepon"
+                  :class="FORM_ERROR_CLASS"
+                >
+                  <i class="mdi mdi-alert-circle text-xs"></i>{{ profilErrors.no_telepon }}
+                </p>
               </div>
             </div>
 
@@ -124,10 +143,15 @@ const {
               <label :class="labelClass">Email</label>
               <input
                 v-model="profilForm.email"
-                type="email"
-                :class="inputClass"
-                required
+                type="text"
+                inputmode="email"
+                :class="getProfileInputClass('email')"
+                @input="handleProfileInput('email')"
+                @blur="handleProfileBlur('email')"
               />
+              <p v-if="profilTouched.email && profilErrors.email" :class="FORM_ERROR_CLASS">
+                <i class="mdi mdi-alert-circle text-xs"></i>{{ profilErrors.email }}
+              </p>
             </div>
 
             <div class="flex justify-end pt-2">
@@ -153,16 +177,23 @@ const {
             Ganti Password
           </h3>
           <!-- Form ganti password. -->
-          <form @submit.prevent="handleGantiPassword" class="space-y-4">
+          <form @submit.prevent="handleGantiPassword" novalidate class="space-y-4">
             <div>
               <label :class="labelClass">Password Saat Ini</label>
               <input
                 v-model="passwordForm.password_lama"
                 type="password"
-                :class="inputClass"
-                required
+                :class="getPasswordInputClass('password_lama')"
+                @input="handlePasswordInput('password_lama')"
+                @blur="handlePasswordBlur('password_lama')"
                 placeholder="••••••••"
               />
+              <p
+                v-if="passwordTouched.password_lama && passwordErrors.password_lama"
+                :class="FORM_ERROR_CLASS"
+              >
+                <i class="mdi mdi-alert-circle text-xs"></i>{{ passwordErrors.password_lama }}
+              </p>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -171,20 +202,38 @@ const {
                 <input
                   v-model="passwordForm.password_baru"
                   type="password"
-                  :class="inputClass"
-                  required
+                  :class="getPasswordInputClass('password_baru')"
+                  @input="handlePasswordInput('password_baru')"
+                  @blur="handlePasswordBlur('password_baru')"
                   placeholder="Min. 8 karakter, 1 huruf besar, dan 1 angka"
                 />
+                <p
+                  v-if="passwordTouched.password_baru && passwordErrors.password_baru"
+                  :class="FORM_ERROR_CLASS"
+                >
+                  <i class="mdi mdi-alert-circle text-xs"></i>{{ passwordErrors.password_baru }}
+                </p>
               </div>
               <div>
                 <label :class="labelClass">Konfirmasi Password</label>
                 <input
                   v-model="passwordForm.password_baru_confirmation"
                   type="password"
-                  :class="inputClass"
-                  required
+                  :class="getPasswordInputClass('password_baru_confirmation')"
+                  @input="handlePasswordInput('password_baru_confirmation')"
+                  @blur="handlePasswordBlur('password_baru_confirmation')"
                   placeholder="Ulangi password"
                 />
+                <p
+                  v-if="
+                    passwordTouched.password_baru_confirmation &&
+                    passwordErrors.password_baru_confirmation
+                  "
+                  :class="FORM_ERROR_CLASS"
+                >
+                  <i class="mdi mdi-alert-circle text-xs"></i>
+                  {{ passwordErrors.password_baru_confirmation }}
+                </p>
               </div>
             </div>
 

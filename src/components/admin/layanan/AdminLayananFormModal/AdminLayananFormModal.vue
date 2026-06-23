@@ -7,17 +7,12 @@ import {
 // Helper class form.
 import {
   FORM_HINT_CLASS,
+  FORM_ERROR_CLASS,
   FORM_LABEL_CLASS,
   FORM_REQUIRED_MARK_CLASS,
-  getFormInputClass,
-  getFormTextareaClass,
 } from "@/utils/formVariants";
 // Helper class tombol.
 import { getButtonClass } from "@/utils/buttonVariants";
-
-// Class input dan textarea standar.
-const inputClass = getFormInputClass();
-const textareaClass = getFormTextareaClass();
 
 // Props modal layanan.
 const props = defineProps<{
@@ -37,8 +32,18 @@ const emit = defineEmits<{
 }>();
 
 // Ambil title modal dan handler file dari composable.
-const { formTitle, handleFileChange, FILE_INPUT_ID } =
-  useAdminLayananFormModal(props, emit);
+const {
+  formTitle,
+  handleFileChange,
+  FILE_INPUT_ID,
+  errors,
+  touched,
+  handleBlur,
+  handleInput,
+  getInputClass,
+  getTextareaClass,
+  handleSubmit,
+} = useAdminLayananFormModal(props, emit);
 </script>
 
 <template>
@@ -66,7 +71,11 @@ const { formTitle, handleFileChange, FILE_INPUT_ID } =
       </div>
 
       <!-- Form layanan. -->
-      <form @submit.prevent="emit('submit')" class="p-6 space-y-4 overflow-y-auto flex-1 custom-scrollbar">
+      <form
+        @submit.prevent="handleSubmit"
+        novalidate
+        class="p-6 space-y-4 overflow-y-auto flex-1 custom-scrollbar"
+      >
         <!-- Upload gambar layanan. -->
         <div>
           <label :class="FORM_LABEL_CLASS">
@@ -92,12 +101,15 @@ const { formTitle, handleFileChange, FILE_INPUT_ID } =
               <input
                 :id="FILE_INPUT_ID"
                 type="file"
-                accept="image/*"
+                accept=".jpg,.jpeg,.png,.gif,image/jpeg,image/png,image/gif"
                 @change="handleFileChange"
                 class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100"
               />
               <p :class="FORM_HINT_CLASS">
                 Format: JPG, PNG (Maks. 2MB)
+              </p>
+              <p v-if="errors.gambar" :class="FORM_ERROR_CLASS">
+                <i class="mdi mdi-alert-circle text-xs"></i>{{ errors.gambar }}
               </p>
             </div>
           </div>
@@ -114,12 +126,19 @@ const { formTitle, handleFileChange, FILE_INPUT_ID } =
               emit('update:form', {
                 ...form,
                 nama_layanan: ($event.target as HTMLInputElement).value,
-              })
+              });
+              handleInput('nama_layanan');
             "
+            @blur="handleBlur('nama_layanan')"
             type="text"
-            required
-            :class="inputClass"
+            :class="getInputClass('nama_layanan')"
           />
+          <p
+            v-if="touched.nama_layanan && errors.nama_layanan"
+            :class="FORM_ERROR_CLASS"
+          >
+            <i class="mdi mdi-alert-circle text-xs"></i>{{ errors.nama_layanan }}
+          </p>
         </div>
 
         <!-- Deskripsi layanan. -->
@@ -133,12 +152,16 @@ const { formTitle, handleFileChange, FILE_INPUT_ID } =
               emit('update:form', {
                 ...form,
                 deskripsi: ($event.target as HTMLInputElement).value,
-              })
+              });
+              handleInput('deskripsi');
             "
-            required
+            @blur="handleBlur('deskripsi')"
             rows="3"
-            :class="textareaClass"
+            :class="getTextareaClass()"
           ></textarea>
+          <p v-if="touched.deskripsi && errors.deskripsi" :class="FORM_ERROR_CLASS">
+            <i class="mdi mdi-alert-circle text-xs"></i>{{ errors.deskripsi }}
+          </p>
         </div>
 
         <!-- Estimasi harga layanan. -->
@@ -151,13 +174,20 @@ const { formTitle, handleFileChange, FILE_INPUT_ID } =
             @input="
               emit('update:form', {
                 ...form,
-                harga: Number(($event.target as HTMLInputElement).value),
-              })
+                harga: ($event.target as HTMLInputElement).value === ''
+                  ? Number.NaN
+                  : Number(($event.target as HTMLInputElement).value),
+              });
+              handleInput('harga');
             "
+            @blur="handleBlur('harga')"
             type="number"
-            required
-            :class="inputClass"
+            min="0"
+            :class="getInputClass('harga')"
           />
+          <p v-if="touched.harga && errors.harga" :class="FORM_ERROR_CLASS">
+            <i class="mdi mdi-alert-circle text-xs"></i>{{ errors.harga }}
+          </p>
         </div>
 
         <!-- Estimasi durasi layanan dalam menit. -->
@@ -173,13 +203,22 @@ const { formTitle, handleFileChange, FILE_INPUT_ID } =
                 durasi_pengerjaan: ($event.target as HTMLInputElement).value
                   ? Number(($event.target as HTMLInputElement).value)
                   : null,
-              })
+              });
+              handleInput('durasi_pengerjaan');
             "
+            @blur="handleBlur('durasi_pengerjaan')"
             type="number"
             min="5"
-            :class="inputClass"
+            :class="getInputClass('durasi_pengerjaan')"
             placeholder="60"
           />
+          <p
+            v-if="touched.durasi_pengerjaan && errors.durasi_pengerjaan"
+            :class="FORM_ERROR_CLASS"
+          >
+            <i class="mdi mdi-alert-circle text-xs"></i>
+            {{ errors.durasi_pengerjaan }}
+          </p>
           <p :class="FORM_HINT_CLASS">
             Contoh: 30 (30 menit), 90 (1.5 jam), 120 (2 jam)
           </p>

@@ -10,6 +10,12 @@ import { logError, handleApiError } from "@/utils/errorHandler";
 import { scrollLock } from "@/composables/scrollLock";
 import { FORM_LABEL_CLASS, getFormInputClass } from "@/utils/formVariants";
 
+type ProfileField = "nama" | "email" | "no_telepon";
+type PasswordField =
+  | "password_lama"
+  | "password_baru"
+  | "password_baru_confirmation";
+
 // Composable logic modal profil.
 export function useProfilModal(
   getShow: () => boolean,
@@ -32,6 +38,117 @@ export function useProfilModal(
     password_baru: "",
     password_baru_confirmation: "",
   });
+  const profilErrors = ref<Record<ProfileField, string>>({
+    nama: "",
+    email: "",
+    no_telepon: "",
+  });
+  const passwordErrors = ref<Record<PasswordField, string>>({
+    password_lama: "",
+    password_baru: "",
+    password_baru_confirmation: "",
+  });
+  const profilTouched = ref<Record<ProfileField, boolean>>({
+    nama: false,
+    email: false,
+    no_telepon: false,
+  });
+  const passwordTouched = ref<Record<PasswordField, boolean>>({
+    password_lama: false,
+    password_baru: false,
+    password_baru_confirmation: false,
+  });
+
+  const validateProfileField = (field: ProfileField): boolean => {
+    const value = profilForm.value[field].trim();
+    if (field === "nama") {
+      profilErrors.value.nama = !value
+        ? "Nama lengkap wajib diisi."
+        : value.length < 3
+          ? "Nama lengkap minimal 3 karakter."
+          : "";
+    } else if (field === "email") {
+      profilErrors.value.email = !value
+        ? "Email wajib diisi."
+        : !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value)
+          ? "Masukkan alamat email yang valid."
+          : "";
+    } else {
+      profilErrors.value.no_telepon = !value
+        ? "Nomor telepon wajib diisi."
+        : !/^(08[0-9]{8,13}|\+628[0-9]{8,13})$/.test(value)
+          ? "Gunakan format 08xxxxxxxxxx atau +628xxxxxxxxxx."
+          : "";
+    }
+    return !profilErrors.value[field];
+  };
+
+  const validatePasswordField = (field: PasswordField): boolean => {
+    const value = passwordForm.value[field];
+    if (field === "password_lama") {
+      passwordErrors.value.password_lama = value
+        ? ""
+        : "Password saat ini wajib diisi.";
+    } else if (field === "password_baru") {
+      passwordErrors.value.password_baru = !value
+        ? "Password baru wajib diisi."
+        : value.length < 8
+          ? "Password baru minimal 8 karakter."
+          : !/[A-Z]/.test(value) || !/[0-9]/.test(value)
+            ? "Password baru harus mengandung huruf besar dan angka."
+            : "";
+    } else {
+      passwordErrors.value.password_baru_confirmation = !value
+        ? "Konfirmasi password wajib diisi."
+        : value !== passwordForm.value.password_baru
+          ? "Konfirmasi password baru tidak cocok."
+          : "";
+    }
+    return !passwordErrors.value[field];
+  };
+
+  const handleProfileBlur = (field: ProfileField) => {
+    profilTouched.value[field] = true;
+    validateProfileField(field);
+  };
+
+  const handlePasswordBlur = (field: PasswordField) => {
+    passwordTouched.value[field] = true;
+    validatePasswordField(field);
+  };
+
+  const handleProfileInput = (field: ProfileField) => {
+    if (profilTouched.value[field]) validateProfileField(field);
+  };
+
+  const handlePasswordInput = (field: PasswordField) => {
+    if (passwordTouched.value[field]) validatePasswordField(field);
+    if (
+      field === "password_baru" &&
+      passwordTouched.value.password_baru_confirmation
+    ) {
+      validatePasswordField("password_baru_confirmation");
+    }
+  };
+
+  const handleProfilePhoneInput = (event: Event) => {
+    const input = event.target as HTMLInputElement;
+    const filtered = input.value.startsWith("+")
+      ? `+${input.value.slice(1).replace(/\D/g, "")}`
+      : input.value.replace(/\D/g, "");
+    profilForm.value.no_telepon = filtered.slice(0, 17);
+    input.value = profilForm.value.no_telepon;
+    handleProfileInput("no_telepon");
+  };
+
+  const getProfileInputClass = (field: ProfileField) =>
+    getFormInputClass(
+      profilTouched.value[field] && Boolean(profilErrors.value[field]),
+    );
+  const getPasswordInputClass = (field: PasswordField) =>
+    getFormInputClass(
+      passwordTouched.value[field] && Boolean(passwordErrors.value[field]),
+    );
 
   // Mengambil data user dari localStorage lalu mengisi form profil.
   const loadUserData = () => {
@@ -52,8 +169,20 @@ export function useProfilModal(
     (newVal) => {
       if (newVal) {
         loadUserData();
+        profilTouched.value = { nama: false, email: false, no_telepon: false };
+        profilErrors.value = { nama: "", email: "", no_telepon: "" };
       } else {
         passwordForm.value = { password_lama: "", password_baru: "", password_baru_confirmation: "" };
+        passwordTouched.value = {
+          password_lama: false,
+          password_baru: false,
+          password_baru_confirmation: false,
+        };
+        passwordErrors.value = {
+          password_lama: "",
+          password_baru: "",
+          password_baru_confirmation: "",
+        };
       }
     },
     { immediate: true },
@@ -61,6 +190,18 @@ export function useProfilModal(
 
   // Submit update profil ke backend.
   const handleUpdateProfil = async () => {
+    const fields: ProfileField[] = ["nama", "email", "no_telepon"];
+    fields.forEach((field) => {
+      profilTouched.value[field] = true;
+      validateProfileField(field);
+    });
+    if (fields.some((field) => profilErrors.value[field])) return;
+
+    const nama = profilForm.value.nama.trim();
+    const nomorTelepon = profilForm.value.no_telepon.replace(/\s/g, "");
+
+    profilForm.value.nama = nama;
+    profilForm.value.no_telepon = nomorTelepon;
     loading.value = true;
     try {
       const { data } = await axios.put(`${API_URL}/profil`, profilForm.value, {
@@ -81,12 +222,16 @@ export function useProfilModal(
 
   // Submit ganti password ke backend.
   const handleGantiPassword = async () => {
-    const passwordBaru = passwordForm.value.password_baru;
-    // Validasi frontend sebelum request agar feedback lebih cepat.
-    if (passwordBaru.length < 8) { toast.error("Password baru minimal 8 karakter."); return; }
-    if (!/[A-Z]/.test(passwordBaru)) { toast.error("Password baru harus mengandung minimal 1 huruf besar."); return; }
-    if (!/[0-9]/.test(passwordBaru)) { toast.error("Password baru harus mengandung minimal 1 angka."); return; }
-    if (passwordBaru !== passwordForm.value.password_baru_confirmation) { toast.error("Konfirmasi password baru tidak cocok."); return; }
+    const fields: PasswordField[] = [
+      "password_lama",
+      "password_baru",
+      "password_baru_confirmation",
+    ];
+    fields.forEach((field) => {
+      passwordTouched.value[field] = true;
+      validatePasswordField(field);
+    });
+    if (fields.some((field) => passwordErrors.value[field])) return;
 
     loading.value = true;
     try {
@@ -112,7 +257,6 @@ export function useProfilModal(
   };
 
   // Class form standar untuk input dan label.
-  const inputClass = getFormInputClass();
   const labelClass = FORM_LABEL_CLASS;
 
   // State dan aksi yang dipakai ProfilModal.vue.
@@ -121,7 +265,17 @@ export function useProfilModal(
     user,
     profilForm,
     passwordForm,
-    inputClass,
+    profilErrors,
+    passwordErrors,
+    profilTouched,
+    passwordTouched,
+    handleProfileBlur,
+    handlePasswordBlur,
+    handleProfileInput,
+    handlePasswordInput,
+    handleProfilePhoneInput,
+    getProfileInputClass,
+    getPasswordInputClass,
     labelClass,
     handleUpdateProfil,
     handleGantiPassword,

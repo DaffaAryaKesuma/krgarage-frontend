@@ -78,7 +78,7 @@ watch(
       </button>
 
       <!-- Submit form menjalankan handleRegister. -->
-      <form @submit.prevent="handleRegister" class="space-y-4">
+      <form @submit.prevent="handleRegister" novalidate class="space-y-4">
         <h2 class="text-2xl font-bold text-center mb-6">Buat Akun Baru</h2>
 
         <!-- Semua field daftar dibuat dari FORM_FIELDS. -->

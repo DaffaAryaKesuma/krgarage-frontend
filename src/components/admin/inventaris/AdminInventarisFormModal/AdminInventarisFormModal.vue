@@ -6,6 +6,7 @@ import {
   buttonPrimaryClass,
   buttonSecondaryClass,
   formKartuClass,
+  errorClass,
   inputClass,
   labelClass,
   requiredMarkClass,
@@ -19,7 +20,10 @@ const props = defineProps<AdminInventarisFormModalProps>();
 const emit = defineEmits<AdminInventarisFormModalEmit>();
 
 // Generic field updater — replaces repetitive @input inline handlers
-const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
+const {
+  updateField, toNum, toStr, errors, touched, validateField,
+  handleBlur, getInputClass, handleSubmit,
+} = useAdminInventarisFormModal(props, emit);
 </script>
 
 <template>
@@ -56,7 +60,8 @@ const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
 
       <!-- Form tambah/edit suku cadang. -->
       <form
-        @submit.prevent="emit('submit')"
+        @submit.prevent="handleSubmit"
+        novalidate
         class="max-h-[calc(90vh-5.5rem)] space-y-4 overflow-y-auto p-6 custom-scrollbar"
       >
         <!-- Nama suku cadang. -->
@@ -66,12 +71,18 @@ const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
           </label>
           <input
             :value="form.nama_suku_cadang"
-            @input="updateField('nama_suku_cadang', toStr($event))"
+            @input="
+              updateField('nama_suku_cadang', toStr($event));
+              touched.nama_suku_cadang && validateField('nama_suku_cadang');
+            "
+            @blur="handleBlur('nama_suku_cadang')"
             type="text"
-            required
             placeholder="Contoh: Aki 6V 4Ah"
-            :class="inputClass"
+            :class="getInputClass('nama_suku_cadang')"
           />
+          <p v-if="touched.nama_suku_cadang && errors.nama_suku_cadang" :class="errorClass">
+            <i class="mdi mdi-alert-circle text-xs"></i>{{ errors.nama_suku_cadang }}
+          </p>
         </div>
 
         <!-- Kategori dan stok awal. -->
@@ -84,10 +95,15 @@ const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
               :model-value="form.id_kategori"
               @update:model-value="
                 updateField('id_kategori', Number($event) || null)
+                ; touched.id_kategori = true
+                ; validateField('id_kategori')
               "
               :options="kategoriOptions"
               placeholder="Pilih kategori"
             />
+            <p v-if="touched.id_kategori && errors.id_kategori" :class="errorClass">
+              <i class="mdi mdi-alert-circle text-xs"></i>{{ errors.id_kategori }}
+            </p>
             <!-- Input kategori baru. -->
             <div class="mt-3 flex gap-2">
               <input
@@ -115,12 +131,15 @@ const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
             <input
               :value="form.jumlah_stok"
               @input="updateField('jumlah_stok', toNum($event))"
+              @blur="handleBlur('jumlah_stok')"
               type="number"
               min="0"
-              required
               placeholder="0"
-              :class="inputClass"
+              :class="getInputClass('jumlah_stok')"
             />
+            <p v-if="touched.jumlah_stok && errors.jumlah_stok" :class="errorClass">
+              <i class="mdi mdi-alert-circle text-xs"></i>{{ errors.jumlah_stok }}
+            </p>
           </div>
         </div>
 
@@ -133,14 +152,17 @@ const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
             <input
               :value="form.harga_beli"
               @input="updateField('harga_beli', toNum($event))"
+              @blur="handleBlur('harga_beli')"
               type="number"
               step="1"
               inputmode="numeric"
               min="0"
-              required
               placeholder="120000"
-              :class="inputClass"
+              :class="getInputClass('harga_beli')"
             />
+            <p v-if="touched.harga_beli && errors.harga_beli" :class="errorClass">
+              <i class="mdi mdi-alert-circle text-xs"></i>{{ errors.harga_beli }}
+            </p>
           </div>
 
           <div :class="formKartuClass">
@@ -150,14 +172,17 @@ const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
             <input
               :value="form.harga_jual"
               @input="updateField('harga_jual', toNum($event))"
+              @blur="handleBlur('harga_jual')"
               type="number"
               step="1"
               inputmode="numeric"
               min="0"
-              required
               placeholder="175000"
-              :class="inputClass"
+              :class="getInputClass('harga_jual')"
             />
+            <p v-if="touched.harga_jual && errors.harga_jual" :class="errorClass">
+              <i class="mdi mdi-alert-circle text-xs"></i>{{ errors.harga_jual }}
+            </p>
           </div>
         </div>
 
@@ -174,12 +199,15 @@ const { updateField, toNum, toStr } = useAdminInventarisFormModal(props, emit);
                 toStr($event) === '' ? null : toNum($event),
               )
             "
+            @blur="handleBlur('batas_minimal_stok')"
             type="number"
             min="0"
-            required
             placeholder="Contoh: 5"
-            :class="inputClass"
+            :class="getInputClass('batas_minimal_stok')"
           />
+          <p v-if="touched.batas_minimal_stok && errors.batas_minimal_stok" :class="errorClass">
+            <i class="mdi mdi-alert-circle text-xs"></i>{{ errors.batas_minimal_stok }}
+          </p>
           <p class="mt-1.5 text-xs text-gray-500">
             Peringatan akan muncul jika stok mencapai nilai ini
           </p>
