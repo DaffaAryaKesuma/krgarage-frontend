@@ -12,8 +12,22 @@ import {
 } from "@/utils/formVariants";
 import type { InventarisSukuCadang } from "@/types/inventaris";
 
-const MAX_RECEIPT_SIZE = 2 * 1024 * 1024;
-const ALLOWED_RECEIPT_TYPES = ["image/jpeg", "image/png", "image/gif"];
+const MAX_RECEIPT_SIZE = 10 * 1024 * 1024;
+const ALLOWED_RECEIPT_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/heic",
+  "image/heif",
+];
+const ALLOWED_RECEIPT_EXTENSIONS = [
+  "jpg",
+  "jpeg",
+  "png",
+  "webp",
+  "heic",
+  "heif",
+];
 
 // Props modal tambah stok.
 export interface AdminInventarisStokUlangModalProps {
@@ -94,7 +108,16 @@ export function useAdminInventarisStokUlangModal(
 
   const handleSubmit = () => {
     touched.value = { quantity: true, unitPrice: true };
-    if (!validateQuantity() || !validateUnitPrice()) return;
+    errors.value.receipt = props.restockReceiptFile
+      ? ""
+      : "Foto struk pembelian wajib diunggah.";
+    if (
+      !validateQuantity() ||
+      !validateUnitPrice() ||
+      errors.value.receipt
+    ) {
+      return;
+    }
     emit("submit");
   };
 
@@ -120,15 +143,20 @@ export function useAdminInventarisStokUlangModal(
       return null;
     }
 
-    if (!ALLOWED_RECEIPT_TYPES.includes(file.type)) {
+    const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
+    const typeValid =
+      ALLOWED_RECEIPT_TYPES.includes(file.type.toLowerCase()) ||
+      ALLOWED_RECEIPT_EXTENSIONS.includes(extension);
+
+    if (!typeValid) {
       errors.value.receipt =
-        "Format foto struk harus JPG, JPEG, PNG, atau GIF.";
+        "Format foto struk harus JPG, JPEG, PNG, WebP, HEIC, atau HEIF.";
       input.value = "";
       return null;
     }
 
     if (file.size > MAX_RECEIPT_SIZE) {
-      errors.value.receipt = "Ukuran foto struk maksimal 2MB.";
+      errors.value.receipt = "Ukuran foto struk maksimal 10MB.";
       input.value = "";
       return null;
     }

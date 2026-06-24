@@ -9,6 +9,7 @@ import { formatDateShort } from "@/utils/date";
 import { formatNama, getImageUrl } from "@/utils/format";
 import { toIDR } from "@/utils/money";
 import { getButtonClass, getIconButtonClass } from "@/utils/buttonVariants";
+import { scrollLock } from "@/composables/scrollLock";
 // Class label kecil.
 import { META_LABEL_CLASS } from "@/utils/badgeVariants";
 // Helper class tabel.
@@ -65,8 +66,14 @@ const RECEIPT_BUTTON_CLASS = getButtonClass("infoOutline", "xs", "h-8");
 const selectedReceiptUrl = ref<string | null>(null);
 const receiptLoadFailed = ref(false);
 
+// Kunci halaman belakang selama modal struk terbuka.
+scrollLock(() => selectedReceiptUrl.value !== null);
+
 const selectedReceiptImage = computed(() =>
   selectedReceiptUrl.value ? getImageUrl(selectedReceiptUrl.value) : "",
+);
+const selectedReceiptIsHeic = computed(() =>
+  /\.(heic|heif)(?:$|[?#])/i.test(selectedReceiptUrl.value ?? ""),
 );
 
 const getReceiptSource = (item: RiwayatRestokSukuCadang) => {
@@ -272,7 +279,28 @@ const closeReceiptModal = () => {
         </div>
         <div class="max-h-[calc(90vh-4.5rem)] overflow-auto bg-gray-100 p-4">
           <div
-            v-if="receiptLoadFailed"
+            v-if="selectedReceiptIsHeic"
+            class="flex min-h-44 flex-col items-center justify-center rounded-xl border border-dashed border-gray-300 bg-white px-4 py-8 text-center"
+          >
+            <i class="mdi mdi-file-image-outline mb-2 text-4xl text-blue-500"></i>
+            <p class="text-sm font-semibold text-gray-800">
+              Struk menggunakan format HEIC/HEIF
+            </p>
+            <p class="mt-1 max-w-md text-xs text-gray-500">
+              Sebagian browser tidak dapat menampilkan format ini secara langsung.
+            </p>
+            <a
+              :href="selectedReceiptImage"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="mt-4 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+            >
+              <i class="mdi mdi-open-in-new"></i>
+              Buka atau Unduh Struk
+            </a>
+          </div>
+          <div
+            v-else-if="receiptLoadFailed"
             class="flex min-h-44 flex-col items-center justify-center rounded-xl border border-dashed border-gray-300 bg-white px-4 py-8 text-center text-gray-600"
           >
             <i class="mdi mdi-image-off-outline mb-2 text-4xl text-gray-400"></i>

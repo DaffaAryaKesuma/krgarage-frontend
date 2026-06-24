@@ -203,16 +203,16 @@ const {
 
         <div :class="modalKartuClass">
           <label :class="labelClass">
-            Foto Struk Pembelian
+            Foto Struk Pembelian <span class="text-red-500">*</span>
           </label>
           <input
             type="file"
-            accept=".jpg,.jpeg,.png,.gif,image/jpeg,image/png,image/gif"
+            accept=".jpg,.jpeg,.png,.webp,.heic,.heif,image/jpeg,image/png,image/webp,image/heic,image/heif"
             :class="inputClass"
             @change="emit('receiptChange', handleReceiptSelected($event))"
           />
           <p :class="hintClass">
-            Opsional, format gambar maksimal 2MB.
+            Wajib. Format JPG, PNG, WebP, HEIC, atau HEIF maksimal 10MB.
           </p>
           <p v-if="errors.receipt" :class="errorClass">
             <i class="mdi mdi-alert-circle text-xs"></i>{{ errors.receipt }}

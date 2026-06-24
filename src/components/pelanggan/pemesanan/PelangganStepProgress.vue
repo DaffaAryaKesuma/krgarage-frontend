@@ -7,6 +7,7 @@ import type {
   PemesananFormField,
 } from "@/pages/pelanggan/PelangganPemesananPage/pelangganPemesananHelpers";
 import { getButtonClass, getIconButtonClass } from "@/utils/buttonVariants";
+import { scrollLock } from "@/composables/scrollLock";
 
 // Step pemesanan hanya punya tiga nilai yang valid.
 type PemesananStep = 1 | 2 | 3;
@@ -34,6 +35,9 @@ const currentStep = ref<PemesananStep>(1);
 const highestUnlockedStep = ref<PemesananStep>(1);
 // Modal ringkasan ditampilkan setelah step terakhir valid.
 const showSummaryModal = ref(false);
+
+// Cegah halaman belakang ikut bergulir saat modal ringkasan terbuka.
+scrollLock(() => showSummaryModal.value);
 
 // Daftar step yang muncul di UI.
 const steps: StepItem[] = [

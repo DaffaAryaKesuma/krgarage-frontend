@@ -286,6 +286,11 @@ export function useAdminInventarisPage() {
       return;
     }
 
+    if (!restockReceiptFile.value) {
+      toast.error("Foto struk pembelian wajib diunggah");
+      return;
+    }
+
     loading.value = true;
     try {
       // Payload ini akan menambah stok sekaligus mencatat pengeluaran restock.

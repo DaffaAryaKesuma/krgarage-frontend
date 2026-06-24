@@ -62,7 +62,7 @@ export function restockAdminInventarisSukuCadang(
     harga_beli_satuan: number;
     update_harga_beli: boolean;
     catatan?: string;
-    foto_struk?: File | null;
+    foto_struk: File;
   },
 ) {
   const formData = new FormData();
@@ -74,9 +74,7 @@ export function restockAdminInventarisSukuCadang(
     formData.append("catatan", dataRestok.catatan);
   }
 
-  if (dataRestok.foto_struk) {
-    formData.append("foto_struk", dataRestok.foto_struk);
-  }
+  formData.append("foto_struk", dataRestok.foto_struk);
 
   return axios.post(
     `${API_URL}/admin/inventori/${idSukuCadang}/tambah-stok`,
