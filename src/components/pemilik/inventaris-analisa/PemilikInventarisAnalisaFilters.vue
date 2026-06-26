@@ -48,7 +48,7 @@ const updateYear = (value: string | number | null) => {
 </script>
 
 <template>
-  <!-- Filter bulan dan tahun untuk analisa inventaris. -->
+  <!-- Filter bulan dan tahun untuk analisis inventaris. -->
   <div class="bg-white rounded-2xl shadow-md p-5 mb-5 border border-gray-100 overflow-visible">
     <div class="grid grid-cols-2 gap-4 w-full">
       <!-- Select bulan. -->

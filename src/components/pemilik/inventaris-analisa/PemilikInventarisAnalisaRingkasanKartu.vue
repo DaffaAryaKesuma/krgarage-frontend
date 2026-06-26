@@ -6,7 +6,7 @@ import { getMonthOptions } from "@/utils/dateFilters";
 // Helper tone ikon.
 import { getIconToneClass, type IconToneKey } from "@/utils/badgeVariants";
 
-// Ringkasan analisa inventaris dari halaman induk.
+// Ringkasan analisis inventaris dari halaman induk.
 interface Ringkasan {
   totalLayanan: number;
   totalSukuCadang: number;
@@ -51,7 +51,7 @@ const RINGKASAN_KARTU = computed(() => [
 </script>
 
 <template>
-  <!-- Kartu ringkasan analisa inventaris. -->
+  <!-- Kartu ringkasan analisis inventaris. -->
   <div class="mb-5 space-y-3 md:space-y-0 md:grid md:grid-cols-3 md:gap-3">
     <!-- Satu kartu metrik. -->
     <div

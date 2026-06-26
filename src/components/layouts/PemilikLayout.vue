@@ -11,7 +11,7 @@ const navLinks = [
     icon: "mdi-chart-line",
   },
   {
-    label: "Analisa Inventaris",
+    label: "Analisis Inventaris",
     to: "/pemilik/analisa-inventaris",
     icon: "mdi-package-variant",
   },

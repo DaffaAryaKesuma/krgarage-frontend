@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// Header halaman analisa inventaris.
+// Header halaman analisis inventaris.
 import AppPageHeader from "@/components/ui/AppPageHeader.vue";
 // Filter bulan dan tahun analisa.
 import PemilikInventarisAnalisaFilters from "@/components/pemilik/inventaris-analisa/PemilikInventarisAnalisaFilters.vue";
@@ -11,10 +11,10 @@ import PemilikInventarisAnalisaTeratasLayanan from "@/components/pemilik/inventa
 import PemilikInventarisAnalisaTeratasSukuCadang from "@/components/pemilik/inventaris-analisa/PemilikInventarisAnalisaTeratasSukuCadang.vue";
 // Tabel stok menipis.
 import PemilikInventarisAnalisaLowStockTable from "@/components/pemilik/inventaris-analisa/PemilikInventarisAnalisaLowStockTable.vue";
-// Mengambil logika halaman analisa inventaris.
+// Mengambil logika halaman analisis inventaris.
 import { usePemilikInventarisAnalisaPage } from "./usePemilikInventarisAnalisaPage";
 
-// Mengambil state analisa inventaris dari composable.
+// Mengambil state analisis inventaris dari composable.
 const {
   // Pilihan tahun yang tersedia untuk filter.
   YEAR_OPTIONS,
@@ -36,17 +36,17 @@ const {
 </script>
 
 <template>
-  <!-- Wrapper utama halaman analisa inventaris. -->
+  <!-- Wrapper utama halaman analisis inventaris. -->
   <div class="min-h-screen bg-gray-50">
     <!-- Header halaman. -->
     <AppPageHeader
-      title="Analisa Inventaris"
+      title="Analisis Inventaris"
       icon="mdi-package-variant"
       subtitle="Insight bisnis untuk optimasi stok dan layanan"
       subtitle-class="text-sm sm:text-base text-red-100"
     />
 
-    <!-- Area konten analisa inventaris. -->
+    <!-- Area konten analisis inventaris. -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
       <!-- Filter bulan dan tahun. -->
       <PemilikInventarisAnalisaFilters

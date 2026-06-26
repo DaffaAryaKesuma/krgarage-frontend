@@ -41,7 +41,7 @@ export interface InventarisCategory {
   nama: string;
 }
 
-// Metrik suku cadang teratas untuk analisa inventaris pemilik.
+// Metrik suku cadang teratas untuk analisis inventaris pemilik.
 export interface TeratasSukuCadangMetric {
   id: number;
   nama_barang: string;

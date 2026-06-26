@@ -26,7 +26,7 @@ import {
   buildFixedTableClass,
 } from "@/utils/tableVariants";
 
-// Bentuk item stok menipis dari API analisa inventaris.
+// Bentuk item stok menipis dari API analisis inventaris.
 interface LowStockItem {
   id: number;
   nama_barang: string;

@@ -11,7 +11,7 @@ import { getYearOptions } from "@/utils/dateFilters";
 // Mengambil alamat API backend.
 import { API_URL } from "@/utils/api";
 
-// Fungsi utama logika halaman analisa inventaris pemilik.
+// Fungsi utama logika halaman analisis inventaris pemilik.
 export function usePemilikInventarisAnalisaPage() {
   // Membuat daftar pilihan tahun, misalnya 6 tahun terakhir.
   const YEAR_OPTIONS = computed(() =>
@@ -39,7 +39,7 @@ export function usePemilikInventarisAnalisaPage() {
     lowStockCount: 0,
   });
 
-  // Mengambil data analisa inventaris dari backend.
+  // Mengambil data analisis inventaris dari backend.
   const fetchInventarisAnalisa = async () => {
     // Aktifkan loading sebelum request.
     loading.value = true;
