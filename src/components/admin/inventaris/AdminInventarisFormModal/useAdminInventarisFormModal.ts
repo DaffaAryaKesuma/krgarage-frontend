@@ -90,8 +90,11 @@ export function useAdminInventarisFormModal(
     });
   });
 
-  const validateField = (field: RequiredField) => {
-    const value = props.form[field];
+  const validateField = (
+    field: RequiredField,
+    nextValue: InventarisSukuCadangForm[RequiredField] = props.form[field],
+  ) => {
+    const value = nextValue;
     if (field === "nama_suku_cadang") {
       errors.value[field] = String(value).trim() ? "" : "Nama suku cadang wajib diisi.";
     } else if (field === "id_kategori") {
@@ -112,6 +115,24 @@ export function useAdminInventarisFormModal(
   const getInputClass = (field: RequiredField) =>
     getFormInputClass(touched.value[field] && Boolean(errors.value[field]));
 
+  watch(
+    () => [
+      props.form.nama_suku_cadang,
+      props.form.id_kategori,
+      props.form.jumlah_stok,
+      props.form.harga_beli,
+      props.form.harga_jual,
+      props.form.batas_minimal_stok,
+    ],
+    () => {
+      (Object.keys(touched.value) as RequiredField[]).forEach((field) => {
+        if (touched.value[field]) {
+          validateField(field);
+        }
+      });
+    },
+  );
+
   const handleSubmit = () => {
     const fields = Object.keys(errors.value) as RequiredField[];
     fields.forEach((field) => {
@@ -130,6 +151,16 @@ export function useAdminInventarisFormModal(
     emit("update:form", { ...props.form, [key]: value });
   };
 
+  const updateRequiredField = <FieldKey extends RequiredField>(
+    key: FieldKey,
+    value: InventarisSukuCadangForm[FieldKey],
+  ) => {
+    updateField(key, value);
+    if (touched.value[key]) {
+      validateField(key, value);
+    }
+  };
+
   // Helper mengambil angka dari input event.
   const toNum = (e: Event) => {
     const value = (e.target as HTMLInputElement).value;
@@ -141,6 +172,7 @@ export function useAdminInventarisFormModal(
   // Helper yang dipakai template.
   return {
     updateField,
+    updateRequiredField,
     toNum,
     toStr,
     errors,

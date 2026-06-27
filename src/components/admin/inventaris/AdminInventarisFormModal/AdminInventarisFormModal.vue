@@ -21,8 +21,15 @@ const emit = defineEmits<AdminInventarisFormModalEmit>();
 
 // Generic field updater — replaces repetitive @input inline handlers
 const {
-  updateField, toNum, toStr, errors, touched, validateField,
-  handleBlur, getInputClass, handleSubmit,
+  updateField,
+  updateRequiredField,
+  toNum,
+  toStr,
+  errors,
+  touched,
+  handleBlur,
+  getInputClass,
+  handleSubmit,
 } = useAdminInventarisFormModal(props, emit);
 </script>
 
@@ -72,8 +79,7 @@ const {
           <input
             :value="form.nama_suku_cadang"
             @input="
-              updateField('nama_suku_cadang', toStr($event));
-              touched.nama_suku_cadang && validateField('nama_suku_cadang');
+              updateRequiredField('nama_suku_cadang', toStr($event));
             "
             @blur="handleBlur('nama_suku_cadang')"
             type="text"
@@ -94,9 +100,8 @@ const {
             <CustomSelect
               :model-value="form.id_kategori"
               @update:model-value="
-                updateField('id_kategori', Number($event) || null)
+                updateRequiredField('id_kategori', Number($event) || null)
                 ; touched.id_kategori = true
-                ; validateField('id_kategori')
               "
               :options="kategoriOptions"
               placeholder="Pilih kategori"
@@ -130,7 +135,7 @@ const {
             </label>
             <input
               :value="form.jumlah_stok"
-              @input="updateField('jumlah_stok', toNum($event))"
+              @input="updateRequiredField('jumlah_stok', toNum($event))"
               @blur="handleBlur('jumlah_stok')"
               type="number"
               min="0"
@@ -151,7 +156,7 @@ const {
             </label>
             <input
               :value="form.harga_beli"
-              @input="updateField('harga_beli', toNum($event))"
+              @input="updateRequiredField('harga_beli', toNum($event))"
               @blur="handleBlur('harga_beli')"
               type="number"
               step="1"
@@ -171,7 +176,7 @@ const {
             </label>
             <input
               :value="form.harga_jual"
-              @input="updateField('harga_jual', toNum($event))"
+              @input="updateRequiredField('harga_jual', toNum($event))"
               @blur="handleBlur('harga_jual')"
               type="number"
               step="1"
@@ -194,7 +199,7 @@ const {
           <input
             :value="form.batas_minimal_stok"
             @input="
-              updateField(
+              updateRequiredField(
                 'batas_minimal_stok',
                 toStr($event) === '' ? null : toNum($event),
               )
