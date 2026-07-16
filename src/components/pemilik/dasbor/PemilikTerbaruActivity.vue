@@ -51,13 +51,6 @@ const TABLE_COLUMN_WIDTHS = ["14%", "16%", "13%", "20%", "12%", "11%", "13%"];
           Aktivitas Terbaru
         </h2>
       </div>
-      <router-link
-        to="/pemilik/laporan-keuangan"
-        class="flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-red-600"
-      >
-        Lihat Semua
-        <i class="mdi mdi-arrow-right"></i>
-      </router-link>
     </div>
 
     <!-- Tabel aktivitas tampil jika data tersedia. -->
