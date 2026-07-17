@@ -1,4 +1,4 @@
-import { API_BASE_URL, STORAGE_URL } from "@/utils/api";
+import { STORAGE_URL } from "@/utils/api";
 
 /**
  * Format waktu dalam menit ke format yang lebih readable
@@ -60,12 +60,8 @@ export function getImageUrl(
     .replace(/^\/+/, "")
     .replace(/^storage\/+/, "");
 
-  // Beberapa gambar lama mungkin tersimpan di folder services langsung dari base URL.
-  if (pathWithoutStoragePrefix.startsWith("services/")) {
-    return `${API_BASE_URL.replace(/\/$/, "")}/${pathWithoutStoragePrefix}`;
-  }
-
-  // Default gambar diambil dari URL storage Laravel.
+  // Semua path relatif, termasuk services/..., berasal dari disk public Laravel
+  // dan harus diakses melalui /storage agar sesuai dengan hasil store(..., "public").
   return `${storageUrl}/${pathWithoutStoragePrefix}`;
 }
 
