@@ -21,6 +21,7 @@ const {
   isLoading,
   hasUnread,
   toggleDropdown,
+  markAllAsRead,
   getNotificationIcon,
   getNotificationColor,
   handleNotificationClick,
@@ -73,6 +74,16 @@ const {
             <i class="mdi mdi-bell"></i>
             Notifikasi
           </h3>
+          <!-- Tombol tandai semua dibaca — hanya muncul jika ada yang belum dibaca. -->
+          <button
+            v-if="hasUnread"
+            @click.stop="markAllAsRead"
+            class="flex items-center gap-1 rounded-lg bg-white/20 px-2.5 py-1 text-xs font-medium text-white transition-colors hover:bg-white/30"
+            title="Tandai semua sudah dibaca"
+          >
+            <i class="mdi mdi-check-all text-sm"></i>
+            Tandai Semua
+          </button>
         </div>
 
         <!-- Loading state. -->

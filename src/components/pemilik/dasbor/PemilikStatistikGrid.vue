@@ -24,13 +24,41 @@ interface Ringkasan {
   };
 }
 
-// Props menerima statistik harian dan ringkasan bulanan.
+// Perbandingan performa harian dari API.
+interface Performa {
+  hari_ini?: { pendapatan: number; pengeluaran: number; keuntungan: number };
+  kemarin?:  { pendapatan: number; pengeluaran: number; keuntungan: number };
+}
+
+// Props menerima statistik harian, ringkasan bulanan, dan performa harian.
 interface Props {
   statistik: Statistik;
   ringkasan: Ringkasan | null;
+  performa?: Performa | null;
 }
 
 const props = defineProps<Props>();
+
+// Hitung selisih nominal Rupiah pendapatan hari ini dibanding kemarin.
+const infoPendapatanHarian = computed(() => {
+  const hariIni = props.performa?.hari_ini?.pendapatan ?? props.statistik.pendapatanHariIni;
+  const kemarin = props.performa?.kemarin?.pendapatan ?? 0;
+  const selisih = hariIni - kemarin;
+
+  if (selisih === 0) {
+    return { badge: "Rp 0 vs kemarin", naik: true, nol: true };
+  }
+
+  const naik = selisih > 0;
+  const absVal = Math.abs(selisih);
+  const formattedNominal = (naik ? "+Rp " : "-Rp ") + absVal.toLocaleString("id-ID");
+
+  return {
+    badge: `${formattedNominal} vs kemarin`,
+    naik,
+    nol: false,
+  };
+});
 
 // Susun data kartu agar template cukup melakukan v-for.
 const STAT_KARTU = computed(() => [
@@ -39,6 +67,7 @@ const STAT_KARTU = computed(() => [
     value: toIDR(props.statistik.pendapatanHariIni),
     icon: "mdi-cash-multiple",
     tone: "success" as IconToneKey,
+    subBadge: infoPendapatanHarian.value,
   },
   {
     title: "Pendapatan Bulan Ini",
@@ -84,6 +113,28 @@ const STAT_KARTU = computed(() => [
             >
               {{ card.value }}
             </h3>
+
+            <!-- Badge perbandingan nominal Rupiah harian (Tanpa persenan). -->
+            <div v-if="card.subBadge" class="mt-2 flex items-center gap-1">
+              <span
+                :class="[
+                  'inline-flex items-center gap-0.5 rounded-full px-2.5 py-0.5 text-[10px] font-semibold sm:text-xs',
+                  card.subBadge.nol
+                    ? 'bg-gray-100 text-gray-600'
+                    : card.subBadge.naik
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-red-100 text-red-700',
+                ]"
+              >
+                <i
+                  :class="[
+                    'mdi text-xs',
+                    card.subBadge.nol ? 'mdi-minus' : card.subBadge.naik ? 'mdi-arrow-up-bold' : 'mdi-arrow-down-bold',
+                  ]"
+                ></i>
+                {{ card.subBadge.badge }}
+              </span>
+            </div>
           </div>
 
           <!-- Ikon kartu mengikuti tone tiap metrik. -->

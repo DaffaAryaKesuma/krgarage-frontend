@@ -32,6 +32,11 @@ export function usePemilikDasborPage() {
   const ringkasan = ref(null);
   // Menyimpan data metrik keuangan.
   const metrik = ref(null);
+  // Menyimpan data perbandingan performa hari ini vs kemarin.
+  const performa = ref<{
+    hari_ini: { pendapatan: number; pengeluaran: number; keuntungan: number };
+    kemarin:  { pendapatan: number; pengeluaran: number; keuntungan: number };
+  } | null>(null);
   // Menyimpan daftar pemesanan terbaru.
   const terbaruPemesanan = ref<any[]>([]);
 
@@ -42,12 +47,13 @@ export function usePemilikDasborPage() {
       const headers = getAuthHeaders();
 
       // Ambil beberapa endpoint dashboard secara bersamaan agar lebih cepat.
-      const [statistikRes, pemesananRes, ringkasanRes, metrikRes] =
+      const [statistikRes, pemesananRes, ringkasanRes, metrikRes, performaRes] =
         await Promise.all([
           axios.get(`${API_URL}/pemilik/statistik`, { headers }),
           axios.get(`${API_URL}/pemilik/pemesanan-terbaru`, { headers }),
           axios.get(`${API_URL}/pemilik/ringkasan`, { headers }),
           axios.get(`${API_URL}/pemilik/metrik-keuangan`, { headers }),
+          axios.get(`${API_URL}/pemilik/perbandingan-performa`, { headers }),
         ]);
 
       // Simpan statistik utama dari response API.
@@ -74,6 +80,9 @@ export function usePemilikDasborPage() {
       // Simpan data ringkasan dan metrik.
       ringkasan.value = ringkasanRes.data.data ?? ringkasanRes.data;
       metrik.value = metrikRes.data.data ?? metrikRes.data;
+
+      // Simpan data perbandingan performa.
+      performa.value = performaRes.data.data ?? null;
 
       // Ambil data pemesanan terbaru dari response.
       const pemesanan = pemesananRes.data.data ?? pemesananRes.data;
@@ -102,6 +111,7 @@ export function usePemilikDasborPage() {
     statistik,
     ringkasan,
     metrik,
+    performa,
     terbaruPemesanan,
     fetchDasborData,
   };

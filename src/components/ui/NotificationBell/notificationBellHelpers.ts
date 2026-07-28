@@ -139,3 +139,38 @@ export function getNotificationIcon(tipe: string): string {
 export function getNotificationColor(tipe: string): string {
   return getIconToneClass(NOTIFICATION_TONES[tipe] || "neutral");
 }
+
+// Mengecek apakah sebuah notifikasi merupakan notifikasi "Pemesanan Masuk"
+// untuk role Admin yang memerlukan aksi konfirmasi / pembatalan terlebih dahulu.
+export function isIncomingOrderNotificationForAdmin(
+  role: string | undefined | null,
+  notifikasi: AppNotification,
+): boolean {
+  const normalizedRole = normalizeRole(role);
+  if (normalizedRole !== "admin") {
+    return false;
+  }
+
+  const idPemesanan = getPemesananIdFromNotification(notifikasi);
+  if (!idPemesanan) {
+    return false;
+  }
+
+  // Ambil status pemesanan (jika ter-load dari relasi backend) dan judul notifikasi.
+  const statusPemesanan = notifikasi.pemesanan?.status?.toLowerCase();
+  const judul = notifikasi.judul?.toLowerCase() || "";
+
+  // Pemesanan dianggap perlu aksi jika statusnya masih 'menunggu' / belum ditentukan.
+  const isOrderPendingAction =
+    !statusPemesanan ||
+    statusPemesanan === "menunggu" ||
+    statusPemesanan === "pending";
+
+  const isIncomingOrderNotification =
+    judul.includes("pemesanan baru") ||
+    judul.includes("pesanan baru") ||
+    notifikasi.tipe === "pemesanan_dikonfirmasi";
+
+  return isOrderPendingAction && isIncomingOrderNotification;
+}
+

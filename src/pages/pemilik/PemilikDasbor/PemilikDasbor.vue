@@ -9,11 +9,13 @@ import PemilikStatistikGrid from "@/components/pemilik/dasbor/PemilikStatistikGr
 import PemilikQuickInsights from "@/components/pemilik/dasbor/PemilikQuickInsights/PemilikQuickInsights.vue";
 // Komponen tabel aktivitas pemesanan terbaru.
 import PemilikTerbaruActivity from "@/components/pemilik/dasbor/PemilikTerbaruActivity.vue";
+// Komponen grafik perbandingan performa hari ini vs kemarin.
+import PemilikPerformaChart from "@/components/pemilik/dasbor/PemilikPerformaChart.vue";
 // Mengambil logika dashboard pemilik.
 import { usePemilikDasborPage } from "./usePemilikDasborPage";
 
 // Mengambil data dashboard dari composable.
-const { statistik, ringkasan, metrik, terbaruPemesanan } =
+const { statistik, ringkasan, metrik, performa, terbaruPemesanan } =
   usePemilikDasborPage();
 </script>
 
@@ -41,8 +43,19 @@ const { statistik, ringkasan, metrik, terbaruPemesanan } =
         <!-- Insight cepat untuk memantau kondisi operasional bengkel. -->
         <PemilikQuickInsights :ringkasan="ringkasan" :statistik="statistik" />
 
-        <!-- Kartu statistik angka besar. -->
-        <PemilikStatistikGrid :statistik="statistik" :ringkasan="ringkasan" />
+        <!-- Kartu statistik angka besar dengan perbandingan nominal harian. -->
+        <PemilikStatistikGrid
+          :statistik="statistik"
+          :ringkasan="ringkasan"
+          :performa="performa"
+        />
+
+        <!-- Grafik perbandingan performa hari ini vs kemarin. -->
+        <PemilikPerformaChart
+          :hari-ini="performa?.hari_ini ?? { pendapatan: 0, pengeluaran: 0, keuntungan: 0 }"
+          :kemarin="performa?.kemarin ?? { pendapatan: 0, pengeluaran: 0, keuntungan: 0 }"
+          :loading="!performa"
+        />
 
         <!-- Aktivitas pemesanan terbaru. -->
         <PemilikTerbaruActivity :pemesanan="terbaruPemesanan" />

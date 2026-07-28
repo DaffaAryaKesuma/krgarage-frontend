@@ -19,6 +19,7 @@ import {
   getPemesananIdFromNotification,
   getNotificationColor,
   getNotificationIcon,
+  isIncomingOrderNotificationForAdmin,
   normalizeRole,
   resolveNotificationTarget,
   type AppNotification,
@@ -102,10 +103,18 @@ export function useNotificationBell() {
     }
   };
 
-  // Saat satu notifikasi diklik, tandai baca lalu arahkan ke halaman terkait.
+  // Saat satu notifikasi diklik, arahkan ke halaman terkait.
+  // Jika notifikasi adalah pemesanan masuk untuk Admin, badge TIDAK berkurang hanya karena diklik,
+  // melainkan harus melalui aksi Konfirmasi / Batalkan pemesanan.
   const handleNotificationClick = async (itemNotifikasi: AppNotification) => {
-    // Jika belum dibaca, update ke backend dulu.
-    if (!itemNotifikasi.sudah_dibaca) {
+    const userRole = getCurrentUser()?.role;
+    const isIncomingForAdmin = isIncomingOrderNotificationForAdmin(
+      userRole,
+      itemNotifikasi,
+    );
+
+    // Hanya tandai dibaca jika belum dibaca DAN BUKAN notifikasi pemesanan masuk admin.
+    if (!itemNotifikasi.sudah_dibaca && !isIncomingForAdmin) {
       await markAsRead(itemNotifikasi.id);
     }
 
@@ -114,7 +123,7 @@ export function useNotificationBell() {
 
     // Tentukan target route berdasarkan role user dan tipe notifikasi.
     const target = resolveNotificationTarget(
-      normalizeRole(getCurrentUser()?.role),
+      normalizeRole(userRole),
       getPemesananIdFromNotification(itemNotifikasi),
       itemNotifikasi.tipe,
     );
@@ -134,14 +143,12 @@ export function useNotificationBell() {
   };
 
   // Membuka/tutup dropdown bell.
+  // Badge hanya berkurang saat user mengklik notifikasi satu per satu.
+  // Tidak ada auto-mark-all-as-read agar badge akurat.
   const toggleDropdown = () => {
     isOpen.value = !isOpen.value;
     if (isOpen.value) {
       fetchNotifications(false);
-      // Auto mark all as read saat bell diklik.
-      if (hasUnread.value) {
-        markAllAsRead();
-      }
     }
   };
 
