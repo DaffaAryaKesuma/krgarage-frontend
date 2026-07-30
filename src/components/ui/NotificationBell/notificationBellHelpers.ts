@@ -14,6 +14,7 @@ export interface AppNotification {
   pemesanan?: {
     id?: number;
     kode_pemesanan: string;
+    status?: string;
   };
 }
 
